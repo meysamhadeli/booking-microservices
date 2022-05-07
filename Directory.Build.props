@@ -1,0 +1,64 @@
+<Project>
+  <ItemGroup>
+	  <PackageReference Include="Meziantou.Analyzer" Version="1.0.688" Condition="$(MSBuildProjectExtension) == '.csproj'" PrivateAssets="all">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference
+      Include="StyleCop.Analyzers"
+      Version="1.2.0-beta.354"
+      PrivateAssets="all"
+      Condition="$(MSBuildProjectExtension) == '.csproj'"
+    />
+	<PackageReference
+      Include="SonarAnalyzer.CSharp"
+      Version="8.29.0.36737"
+      PrivateAssets="all"
+      Condition="$(MSBuildProjectExtension) == '.csproj'"
+    />
+
+   <PackageReference
+      Include="Roslynator.Analyzers"
+      Version="3.3.0"
+      PrivateAssets="all"
+      Condition="$(MSBuildProjectExtension) == '.csproj'"
+    />
+	<PackageReference
+      Include="Roslynator.CodeAnalysis.Analyzers"
+      Version="3.3.0"
+      PrivateAssets="all"
+      Condition="$(MSBuildProjectExtension) == '.csproj'"
+    />
+	<PackageReference
+      Include="Roslynator.Formatting.Analyzers"
+      Version="3.3.0"
+      PrivateAssets="all"
+      Condition="$(MSBuildProjectExtension) == '.csproj'"
+    />
+   <PackageReference
+      Include="Microsoft.VisualStudio.Threading.Analyzers"
+      Version="17.0.64"
+      PrivateAssets="all"
+      Condition="$(MSBuildProjectExtension) == '.csproj'"
+    />
+   <PackageReference
+      Include="AsyncFixer"
+      Version="1.5.1"
+      PrivateAssets="all"
+      Condition="$(MSBuildProjectExtension) == '.csproj'"
+    />
+
+  </ItemGroup>
+
+  <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

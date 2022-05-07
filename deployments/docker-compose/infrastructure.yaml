@@ -1,0 +1,102 @@
+version: "3.7"
+
+services:
+
+    #######################################################
+    #  Rabbitmq
+    #######################################################
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - booking
+
+
+    #######################################################
+    #  SqlServer
+    #######################################################
+  db:
+    container_name: sqldb
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    restart: unless-stopped
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "@Aa123456"
+      ACCEPT_EULA: "Y"
+    networks:
+      - booking
+
+
+    #######################################################
+    #  Jaeger
+    #######################################################
+  jaeger:
+    image: jaegertracing/all-in-one
+    container_name: jaeger
+    restart: unless-stopped
+    networks:
+      - booking
+    ports:
+      - 5775:5775/udp
+      - 5778:5778
+      - 6831:6831/udp
+      - 6832:6832/udp
+      - 9411:9411
+      - 14268:14268
+      - 16686:16686
+
+
+    #######################################################
+    #  EventStoreDB
+    #######################################################
+  eventstore.db:
+      image: eventstore/eventstore:21.2.0-buster-slim
+      restart: on-failure
+      environment:
+          - EVENTSTORE_CLUSTER_SIZE=1
+          - EVENTSTORE_RUN_PROJECTIONS=All
+          - EVENTSTORE_START_STANDARD_PROJECTIONS=true
+          - EVENTSTORE_EXT_TCP_PORT=1010
+          - EVENTSTORE_EXT_HTTP_PORT=2113
+          - EVENTSTORE_INSECURE=true
+          - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
+          - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+      ports:
+          - '1010:1113'
+          - '2113:2113'
+      networks:
+          - booking
+
+
+    #######################################################
+    #  Mongo
+    #######################################################
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: unless-stopped
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=root
+    #   - MONGO_INITDB_ROOT_PASSWORD=secret
+    networks:
+      - booking
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo:/data/db
+
+
+networks:
+  booking:
+    name: booking
+
+volumes:
+  db-data:
+    external: false
+  mongo:
+    driver: local

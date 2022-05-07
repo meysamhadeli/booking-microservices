@@ -1,0 +1,45 @@
+name: Booking
+services:
+  - name: booking-gateway
+    project: ./../../src/ApiGateway/src/ApiGateway.csproj
+    bindings:
+      - port: 5001
+    env:
+      - name: ASPNETCORE_ENVIRONMENT
+        value: development
+
+
+  - name: flight
+    project: ./../../src/Services/Flight/src/Flight.Api/Flight.Api.csproj
+    bindings:
+      - port: 5003
+    env:
+      - name: ASPNETCORE_ENVIRONMENT
+        value: development
+
+
+  - name: identity
+    project: ./../../src/Services/Identity/src/Identity.Api/Identity.Api.csproj
+    bindings:
+      - port: 5005
+    env:
+      - name: ASPNETCORE_ENVIRONMENT
+        value: development
+
+
+  - name: passenger
+    project: ./../../src/Services/Passenger/src/Passenger.Api/Passenger.Api.csproj
+    bindings:
+      - port: 5012
+    env:
+      - name: ASPNETCORE_ENVIRONMENT
+        value: development
+
+
+  - name: booking
+    project: ./../../src/Services/Booking/src/Booking.Api/Booking.Api.csproj
+    bindings:
+      - port: 5010
+    env:
+      - name: ASPNETCORE_ENVIRONMENT
+        value: development
