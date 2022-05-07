@@ -83,7 +83,7 @@ High-level plan is represented in the table
 
 ## Structure of Project
 
-I used `yarp` reverse proxy for routes synchronous and asynchronous request to the corresponding microservice. and each microservices has own business and dependencies such as databases, files and etc. and each microservices is decuple from other microservices and develop and deploy separately. and these microservices talk to each other with synchronous call like Rest or gRpc and use RabbitMq or Kafka for asynchronous call.
+I used [yarp reverse proxy](https://microsoft.github.io/reverse-proxy/articles/index.html) for routes synchronous and asynchronous request to the corresponding microservice. and each microservices has own business and dependencies such as databases, files and etc. and each microservices is decuple from other microservices and develop and deploy separately. and these microservices talk to each other with synchronous call like Rest or gRpc and use RabbitMq or Kafka for asynchronous call.
 
 We have separate microservice ([IdentityServer](https://github.com/DuendeSoftware/IdentityServer)) for authentication and authorization and each request go to API Gateway and then route to Identity microservices and after authentication and authorization back API Gateway and then route to expected microservices.
 
