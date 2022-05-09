@@ -5,9 +5,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-  
+
   <ItemGroup>
-    <ProjectReference Include="..\Booking\Booking.csproj" />
+    <ProjectReference Include="..\Booking\Booking.csproj"/>
   </ItemGroup>
 
 </Project>

@@ -1,19 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
+using BuildingBlocks.Domain.Model;
 using Flight.Data;
 using MediatR;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
-using Moq;
 using Respawn;
 using Xunit;
 
@@ -24,97 +17,214 @@ public class SliceFixtureCollection : ICollectionFixture<TestFixture>
 {
 }
 
+// ref: https://github.com/jbogard/ContosoUniversityDotNetCore-Pages/blob/master/ContosoUniversity.IntegrationTests/SliceFixture.cs
 public class TestFixture : IAsyncLifetime
 {
     private readonly Checkpoint _checkpoint;
     private readonly IConfiguration _configuration;
     private readonly WebApplicationFactory<Program> _factory;
-    private static IServiceScopeFactory _scopeFactory = null!;
+    private readonly IServiceScopeFactory _scopeFactory;
 
     public TestFixture()
     {
-        _factory = new FlightTestApplicationFactory();
+        var factory = FlightTestApplicationFactory();
 
-        _configuration = _factory.Services.GetRequiredService<IConfiguration>();
-        _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory>();
+        _configuration = factory.Services.GetRequiredService<IConfiguration>();
+        _scopeFactory = factory.Services.GetRequiredService<IServiceScopeFactory>();
 
         _checkpoint = new Checkpoint();
     }
 
-    class FlightTestApplicationFactory : WebApplicationFactory<Program>
-    {
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            // builder.ConfigureAppConfiguration((_, configBuilder) =>
-            // {
-            //     configBuilder.AddInMemoryCollection(new Dictionary<string, string>
-            //     {
-            //         {"ConnectionStrings:DefaultConnection", _connectionString}
-            //     });
-            // });
-
-            builder.ConfigureServices(services =>
-            {
-                services.AddLogging();
-                var httpContextAccessorService = services.FirstOrDefault(d =>
-                    d.ServiceType == typeof(IHttpContextAccessor));
-                services.Remove(httpContextAccessorService);
-                services.AddSingleton(_ => Mock.Of<IHttpContextAccessor>());
-
-                services.AddSingleton(Mock.Of<IWebHostEnvironment>(w =>
-                    w.EnvironmentName == "Flight.IntegrationTest" &&
-                    w.ApplicationName == "Flight"));
-
-                // services.AddMassTransitTestHarness();
-                //
-                // // MassTransit Harness Setup -- Do Not Delete Comment
-                // services.AddMassTransitInMemoryTestHarness(cfg =>
-                // {
-                //     // Consumer Registration -- Do Not Delete Comment
-                //     // cfg.AddConsumer<AddToBook>();
-                //     // cfg.AddConsumerTestHarness<AddToBook>();
-                // });
-
-                EnsureDatabase();
-            });
-        }
-
-    }
-
-
-    private static void EnsureDatabase()
-    {
-        using var scope = _scopeFactory.CreateScope();
-
-        var context = scope.ServiceProvider.GetService<FlightDbContext>();
-
-        context?.Database.Migrate();
-    }
-
-    public static TScopedService GetService<TScopedService>()
-    {
-        var scope = _scopeFactory.CreateScope();
-        var service = scope.ServiceProvider.GetService<TScopedService>();
-        return service;
-    }
-
-
-    public static Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
-    {
-        using var scope = _scopeFactory.CreateScope();
-
-        var mediator = scope.ServiceProvider.GetService<ISender>();
-
-        return mediator.Send(request);
-    }
-
 
     public Task InitializeAsync()
-        => _checkpoint.Reset(_configuration.GetConnectionString("FlightConnection"));
+    {
+        return _checkpoint.Reset(_configuration.GetConnectionString("DefaultConnection"));
+    }
 
     public Task DisposeAsync()
     {
         _factory?.Dispose();
         return Task.CompletedTask;
+    }
+
+    public WebApplicationFactory<Program> FlightTestApplicationFactory()
+    {
+        return new WebApplicationFactory<Program>()
+            .WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureAppConfiguration((_, configBuilder) =>
+                {
+                    configBuilder.AddInMemoryCollection(new Dictionary<string, string>
+                    {
+                        {
+                            "ConnectionStrings:DefaultConnection",
+                            "Server=db;Database=FlightDB;User ID=sa;Password=@Aa123456"
+                        }
+                    });
+                });
+            });
+    }
+
+    public async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<FlightDbContext>();
+
+        try
+        {
+            await dbContext.BeginTransactionAsync();
+
+            await action(scope.ServiceProvider);
+
+            await dbContext.CommitTransactionAsync();
+        }
+        catch (Exception)
+        {
+            await dbContext.RollbackTransactionAsync();
+            throw;
+        }
+    }
+
+    public async Task<T> ExecuteScopeAsync<T>(Func<IServiceProvider, Task<T>> action)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<FlightDbContext>();
+
+        try
+        {
+            await dbContext.BeginTransactionAsync();
+
+            var result = await action(scope.ServiceProvider);
+
+            await dbContext.CommitTransactionAsync();
+
+            return result;
+        }
+        catch (Exception)
+        {
+            await dbContext.RollbackTransactionAsync();
+            throw;
+        }
+    }
+
+    public Task ExecuteDbContextAsync(Func<FlightDbContext, Task> action)
+    {
+        return ExecuteScopeAsync(sp => action(sp.GetService<FlightDbContext>()));
+    }
+
+    public Task ExecuteDbContextAsync(Func<FlightDbContext, ValueTask> action)
+    {
+        return ExecuteScopeAsync(sp => action(sp.GetService<FlightDbContext>()).AsTask());
+    }
+
+    public Task ExecuteDbContextAsync(Func<FlightDbContext, IMediator, Task> action)
+    {
+        return ExecuteScopeAsync(sp => action(sp.GetService<FlightDbContext>(), sp.GetService<IMediator>()));
+    }
+
+    public Task<T> ExecuteDbContextAsync<T>(Func<FlightDbContext, Task<T>> action)
+    {
+        return ExecuteScopeAsync(sp => action(sp.GetService<FlightDbContext>()));
+    }
+
+    public Task<T> ExecuteDbContextAsync<T>(Func<FlightDbContext, ValueTask<T>> action)
+    {
+        return ExecuteScopeAsync(sp => action(sp.GetService<FlightDbContext>()).AsTask());
+    }
+
+    public Task<T> ExecuteDbContextAsync<T>(Func<FlightDbContext, IMediator, Task<T>> action)
+    {
+        return ExecuteScopeAsync(sp => action(sp.GetService<FlightDbContext>(), sp.GetService<IMediator>()));
+    }
+
+    public Task InsertAsync<T>(params T[] entities) where T : class
+    {
+        return ExecuteDbContextAsync(db =>
+        {
+            foreach (var entity in entities) db.Set<T>().Add(entity);
+            return db.SaveChangesAsync();
+        });
+    }
+
+    public Task InsertAsync<TEntity>(TEntity entity) where TEntity : class
+    {
+        return ExecuteDbContextAsync(db =>
+        {
+            db.Set<TEntity>().Add(entity);
+
+            return db.SaveChangesAsync();
+        });
+    }
+
+    public Task InsertAsync<TEntity, TEntity2>(TEntity entity, TEntity2 entity2)
+        where TEntity : class
+        where TEntity2 : class
+    {
+        return ExecuteDbContextAsync(db =>
+        {
+            db.Set<TEntity>().Add(entity);
+            db.Set<TEntity2>().Add(entity2);
+
+            return db.SaveChangesAsync();
+        });
+    }
+
+    public Task InsertAsync<TEntity, TEntity2, TEntity3>(TEntity entity, TEntity2 entity2, TEntity3 entity3)
+        where TEntity : class
+        where TEntity2 : class
+        where TEntity3 : class
+    {
+        return ExecuteDbContextAsync(db =>
+        {
+            db.Set<TEntity>().Add(entity);
+            db.Set<TEntity2>().Add(entity2);
+            db.Set<TEntity3>().Add(entity3);
+
+            return db.SaveChangesAsync();
+        });
+    }
+
+    public Task InsertAsync<TEntity, TEntity2, TEntity3, TEntity4>(TEntity entity, TEntity2 entity2, TEntity3 entity3,
+        TEntity4 entity4)
+        where TEntity : class
+        where TEntity2 : class
+        where TEntity3 : class
+        where TEntity4 : class
+    {
+        return ExecuteDbContextAsync(db =>
+        {
+            db.Set<TEntity>().Add(entity);
+            db.Set<TEntity2>().Add(entity2);
+            db.Set<TEntity3>().Add(entity3);
+            db.Set<TEntity4>().Add(entity4);
+
+            return db.SaveChangesAsync();
+        });
+    }
+
+    public Task<T> FindAsync<T>(int id)
+        where T : class, IEntity
+    {
+        return ExecuteDbContextAsync(db => db.Set<T>().FindAsync(id).AsTask());
+    }
+
+    public Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
+    {
+        return ExecuteScopeAsync(sp =>
+        {
+            var mediator = sp.GetRequiredService<IMediator>();
+
+            return mediator.Send(request);
+        });
+    }
+
+    public Task SendAsync(IRequest request)
+    {
+        return ExecuteScopeAsync(sp =>
+        {
+            var mediator = sp.GetRequiredService<IMediator>();
+
+            return mediator.Send(request);
+        });
     }
 }

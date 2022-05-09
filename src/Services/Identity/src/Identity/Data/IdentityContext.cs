@@ -33,9 +33,14 @@ public sealed class IdentityContext : IdentityDbContext<ApplicationUser, Identit
         base.OnModelCreating(builder);
     }
 
-    public async Task BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
-        _currentTransaction ??= await Database.BeginTransactionAsync(isolationLevel, cancellationToken);
+        if (_currentTransaction != null)
+        {
+            return;
+        }
+
+        _currentTransaction = await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
     }
 
     public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)

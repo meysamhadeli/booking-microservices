@@ -6,13 +6,13 @@ using DotNetCore.CAP.Messages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using OpenTelemetry.Trace;
 
 namespace BuildingBlocks.CAP;
 
 public static class Extensions
 {
-    public static IServiceCollection AddCustomCap<TDbContext>(this IServiceCollection services) where TDbContext : DbContext
+    public static IServiceCollection AddCustomCap<TDbContext>(this IServiceCollection services)
+        where TDbContext : DbContext
     {
         var rabbitMqOptions = services.GetOptions<RabbitMQOptions>("RabbitMq");
 

@@ -41,7 +41,7 @@ public class EfIdentityTxBehavior<TRequest, TResponse> : IPipelineBehavior<TRequ
             nameof(EfTxBehavior<TRequest, TResponse>),
             typeof(TRequest).FullName);
 
-        await _dbContextBase.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+        await _dbContextBase.BeginTransactionAsync(cancellationToken);
 
         try
         {

@@ -13,11 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Migrations" />
+    <Folder Include="Data\Migrations"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.csproj" />
+    <ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.csproj"/>
   </ItemGroup>
 
 </Project>
