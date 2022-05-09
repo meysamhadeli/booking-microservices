@@ -45,7 +45,7 @@ builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
 builder.Services.AddTransient<IEventMapper, EventMapper>();
 builder.Services.AddTransient<IBusPublisher, BusPublisher>();
 
-builder.Services.AddCustomMassTransit(typeof(IdentityRoot).Assembly);
+builder.Services.AddCustomMassTransit(typeof(IdentityRoot).Assembly, env);
 builder.Services.AddCustomOpenTelemetry();
 
 builder.Services.AddIdentityServer(env);

@@ -23,6 +23,7 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
+var env = builder.Environment;
 
 var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
 builder.Services.Configure<GrpcOptions>(options => configuration.GetSection("Grpc").Bind(options));
@@ -46,7 +47,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IEventMapper, EventMapper>();
 builder.Services.AddTransient<IBusPublisher, BusPublisher>();
 
-builder.Services.AddCustomMassTransit(typeof(BookingRoot).Assembly);
+builder.Services.AddCustomMassTransit(typeof(BookingRoot).Assembly, env);
 builder.Services.AddCustomOpenTelemetry();
 builder.Services.AddTransient<AuthHeaderHandler>();
 SnowFlakIdGenerator.Configure(3);

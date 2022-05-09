@@ -12,16 +12,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Aircrafts\Exceptions"/>
-    <Folder Include="Airports\Exceptions"/>
-    <Folder Include="Data\Migrations"/>
-    <Folder Include="Enum"/>
-    <Folder Include="Flights\Features\UpdateFlight"/>
-    <Folder Include="Seats\Features\CreateSeat"/>
+    <Folder Include="Aircrafts\Exceptions" />
+    <Folder Include="Airports\Exceptions" />
+    <Folder Include="Data\Migrations" />
+    <Folder Include="Enum" />
+    <Folder Include="Flights\Features\UpdateFlight" />
+    <Folder Include="Seats\Features\CreateSeat" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.csproj"/>
+    <ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.csproj" />
   </ItemGroup>
 
 </Project>

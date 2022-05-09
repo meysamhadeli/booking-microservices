@@ -22,6 +22,7 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
+var env = builder.Environment;
 
 var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
 Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
@@ -41,7 +42,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IEventMapper, EventMapper>();
 builder.Services.AddTransient<IBusPublisher, BusPublisher>();
 
-builder.Services.AddCustomMassTransit(typeof(PassengerRoot).Assembly);
+builder.Services.AddCustomMassTransit(typeof(PassengerRoot).Assembly, env);
 builder.Services.AddCustomOpenTelemetry();
 builder.Services.AddGrpc(options =>
 {

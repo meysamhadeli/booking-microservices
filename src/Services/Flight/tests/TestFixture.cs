@@ -1,14 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BuildingBlocks.Domain.Model;
 using Flight.Data;
+using MassTransit;
+using MassTransit.Testing;
 using MediatR;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Respawn;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Integration.Test;
 
@@ -18,51 +29,72 @@ public class SliceFixtureCollection : ICollectionFixture<TestFixture>
 }
 
 // ref: https://github.com/jbogard/ContosoUniversityDotNetCore-Pages/blob/master/ContosoUniversity.IntegrationTests/SliceFixture.cs
+// ref: https://github.com/MassTransit/MassTransit/blob/00d6992286911a437b63b93c89a56e920b053c11/src/MassTransit.TestFramework/InMemoryTestFixture.cs
+// ref: https://wrapt.dev/blog/building-an-event-driven-dotnet-application-integration-testing
 public class TestFixture : IAsyncLifetime
 {
     private readonly Checkpoint _checkpoint;
     private readonly IConfiguration _configuration;
     private readonly WebApplicationFactory<Program> _factory;
     private readonly IServiceScopeFactory _scopeFactory;
+    private static InMemoryTestHarness _harness;
+    public ITestOutputHelper Output { get; set; }
 
     public TestFixture()
     {
-        var factory = FlightTestApplicationFactory();
+        _factory = FlightTestApplicationFactory();
 
-        _configuration = factory.Services.GetRequiredService<IConfiguration>();
-        _scopeFactory = factory.Services.GetRequiredService<IServiceScopeFactory>();
+        _configuration = _factory.Services.GetRequiredService<IConfiguration>();
+        _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory>();
 
         _checkpoint = new Checkpoint();
     }
 
+    public WebApplicationFactory<Program> FlightTestApplicationFactory()
+    {
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "test");
+
+        return new WebApplicationFactory<Program>()
+            .WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices((services) =>
+                {
+                    services.RemoveAll(typeof(IHostedService));
+                });
+
+                builder.ConfigureServices(services =>
+                {
+                    builder.ConfigureLogging(logging =>
+                    {
+                        logging.ClearProviders(); // Remove other loggers
+                    });
+
+                    var httpContextAccessorService = services.FirstOrDefault(d =>
+                        d.ServiceType == typeof(IHttpContextAccessor));
+
+                    services.Remove(httpContextAccessorService);
+                    services.AddSingleton(_ => Mock.Of<IHttpContextAccessor>());
+
+                    services.AddScoped<InMemoryTestHarness>();
+                    var provider = services.BuildServiceProvider();
+                    var serviceScopeFactory = provider.GetService<IServiceScopeFactory>();
+
+                    // MassTransit Start Setup -- Do Not Delete Comment
+                    _harness = serviceScopeFactory?.CreateScope().ServiceProvider.GetRequiredService<InMemoryTestHarness>();
+                    _harness?.Start().GetAwaiter().GetResult();
+                });
+            });
+    }
 
     public Task InitializeAsync()
     {
         return _checkpoint.Reset(_configuration.GetConnectionString("DefaultConnection"));
     }
 
-    public Task DisposeAsync()
+    public async Task DisposeAsync()
     {
-        _factory?.Dispose();
-        return Task.CompletedTask;
-    }
-
-    public WebApplicationFactory<Program> FlightTestApplicationFactory()
-    {
-        return new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureAppConfiguration((_, configBuilder) =>
-                {
-                    configBuilder.AddInMemoryCollection(new Dictionary<string, string>
-                    {
-                        {
-                            "ConnectionStrings:DefaultConnection",
-                            "Server=db;Database=FlightDB;User ID=sa;Password=@Aa123456"
-                        }
-                    });
-                });
-            });
+        await _harness.Stop();
+        await _factory.DisposeAsync();
     }
 
     public async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)
@@ -226,5 +258,66 @@ public class TestFixture : IAsyncLifetime
 
             return mediator.Send(request);
         });
+    }
+
+
+        // MassTransit Methods -- Do Not Delete Comment
+    /// <summary>
+    ///     Publishes a message to the bus, and waits for the specified response.
+    /// </summary>
+    /// <param name="message">The message that should be published.</param>
+    /// <typeparam name="TMessage">The message that should be published.</typeparam>
+    public static async Task PublishMessage<TMessage>(object message)
+        where TMessage : class
+    {
+        await _harness.Bus.Publish<TMessage>(message);
+    }
+
+    /// <summary>
+    ///     Confirm if there was a fault when publishing for this harness.
+    /// </summary>
+    /// <typeparam name="TMessage">The message that should be published.</typeparam>
+    /// <returns>A boolean of true if there was a fault for a message of the given type when published.</returns>
+    public Task<bool> IsFaultyPublished<TMessage>()
+        where TMessage : class
+    {
+        return _harness.Published.Any<Fault<TMessage>>();
+    }
+
+    /// <summary>
+    ///     Confirm that a message has been published for this harness.
+    /// </summary>
+    /// <typeparam name="TMessage">The message that should be published.</typeparam>
+    /// <returns>A boolean of true if a message of the given type has been published.</returns>
+    public Task<bool> IsPublished<TMessage>()
+        where TMessage : class
+    {
+        return _harness.Published.Any<TMessage>();
+    }
+
+    /// <summary>
+    ///     Confirm that a message has been consumed for this harness.
+    /// </summary>
+    /// <typeparam name="TMessage">The message that should be consumed.</typeparam>
+    /// <returns>A boolean of true if a message of the given type has been consumed.</returns>
+    public Task<bool> IsConsumed<TMessage>()
+        where TMessage : class
+    {
+        return _harness.Consumed.Any<TMessage>();
+    }
+
+    /// <summary>
+    ///     The desired consumer consumed the message.
+    /// </summary>
+    /// <typeparam name="TMessage">The message that should be consumed.</typeparam>
+    /// <typeparam name="TConsumedBy">The consumer of the message.</typeparam>
+    /// <returns>A boolean of true if a message of the given type has been consumed by the given consumer.</returns>
+    public Task<bool> IsConsumed<TMessage, TConsumedBy>()
+        where TMessage : class
+        where TConsumedBy : class, IConsumer
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var consumerHarness = scope.ServiceProvider.GetRequiredService<IConsumerTestHarness<TConsumedBy>>();
+        return consumerHarness.Consumed.Any<TMessage>();
     }
 }

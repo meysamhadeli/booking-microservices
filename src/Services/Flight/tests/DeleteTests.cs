@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Xunit;
 
 namespace Integration.Test;
@@ -12,9 +11,9 @@ public class DeleteTests
     public DeleteTests(TestFixture fixture) => _fixture = fixture;
 
     [Fact]
-    public async Task Should_delete_flight()
+    public Task Should_delete_flight()
     {
-        var b = 2;
+        return Task.CompletedTask;
     }
 
 }

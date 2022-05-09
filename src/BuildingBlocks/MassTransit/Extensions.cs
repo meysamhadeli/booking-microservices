@@ -3,7 +3,9 @@ using BuildingBlocks.Domain.Event;
 using BuildingBlocks.Utils;
 using Humanizer;
 using MassTransit;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace BuildingBlocks.MassTransit;
 
@@ -15,56 +17,59 @@ public static class Extensions
         bool.TryParse(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"), out var inContainer) &&
         inContainer;
 
-    public static IServiceCollection AddCustomMassTransit(this IServiceCollection services, Assembly assembly)
+    public static IServiceCollection AddCustomMassTransit(this IServiceCollection services, Assembly assembly, IWebHostEnvironment env)
     {
-        services.AddMassTransit(configure =>
+        if (!env.IsEnvironment("test"))
         {
-            configure.AddConsumers(assembly);
-
-            configure.UsingRabbitMq((context, configurator) =>
+            services.AddMassTransit(configure =>
             {
-                var rabbitMqOptions = services.GetOptions<RabbitMqOptions>("RabbitMq");
-                var host = IsRunningInContainer ? "rabbitmq" : rabbitMqOptions.HostName;
+                configure.AddConsumers(assembly);
 
-                configurator.Host(host, h =>
+                configure.UsingRabbitMq((context, configurator) =>
                 {
-                    h.Username(rabbitMqOptions.UserName);
-                    h.Password(rabbitMqOptions.Password);
-                });
+                    var rabbitMqOptions = services.GetOptions<RabbitMqOptions>("RabbitMq");
+                    var host = IsRunningInContainer ? "rabbitmq" : rabbitMqOptions.HostName;
 
-                var types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
-                    .Where(x => x.IsAssignableTo(typeof(IIntegrationEvent))
-                                && !x.IsInterface
-                                && !x.IsAbstract
-                                && !x.IsGenericType);
+                    configurator.Host(host, h =>
+                    {
+                        h.Username(rabbitMqOptions.UserName);
+                        h.Password(rabbitMqOptions.Password);
+                    });
 
-                foreach (var type in types)
-                {
-                    var consumers = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
-                        .Where(x => x.IsAssignableTo(typeof(IConsumer<>).MakeGenericType(type))).ToList();
+                    var types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+                        .Where(x => x.IsAssignableTo(typeof(IIntegrationEvent))
+                                    && !x.IsInterface
+                                    && !x.IsAbstract
+                                    && !x.IsGenericType);
 
-                    if (consumers.Any())
-                        configurator.ReceiveEndpoint(
-                            string.IsNullOrEmpty(rabbitMqOptions.ExchangeName)
-                                ? type.Name.Underscore()
-                                : $"{rabbitMqOptions.ExchangeName}_{type.Name.Underscore()}", e =>
-                            {
-                                foreach (var consumer in consumers)
+                    foreach (var type in types)
+                    {
+                        var consumers = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+                            .Where(x => x.IsAssignableTo(typeof(IConsumer<>).MakeGenericType(type))).ToList();
+
+                        if (consumers.Any())
+                            configurator.ReceiveEndpoint(
+                                string.IsNullOrEmpty(rabbitMqOptions.ExchangeName)
+                                    ? type.Name.Underscore()
+                                    : $"{rabbitMqOptions.ExchangeName}_{type.Name.Underscore()}", e =>
                                 {
-                                    configurator.ConfigureEndpoints(context, x => x.Exclude(consumer));
-                                    var methodInfo = typeof(DependencyInjectionReceiveEndpointExtensions)
-                                        .GetMethods()
-                                        .Where(x => x.GetParameters()
-                                            .Any(p => p.ParameterType == typeof(IServiceProvider)))
-                                        .FirstOrDefault(x => x.Name == "Consumer" && x.IsGenericMethod);
+                                    foreach (var consumer in consumers)
+                                    {
+                                        configurator.ConfigureEndpoints(context, x => x.Exclude(consumer));
+                                        var methodInfo = typeof(DependencyInjectionReceiveEndpointExtensions)
+                                            .GetMethods()
+                                            .Where(x => x.GetParameters()
+                                                .Any(p => p.ParameterType == typeof(IServiceProvider)))
+                                            .FirstOrDefault(x => x.Name == "Consumer" && x.IsGenericMethod);
 
-                                    var generic = methodInfo?.MakeGenericMethod(consumer);
-                                    generic?.Invoke(e, new object[] {e, context, null});
-                                }
-                            });
-                }
+                                        var generic = methodInfo?.MakeGenericMethod(consumer);
+                                        generic?.Invoke(e, new object[] {e, context, null});
+                                    }
+                                });
+                    }
+                });
             });
-        });
+        }
 
         return services;
     }
