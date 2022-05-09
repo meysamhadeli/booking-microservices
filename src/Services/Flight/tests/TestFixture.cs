@@ -24,7 +24,7 @@ using Xunit.Abstractions;
 namespace Integration.Test;
 
 [CollectionDefinition(nameof(TestFixture))]
-public class SliceFixtureCollection : ICollectionFixture<TestFixture>
+public class TestFixtureCollection : ICollectionFixture<TestFixture>
 {
 }
 
