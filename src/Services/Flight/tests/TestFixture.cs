@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BuildingBlocks.Domain.Model;
@@ -19,7 +18,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Respawn;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Integration.Test;
 
@@ -38,7 +36,6 @@ public class TestFixture : IAsyncLifetime
     private readonly WebApplicationFactory<Program> _factory;
     private readonly IServiceScopeFactory _scopeFactory;
     private static InMemoryTestHarness _harness;
-    public ITestOutputHelper Output { get; set; }
 
     public TestFixture()
     {

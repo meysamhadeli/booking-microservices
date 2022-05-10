@@ -1,18 +1,22 @@
 using Booking.Data;
 using BuildingBlocks.EFCore;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Booking.Extensions;
 
 public static class MigrationsExtensions
 {
-    public static IApplicationBuilder UseMigrations(this IApplicationBuilder app)
+    public static IApplicationBuilder UseMigrations(this IApplicationBuilder app, IWebHostEnvironment env)
     {
-        MigrateDatabase(app.ApplicationServices);
-        SeedData(app.ApplicationServices);
-
+        if (!env.IsEnvironment("test"))
+        {
+            MigrateDatabase(app.ApplicationServices);
+            SeedData(app.ApplicationServices);
+        }
         return app;
     }
 

@@ -1,5 +1,5 @@
 # https://github.com/Huachao/vscode-restclient
-@api-gateway=https://localhost:5001
+@api-gateway=https://localhost:5000
 @identity-api=https://localhost:5005
 @flight-api=https://localhost:5003
 @passenger-api=https://localhost:5012

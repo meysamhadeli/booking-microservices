@@ -13,8 +13,8 @@ services:
       dockerfile: src/ApiGateway/Dockerfile
     container_name: booking-gateway
     ports:
-      - "5000:80"
-      - "5001:443"
+      - "5001:80"
+      - "5000:443"
     depends_on:
       - db
       - rabbitmq

@@ -81,7 +81,7 @@ app.UseSerilogRequestLogging();
 app.UseCorrelationId();
 app.UseRouting();
 app.UseHttpMetrics();
-app.UseMigrations();
+app.UseMigrations(env);
 app.UseProblemDetails();
 app.UseHttpsRedirection();
 app.UseAuthentication();
