@@ -30,6 +30,7 @@ builder.Services.Configure<GrpcOptions>(options => configuration.GetSection("Grp
 
 Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
+builder.Services.AddTransient<IBusPublisher, BusPublisher>();
 builder.Services.AddCustomDbContext<BookingDbContext>(configuration, typeof(BookingRoot).Assembly);
 
 builder.AddCustomSerilog();

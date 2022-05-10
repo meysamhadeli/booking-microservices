@@ -25,6 +25,7 @@ var env = builder.Environment;
 var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
 Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
+builder.Services.AddTransient<IBusPublisher, BusPublisher>();
 builder.Services.AddScoped<IDbContext>(provider => provider.GetService<IdentityContext>()!);
 
 builder.Services.AddDbContext<IdentityContext>(options =>

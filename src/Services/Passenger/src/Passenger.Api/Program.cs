@@ -27,6 +27,7 @@ var env = builder.Environment;
 var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
 Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
+builder.Services.AddTransient<IBusPublisher, BusPublisher>();
 builder.Services.AddCustomDbContext<PassengerDbContext>(configuration, typeof(PassengerRoot).Assembly);
 builder.AddCustomSerilog();
 builder.Services.AddJwt();
