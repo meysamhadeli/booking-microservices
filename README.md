@@ -135,7 +135,7 @@ Run this app on docker with this [docker-compose.yaml](./deployments/docker-comp
 docker-compose -f ./deployments/docker-compose/docker-compose.yaml up -d
 ```
 
-### Documention Apis
+### Documentation Apis
 
 For testing apis I used [REST Client](https://github.com/Huachao/vscode-restclient) plugin of VSCode and this file [booking.rest](./booking.rest) is in root of project.
 Also after running api you have access to swagger open api for all microservices in /swagger route path.
