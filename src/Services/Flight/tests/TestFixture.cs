@@ -1,21 +1,24 @@
 using System;
-using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using BuildingBlocks.Domain.Model;
+using BuildingBlocks.EFCore;
+using BuildingBlocks.MassTransit;
+using BuildingBlocks.Web;
 using Flight.Data;
+using Flight.Data.Seed;
 using MassTransit;
 using MassTransit.Testing;
 using MediatR;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 using Respawn;
 using Xunit;
 
@@ -26,114 +29,84 @@ public class TestFixtureCollection : ICollectionFixture<TestFixture>
 {
 }
 
+// ref: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-6.0
 // ref: https://github.com/jbogard/ContosoUniversityDotNetCore-Pages/blob/master/ContosoUniversity.IntegrationTests/SliceFixture.cs
-// ref: https://github.com/MassTransit/MassTransit/blob/00d6992286911a437b63b93c89a56e920b053c11/src/MassTransit.TestFramework/InMemoryTestFixture.cs
-// ref: https://wrapt.dev/blog/building-an-event-driven-dotnet-application-integration-testing
+// ref: https://github.com/jasontaylordev/CleanArchitecture/blob/main/tests/Application.IntegrationTests/Testing.cs
 public class TestFixture : IAsyncLifetime
 {
-    private readonly Checkpoint _checkpoint;
-    private readonly IConfiguration _configuration;
-    private readonly WebApplicationFactory<Program> _factory;
-    private readonly IServiceScopeFactory _scopeFactory;
-    private static InMemoryTestHarness _harness;
+    private Checkpoint _checkpoint;
+    private HttpClient _client;
+    private IConfiguration _configuration;
+    private WebApplicationFactory<Program> _factory;
+    private ITestHarness _harness;
+    private IServiceScopeFactory _scopeFactory;
 
-    public TestFixture()
+    public ILogger<TestFixture> Logger =>
+        _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<ILogger<TestFixture>>();
+
+
+    public async Task InitializeAsync()
     {
-        _factory = FlightTestApplicationFactory();
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "test");
+
+        _factory = new WebApplicationFactory<Program>()
+            .WithWebHostBuilder(builder => builder.ConfigureServices(services =>
+            {
+                services.RemoveAll(typeof(IHostedService));
+                services.ReplaceSingleton(AddHttpContextAccessorMock);
+                services.ReplaceScoped<IDataSeeder, FlightDataSeeder>();
+                services.AddMassTransitTestHarness(x =>
+                {
+                    x.UsingRabbitMq((context, cfg) =>
+                    {
+                        var rabbitMqOptions = services.GetOptions<RabbitMqOptions>("RabbitMq");
+                        var host = rabbitMqOptions.HostName;
+
+                        cfg.Host(host, h =>
+                        {
+                            h.Username(rabbitMqOptions.UserName);
+                            h.Password(rabbitMqOptions.Password);
+                        });
+                        cfg.ConfigureEndpoints(context);
+                    });
+                });
+            }));
+
+        _harness = _factory.Services.GetTestHarness();
+
+        await _harness.Start();
 
         _configuration = _factory.Services.GetRequiredService<IConfiguration>();
         _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory>();
 
-        _checkpoint = new Checkpoint();
-    }
+        _client = _factory.CreateClient(new WebApplicationFactoryClientOptions {AllowAutoRedirect = false});
 
-    public WebApplicationFactory<Program> FlightTestApplicationFactory()
-    {
-        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "test");
+        _checkpoint = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
 
-        return new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureTestServices((services) =>
-                {
-                    services.RemoveAll(typeof(IHostedService));
-                });
-
-                builder.ConfigureServices(services =>
-                {
-                    builder.ConfigureLogging(logging =>
-                    {
-                        logging.ClearProviders(); // Remove other loggers
-                    });
-
-                    var httpContextAccessorService = services.FirstOrDefault(d =>
-                        d.ServiceType == typeof(IHttpContextAccessor));
-
-                    services.Remove(httpContextAccessorService);
-                    services.AddSingleton(_ => Mock.Of<IHttpContextAccessor>());
-
-                    services.AddScoped<InMemoryTestHarness>();
-                    var provider = services.BuildServiceProvider();
-                    var serviceScopeFactory = provider.GetService<IServiceScopeFactory>();
-
-                    // MassTransit Start Setup -- Do Not Delete Comment
-                    _harness = serviceScopeFactory?.CreateScope().ServiceProvider.GetRequiredService<InMemoryTestHarness>();
-                    _harness?.Start().GetAwaiter().GetResult();
-                });
-            });
-    }
-
-    public Task InitializeAsync()
-    {
-        return _checkpoint.Reset(_configuration.GetConnectionString("DefaultConnection"));
+        await EnsureDatabaseAsync();
     }
 
     public async Task DisposeAsync()
     {
-        await _harness.Stop();
+        _harness.Cancel();
         await _factory.DisposeAsync();
+        await _checkpoint.Reset(_configuration.GetConnectionString("DefaultConnection"));
     }
+
 
     public async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)
     {
         using var scope = _scopeFactory.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<FlightDbContext>();
-
-        try
-        {
-            await dbContext.BeginTransactionAsync();
-
-            await action(scope.ServiceProvider);
-
-            await dbContext.CommitTransactionAsync();
-        }
-        catch (Exception)
-        {
-            await dbContext.RollbackTransactionAsync();
-            throw;
-        }
+        await action(scope.ServiceProvider);
     }
 
     public async Task<T> ExecuteScopeAsync<T>(Func<IServiceProvider, Task<T>> action)
     {
         using var scope = _scopeFactory.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<FlightDbContext>();
 
-        try
-        {
-            await dbContext.BeginTransactionAsync();
+        var result = await action(scope.ServiceProvider);
 
-            var result = await action(scope.ServiceProvider);
-
-            await dbContext.CommitTransactionAsync();
-
-            return result;
-        }
-        catch (Exception)
-        {
-            await dbContext.RollbackTransactionAsync();
-            throw;
-        }
+        return result;
     }
 
     public Task ExecuteDbContextAsync(Func<FlightDbContext, Task> action)
@@ -171,6 +144,7 @@ public class TestFixture : IAsyncLifetime
         return ExecuteDbContextAsync(db =>
         {
             foreach (var entity in entities) db.Set<T>().Add(entity);
+
             return db.SaveChangesAsync();
         });
     }
@@ -231,7 +205,7 @@ public class TestFixture : IAsyncLifetime
         });
     }
 
-    public Task<T> FindAsync<T>(int id)
+    public Task<T> FindAsync<T>(long id)
         where T : class, IEntity
     {
         return ExecuteDbContextAsync(db => db.Set<T>().FindAsync(id).AsTask());
@@ -258,13 +232,15 @@ public class TestFixture : IAsyncLifetime
     }
 
 
-        // MassTransit Methods -- Do Not Delete Comment
+    // ref: https://github.com/MassTransit/MassTransit/blob/00d6992286911a437b63b93c89a56e920b053c11/src/MassTransit.TestFramework/InMemoryTestFixture.cs
+    // ref: https://wrapt.dev/blog/building-an-event-driven-dotnet-application-integration-testing
+
     /// <summary>
     ///     Publishes a message to the bus, and waits for the specified response.
     /// </summary>
     /// <param name="message">The message that should be published.</param>
     /// <typeparam name="TMessage">The message that should be published.</typeparam>
-    public static async Task PublishMessage<TMessage>(object message)
+    public async Task PublishMessage<TMessage>(object message)
         where TMessage : class
     {
         await _harness.Bus.Publish<TMessage>(message);
@@ -316,5 +292,35 @@ public class TestFixture : IAsyncLifetime
         using var scope = _scopeFactory.CreateScope();
         var consumerHarness = scope.ServiceProvider.GetRequiredService<IConsumerTestHarness<TConsumedBy>>();
         return consumerHarness.Consumed.Any<TMessage>();
+    }
+
+    private async Task EnsureDatabaseAsync()
+    {
+        using var scope = _scopeFactory.CreateScope();
+
+        var context = scope.ServiceProvider.GetRequiredService<FlightDbContext>();
+        var seeders = scope.ServiceProvider.GetServices<IDataSeeder>();
+
+        await context.Database.MigrateAsync();
+
+        foreach (var seeder in seeders) await seeder.SeedAllAsync();
+    }
+
+    // private async Task AddInMemoryHarnessAsync()
+    // {
+    //     _harness = _factory.Services.GetRequiredService<InMemoryTestHarness>();
+    //     await _harness.Start();
+    // }
+
+    private IHttpContextAccessor AddHttpContextAccessorMock(IServiceProvider serviceProvider)
+    {
+        var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
+        using var scope = serviceProvider.CreateScope();
+        httpContextAccessorMock.HttpContext = new DefaultHttpContext {RequestServices = scope.ServiceProvider};
+
+        httpContextAccessorMock.HttpContext.Request.Host = new HostString("localhost", 5000);
+        httpContextAccessorMock.HttpContext.Request.Scheme = "http";
+
+        return httpContextAccessorMock;
     }
 }

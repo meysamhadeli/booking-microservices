@@ -8,10 +8,8 @@ using BuildingBlocks.Jwt;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
-using BuildingBlocks.Mongo;
 using BuildingBlocks.OpenTelemetry;
 using BuildingBlocks.Swagger;
-using BuildingBlocks.Utils;
 using BuildingBlocks.Web;
 using Figgle;
 using Flight;
@@ -32,12 +30,10 @@ var env = builder.Environment;
 var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
 Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
-
 builder.Services.AddTransient<IBusPublisher, BusPublisher>();
-builder.Services.AddCustomDbContext<FlightDbContext>(configuration, typeof(FlightRoot).Assembly);
-builder.Services.AddMongoDbContext<FlightReadDbContext>(configuration);
-
+builder.Services.AddCustomDbContext<FlightDbContext>(configuration);
 builder.Services.AddScoped<IDataSeeder, FlightDataSeeder>();
+
 builder.AddCustomSerilog();
 builder.Services.AddJwt();
 builder.Services.AddControllers();

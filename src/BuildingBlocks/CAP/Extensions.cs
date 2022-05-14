@@ -1,6 +1,7 @@
 ﻿using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using BuildingBlocks.Utils;
+using BuildingBlocks.Web;
 using DotNetCore.CAP;
 using DotNetCore.CAP.Messages;
 using Microsoft.EntityFrameworkCore;

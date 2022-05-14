@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace BuildingBlocks.Utils
+namespace BuildingBlocks.Web
 {
     public static class ConfigurationHelper
     {

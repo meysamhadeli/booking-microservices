@@ -1,6 +1,6 @@
 namespace BuildingBlocks.Domain.Model;
 
-public interface IAuditable
+public interface IAuditable : IEntity
 {
     public DateTime? CreatedAt { get; set; }
     public long? CreatedBy { get; set; }

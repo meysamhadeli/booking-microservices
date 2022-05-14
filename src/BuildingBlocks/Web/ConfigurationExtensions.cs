@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BuildingBlocks.Utils;
+namespace BuildingBlocks.Web;
 
 public static class ConfigurationExtensions
 {

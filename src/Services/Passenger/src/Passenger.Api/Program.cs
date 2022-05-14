@@ -28,7 +28,7 @@ var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
 Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
 builder.Services.AddTransient<IBusPublisher, BusPublisher>();
-builder.Services.AddCustomDbContext<PassengerDbContext>(configuration, typeof(PassengerRoot).Assembly);
+builder.Services.AddCustomDbContext<PassengerDbContext>(configuration);
 builder.AddCustomSerilog();
 builder.Services.AddJwt();
 builder.Services.AddControllers();
@@ -41,7 +41,6 @@ builder.Services.AddCustomMapster(typeof(PassengerRoot).Assembly);
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddTransient<IEventMapper, EventMapper>();
-builder.Services.AddTransient<IBusPublisher, BusPublisher>();
 
 builder.Services.AddCustomMassTransit(typeof(PassengerRoot).Assembly, env);
 builder.Services.AddCustomOpenTelemetry();

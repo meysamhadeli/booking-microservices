@@ -1,4 +1,3 @@
-using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,16 +8,15 @@ public static class Extensions
 {
     public static IServiceCollection AddCustomDbContext<TContext>(
         this IServiceCollection services,
-        IConfiguration configuration,
-        Assembly migrationAssembly)
+        IConfiguration configuration)
         where TContext : AppDbContextBase
     {
-        services.AddScoped<IDbContext>(provider => provider.GetService<TContext>());
-
         services.AddDbContext<TContext>(options =>
             options.UseSqlServer(
                 configuration.GetConnectionString("DefaultConnection"),
-                x => x.MigrationsAssembly(migrationAssembly.GetName().Name)));
+                x => x.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name)));
+
+        services.AddScoped<IDbContext>(provider => provider.GetService<TContext>());
 
         return services;
     }
