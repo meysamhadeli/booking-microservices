@@ -42,19 +42,7 @@ public sealed class BusPublisher : IBusPublisher
 
         if (!integrationEvents.Any()) return;
 
-        foreach (var integrationEvent in integrationEvents)
-        {
-            await _publishEndpoint.Publish((object)integrationEvent, context =>
-            {
-                context.CorrelationId = new Guid(_httpContextAccessor.HttpContext.GetCorrelationId());
-                context.Headers.Set("UserId",
-                    _httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier));
-                context.Headers.Set("UserName",
-                    _httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.Name));
-            }, cancellationToken);
-
-            _logger.LogTrace("Publish a message with ID: {Id}", integrationEvent?.EventId);
-        }
+        await PublishMessageToBroker(integrationEvents, cancellationToken);
 
         _logger.LogTrace("Processing integration events done...");
     }
@@ -70,11 +58,18 @@ public sealed class BusPublisher : IBusPublisher
 
         _logger.LogTrace("Processing integration events start...");
 
+        await PublishMessageToBroker(integrationEvents, cancellationToken);
+
+        _logger.LogTrace("Processing integration events done...");
+    }
+
+    private async Task PublishMessageToBroker(IReadOnlyList<IIntegrationEvent> integrationEvents, CancellationToken cancellationToken)
+    {
         foreach (var integrationEvent in integrationEvents)
         {
-            await _publishEndpoint.Publish((object)integrationEvent, context =>
+            await _publishEndpoint.Publish((object) integrationEvent, context =>
             {
-                context.CorrelationId = new Guid(_httpContextAccessor.HttpContext.GetCorrelationId());
+                context.CorrelationId = _httpContextAccessor?.HttpContext?.GetCorrelationId();
                 context.Headers.Set("UserId",
                     _httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier));
                 context.Headers.Set("UserName",
@@ -83,8 +78,6 @@ public sealed class BusPublisher : IBusPublisher
 
             _logger.LogTrace("Publish a message with ID: {Id}", integrationEvent?.EventId);
         }
-
-        _logger.LogTrace("Processing integration events done...");
     }
 
     private Task<IReadOnlyList<IIntegrationEvent>> MapDomainEventToIntegrationEventAsync(

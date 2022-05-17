@@ -19,8 +19,9 @@ public static class CorrelationExtensions
         });
     }
 
-    public static string GetCorrelationId(this HttpContext context)
+    public static Guid GetCorrelationId(this HttpContext context)
     {
-        return context.Items.TryGetValue(CorrelationId, out var correlationId) ? correlationId as string : null;
+        context.Items.TryGetValue(CorrelationId, out var correlationId);
+        return string.IsNullOrEmpty(correlationId?.ToString()) ? Guid.NewGuid() : new Guid(correlationId.ToString()!);
     }
 }
