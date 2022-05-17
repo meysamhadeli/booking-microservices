@@ -6,12 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3"/>
-    <PackageReference Include="Yarp.ReverseProxy" Version="1.0.0"/>
-    <PackageReference Include="Microsoft.Identity.Web" Version="1.22.3"/>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.csproj"/>
   </ItemGroup>
 
