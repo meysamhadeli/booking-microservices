@@ -1,10 +1,12 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Domain.Model;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Web;
+using Flight;
 using Flight.Data;
 using Flight.Data.Seed;
 using MassTransit;
@@ -57,6 +59,8 @@ public class TestFixture : IAsyncLifetime
                 services.ReplaceScoped<IDataSeeder, FlightDataSeeder>();
                 services.AddMassTransitTestHarness(x =>
                 {
+                    x.AddConsumer<FlightConsumer>();
+
                     x.UsingRabbitMq((context, cfg) =>
                     {
                         var rabbitMqOptions = services.GetOptions<RabbitMqOptions>("RabbitMq");
@@ -70,6 +74,8 @@ public class TestFixture : IAsyncLifetime
                         cfg.ConfigureEndpoints(context);
                     });
                 });
+
+                //FlightConsumer
             }));
 
         _harness = _factory.Services.GetTestHarness();

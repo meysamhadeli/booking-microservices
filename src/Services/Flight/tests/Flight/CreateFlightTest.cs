@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using BuildingBlocks.Contracts.EventBus.Messages;
 using Flight.Flights.Features.CreateFlight;
 using FluentAssertions;
 using Integration.Test.Fakes;
@@ -32,5 +33,6 @@ public class CreateFlightTest
         // Assert
         flightResponse.Should().NotBeNull();
         flightResponse?.FlightNumber.Should().Be(command.FlightNumber);
+        (await _fixture.IsConsumed<FlightCreated>()).Should().Be(true);
     }
 }
