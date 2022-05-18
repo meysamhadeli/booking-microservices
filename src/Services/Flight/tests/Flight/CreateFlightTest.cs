@@ -18,7 +18,7 @@ public class CreateFlightTest
     }
 
     [Fact]
-    public async Task should_create_new_flight_to_db()
+    public async Task should_create_new_flight_to_db_and_publish_message_to_broker()
     {
         // Arrange
         var fakeFlight = new FakeCreateFlightCommand().Generate();
@@ -33,6 +33,7 @@ public class CreateFlightTest
         // Assert
         flightResponse.Should().NotBeNull();
         flightResponse?.FlightNumber.Should().Be(command.FlightNumber);
-        (await _fixture.IsConsumed<FlightCreated>()).Should().Be(true);
+        (await _fixture.IsFaultyPublished<FlightCreated>()).Should().BeFalse();
+        (await _fixture.IsPublished<FlightCreated>()).Should().BeTrue();
     }
 }

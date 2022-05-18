@@ -59,8 +59,6 @@ public class TestFixture : IAsyncLifetime
                 services.ReplaceScoped<IDataSeeder, FlightDataSeeder>();
                 services.AddMassTransitTestHarness(x =>
                 {
-                    x.AddConsumer<FlightConsumer>();
-
                     x.UsingRabbitMq((context, cfg) =>
                     {
                         var rabbitMqOptions = services.GetOptions<RabbitMqOptions>("RabbitMq");
@@ -74,8 +72,6 @@ public class TestFixture : IAsyncLifetime
                         cfg.ConfigureEndpoints(context);
                     });
                 });
-
-                //FlightConsumer
             }));
 
         _harness = _factory.Services.GetTestHarness();
@@ -311,12 +307,6 @@ public class TestFixture : IAsyncLifetime
 
         foreach (var seeder in seeders) await seeder.SeedAllAsync();
     }
-
-    // private async Task AddInMemoryHarnessAsync()
-    // {
-    //     _harness = _factory.Services.GetRequiredService<InMemoryTestHarness>();
-    //     await _harness.Start();
-    // }
 
     private IHttpContextAccessor AddHttpContextAccessorMock(IServiceProvider serviceProvider)
     {
