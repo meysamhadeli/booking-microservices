@@ -8,11 +8,11 @@ using Xunit;
 namespace Integration.Test.Flight;
 
 [Collection(nameof(TestFixture))]
-public class CreateFlightTest
+public class CreateFlightTests
 {
     private readonly TestFixture _fixture;
 
-    public CreateFlightTest(TestFixture fixture)
+    public CreateFlightTests(TestFixture fixture)
     {
         _fixture = fixture;
     }

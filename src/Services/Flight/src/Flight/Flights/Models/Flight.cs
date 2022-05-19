@@ -54,6 +54,18 @@ public class Flight : Aggregate<long>
         long arriveAirportId, decimal durationMinutes, DateTime flightDate, FlightStatus status,
         decimal price, bool isDeleted = false)
     {
+        FlightNumber = flightNumber;
+        AircraftId = aircraftId;
+        DepartureAirportId = departureAirportId;
+        DepartureDate = departureDate;
+        arriveDate = ArriveDate;
+        ArriveAirportId = arriveAirportId;
+        DurationMinutes = durationMinutes;
+        FlightDate = flightDate;
+        Status = status;
+        Price = price;
+        IsDeleted = isDeleted;
+
         var @event = new FlightUpdatedDomainEvent(id, flightNumber, aircraftId, departureDate, departureAirportId,
             arriveDate, arriveAirportId, durationMinutes, flightDate, status, price, isDeleted);
 
