@@ -56,11 +56,11 @@ public class EfTxBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TRe
                 nameof(EfTxBehavior<TRequest, TResponse>),
                 typeof(TRequest).FullName);
 
+            await _dbContextBase.CommitTransactionAsync(cancellationToken);
+
             var domainEvents = _dbContextBase.GetDomainEvents();
 
             await _busPublisher.SendAsync(domainEvents.ToArray(), cancellationToken);
-
-            await _dbContextBase.CommitTransactionAsync(cancellationToken);
 
             return response;
         }

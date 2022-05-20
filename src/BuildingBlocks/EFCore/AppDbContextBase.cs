@@ -21,18 +21,9 @@ public abstract class AppDbContextBase : DbContext, IDbContext
         _httpContextAccessor = httpContextAccessor;
     }
 
-    protected override void OnModelCreating(ModelBuilder builder)
-    {
-        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        base.OnModelCreating(builder);
-    }
-
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
-        if (_currentTransaction != null)
-        {
-            return;
-        }
+        if (_currentTransaction != null) return;
 
         _currentTransaction = await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
     }
@@ -92,8 +83,17 @@ public abstract class AppDbContextBase : DbContext, IDbContext
         return domainEvents.ToImmutableList();
     }
 
-    // https://www.meziantou.net/entity-framework-core-generate-tracking-columns.htm
-    // https://www.meziantou.net/entity-framework-core-soft-delete-using-query-filters.htm
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        base.OnModelCreating(builder);
+
+        // ref: https://github.com/pdevito3/MessageBusTestingInMemHarness/blob/main/RecipeManagement/src/RecipeManagement/Databases/RecipesDbContext.cs
+        builder.FilterSoftDeletedProperties();
+    }
+
+    // ref: https://www.meziantou.net/entity-framework-core-generate-tracking-columns.htm
+    // ref: https://www.meziantou.net/entity-framework-core-soft-delete-using-query-filters.htm
     private void OnBeforeSaving()
     {
         var nameIdentifier = _httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -102,7 +102,7 @@ public abstract class AppDbContextBase : DbContext, IDbContext
 
         foreach (var entry in ChangeTracker.Entries<IAggregate>())
         {
-            bool isAuditable = entry.Entity.GetType().IsAssignableTo(typeof(IAggregate));
+            var isAuditable = entry.Entity.GetType().IsAssignableTo(typeof(IAggregate));
 
             if (isAuditable)
             {
@@ -116,6 +116,13 @@ public abstract class AppDbContextBase : DbContext, IDbContext
                     case EntityState.Modified:
                         entry.Entity.LastModifiedBy = userId;
                         entry.Entity.LastModified = DateTime.Now;
+                        break;
+
+                    case EntityState.Deleted:
+                        entry.State = EntityState.Modified;
+                        entry.Entity.LastModifiedBy = userId;
+                        entry.Entity.LastModified = DateTime.Now;
+                        entry.Entity.IsDeleted = true;
                         break;
                 }
             }

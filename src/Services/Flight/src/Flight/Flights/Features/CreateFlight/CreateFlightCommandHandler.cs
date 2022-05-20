@@ -33,7 +33,7 @@ public class CreateFlightCommandHandler : IRequestHandler<CreateFlightCommand, F
             throw new FlightAlreadyExistException();
 
         var flightEntity = Models.Flight.Create(command.Id, command.FlightNumber, command.AircraftId, command.DepartureAirportId, command.DepartureDate,
-            command.ArriveDate, command.ArriveAirportId, command.DurationMinutes, command.FlightDate, FlightStatus.Completed, command.Price);
+            command.ArriveDate, command.ArriveAirportId, command.DurationMinutes, command.FlightDate, command.Status, command.Price);
 
         var newFlight = await _flightDbContext.Flights.AddAsync(flightEntity, cancellationToken);
 

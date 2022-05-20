@@ -18,8 +18,9 @@ public sealed class EventMapper : IEventMapper
     {
         return @event switch
         {
-            FlightCreatedDomainEvent e => new FlightCreated(e.FlightNumber),
-            FlightUpdatedDomainEvent e => new FlightUpdated(e.FlightNumber),
+            FlightCreatedDomainEvent e => new FlightCreated(e.Id),
+            FlightUpdatedDomainEvent e => new FlightUpdated(e.Id),
+            FlightDeletedDomainEvent e => new FlightDeleted(e.Id),
             AirportCreatedDomainEvent e => new AirportCreated(e.Id),
             AircraftCreatedDomainEvent e => new AircraftCreated(e.Id),
             _ => null

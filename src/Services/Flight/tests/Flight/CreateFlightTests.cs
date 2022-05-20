@@ -21,11 +21,7 @@ public class CreateFlightTests
     public async Task should_create_new_flight_to_db_and_publish_message_to_broker()
     {
         // Arrange
-        var fakeFlight = new FakeCreateFlightCommand().Generate();
-        var command = new CreateFlightCommand(fakeFlight.FlightNumber, fakeFlight.AircraftId,
-            fakeFlight.DepartureAirportId, fakeFlight.DepartureDate,
-            fakeFlight.ArriveDate, fakeFlight.ArriveAirportId, fakeFlight.DurationMinutes, fakeFlight.FlightDate,
-            fakeFlight.Status, fakeFlight.Price);
+        var command = new FakeCreateFlightCommand().Generate();
 
         // Act
         var flightResponse = await _fixture.SendAsync(command);

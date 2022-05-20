@@ -4,7 +4,7 @@ using BuildingBlocks.Domain.Model;
 namespace BuildingBlocks.Mongo;
 
 public interface IReadRepository<TEntity, in TId>
-    where TEntity : class, IEntity<TId>
+    where TEntity : class, IAggregate<TId>
 {
     Task<TEntity?> FindByIdAsync(TId id, CancellationToken cancellationToken = default);
 
@@ -25,7 +25,7 @@ public interface IReadRepository<TEntity, in TId>
 }
 
 public interface IWriteRepository<TEntity, in TId>
-    where TEntity : class, IEntity<TId>
+    where TEntity : class, IAggregate<TId>
 {
     Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default);
     Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
@@ -39,11 +39,11 @@ public interface IRepository<TEntity, in TId> :
     IReadRepository<TEntity, TId>,
     IWriteRepository<TEntity, TId>,
     IDisposable
-    where TEntity : class, IEntity<TId>
+    where TEntity : class, IAggregate<TId>
 {
 }
 
 public interface IRepository<TEntity> : IRepository<TEntity, long>
-    where TEntity : class, IEntity<long>
+    where TEntity : class, IAggregate<long>
 {
 }

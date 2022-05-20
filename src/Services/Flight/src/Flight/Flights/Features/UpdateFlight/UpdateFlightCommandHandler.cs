@@ -35,7 +35,7 @@ public class UpdateFlightCommandHandler : IRequestHandler<UpdateFlightCommand, F
 
 
         flight.Update(command.Id, command.FlightNumber, command.AircraftId, command.DepartureAirportId, command.DepartureDate,
-            command.ArriveDate, command.ArriveAirportId, command.DurationMinutes, command.FlightDate, FlightStatus.Completed, command.Price, command.IsDeleted);
+            command.ArriveDate, command.ArriveAirportId, command.DurationMinutes, command.FlightDate, command.Status, command.Price, command.IsDeleted);
 
         var updateFlight = _flightDbContext.Flights.Update(flight);
 

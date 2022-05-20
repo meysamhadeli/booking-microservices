@@ -3,12 +3,11 @@ using BuildingBlocks.EventStoreDB.Events;
 
 namespace BuildingBlocks.Domain.Model
 {
-    public interface IAggregate : IProjection, IAuditable
+    public interface IAggregate : IProjection, IEntity
     {
         IReadOnlyList<IDomainEvent> DomainEvents { get; }
         IEvent[] ClearDomainEvents();
         long Version { get; }
-        public bool IsDeleted { get; }
     }
 
     public interface IAggregate<out T> : IAggregate
