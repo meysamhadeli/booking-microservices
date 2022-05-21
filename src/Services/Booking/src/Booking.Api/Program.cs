@@ -53,7 +53,7 @@ builder.Services.AddCustomOpenTelemetry();
 builder.Services.AddTransient<AuthHeaderHandler>();
 SnowFlakIdGenerator.Configure(3);
 
-// EventStoreDB Configuration
+// ref: https://github.com/oskardudycz/EventSourcing.NetCore/tree/main/Sample/EventStoreDB/ECommerce
 builder.Services.AddEventStore(configuration, typeof(BookingRoot).Assembly)
     .AddEventStoreDBSubscriptionToAll();
 

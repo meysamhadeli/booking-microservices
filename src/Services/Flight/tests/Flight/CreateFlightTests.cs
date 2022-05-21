@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using Flight.Flights.Features.CreateFlight;
 using FluentAssertions;
 using Integration.Test.Fakes;
 using Xunit;

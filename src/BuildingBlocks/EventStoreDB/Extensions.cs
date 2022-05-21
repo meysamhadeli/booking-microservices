@@ -6,6 +6,7 @@ namespace BuildingBlocks.EventStoreDB;
 
 public static class Extensions
 {
+    // ref: https://github.com/oskardudycz/EventSourcing.NetCore/tree/main/Sample/EventStoreDB/ECommerce
     public static IServiceCollection AddEventStore(
         this IServiceCollection services,
         IConfiguration configuration,

@@ -1,12 +1,10 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Domain.Model;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Web;
-using Flight;
 using Flight.Data;
 using Flight.Data.Seed;
 using MassTransit;
@@ -19,10 +17,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Respawn;
+using Serilog;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Integration.Test;
 
@@ -37,15 +36,11 @@ public class TestFixtureCollection : ICollectionFixture<TestFixture>
 public class TestFixture : IAsyncLifetime
 {
     private Checkpoint _checkpoint;
-    private HttpClient _client;
     private IConfiguration _configuration;
     private WebApplicationFactory<Program> _factory;
     private ITestHarness _harness;
     private IServiceScopeFactory _scopeFactory;
-
-    public ILogger<TestFixture> Logger =>
-        _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<ILogger<TestFixture>>();
-
+    private HttpClient _httpClient;
 
     public async Task InitializeAsync()
     {
@@ -81,7 +76,7 @@ public class TestFixture : IAsyncLifetime
         _configuration = _factory.Services.GetRequiredService<IConfiguration>();
         _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory>();
 
-        _client = _factory.CreateClient(new WebApplicationFactoryClientOptions {AllowAutoRedirect = false});
+        _httpClient = _factory.CreateClient(new WebApplicationFactoryClientOptions {AllowAutoRedirect = false});
 
         _checkpoint = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
 
@@ -95,6 +90,20 @@ public class TestFixture : IAsyncLifetime
         await _checkpoint.Reset(_configuration.GetConnectionString("DefaultConnection"));
     }
 
+    // ref: https://github.com/trbenning/serilog-sinks-xunit
+    public ILogger CreateLogger(ITestOutputHelper output)
+    {
+        if (output != null)
+        {
+            return new LoggerConfiguration()
+                .WriteTo.TestOutput(output)
+                .CreateLogger();
+        }
+
+        return null;
+    }
+
+    public HttpClient CreateClient() => _httpClient;
 
     public async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)
     {
