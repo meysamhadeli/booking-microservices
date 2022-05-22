@@ -2,18 +2,22 @@
 using BuildingBlocks.Contracts.EventBus.Messages;
 using FluentAssertions;
 using Integration.Test.Fakes;
+using MassTransit;
+using MassTransit.Testing;
 using Xunit;
 
-namespace Integration.Test.Flight;
+namespace Integration.Test.Flight.Features;
 
 [Collection(nameof(TestFixture))]
 public class CreateFlightTests
 {
     private readonly TestFixture _fixture;
+    private readonly ITestHarness _testHarness;
 
     public CreateFlightTests(TestFixture fixture)
     {
         _fixture = fixture;
+        _testHarness = _fixture.TestHarness;
     }
 
     [Fact]
@@ -23,12 +27,12 @@ public class CreateFlightTests
         var command = new FakeCreateFlightCommand().Generate();
 
         // Act
-        var flightResponse = await _fixture.SendAsync(command);
+        var response = await _fixture.SendAsync(command);
 
         // Assert
-        flightResponse.Should().NotBeNull();
-        flightResponse?.FlightNumber.Should().Be(command.FlightNumber);
-        (await _fixture.IsFaultyPublished<FlightCreated>()).Should().BeFalse();
-        (await _fixture.IsPublished<FlightCreated>()).Should().BeTrue();
+        response.Should().NotBeNull();
+        response?.FlightNumber.Should().Be(command.FlightNumber);
+        (await _testHarness.Published.Any<Fault<FlightCreated>>()).Should().BeFalse();
+        (await _testHarness.Published.Any<FlightCreated>()).Should().BeTrue();
     }
 }

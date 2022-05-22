@@ -5,8 +5,7 @@ using BuildingBlocks.Domain.Model;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Web;
-using Flight.Data;
-using Flight.Data.Seed;
+using Identity.Data;
 using MassTransit;
 using MassTransit.Testing;
 using MediatR;
@@ -33,14 +32,17 @@ public class TestFixtureCollection : ICollectionFixture<TestFixture>
 // ref: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-6.0
 // ref: https://github.com/jbogard/ContosoUniversityDotNetCore-Pages/blob/master/ContosoUniversity.IntegrationTests/SliceFixture.cs
 // ref: https://github.com/jasontaylordev/CleanArchitecture/blob/main/tests/Application.IntegrationTests/Testing.cs
+// ref: https://github.com/MassTransit/MassTransit/blob/00d6992286911a437b63b93c89a56e920b053c11/src/MassTransit.TestFramework/InMemoryTestFixture.cs
 public class TestFixture : IAsyncLifetime
 {
     private Checkpoint _checkpoint;
     private IConfiguration _configuration;
     private WebApplicationFactory<Program> _factory;
-    private ITestHarness _harness;
-    private IServiceScopeFactory _scopeFactory;
     private HttpClient _httpClient;
+    private IServiceScopeFactory _scopeFactory;
+
+    public ITestHarness TestHarness { get; private set; }
+
 
     public async Task InitializeAsync()
     {
@@ -51,7 +53,7 @@ public class TestFixture : IAsyncLifetime
             {
                 services.RemoveAll(typeof(IHostedService));
                 services.ReplaceSingleton(AddHttpContextAccessorMock);
-                services.ReplaceScoped<IDataSeeder, FlightDataSeeder>();
+                services.ReplaceScoped<IDataSeeder, IdentityDataSeeder>();
                 services.AddMassTransitTestHarness(x =>
                 {
                     x.UsingRabbitMq((context, cfg) =>
@@ -69,9 +71,9 @@ public class TestFixture : IAsyncLifetime
                 });
             }));
 
-        _harness = _factory.Services.GetTestHarness();
+        TestHarness = _factory.Services.GetTestHarness();
 
-        await _harness.Start();
+        await TestHarness.Start();
 
         _configuration = _factory.Services.GetRequiredService<IConfiguration>();
         _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory>();
@@ -85,7 +87,7 @@ public class TestFixture : IAsyncLifetime
 
     public async Task DisposeAsync()
     {
-        _harness.Cancel();
+        TestHarness.Cancel();
         await _factory.DisposeAsync();
         await _checkpoint.Reset(_configuration.GetConnectionString("DefaultConnection"));
     }
@@ -94,16 +96,17 @@ public class TestFixture : IAsyncLifetime
     public ILogger CreateLogger(ITestOutputHelper output)
     {
         if (output != null)
-        {
             return new LoggerConfiguration()
                 .WriteTo.TestOutput(output)
                 .CreateLogger();
-        }
 
         return null;
     }
 
-    public HttpClient CreateClient() => _httpClient;
+    public HttpClient CreateClient()
+    {
+        return _httpClient;
+    }
 
     public async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)
     {
@@ -120,34 +123,34 @@ public class TestFixture : IAsyncLifetime
         return result;
     }
 
-    public Task ExecuteDbContextAsync(Func<FlightDbContext, Task> action)
+    public Task ExecuteDbContextAsync(Func<IdentityContext, Task> action)
     {
-        return ExecuteScopeAsync(sp => action(sp.GetService<FlightDbContext>()));
+        return ExecuteScopeAsync(sp => action(sp.GetService<IdentityContext>()));
     }
 
-    public Task ExecuteDbContextAsync(Func<FlightDbContext, ValueTask> action)
+    public Task ExecuteDbContextAsync(Func<IdentityContext, ValueTask> action)
     {
-        return ExecuteScopeAsync(sp => action(sp.GetService<FlightDbContext>()).AsTask());
+        return ExecuteScopeAsync(sp => action(sp.GetService<IdentityContext>()).AsTask());
     }
 
-    public Task ExecuteDbContextAsync(Func<FlightDbContext, IMediator, Task> action)
+    public Task ExecuteDbContextAsync(Func<IdentityContext, IMediator, Task> action)
     {
-        return ExecuteScopeAsync(sp => action(sp.GetService<FlightDbContext>(), sp.GetService<IMediator>()));
+        return ExecuteScopeAsync(sp => action(sp.GetService<IdentityContext>(), sp.GetService<IMediator>()));
     }
 
-    public Task<T> ExecuteDbContextAsync<T>(Func<FlightDbContext, Task<T>> action)
+    public Task<T> ExecuteDbContextAsync<T>(Func<IdentityContext, Task<T>> action)
     {
-        return ExecuteScopeAsync(sp => action(sp.GetService<FlightDbContext>()));
+        return ExecuteScopeAsync(sp => action(sp.GetService<IdentityContext>()));
     }
 
-    public Task<T> ExecuteDbContextAsync<T>(Func<FlightDbContext, ValueTask<T>> action)
+    public Task<T> ExecuteDbContextAsync<T>(Func<IdentityContext, ValueTask<T>> action)
     {
-        return ExecuteScopeAsync(sp => action(sp.GetService<FlightDbContext>()).AsTask());
+        return ExecuteScopeAsync(sp => action(sp.GetService<IdentityContext>()).AsTask());
     }
 
-    public Task<T> ExecuteDbContextAsync<T>(Func<FlightDbContext, IMediator, Task<T>> action)
+    public Task<T> ExecuteDbContextAsync<T>(Func<IdentityContext, IMediator, Task<T>> action)
     {
-        return ExecuteScopeAsync(sp => action(sp.GetService<FlightDbContext>(), sp.GetService<IMediator>()));
+        return ExecuteScopeAsync(sp => action(sp.GetService<IdentityContext>(), sp.GetService<IMediator>()));
     }
 
     public Task InsertAsync<T>(params T[] entities) where T : class
@@ -242,74 +245,11 @@ public class TestFixture : IAsyncLifetime
         });
     }
 
-
-    // ref: https://github.com/MassTransit/MassTransit/blob/00d6992286911a437b63b93c89a56e920b053c11/src/MassTransit.TestFramework/InMemoryTestFixture.cs
-    // ref: https://wrapt.dev/blog/building-an-event-driven-dotnet-application-integration-testing
-
-    /// <summary>
-    ///     Publishes a message to the bus, and waits for the specified response.
-    /// </summary>
-    /// <param name="message">The message that should be published.</param>
-    /// <typeparam name="TMessage">The message that should be published.</typeparam>
-    public async Task PublishMessage<TMessage>(object message)
-        where TMessage : class
-    {
-        await _harness.Bus.Publish<TMessage>(message);
-    }
-
-    /// <summary>
-    ///     Confirm if there was a fault when publishing for this harness.
-    /// </summary>
-    /// <typeparam name="TMessage">The message that should be published.</typeparam>
-    /// <returns>A boolean of true if there was a fault for a message of the given type when published.</returns>
-    public Task<bool> IsFaultyPublished<TMessage>()
-        where TMessage : class
-    {
-        return _harness.Published.Any<Fault<TMessage>>();
-    }
-
-    /// <summary>
-    ///     Confirm that a message has been published for this harness.
-    /// </summary>
-    /// <typeparam name="TMessage">The message that should be published.</typeparam>
-    /// <returns>A boolean of true if a message of the given type has been published.</returns>
-    public Task<bool> IsPublished<TMessage>()
-        where TMessage : class
-    {
-        return _harness.Published.Any<TMessage>();
-    }
-
-    /// <summary>
-    ///     Confirm that a message has been consumed for this harness.
-    /// </summary>
-    /// <typeparam name="TMessage">The message that should be consumed.</typeparam>
-    /// <returns>A boolean of true if a message of the given type has been consumed.</returns>
-    public Task<bool> IsConsumed<TMessage>()
-        where TMessage : class
-    {
-        return _harness.Consumed.Any<TMessage>();
-    }
-
-    /// <summary>
-    ///     The desired consumer consumed the message.
-    /// </summary>
-    /// <typeparam name="TMessage">The message that should be consumed.</typeparam>
-    /// <typeparam name="TConsumedBy">The consumer of the message.</typeparam>
-    /// <returns>A boolean of true if a message of the given type has been consumed by the given consumer.</returns>
-    public Task<bool> IsConsumed<TMessage, TConsumedBy>()
-        where TMessage : class
-        where TConsumedBy : class, IConsumer
-    {
-        using var scope = _scopeFactory.CreateScope();
-        var consumerHarness = scope.ServiceProvider.GetRequiredService<IConsumerTestHarness<TConsumedBy>>();
-        return consumerHarness.Consumed.Any<TMessage>();
-    }
-
     private async Task EnsureDatabaseAsync()
     {
         using var scope = _scopeFactory.CreateScope();
 
-        var context = scope.ServiceProvider.GetRequiredService<FlightDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<IdentityContext>();
         var seeders = scope.ServiceProvider.GetServices<IDataSeeder>();
 
         await context.Database.MigrateAsync();
@@ -323,7 +263,7 @@ public class TestFixture : IAsyncLifetime
         using var scope = serviceProvider.CreateScope();
         httpContextAccessorMock.HttpContext = new DefaultHttpContext {RequestServices = scope.ServiceProvider};
 
-        httpContextAccessorMock.HttpContext.Request.Host = new HostString("localhost", 5000);
+        httpContextAccessorMock.HttpContext.Request.Host = new HostString("localhost", 6005);
         httpContextAccessorMock.HttpContext.Request.Scheme = "http";
 
         return httpContextAccessorMock;

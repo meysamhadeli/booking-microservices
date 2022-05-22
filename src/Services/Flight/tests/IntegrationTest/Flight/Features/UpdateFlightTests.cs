@@ -1,22 +1,23 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using Flight.Flights.Features.CreateFlight;
 using FluentAssertions;
 using Integration.Test.Fakes;
-using Microsoft.EntityFrameworkCore;
+using MassTransit;
+using MassTransit.Testing;
 using Xunit;
 
-namespace Integration.Test.Flight;
+namespace Integration.Test.Flight.Features;
 
 [Collection(nameof(TestFixture))]
 public class UpdateFlightTests
 {
     private readonly TestFixture _fixture;
+    private readonly ITestHarness _testHarness;
 
     public UpdateFlightTests(TestFixture fixture)
     {
         _fixture = fixture;
+        _testHarness = _fixture.TestHarness;
     }
 
     [Fact]
@@ -33,13 +34,13 @@ public class UpdateFlightTests
         var command = new FakeUpdateFlightCommand(flightEntity.Id).Generate();
 
         // Act
-        var flightResponse = await _fixture.SendAsync(command);
+        var response = await _fixture.SendAsync(command);
 
         // Assert
-        flightResponse.Should().NotBeNull();
-        flightResponse?.Id.Should().Be(flightEntity?.Id);
-        flightResponse?.Price.Should().NotBe(flightEntity?.Price);
-        (await _fixture.IsFaultyPublished<FlightUpdated>()).Should().BeFalse();
-        (await _fixture.IsPublished<FlightUpdated>()).Should().BeTrue();
+        response.Should().NotBeNull();
+        response?.Id.Should().Be(flightEntity?.Id);
+        response?.Price.Should().NotBe(flightEntity?.Price);
+        (await _testHarness.Published.Any<Fault<FlightUpdated>>()).Should().BeFalse();
+        (await _testHarness.Published.Any<FlightUpdated>()).Should().BeTrue();
     }
 }

@@ -35,14 +35,14 @@ public class IdentityDataSeeder : IDataSeeder
 
     private async Task SeedUsers()
     {
-        if (await _userManager.FindByNameAsync("meysamh") == null)
+        if (await _userManager.FindByNameAsync("samh") == null)
         {
             var user = new ApplicationUser
             {
-                FirstName = "Meysam",
-                LastName = "Hadeli",
-                UserName = "meysamh",
-                Email = "meysam@test.com",
+                FirstName = "Sam",
+                LastName = "H",
+                UserName = "samh",
+                Email = "sam@test.com",
                 SecurityStamp = Guid.NewGuid().ToString()
             };
 
@@ -56,10 +56,10 @@ public class IdentityDataSeeder : IDataSeeder
         {
             var user = new ApplicationUser
             {
-                FirstName = "Meysam",
-                LastName = "Hadeli",
-                UserName = "meysamh2",
-                Email = "meysam2@test.com",
+                FirstName = "Sam",
+                LastName = "H",
+                UserName = "samh2",
+                Email = "sam2@test.com",
                 SecurityStamp = Guid.NewGuid().ToString()
             };
 

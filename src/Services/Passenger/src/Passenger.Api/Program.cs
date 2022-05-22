@@ -80,3 +80,5 @@ app.UseEndpoints(endpoints =>
 app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
 
 app.Run();
+
+public partial class Program {}

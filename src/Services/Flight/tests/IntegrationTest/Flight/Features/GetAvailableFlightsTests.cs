@@ -1,16 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using AutoBogus;
-using Bogus;
-using BuildingBlocks.IdsGenerator;
-using Flight.Flights.Features.CreateFlight;
 using Flight.Flights.Features.GetAvailableFlights;
-using Flight.Flights.Features.GetFlightById;
 using FluentAssertions;
 using Integration.Test.Fakes;
 using Xunit;
 
-namespace Integration.Test.Flight;
+namespace Integration.Test.Flight.Features;
 
 [Collection(nameof(TestFixture))]
 public class GetAvailableFlightsTests
@@ -42,10 +37,10 @@ public class GetAvailableFlightsTests
         var query = new GetAvailableFlightsQuery();
 
         // Act
-        var flightResponse = await _fixture.SendAsync(query);
+        var response = (await _fixture.SendAsync(query))?.ToList();
 
         // Assert
-        flightResponse?.Should().NotBeNull();
-        flightResponse?.Count().Should().BeGreaterOrEqualTo(2);
+        response?.Should().NotBeNull();
+        response?.Count().Should().BeGreaterOrEqualTo(2);
     }
 }

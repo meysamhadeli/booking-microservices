@@ -1,12 +1,10 @@
 ﻿using System.Threading.Tasks;
-using BuildingBlocks.Contracts.EventBus.Messages;
-using Flight.Flights.Features.CreateFlight;
 using Flight.Flights.Features.GetFlightById;
 using FluentAssertions;
 using Integration.Test.Fakes;
 using Xunit;
 
-namespace Integration.Test.Flight;
+namespace Integration.Test.Flight.Features;
 
 [Collection(nameof(TestFixture))]
 public class GetFlightByIdTests
@@ -31,10 +29,10 @@ public class GetFlightByIdTests
         var query = new GetFlightByIdQuery(flightEntity.Id);
 
         // Act
-        var flightResponse = await _fixture.SendAsync(query);
+        var response = await _fixture.SendAsync(query);
 
         // Assert
-        flightResponse.Should().NotBeNull();
-        flightResponse?.Id.Should().Be(flightEntity.Id);
+        response.Should().NotBeNull();
+        response?.Id.Should().Be(flightEntity.Id);
     }
 }

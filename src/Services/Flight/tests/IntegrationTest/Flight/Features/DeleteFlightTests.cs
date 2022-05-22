@@ -1,23 +1,26 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using Flight.Flights.Features.CreateFlight;
 using Flight.Flights.Features.DeleteFlight;
 using FluentAssertions;
 using Integration.Test.Fakes;
+using MassTransit;
+using MassTransit.Testing;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-namespace Integration.Test.Flight;
+namespace Integration.Test.Flight.Features;
 
 [Collection(nameof(TestFixture))]
 public class DeleteFlightTests
 {
     private readonly TestFixture _fixture;
+    private readonly ITestHarness _testHarness;
 
     public DeleteFlightTests(TestFixture fixture)
     {
         _fixture = fixture;
+        _testHarness = fixture.TestHarness;
     }
 
     [Fact]
@@ -43,8 +46,8 @@ public class DeleteFlightTests
 
         // Assert
         deletedFlight?.IsDeleted.Should().BeTrue();
-        (await _fixture.IsFaultyPublished<FlightDeleted>()).Should().BeFalse();
-        (await _fixture.IsPublished<FlightDeleted>()).Should().BeTrue();
+        (await _testHarness.Published.Any<Fault<FlightDeleted>>()).Should().BeFalse();
+        (await _testHarness.Published.Any<FlightDeleted>()).Should().BeTrue();
     }
 }
 
