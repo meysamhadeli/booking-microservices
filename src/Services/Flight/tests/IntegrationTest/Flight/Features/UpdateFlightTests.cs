@@ -25,10 +25,7 @@ public class UpdateFlightTests
     {
         // Arrange
         var fakeCreateCommandFlight = new FakeCreateFlightCommand().Generate();
-        var flightEntity = global::Flight.Flights.Models.Flight.Create(fakeCreateCommandFlight.Id, fakeCreateCommandFlight.FlightNumber,
-            fakeCreateCommandFlight.AircraftId, fakeCreateCommandFlight.DepartureAirportId, fakeCreateCommandFlight.DepartureDate,
-            fakeCreateCommandFlight.ArriveDate, fakeCreateCommandFlight.ArriveAirportId, fakeCreateCommandFlight.DurationMinutes,
-            fakeCreateCommandFlight.FlightDate, fakeCreateCommandFlight.Status, fakeCreateCommandFlight.Price);
+        var flightEntity = FakeFlightCreated.Generate(fakeCreateCommandFlight);
         await _fixture.InsertAsync(flightEntity);
 
         var command = new FakeUpdateFlightCommand(flightEntity.Id).Generate();

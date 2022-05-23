@@ -24,8 +24,7 @@ public class CompleteRegisterPassengerCommandHandler : IRequestHandler<CompleteR
         Guard.Against.Null(command, nameof(command));
 
         var passenger = await _passengerDbContext.Passengers.AsNoTracking().SingleOrDefaultAsync(
-            x => x.PassportNumber == command.PassportNumber,
-            cancellationToken);
+            x => x.PassportNumber == command.PassportNumber, cancellationToken);
 
         if (passenger is null)
             throw new PassengerNotExist();

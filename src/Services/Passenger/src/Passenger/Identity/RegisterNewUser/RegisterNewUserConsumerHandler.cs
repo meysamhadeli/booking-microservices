@@ -19,7 +19,7 @@ public class RegisterNewUserConsumerHandler : IConsumer<UserCreated>
     {
         Guard.Against.Null(context.Message, nameof(UserCreated));
 
-        var passenger = Passengers.Models.Passenger.Create(context.Message.Id, context.Message.Name, context.Message.PassportNumber);
+        var passenger = Passengers.Models.Passenger.Create(SnowFlakIdGenerator.NewId(), context.Message.Name, context.Message.PassportNumber);
 
         await _passengerDbContext.AddAsync(passenger);
 

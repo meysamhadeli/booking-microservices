@@ -8,6 +8,7 @@ namespace BuildingBlocks.Exception
         {
             ValidationResultModel = validationResultModel;
         }
+
         public ValidationResultModel ValidationResultModel { get; }
     }
 }

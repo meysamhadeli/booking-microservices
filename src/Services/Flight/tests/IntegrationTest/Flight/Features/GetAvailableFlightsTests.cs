@@ -24,13 +24,8 @@ public class GetAvailableFlightsTests
         var flightCommand1 = new FakeCreateFlightCommand().Generate();
         var flightCommand2 = new FakeCreateFlightCommand().Generate();
 
-        var flightEntity1 = global::Flight.Flights.Models.Flight.Create(
-            flightCommand1.Id, flightCommand1.FlightNumber, flightCommand1.AircraftId, flightCommand1.DepartureAirportId, flightCommand1.DepartureDate,
-            flightCommand1.ArriveDate, flightCommand1.ArriveAirportId, flightCommand1.DurationMinutes, flightCommand1.FlightDate, flightCommand1.Status, flightCommand1.Price);
-
-        var flightEntity2 = global::Flight.Flights.Models.Flight.Create(
-            flightCommand2.Id, flightCommand2.FlightNumber, flightCommand2.AircraftId, flightCommand2.DepartureAirportId, flightCommand2.DepartureDate,
-            flightCommand2.ArriveDate, flightCommand2.ArriveAirportId, flightCommand2.DurationMinutes, flightCommand2.FlightDate, flightCommand2.Status, flightCommand2.Price);
+        var flightEntity1 = FakeFlightCreated.Generate(flightCommand1);
+        var flightEntity2 = FakeFlightCreated.Generate(flightCommand2);
 
         await _fixture.InsertAsync(flightEntity1, flightEntity2);
 

@@ -21,9 +21,7 @@ public class GetFlightByIdTests
     {
         // Arrange
         var command = new FakeCreateFlightCommand().Generate();
-        var flightEntity = global::Flight.Flights.Models.Flight.Create(
-            command.Id, command.FlightNumber, command.AircraftId, command.DepartureAirportId, command.DepartureDate,
-            command.ArriveDate, command.ArriveAirportId, command.DurationMinutes, command.FlightDate, command.Status, command.Price);
+        var flightEntity = FakeFlightCreated.Generate(command);
         await _fixture.InsertAsync(flightEntity);
 
         var query = new GetFlightByIdQuery(flightEntity.Id);
