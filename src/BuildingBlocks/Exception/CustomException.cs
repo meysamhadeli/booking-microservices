@@ -7,7 +7,7 @@ public class CustomException : System.Exception
     public CustomException(
         string message,
         HttpStatusCode statusCode = HttpStatusCode.BadRequest,
-        string code = null) : base(message)
+        int? code = null) : base(message)
     {
         StatusCode = statusCode;
         Code = code;
@@ -17,7 +17,7 @@ public class CustomException : System.Exception
         string message,
         System.Exception innerException,
         HttpStatusCode statusCode = HttpStatusCode.BadRequest,
-        string code = null) : base(message, innerException)
+        int? code = null) : base(message, innerException)
     {
         StatusCode = statusCode;
         Code = code;
@@ -25,7 +25,7 @@ public class CustomException : System.Exception
 
     public CustomException(
         HttpStatusCode statusCode = HttpStatusCode.BadRequest,
-        string code = null) : base()
+        int? code = null) : base()
     {
         StatusCode = statusCode;
         Code = code;
@@ -33,5 +33,5 @@ public class CustomException : System.Exception
 
     public HttpStatusCode StatusCode { get; }
 
-    public string Code { get; }
+    public int? Code { get; }
 }

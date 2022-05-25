@@ -8,9 +8,9 @@ namespace BuildingBlocks.Exception
     {
         public InternalServerException() : base() { }
 
-        public InternalServerException(string message, string code) : base(message, HttpStatusCode.InternalServerError, code: code) { }
+        public InternalServerException(string message, int? code) : base(message, HttpStatusCode.InternalServerError, code: code) { }
 
-        public InternalServerException(string message, string code = null, params object[] args)
+        public InternalServerException(string message, int? code = null, params object[] args)
             : base(message:String.Format(CultureInfo.CurrentCulture, message, args, HttpStatusCode.InternalServerError, code))
         {
         }

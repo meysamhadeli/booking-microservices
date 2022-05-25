@@ -2,10 +2,8 @@ using System;
 using BuildingBlocks.Exception;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 
 namespace Identity.Extensions;
 
@@ -22,7 +20,7 @@ public static class ProblemDetailsExtensions
                 var env = ctx.RequestServices.GetRequiredService<IHostEnvironment>();
                 return env.IsDevelopment() || env.IsStaging();
             };
-            x.Map<ConflictException>(ex => new ProblemDetails
+            x.Map<ConflictException>(ex => new ProblemDetailsWithCode
             {
                 Title = "Application rule broken",
                 Status = StatusCodes.Status409Conflict,
@@ -31,54 +29,59 @@ public static class ProblemDetailsExtensions
             });
 
             // Exception will produce and returns from our FluentValidation RequestValidationBehavior
-            x.Map<ValidationException>(ex => new ProblemDetails
+            x.Map<ValidationException>(ex => new ProblemDetailsWithCode
             {
                 Title = "input validation rules broken",
-                Status = StatusCodes.Status400BadRequest,
-                Detail = JsonConvert.SerializeObject(ex.ValidationResultModel.Errors),
+                Status = (int)ex.StatusCode,
+                Detail = ex.Message,
                 Type = "https://somedomain/input-validation-rules-error"
             });
-            x.Map<BadRequestException>(ex => new ProblemDetails
+            x.Map<BadRequestException>(ex => new ProblemDetailsWithCode
             {
                 Title = "bad request exception",
                 Status = StatusCodes.Status400BadRequest,
                 Detail = ex.Message,
                 Type = "https://somedomain/bad-request-error"
             });
-            x.Map<NotFoundException>(ex => new ProblemDetails
+            x.Map<NotFoundException>(ex => new ProblemDetailsWithCode
             {
                 Title = "not found exception",
                 Status = StatusCodes.Status404NotFound,
                 Detail = ex.Message,
                 Type = "https://somedomain/not-found-error"
             });
-            x.Map<InternalServerException>(ex => new ProblemDetails
+            x.Map<InternalServerException>(ex => new ProblemDetailsWithCode
             {
                 Title = "api server exception",
                 Status = StatusCodes.Status500InternalServerError,
                 Detail = ex.Message,
                 Type = "https://somedomain/api-server-error"
             });
-            x.Map<AppException>(ex => new ProblemDetails
+            x.Map<AppException>(ex => new ProblemDetailsWithCode
             {
                 Title = "application exception",
-                Status = StatusCodes.Status500InternalServerError,
+                Status = StatusCodes.Status400BadRequest,
                 Detail = ex.Message,
                 Type = "https://somedomain/application-error"
             });
-            x.Map<IdentityException>(ex =>
-            {
-                var pd = new ProblemDetails
-                {
-                    Status = (int)ex.StatusCode,
-                    Title = "identity exception",
-                    Detail = ex.Message,
-                    Type = "https://somedomain/identity-error"
-                };
 
-                return pd;
-            });
             x.MapToStatusCode<ArgumentNullException>(StatusCodes.Status400BadRequest);
+
+            x.MapStatusCode = context =>
+            {
+                return context.Response.StatusCode switch
+                {
+                    StatusCodes.Status401Unauthorized => new ProblemDetailsWithCode
+                    {
+                        Status = context.Response.StatusCode,
+                        Title = "identity exception",
+                        Detail = "You are not Authorized",
+                        Type = "https://somedomain/identity-error"
+                    },
+
+                    _ => new StatusCodeProblemDetails(context.Response.StatusCode)
+                };
+            };
         });
         return services;
     }

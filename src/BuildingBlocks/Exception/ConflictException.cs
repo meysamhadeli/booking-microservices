@@ -2,7 +2,7 @@ namespace BuildingBlocks.Exception
 {
     public class ConflictException : CustomException
     {
-        public ConflictException(string message, string code = null) : base(message, code: code)
+        public ConflictException(string message, int? code = null) : base(message, code: code)
         {
         }
     }

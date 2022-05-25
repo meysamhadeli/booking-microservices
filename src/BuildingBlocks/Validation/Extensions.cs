@@ -1,7 +1,5 @@
 using BuildingBlocks.Exception;
 using FluentValidation;
-using FluentValidation.Results;
-using ValidationException = BuildingBlocks.Exception.ValidationException;
 
 namespace BuildingBlocks.Validation
 {
@@ -15,7 +13,7 @@ namespace BuildingBlocks.Validation
             var validationResult = await validator.ValidateAsync(request);
             if (!validationResult.IsValid)
             {
-                throw new BadRequestException(validationResult.Errors.FirstOrDefault()?.ErrorMessage);
+                throw new Exception.ValidationException(validationResult.Errors?.First()?.ErrorMessage);
             }
         }
     }

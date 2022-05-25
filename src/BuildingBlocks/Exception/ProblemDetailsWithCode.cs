@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BuildingBlocks.Exception;
 
 public class ProblemDetailsWithCode : ProblemDetails
 {
-    public string Code { get; set; }
+    [JsonPropertyName("code")]
+    public int? Code { get; set; }
 }

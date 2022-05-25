@@ -1,6 +1,5 @@
 using BuildingBlocks.Jwt;
 using BuildingBlocks.Logging;
-using BuildingBlocks.Utils;
 using BuildingBlocks.Web;
 using Figgle;
 using Microsoft.AspNetCore.Authentication;

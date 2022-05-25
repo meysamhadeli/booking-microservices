@@ -5,7 +5,7 @@ namespace BuildingBlocks.Exception;
 
 public class AppException : CustomException
 {
-    public AppException(string message, string code = null) : base(message, code: code)
+    public AppException(string message, int? code = null) : base(message, code: code)
     {
     }
 
@@ -13,11 +13,11 @@ public class AppException : CustomException
     {
     }
 
-    public AppException(string message, HttpStatusCode statusCode, string code = null) : base(message, statusCode, code)
+    public AppException(string message, HttpStatusCode statusCode, int? code = null) : base(message, statusCode, code)
     {
     }
 
-    public AppException(string message,  System.Exception innerException, string code = null) : base(message, innerException, code: code)
+    public AppException(string message,  System.Exception innerException, int? code = null) : base(message, innerException, code: code)
     {
     }
 }

@@ -4,11 +4,8 @@ namespace BuildingBlocks.Exception
 {
     public class ValidationException : CustomException
     {
-        public ValidationException(ValidationResultModel validationResultModel)
+        public ValidationException(string message, int? code = null) : base(message, code: code)
         {
-            ValidationResultModel = validationResultModel;
         }
-
-        public ValidationResultModel ValidationResultModel { get; }
     }
 }
