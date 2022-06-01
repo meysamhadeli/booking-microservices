@@ -163,3 +163,6 @@ Thanks to all [contributors](https://github.com/meysamhadeli/booking-microservic
 - [https://github.com/jasontaylordev/CleanArchitecture](https://github.com/jasontaylordev/CleanArchitecture)
 - [https://github.com/pdevito3/MessageBusTestingInMemHarness](https://github.com/pdevito3/MessageBusTestingInMemHarness)
 - [https://github.com/devmentors/FeedR](https://github.com/devmentors/FeedR)
+
+## License
+This project is made available under the MIT license. See [LICENSE](https://github.com/meysamhadeli/booking-microservices-sample/blob/main/LICENSE) for details.
