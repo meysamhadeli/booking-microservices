@@ -1,8 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using BuildingBlocks.Contracts.Grpc;
 using Flight.Flights.Features.GetAvailableFlights;
 using FluentAssertions;
+using Grpc.Net.Client;
 using Integration.Test.Fakes;
+using MagicOnion.Client;
 using Xunit;
 
 namespace Integration.Test.Flight.Features;
@@ -11,10 +14,12 @@ namespace Integration.Test.Flight.Features;
 public class GetAvailableFlightsTests
 {
     private readonly TestFixture _fixture;
+    private readonly GrpcChannel _channel;
 
     public GetAvailableFlightsTests(TestFixture fixture)
     {
         _fixture = fixture;
+        _channel = fixture.Channel;
     }
 
     [Fact]

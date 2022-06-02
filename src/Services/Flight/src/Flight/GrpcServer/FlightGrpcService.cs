@@ -32,9 +32,9 @@ public class FlightGrpcService : ServiceBase<IFlightGrpcService>, IFlightGrpcSer
         return result.Adapt<IEnumerable<SeatResponseDto>>();
     }
 
-    public async UnaryResult<FlightResponseDto> ReserveSeat(ReserveSeatRequestDto request)
+    public async UnaryResult<SeatResponseDto> ReserveSeat(ReserveSeatRequestDto request)
     {
         var result = await _mediator.Send(new ReserveSeatCommand(request.FlightId, request.SeatNumber));
-        return result.Adapt<FlightResponseDto>();
+        return result.Adapt<SeatResponseDto>();
     }
 }

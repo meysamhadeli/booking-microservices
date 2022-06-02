@@ -26,10 +26,13 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
         _eventStoreDbRepository = eventStoreDbRepository;
 
         var channelFlight = GrpcChannel.ForAddress(grpcOptions.Value.FlightAddress);
-        _flightGrpcService = new Lazy<IFlightGrpcService>(() => MagicOnionClient.Create<IFlightGrpcService>(channelFlight)).Value;
+        _flightGrpcService =
+            new Lazy<IFlightGrpcService>(() => MagicOnionClient.Create<IFlightGrpcService>(channelFlight)).Value;
 
         var channelPassenger = GrpcChannel.ForAddress(grpcOptions.Value.PassengerAddress);
-        _passengerGrpcService = new Lazy<IPassengerGrpcService>(() => MagicOnionClient.Create<IPassengerGrpcService>(channelPassenger)).Value;
+        _passengerGrpcService =
+            new Lazy<IPassengerGrpcService>(() => MagicOnionClient.Create<IPassengerGrpcService>(channelPassenger))
+                .Value;
     }
 
     public async Task<ulong> Handle(CreateBookingCommand command,
@@ -38,8 +41,10 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
         Guard.Against.Null(command, nameof(command));
 
         var flight = await _flightGrpcService.GetById(command.FlightId);
+
         if (flight is null)
             throw new FlightNotFoundException();
+
         var passenger = await _passengerGrpcService.GetById(command.PassengerId);
 
         var emptySeat = (await _flightGrpcService.GetAvailableSeats(command.FlightId))?.First();

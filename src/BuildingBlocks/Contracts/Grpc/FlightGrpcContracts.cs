@@ -8,7 +8,7 @@ namespace BuildingBlocks.Contracts.Grpc;
     {
         UnaryResult<FlightResponseDto> GetById(long id);
         UnaryResult<IEnumerable<SeatResponseDto>> GetAvailableSeats(long flightId);
-        UnaryResult<FlightResponseDto> ReserveSeat(ReserveSeatRequestDto request);
+        UnaryResult<SeatResponseDto> ReserveSeat(ReserveSeatRequestDto request);
     }
 
 

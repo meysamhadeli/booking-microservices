@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using BuildingBlocks.Domain.Model;
 using BuildingBlocks.EFCore;
@@ -7,6 +8,8 @@ using BuildingBlocks.MassTransit;
 using BuildingBlocks.Web;
 using Flight.Data;
 using Flight.Data.Seed;
+using Flight.GrpcServer;
+using Grpc.Net.Client;
 using MassTransit;
 using MassTransit.Testing;
 using MediatR;
@@ -43,9 +46,10 @@ public class TestFixture : IAsyncLifetime
     private IServiceScopeFactory _scopeFactory;
     private HttpClient _httpClient;
     private ITestHarness _testHarness;
+    private GrpcChannel _channel;
 
     public ITestHarness TestHarness => _testHarness;
-
+    public GrpcChannel Channel => _channel;
 
     public async Task InitializeAsync()
     {
@@ -82,6 +86,11 @@ public class TestFixture : IAsyncLifetime
         _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory>();
 
         _httpClient = _factory.CreateClient(new WebApplicationFactoryClientOptions {AllowAutoRedirect = false});
+
+        _channel = GrpcChannel.ForAddress(_httpClient.BaseAddress!, new GrpcChannelOptions
+        {
+            HttpClient = _httpClient
+        });
 
         _checkpoint = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
 
