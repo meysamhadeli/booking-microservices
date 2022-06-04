@@ -7,6 +7,6 @@ public static class FakePassengerCreated
 {
     public static global::Passenger.Passengers.Models.Passenger Generate(UserCreated userCreated)
     {
-        return global::Passenger.Passengers.Models.Passenger.Create(SnowFlakIdGenerator.NewId(), userCreated.Name, userCreated.PassportNumber);
+        return global::Passenger.Passengers.Models.Passenger.Create(1000, userCreated.Name, userCreated.PassportNumber);
     }
 }

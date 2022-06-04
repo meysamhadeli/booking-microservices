@@ -9,13 +9,13 @@ using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
-[Collection(nameof(TestFixture))]
+[Collection(nameof(IntegrationTestFixture))]
 public class GetFlightByIdTests
 {
-    private readonly TestFixture _fixture;
+    private readonly IntegrationTestFixture _fixture;
     private readonly GrpcChannel _channel;
 
-    public GetFlightByIdTests(TestFixture fixture)
+    public GetFlightByIdTests(IntegrationTestFixture fixture)
     {
         _fixture = fixture;
         _channel = fixture.Channel;

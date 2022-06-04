@@ -60,7 +60,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
-app.UseMigrations(env);
+app.UseMigrations();
 app.UseCorrelationId();
 app.UseRouting();
 app.UseHttpMetrics();

@@ -77,13 +77,11 @@ app.UseSerilogRequestLogging();
 app.UseCorrelationId();
 app.UseRouting();
 app.UseHttpMetrics();
-app.UseMigrations(env);
+app.UseMigrations();
 app.UseProblemDetails();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
-
 
 app.UseEndpoints(endpoints =>
 {

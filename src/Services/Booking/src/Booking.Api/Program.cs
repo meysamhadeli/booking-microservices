@@ -12,7 +12,6 @@ using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.OpenTelemetry;
 using BuildingBlocks.Swagger;
-using BuildingBlocks.Utils;
 using BuildingBlocks.Web;
 using Figgle;
 using FluentValidation;
@@ -66,7 +65,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
-app.UseMigrations(env);
+app.UseMigrations();
 app.UseCorrelationId();
 app.UseRouting();
 app.UseHttpMetrics();
@@ -84,3 +83,5 @@ app.UseEndpoints(endpoints =>
 app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
 
 app.Run();
+
+public partial class Program {}

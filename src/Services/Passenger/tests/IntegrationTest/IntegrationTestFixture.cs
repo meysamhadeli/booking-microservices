@@ -1,124 +1,79 @@
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BuildingBlocks.Domain.Model;
 using BuildingBlocks.EFCore;
-using BuildingBlocks.MassTransit;
-using BuildingBlocks.Web;
 using Grpc.Net.Client;
-using MassTransit;
 using MassTransit.Testing;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
 using NSubstitute;
 using Passenger.Data;
-using Respawn;
 using Serilog;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Integration.Test;
 
-[CollectionDefinition(nameof(TestFixture))]
-public class TestFixtureCollection : ICollectionFixture<TestFixture>
-{
-}
+[CollectionDefinition(nameof(IntegrationTestFixture))]
+public class SliceFixtureCollection : ICollectionFixture<IntegrationTestFixture> { }
 
-// ref: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-6.0
-// ref: https://github.com/jbogard/ContosoUniversityDotNetCore-Pages/blob/master/ContosoUniversity.IntegrationTests/SliceFixture.cs
-// ref: https://github.com/jasontaylordev/CleanArchitecture/blob/main/tests/Application.IntegrationTests/Testing.cs
-// ref: https://github.com/MassTransit/MassTransit/blob/00d6992286911a437b63b93c89a56e920b053c11/src/MassTransit.TestFramework/InMemoryTestFixture.cs
-public class TestFixture : IAsyncLifetime
+public class IntegrationTestFixture : IAsyncLifetime
 {
-    private Checkpoint _checkpoint;
-    private IConfiguration _configuration;
-    private WebApplicationFactory<Program> _factory;
-    private HttpClient _httpClient;
-    private IServiceScopeFactory _scopeFactory;
-    private GrpcChannel _channel;
-    public ITestHarness TestHarness { get; private set; }
-    public GrpcChannel Channel => _channel;
+    private readonly CustomWebApplicationFactory _factory;
 
-    public async Task InitializeAsync()
+    public IntegrationTestFixture()
     {
-        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "test");
-
-        _factory = new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(builder => builder.ConfigureServices(services =>
-            {
-                services.RemoveAll(typeof(IHostedService));
-                services.ReplaceSingleton(AddHttpContextAccessorMock);
-                services.AddMassTransitTestHarness(x =>
-                {
-                    x.UsingRabbitMq((context, cfg) =>
-                    {
-                        var rabbitMqOptions = services.GetOptions<RabbitMqOptions>("RabbitMq");
-                        var host = rabbitMqOptions.HostName;
-
-                        cfg.Host(host, h =>
-                        {
-                            h.Username(rabbitMqOptions.UserName);
-                            h.Password(rabbitMqOptions.Password);
-                        });
-                        cfg.ConfigureEndpoints(context);
-                    });
-                });
-            }));
-
-        TestHarness = _factory.Services.GetTestHarness();
-
-        await TestHarness.Start();
-
-        _configuration = _factory.Services.GetRequiredService<IConfiguration>();
-        _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory>();
-
-        _httpClient = _factory.CreateClient(new WebApplicationFactoryClientOptions {AllowAutoRedirect = false});
-
-        _channel = GrpcChannel.ForAddress(_httpClient.BaseAddress!, new GrpcChannelOptions {HttpClient = _httpClient});
-
-        _checkpoint = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
-
-        await EnsureDatabaseAsync();
+        // Ref: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-6.0#basic-tests-with-the-default-webapplicationfactory
+        _factory = new CustomWebApplicationFactory();
     }
 
-    public async Task DisposeAsync()
-    {
-        TestHarness.Cancel();
-        await _factory.DisposeAsync();
-        await _checkpoint.Reset(_configuration.GetConnectionString("DefaultConnection"));
-    }
+    public IServiceProvider ServiceProvider => _factory.Services;
+    public IConfiguration Configuration => _factory.Configuration;
+    public HttpClient HttpClient => _factory.CreateClient();
+    public ITestHarness TestHarness => CreateHarness();
+    public GrpcChannel Channel => CreateChannel();
 
     // ref: https://github.com/trbenning/serilog-sinks-xunit
     public ILogger CreateLogger(ITestOutputHelper output)
     {
         if (output != null)
+        {
             return new LoggerConfiguration()
                 .WriteTo.TestOutput(output)
                 .CreateLogger();
+        }
 
         return null;
     }
 
-    public HttpClient CreateClient()
+    public void RegisterTestServices(Action<IServiceCollection> services) => _factory.TestRegistrationServices = services;
+
+    public virtual Task InitializeAsync()
     {
-        return _httpClient;
+        return Task.CompletedTask;
+    }
+
+    public virtual async Task DisposeAsync()
+    {
+        if (!string.IsNullOrEmpty(Configuration?.GetConnectionString("DefaultConnection")))
+            await _factory.Checkpoint.Reset(Configuration?.GetConnectionString("DefaultConnection"));
+
+        await _factory.DisposeAsync();
     }
 
     public async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)
     {
-        using var scope = _scopeFactory.CreateScope();
+        using var scope = ServiceProvider.CreateScope();
         await action(scope.ServiceProvider);
     }
 
     public async Task<T> ExecuteScopeAsync<T>(Func<IServiceProvider, Task<T>> action)
     {
-        using var scope = _scopeFactory.CreateScope();
+        using var scope = ServiceProvider.CreateScope();
 
         var result = await action(scope.ServiceProvider);
 
@@ -247,9 +202,33 @@ public class TestFixture : IAsyncLifetime
         });
     }
 
+    private IHttpContextAccessor AddHttpContextAccessorMock(IServiceProvider serviceProvider)
+    {
+        var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
+        using var scope = serviceProvider.CreateScope();
+        httpContextAccessorMock.HttpContext = new DefaultHttpContext {RequestServices = scope.ServiceProvider};
+
+        httpContextAccessorMock.HttpContext.Request.Host = new HostString("localhost", 5000);
+        httpContextAccessorMock.HttpContext.Request.Scheme = "http";
+
+        return httpContextAccessorMock;
+    }
+
+    private ITestHarness CreateHarness()
+    {
+        var harness = ServiceProvider.GetTestHarness();
+        harness.Start().GetAwaiter().GetResult();
+        return harness;
+    }
+
+    private GrpcChannel CreateChannel()
+    {
+        return GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions {HttpClient = HttpClient});
+    }
+
     private async Task EnsureDatabaseAsync()
     {
-        using var scope = _scopeFactory.CreateScope();
+        using var scope = ServiceProvider.CreateScope();
 
         var context = scope.ServiceProvider.GetRequiredService<PassengerDbContext>();
         var seeders = scope.ServiceProvider.GetServices<IDataSeeder>();
@@ -257,17 +236,5 @@ public class TestFixture : IAsyncLifetime
         await context.Database.MigrateAsync();
 
         foreach (var seeder in seeders) await seeder.SeedAllAsync();
-    }
-
-    private IHttpContextAccessor AddHttpContextAccessorMock(IServiceProvider serviceProvider)
-    {
-        var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
-        using var scope = serviceProvider.CreateScope();
-        httpContextAccessorMock.HttpContext = new DefaultHttpContext {RequestServices = scope.ServiceProvider};
-
-        httpContextAccessorMock.HttpContext.Request.Host = new HostString("localhost", 6012);
-        httpContextAccessorMock.HttpContext.Request.Scheme = "http";
-
-        return httpContextAccessorMock;
     }
 }

@@ -17,8 +17,10 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Passenger;
 using Passenger.Data;
 using Passenger.Extensions;
+using Passenger.Services;
 using Prometheus;
 using Serilog;
+using Server;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -39,6 +41,7 @@ builder.Services.AddValidatorsFromAssembly(typeof(PassengerRoot).Assembly);
 builder.Services.AddCustomProblemDetails();
 builder.Services.AddCustomMapster(typeof(PassengerRoot).Assembly);
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IGreeter, Greeter>();
 
 builder.Services.AddTransient<IEventMapper, EventMapper>();
 
@@ -61,7 +64,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
-app.UseMigrations(env);
+app.UseMigrations();
 app.UseCorrelationId();
 app.UseRouting();
 app.UseHttpMetrics();
@@ -74,6 +77,7 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
     endpoints.MapMetrics();
+    endpoints.MapGrpcService<TesterService>();
     endpoints.MapMagicOnionService();
 });
 

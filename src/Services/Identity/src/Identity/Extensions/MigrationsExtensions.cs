@@ -11,13 +11,10 @@ namespace Identity.Extensions;
 
 public static class MigrationsExtensions
 {
-    public static IApplicationBuilder UseMigrations(this IApplicationBuilder app, IWebHostEnvironment env)
+    public static IApplicationBuilder UseMigrations(this IApplicationBuilder app)
     {
-        if (!env.IsEnvironment("test"))
-        {
-            MigrateDatabase(app.ApplicationServices);
-            SeedData(app.ApplicationServices);
-        }
+        MigrateDatabase(app.ApplicationServices);
+        SeedData(app.ApplicationServices);
 
         return app;
     }

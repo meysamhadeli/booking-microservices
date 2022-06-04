@@ -6,6 +6,7 @@ namespace BuildingBlocks.Contracts.Grpc;
 public interface IPassengerGrpcService : IService<IPassengerGrpcService>
 {
     UnaryResult<PassengerResponseDto> GetById(long id);
+    UnaryResult<string> TTT(long id);
 }
 
 

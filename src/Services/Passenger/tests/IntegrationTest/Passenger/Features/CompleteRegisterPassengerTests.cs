@@ -1,21 +1,19 @@
 ﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.IdsGenerator;
 using FluentAssertions;
 using Integration.Test.Fakes;
-using MassTransit;
 using MassTransit.Testing;
 using Xunit;
 
 namespace Integration.Test.Passenger.Features;
 
-[Collection(nameof(TestFixture))]
+[Collection(nameof(IntegrationTestFixture))]
 public class CompleteRegisterPassengerTests
 {
-    private readonly TestFixture _fixture;
+    private readonly IntegrationTestFixture _fixture;
     private readonly ITestHarness _testHarness;
 
-    public CompleteRegisterPassengerTests(TestFixture fixture)
+    public CompleteRegisterPassengerTests(IntegrationTestFixture fixture)
     {
         _fixture = fixture;
         _testHarness = _fixture.TestHarness;

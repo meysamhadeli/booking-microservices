@@ -8,13 +8,13 @@ using Xunit;
 
 namespace Integration.Test.Aircraft.Features;
 
-[Collection(nameof(TestFixture))]
+[Collection(nameof(IntegrationTestFixture))]
 public class CreateAircraftTests
 {
-    private readonly TestFixture _fixture;
+    private readonly IntegrationTestFixture _fixture;
     private readonly ITestHarness _testHarness;
 
-    public CreateAircraftTests(TestFixture fixture)
+    public CreateAircraftTests(IntegrationTestFixture fixture)
     {
         _fixture = fixture;
         _testHarness = fixture.TestHarness;

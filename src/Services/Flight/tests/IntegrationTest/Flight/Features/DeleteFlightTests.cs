@@ -11,13 +11,13 @@ using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
-[Collection(nameof(TestFixture))]
+[Collection(nameof(IntegrationTestFixture))]
 public class DeleteFlightTests
 {
-    private readonly TestFixture _fixture;
+    private readonly IntegrationTestFixture _fixture;
     private readonly ITestHarness _testHarness;
 
-    public DeleteFlightTests(TestFixture fixture)
+    public DeleteFlightTests(IntegrationTestFixture fixture)
     {
         _fixture = fixture;
         _testHarness = fixture.TestHarness;

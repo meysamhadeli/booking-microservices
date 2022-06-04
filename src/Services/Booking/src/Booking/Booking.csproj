@@ -6,18 +6,32 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.46.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.46.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Google.Protobuf" Version="3.21.1" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.46.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Migrations"/>
+    <Folder Include="Data\Migrations" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.csproj"/>
+    <Protobuf Include="Protos\foo.proto" GrpcServices="Client">
+      <Link>Protos\foo.proto</Link>
+    </Protobuf>
+  </ItemGroup>
+  
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.csproj" />
   </ItemGroup>
 
 </Project>

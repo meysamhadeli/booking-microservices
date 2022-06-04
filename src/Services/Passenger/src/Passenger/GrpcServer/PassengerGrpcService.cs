@@ -21,4 +21,9 @@ public class PassengerGrpcService : ServiceBase<IPassengerGrpcService>, IPasseng
         var result = await _mediator.Send(new GetPassengerQueryById(id));
         return result.Adapt<PassengerResponseDto>();
     }
+
+    public UnaryResult<string> TTT(long id)
+    {
+        return new UnaryResult<string>("hiiiiiiiiiiiiiiii");
+    }
 }
