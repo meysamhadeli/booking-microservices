@@ -50,6 +50,9 @@ builder.Services.AddTransient<IBusPublisher, BusPublisher>();
 builder.Services.AddCustomMassTransit(typeof(BookingRoot).Assembly, env);
 builder.Services.AddCustomOpenTelemetry();
 builder.Services.AddTransient<AuthHeaderHandler>();
+
+builder.Services.AddMagicOnionClients();
+
 SnowFlakIdGenerator.Configure(3);
 
 // ref: https://github.com/oskardudycz/EventSourcing.NetCore/tree/main/Sample/EventStoreDB/ECommerce
@@ -84,4 +87,6 @@ app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
 
 app.Run();
 
-public partial class Program {}
+public partial class Program
+{
+}

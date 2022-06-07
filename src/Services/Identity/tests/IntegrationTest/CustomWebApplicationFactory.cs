@@ -55,15 +55,6 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
             TestRegistrationServices?.Invoke(services);
         });
-
-        builder.UseDefaultServiceProvider((env, c) =>
-        {
-            // Handling Captive Dependency Problem
-            // https://ankitvijay.net/2020/03/17/net-core-and-di-beware-of-captive-dependency/
-            // https://blog.ploeh.dk/2014/06/02/captive-dependency/
-            if (env.HostingEnvironment.IsEnvironment("test") || env.HostingEnvironment.IsDevelopment())
-                c.ValidateScopes = true;
-        });
     }
 
     private IHttpContextAccessor AddHttpContextAccessorMock(IServiceProvider serviceProvider)

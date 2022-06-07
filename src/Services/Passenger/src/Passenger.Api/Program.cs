@@ -8,7 +8,6 @@ using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.OpenTelemetry;
 using BuildingBlocks.Swagger;
-using BuildingBlocks.Utils;
 using BuildingBlocks.Web;
 using Figgle;
 using FluentValidation;
@@ -17,10 +16,8 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Passenger;
 using Passenger.Data;
 using Passenger.Extensions;
-using Passenger.Services;
 using Prometheus;
 using Serilog;
-using Server;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -41,8 +38,6 @@ builder.Services.AddValidatorsFromAssembly(typeof(PassengerRoot).Assembly);
 builder.Services.AddCustomProblemDetails();
 builder.Services.AddCustomMapster(typeof(PassengerRoot).Assembly);
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IGreeter, Greeter>();
-
 builder.Services.AddTransient<IEventMapper, EventMapper>();
 
 builder.Services.AddCustomMassTransit(typeof(PassengerRoot).Assembly, env);
@@ -77,7 +72,6 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
     endpoints.MapMetrics();
-    endpoints.MapGrpcService<TesterService>();
     endpoints.MapMagicOnionService();
 });
 
@@ -85,4 +79,6 @@ app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
 
 app.Run();
 
-public partial class Program {}
+public partial class Program
+{
+}

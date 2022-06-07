@@ -3,15 +3,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Booking.Data;
 using BuildingBlocks.Domain.Model;
-using BuildingBlocks.EFCore;
 using Grpc.Net.Client;
 using MassTransit.Testing;
 using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NSubstitute;
 using Serilog;
 using Xunit;
 using Xunit.Abstractions;
@@ -19,7 +15,9 @@ using Xunit.Abstractions;
 namespace Integration.Test;
 
 [CollectionDefinition(nameof(IntegrationTestFixture))]
-public class SliceFixtureCollection : ICollectionFixture<IntegrationTestFixture> { }
+public class SliceFixtureCollection : ICollectionFixture<IntegrationTestFixture>
+{
+}
 
 public class IntegrationTestFixture : IAsyncLifetime
 {
@@ -37,21 +35,6 @@ public class IntegrationTestFixture : IAsyncLifetime
     public ITestHarness TestHarness => CreateHarness();
     public GrpcChannel Channel => CreateChannel();
 
-    // ref: https://github.com/trbenning/serilog-sinks-xunit
-    public ILogger CreateLogger(ITestOutputHelper output)
-    {
-        if (output != null)
-        {
-            return new LoggerConfiguration()
-                .WriteTo.TestOutput(output)
-                .CreateLogger();
-        }
-
-        return null;
-    }
-
-    public void RegisterTestServices(Action<IServiceCollection> services) => _factory.TestRegistrationServices = services;
-
     public virtual Task InitializeAsync()
     {
         return Task.CompletedTask;
@@ -63,6 +46,22 @@ public class IntegrationTestFixture : IAsyncLifetime
             await _factory.Checkpoint.Reset(Configuration?.GetConnectionString("DefaultConnection"));
 
         await _factory.DisposeAsync();
+    }
+
+    // ref: https://github.com/trbenning/serilog-sinks-xunit
+    public ILogger CreateLogger(ITestOutputHelper output)
+    {
+        if (output != null)
+            return new LoggerConfiguration()
+                .WriteTo.TestOutput(output)
+                .CreateLogger();
+
+        return null;
+    }
+
+    public void RegisterTestServices(Action<IServiceCollection> services)
+    {
+        _factory.TestRegistrationServices = services;
     }
 
     public async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)
@@ -202,18 +201,6 @@ public class IntegrationTestFixture : IAsyncLifetime
         });
     }
 
-    private IHttpContextAccessor AddHttpContextAccessorMock(IServiceProvider serviceProvider)
-    {
-        var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
-        using var scope = serviceProvider.CreateScope();
-        httpContextAccessorMock.HttpContext = new DefaultHttpContext {RequestServices = scope.ServiceProvider};
-
-        httpContextAccessorMock.HttpContext.Request.Host = new HostString("localhost", 5000);
-        httpContextAccessorMock.HttpContext.Request.Scheme = "http";
-
-        return httpContextAccessorMock;
-    }
-
     private ITestHarness CreateHarness()
     {
         var harness = ServiceProvider.GetTestHarness();
@@ -224,17 +211,5 @@ public class IntegrationTestFixture : IAsyncLifetime
     private GrpcChannel CreateChannel()
     {
         return GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions {HttpClient = HttpClient});
-    }
-
-    private async Task EnsureDatabaseAsync()
-    {
-        using var scope = ServiceProvider.CreateScope();
-
-        var context = scope.ServiceProvider.GetRequiredService<BookingDbContext>();
-        var seeders = scope.ServiceProvider.GetServices<IDataSeeder>();
-
-        await context.Database.MigrateAsync();
-
-        foreach (var seeder in seeders) await seeder.SeedAllAsync();
     }
 }

@@ -1,15 +1,23 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
+using System.Reflection;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using BuildingBlocks.Domain.Model;
 using BuildingBlocks.EFCore;
+using Grpc.Core;
 using Grpc.Net.Client;
+using MagicOnion;
+using MagicOnion.Client;
+using MagicOnion.Server;
 using MassTransit.Testing;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using NSubstitute;
 using Passenger.Data;
 using Serilog;
@@ -202,18 +210,6 @@ public class IntegrationTestFixture : IAsyncLifetime
         });
     }
 
-    private IHttpContextAccessor AddHttpContextAccessorMock(IServiceProvider serviceProvider)
-    {
-        var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
-        using var scope = serviceProvider.CreateScope();
-        httpContextAccessorMock.HttpContext = new DefaultHttpContext {RequestServices = scope.ServiceProvider};
-
-        httpContextAccessorMock.HttpContext.Request.Host = new HostString("localhost", 5000);
-        httpContextAccessorMock.HttpContext.Request.Scheme = "http";
-
-        return httpContextAccessorMock;
-    }
-
     private ITestHarness CreateHarness()
     {
         var harness = ServiceProvider.GetTestHarness();
@@ -224,17 +220,5 @@ public class IntegrationTestFixture : IAsyncLifetime
     private GrpcChannel CreateChannel()
     {
         return GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions {HttpClient = HttpClient});
-    }
-
-    private async Task EnsureDatabaseAsync()
-    {
-        using var scope = ServiceProvider.CreateScope();
-
-        var context = scope.ServiceProvider.GetRequiredService<PassengerDbContext>();
-        var seeders = scope.ServiceProvider.GetServices<IDataSeeder>();
-
-        await context.Database.MigrateAsync();
-
-        foreach (var seeder in seeders) await seeder.SeedAllAsync();
     }
 }

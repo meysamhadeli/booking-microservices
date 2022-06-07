@@ -202,18 +202,6 @@ public class IntegrationTestFixture : IAsyncLifetime
         });
     }
 
-    private IHttpContextAccessor AddHttpContextAccessorMock(IServiceProvider serviceProvider)
-    {
-        var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
-        using var scope = serviceProvider.CreateScope();
-        httpContextAccessorMock.HttpContext = new DefaultHttpContext {RequestServices = scope.ServiceProvider};
-
-        httpContextAccessorMock.HttpContext.Request.Host = new HostString("localhost", 5000);
-        httpContextAccessorMock.HttpContext.Request.Scheme = "http";
-
-        return httpContextAccessorMock;
-    }
-
     private ITestHarness CreateHarness()
     {
         var harness = ServiceProvider.GetTestHarness();
@@ -224,17 +212,5 @@ public class IntegrationTestFixture : IAsyncLifetime
     private GrpcChannel CreateChannel()
     {
         return GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions {HttpClient = HttpClient});
-    }
-
-    private async Task EnsureDatabaseAsync()
-    {
-        using var scope = ServiceProvider.CreateScope();
-
-        var context = scope.ServiceProvider.GetRequiredService<IdentityContext>();
-        var seeders = scope.ServiceProvider.GetServices<IDataSeeder>();
-
-        await context.Database.MigrateAsync();
-
-        foreach (var seeder in seeders) await seeder.SeedAllAsync();
     }
 }

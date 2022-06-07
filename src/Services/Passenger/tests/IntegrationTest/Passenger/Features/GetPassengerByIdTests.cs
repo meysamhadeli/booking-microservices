@@ -1,22 +1,12 @@
-﻿using System;
-using System.Threading.Channels;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Contracts.Grpc;
-using BuildingBlocks.IdsGenerator;
 using FluentAssertions;
-using Grpc.Core;
 using Grpc.Net.Client;
 using Integration.Test.Fakes;
-using MagicOnion;
 using MagicOnion.Client;
 using MassTransit.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using NSubstitute;
 using Passenger.Passengers.Features.GetPassengerById;
-using Server;
-using Test;
 using Xunit;
 
 namespace Integration.Test.Passenger.Features;
@@ -25,24 +15,12 @@ namespace Integration.Test.Passenger.Features;
 public class GetPassengerByIdTests
 {
     private readonly IntegrationTestFixture _fixture;
-    private readonly GrpcChannel _channel;
     private readonly ITestHarness _testHarness;
-    private IPassengerGrpcService _passengerGrpcService;
+    private readonly GrpcChannel _channel;
 
     public GetPassengerByIdTests(IntegrationTestFixture fixture)
     {
         _fixture = fixture;
-        var mockGreeter = Substitute.For<IGreeter>();
-
-        mockGreeter.Greet(Arg.Any<string>())
-            .Returns("heyyyyyyyyyyyyyyy");
-
-
-        _fixture.RegisterTestServices(services =>
-        {
-            services.AddSingleton(mockGreeter);
-        });
-
         _testHarness = _fixture.TestHarness;
         _channel = _fixture.Channel;
     }
@@ -67,7 +45,6 @@ public class GetPassengerByIdTests
         response?.Id.Should().Be(passengerEntity.Id);
     }
 
-
     [Fact]
     public async Task should_retrive_a_passenger_by_id_from_grpc_service()
     {
@@ -86,19 +63,5 @@ public class GetPassengerByIdTests
         // Assert
         response?.Should().NotBeNull();
         response?.Id.Should().Be(passengerEntity.Id);
-    }
-
-    [Fact]
-    public async Task should_retrive_a_passenger_by_id_from_grpc_service_2()
-    {
-        // Arrange
-         var client = new Tester.TesterClient(_fixture.Channel);
-
-         // Act
-         var response = await client.SayHelloUnaryAsync(
-             new HelloRequest {Name = "Joe"});
-
-         // Assert
-         Assert.Equal("heyyyyyyyyyyyyyyy", response.Message);
     }
 }

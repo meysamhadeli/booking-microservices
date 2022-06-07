@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using BuildingBlocks.Contracts.Grpc;
+using Microsoft.Extensions.DependencyInjection;
+using Moq;
+using NSubstitute;
 
 namespace BuildingBlocks.Web;
 
@@ -56,5 +59,15 @@ public static class ServiceCollectionExtensions
     {
         var descriptor = services.FirstOrDefault(d => d.ServiceType == typeof(TService));
         services.Remove(descriptor);
+    }
+
+    public static IServiceCollection ReplaceServiceWithSingletonMock<TService>(this IServiceCollection services)
+        where TService : class
+    {
+        var service = services.FirstOrDefault(d => d.ServiceType == typeof(TService));
+        services.Remove(service);
+
+        services.AddSingleton(_ => Substitute.For<TService>());
+        return services;
     }
 }
