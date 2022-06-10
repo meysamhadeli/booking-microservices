@@ -36,10 +36,10 @@ public class CreateAircraftCommandHandlerTests
         var response = await Act(command, CancellationToken.None);
 
         // Assert
-        var entity = await _fixture.DbContext.Aircraft.SingleOrDefaultAsync(x => x.Model == response.Model);
+        var entity = await _fixture.DbContext.Aircraft.FindAsync(response?.Id);
 
         entity?.Should().NotBeNull();
-        response?.Model.Should().Be(entity?.Model);
+        response?.Id.Should().Be(entity?.Id);
     }
 
     [Fact]

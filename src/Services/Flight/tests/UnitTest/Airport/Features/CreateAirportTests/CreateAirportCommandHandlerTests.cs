@@ -37,10 +37,10 @@ public class CreateAirportCommandHandlerTests
         var response = await Act(command, CancellationToken.None);
 
         // Assert
-        var entity = await _fixture.DbContext.Airports.SingleOrDefaultAsync(x => x.Code == response.Code);
+        var entity = await _fixture.DbContext.Airports.FindAsync(response?.Id);
 
         entity?.Should().NotBeNull();
-        response?.Code.Should().Be(entity?.Code);
+        response?.Id.Should().Be(entity?.Id);
     }
 
     [Fact]

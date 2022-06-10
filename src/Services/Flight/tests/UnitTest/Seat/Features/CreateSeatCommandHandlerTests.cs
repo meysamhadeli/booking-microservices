@@ -39,7 +39,7 @@ public class CreateSeatCommandHandlerTests
         var response = await Act(command, CancellationToken.None);
 
         // Assert
-        var entity = await _fixture.DbContext.Seats.SingleOrDefaultAsync(x => x.SeatNumber == response.SeatNumber);
+        var entity = await _fixture.DbContext.Seats.FindAsync(response?.Id);
 
         entity?.Should().NotBeNull();
         response?.Id.Should().Be(entity?.Id);

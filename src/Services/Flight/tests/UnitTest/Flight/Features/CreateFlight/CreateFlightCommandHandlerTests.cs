@@ -39,6 +39,7 @@ public class CreateFlightCommandHandlerTests
 
         entity?.Should().NotBeNull();
         response?.Id.Should().Be(entity?.Id);
+        response?.FlightNumber.Should().Be(entity?.FlightNumber);
     }
 
     [Fact]
