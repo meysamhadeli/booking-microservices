@@ -40,6 +40,8 @@ public class CreateSeatCommandHandler : IRequestHandler<CreateSeatCommand, SeatR
 
         var newSeat = await _flightDbContext.Seats.AddAsync(seatEntity, cancellationToken);
 
+        await _flightDbContext.SaveChangesAsync(cancellationToken);
+
         return _mapper.Map<SeatResponseDto>(newSeat.Entity);
     }
 }

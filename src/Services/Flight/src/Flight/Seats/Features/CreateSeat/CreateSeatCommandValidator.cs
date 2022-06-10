@@ -8,8 +8,6 @@ public class CreateSeatCommandValidator : AbstractValidator<CreateSeatCommand>
 {
     public CreateSeatCommandValidator()
     {
-        CascadeMode = CascadeMode.Stop;
-
         RuleFor(x => x.SeatNumber).NotEmpty().WithMessage("SeatNumber is required");
         RuleFor(x => x.FlightId).NotEmpty().WithMessage("FlightId is required");
         RuleFor(x => x.Class).Must(p => (p.GetType().IsEnum &&

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.Grpc;
 using FluentAssertions;
 using Grpc.Net.Client;
@@ -7,7 +6,7 @@ using Integration.Test.Fakes;
 using MagicOnion.Client;
 using Xunit;
 
-namespace Integration.Test.Flight.Features;
+namespace Integration.Test.Seat.Features;
 
 [Collection(nameof(IntegrationTestFixture))]
 public class ReserveSeatTests

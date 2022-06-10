@@ -1,14 +1,13 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using BuildingBlocks.Contracts.Grpc;
-using Flight.Flights.Features.GetAvailableFlights;
 using FluentAssertions;
 using Grpc.Net.Client;
 using Integration.Test.Fakes;
 using MagicOnion.Client;
 using Xunit;
 
-namespace Integration.Test.Flight.Features;
+namespace Integration.Test.Seat.Features;
 
 [Collection(nameof(IntegrationTestFixture))]
 public class GetAvailableSeatsTests
@@ -36,7 +35,7 @@ public class GetAvailableSeatsTests
         var seatEntity1 = FakeSeatCreated.Generate(seatCommand1);
         var seatEntity2 = FakeSeatCreated.Generate(seatCommand2);
 
-        await _fixture.InsertAsync(seatEntity1, seatEntity2);
+        await _fixture.InsertAsync<global::Flight.Seats.Models.Seat, global::Flight.Seats.Models.Seat>(seatEntity1, seatEntity2);
 
         var flightGrpcClient = MagicOnionClient.Create<IFlightGrpcService>(_channel);
 

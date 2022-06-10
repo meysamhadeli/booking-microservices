@@ -6,8 +6,6 @@ public class CreateAirportCommandValidator : AbstractValidator<CreateAirportComm
 {
     public CreateAirportCommandValidator()
     {
-        CascadeMode = CascadeMode.Stop;
-
         RuleFor(x => x.Code).NotEmpty().WithMessage("Code is required");
         RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required");
         RuleFor(x => x.Address).NotEmpty().WithMessage("Address is required");

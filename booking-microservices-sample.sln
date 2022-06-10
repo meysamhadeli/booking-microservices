@@ -63,6 +63,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Test", "src\Ser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Test", "src\Services\Booking\tests\IntegrationTest\Integration.Test.csproj", "{50C66B53-ACA0-4AFF-8C5C-834D4EDA8FAC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unit.Test", "src\Services\Flight\tests\UnitTest\Unit.Test.csproj", "{8F78BCE2-C705-4357-A6B9-1B83B55ABBE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,7 @@ Global
 		{BC7871B8-BB18-4BCC-96A8-7324C11BF4A2} = {295284BA-D4E4-40AA-A2C2-BE36343F7DE6}
 		{539364C8-88B1-48A3-8406-D0B19FF30509} = {C1EBE17D-BFAD-47DA-88EB-BB073B84593E}
 		{50C66B53-ACA0-4AFF-8C5C-834D4EDA8FAC} = {5185D5C5-0EAD-49D5-B405-93B939F3639B}
+		{8F78BCE2-C705-4357-A6B9-1B83B55ABBE8} = {C6EE337B-91EA-472A-87C7-E9528408CE59}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A2D7C5C4-5148-4C3E-BB12-B7A197A290F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -157,5 +160,9 @@ Global
 		{50C66B53-ACA0-4AFF-8C5C-834D4EDA8FAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50C66B53-ACA0-4AFF-8C5C-834D4EDA8FAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50C66B53-ACA0-4AFF-8C5C-834D4EDA8FAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F78BCE2-C705-4357-A6B9-1B83B55ABBE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F78BCE2-C705-4357-A6B9-1B83B55ABBE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F78BCE2-C705-4357-A6B9-1B83B55ABBE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F78BCE2-C705-4357-A6B9-1B83B55ABBE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

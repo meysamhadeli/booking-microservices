@@ -27,7 +27,7 @@ using Xunit.Abstractions;
 namespace Integration.Test;
 
 [CollectionDefinition(nameof(IntegrationTestFixture))]
-public class SliceFixtureCollection : ICollectionFixture<IntegrationTestFixture> { }
+public class FixtureCollection : ICollectionFixture<IntegrationTestFixture> { }
 
 public class IntegrationTestFixture : IAsyncLifetime
 {
