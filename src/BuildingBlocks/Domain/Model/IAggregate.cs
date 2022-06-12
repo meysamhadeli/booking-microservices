@@ -1,19 +1,15 @@
-using BuildingBlocks.Domain.Event;
-using BuildingBlocks.EventStoreDB.Events;
+﻿using BuildingBlocks.Domain.Event;
 
-namespace BuildingBlocks.Domain.Model
+namespace BuildingBlocks.Domain.Model;
+
+public interface IAggregate : IEntity
 {
-    public interface IAggregate : IProjection, IEntity
-    {
-        IReadOnlyList<IDomainEvent> DomainEvents { get; }
-        IEvent[] ClearDomainEvents();
-        long Version { get; }
-    }
-
-    public interface IAggregate<out T> : IAggregate
-    {
-        T Id { get; }
-    }
+    IReadOnlyList<IDomainEvent> DomainEvents { get; }
+    IEvent[] ClearDomainEvents();
+    long Version { get; set; }
 }
 
-
+public interface IAggregate<out T> : IAggregate
+{
+    T Id { get; }
+}

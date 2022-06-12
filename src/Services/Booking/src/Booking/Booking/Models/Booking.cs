@@ -1,10 +1,11 @@
 using Booking.Booking.Events.Domain;
 using Booking.Booking.Models.ValueObjects;
 using BuildingBlocks.Domain.Model;
+using BuildingBlocks.EventStoreDB.Events;
 
 namespace Booking.Booking.Models;
 
-public class Booking : Aggregate<long>
+public class Booking : AggregateEventSourcing<long>
 {
     public Booking()
     {

@@ -1,4 +1,5 @@
 using BuildingBlocks.Domain.Model;
+using BuildingBlocks.EventStoreDB.Events;
 using BuildingBlocks.Exception;
 
 namespace BuildingBlocks.EventStoreDB.Repository;
@@ -9,7 +10,7 @@ public static class RepositoryExtensions
         this IEventStoreDBRepository<T> repository,
         long id,
         CancellationToken cancellationToken
-    ) where T : class, IAggregate<long>
+    ) where T : class, IAggregateEventSourcing<long>
     {
         var entity = await repository.Find(id, cancellationToken);
 
@@ -22,7 +23,7 @@ public static class RepositoryExtensions
         Action<T> action,
         long? expectedVersion = null,
         CancellationToken cancellationToken = default
-    ) where T : class, IAggregate<long>
+    ) where T : class, IAggregateEventSourcing<long>
     {
         var entity = await repository.Get(id, cancellationToken);
 

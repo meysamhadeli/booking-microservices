@@ -111,11 +111,13 @@ public abstract class AppDbContextBase : DbContext, IDbContext
                     case EntityState.Added:
                         entry.Entity.CreatedBy = userId;
                         entry.Entity.CreatedAt = DateTime.Now;
+                        entry.Entity.Version++;
                         break;
 
                     case EntityState.Modified:
                         entry.Entity.LastModifiedBy = userId;
                         entry.Entity.LastModified = DateTime.Now;
+                        entry.Entity.Version++;
                         break;
 
                     case EntityState.Deleted:

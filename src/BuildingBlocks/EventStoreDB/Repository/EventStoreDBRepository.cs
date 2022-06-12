@@ -1,11 +1,10 @@
-﻿using BuildingBlocks.Domain.Model;
-using BuildingBlocks.EventStoreDB.Events;
+﻿using BuildingBlocks.EventStoreDB.Events;
 using BuildingBlocks.EventStoreDB.Serialization;
 using EventStore.Client;
 
 namespace BuildingBlocks.EventStoreDB.Repository;
 
-public interface IEventStoreDBRepository<T> where T : class, IAggregate<long>
+public interface IEventStoreDBRepository<T> where T : class, IAggregateEventSourcing<long>
 {
     Task<T?> Find(long id, CancellationToken cancellationToken);
     Task<ulong> Add(T aggregate, CancellationToken cancellationToken);
@@ -13,7 +12,7 @@ public interface IEventStoreDBRepository<T> where T : class, IAggregate<long>
     Task<ulong> Delete(T aggregate, long? expectedRevision = null, CancellationToken cancellationToken = default);
 }
 
-public class EventStoreDBRepository<T>: IEventStoreDBRepository<T> where T : class, IAggregate<long>
+public class EventStoreDBRepository<T>: IEventStoreDBRepository<T> where T : class, IAggregateEventSourcing<long>
 {
     private readonly EventStoreClient eventStore;
 

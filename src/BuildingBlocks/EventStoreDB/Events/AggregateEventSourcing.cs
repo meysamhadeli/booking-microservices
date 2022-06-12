@@ -1,12 +1,9 @@
 ﻿using BuildingBlocks.Domain.Event;
+using BuildingBlocks.Domain.Model;
 
-namespace BuildingBlocks.Domain.Model
+namespace BuildingBlocks.EventStoreDB.Events
 {
-    public abstract class Aggregate : Aggregate<long>
-    {
-    }
-
-    public abstract class Aggregate<TId> : Entity, IAggregate<TId>
+    public abstract class AggregateEventSourcing<TId> : Entity, IAggregateEventSourcing<TId>
     {
         private readonly List<IDomainEvent> _domainEvents = new();
         public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
@@ -25,8 +22,11 @@ namespace BuildingBlocks.Domain.Model
             return dequeuedEvents;
         }
 
-        public long Version { get; set; } = -1;
+        public virtual void When(object @event) { }
+
+        public long Version { get; protected set; } = -1;
 
         public TId Id { get; protected set;  }
     }
 }
+
