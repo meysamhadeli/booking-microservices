@@ -3,15 +3,24 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using BuildingBlocks.Domain.Model;
 using BuildingBlocks.EFCore;
+using BuildingBlocks.MassTransit;
+using BuildingBlocks.Web;
 using Flight.Data;
+using FluentAssertions.Common;
 using Grpc.Net.Client;
+using MassTransit;
 using MassTransit.Testing;
 using MediatR;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using NSubstitute;
+using Respawn;
 using Serilog;
 using Xunit;
 using Xunit.Abstractions;
@@ -19,20 +28,17 @@ using Xunit.Abstractions;
 namespace Integration.Test;
 
 [CollectionDefinition(nameof(IntegrationTestFixture))]
-public class FixtureCollection : ICollectionFixture<IntegrationTestFixture> { }
+public class FixtureCollection : ICollectionFixture<IntegrationTestFixture>
+{
+}
 
 public class IntegrationTestFixture : IAsyncLifetime
 {
-    private readonly CustomWebApplicationFactory _factory;
-
-    public IntegrationTestFixture()
-    {
-        // Ref: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-6.0#basic-tests-with-the-default-webapplicationfactory
-        _factory = new CustomWebApplicationFactory();
-    }
-
+    private WebApplicationFactory<Program> _factory;
+    public Checkpoint Checkpoint { get; set; }
+    public Action<IServiceCollection>? TestRegistrationServices { get; set; }
     public IServiceProvider ServiceProvider => _factory.Services;
-    public IConfiguration Configuration => _factory.Configuration;
+    public IConfiguration Configuration => _factory.Services.GetRequiredService<IConfiguration>();
     public HttpClient HttpClient => _factory.CreateClient();
     public ITestHarness TestHarness => CreateHarness();
     public GrpcChannel Channel => CreateChannel();
@@ -50,17 +56,48 @@ public class IntegrationTestFixture : IAsyncLifetime
         return null;
     }
 
-    public void RegisterTestServices(Action<IServiceCollection> services) => _factory.TestRegistrationServices = services;
+    public void RegisterTestServices(Action<IServiceCollection> services) => TestRegistrationServices = services;
 
     public virtual Task InitializeAsync()
     {
+        _factory = new WebApplicationFactory<Program>()
+            .WithWebHostBuilder(builder =>
+            {
+                builder.UseEnvironment("test");
+                builder.ConfigureServices(services =>
+                {
+                    services.RemoveAll(typeof(IHostedService));
+                    services.ReplaceSingleton(AddHttpContextAccessorMock);
+                    TestRegistrationServices?.Invoke(services);
+                    services.AddMassTransitTestHarness(x =>
+                    {
+                        x.UsingRabbitMq((context, cfg) =>
+                        {
+                            var rabbitMqOptions = services.GetOptions<RabbitMqOptions>("RabbitMq");
+                            var host = rabbitMqOptions.HostName;
+
+                            cfg.Host(host, h =>
+                            {
+                                h.Username(rabbitMqOptions.UserName);
+                                h.Password(rabbitMqOptions.Password);
+                            });
+                            cfg.ConfigureEndpoints(context);
+                        });
+                    });
+
+                    Checkpoint = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
+
+                    TestRegistrationServices?.Invoke(services);
+                });
+            });
+
         return Task.CompletedTask;
     }
 
     public virtual async Task DisposeAsync()
     {
         if (!string.IsNullOrEmpty(Configuration?.GetConnectionString("DefaultConnection")))
-            await _factory.Checkpoint.Reset(Configuration?.GetConnectionString("DefaultConnection"));
+            await Checkpoint.Reset(Configuration?.GetConnectionString("DefaultConnection"));
 
         await _factory.DisposeAsync();
     }
@@ -212,5 +249,17 @@ public class IntegrationTestFixture : IAsyncLifetime
     private GrpcChannel CreateChannel()
     {
         return GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions {HttpClient = HttpClient});
+    }
+
+    private IHttpContextAccessor AddHttpContextAccessorMock(IServiceProvider serviceProvider)
+    {
+        var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
+        using var scope = serviceProvider.CreateScope();
+        httpContextAccessorMock.HttpContext = new DefaultHttpContext {RequestServices = scope.ServiceProvider};
+
+        httpContextAccessorMock.HttpContext.Request.Host = new HostString("localhost", 6012);
+        httpContextAccessorMock.HttpContext.Request.Scheme = "http";
+
+        return httpContextAccessorMock;
     }
 }
