@@ -3,6 +3,7 @@ using BuildingBlocks.Caching;
 using BuildingBlocks.Domain;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.Exception;
+using BuildingBlocks.HealthCheck;
 using BuildingBlocks.IdsGenerator;
 using BuildingBlocks.Jwt;
 using BuildingBlocks.Logging;
@@ -17,7 +18,9 @@ using Flight.Data;
 using Flight.Data.Seed;
 using Flight.Extensions;
 using FluentValidation;
+using HealthChecks.UI.Client;
 using Hellang.Middleware.ProblemDetails;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Prometheus;
 using Serilog;
@@ -48,6 +51,7 @@ builder.Services.AddTransient<IEventMapper, EventMapper>();
 builder.Services.AddCustomMassTransit(typeof(FlightRoot).Assembly, env);
 builder.Services.AddCustomOpenTelemetry();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
+builder.Services.AddCustomHealthCheck();
 
 builder.Services.AddGrpc(options =>
 {
@@ -58,10 +62,7 @@ builder.Services.AddMagicOnion();
 
 SnowFlakIdGenerator.Configure(1);
 
-builder.Services.AddCachingRequest(new List<Assembly>
-{
-    typeof(FlightRoot).Assembly
-});
+builder.Services.AddCachingRequest(new List<Assembly> {typeof(FlightRoot).Assembly});
 
 builder.Services.AddEasyCaching(options => { options.UseInMemory(configuration, "mem"); });
 
@@ -80,6 +81,7 @@ app.UseHttpMetrics();
 app.UseMigrations();
 app.UseProblemDetails();
 app.UseHttpsRedirection();
+app.UseCustomHealthCheck();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -93,4 +95,6 @@ app.UseEndpoints(endpoints =>
 app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
 app.Run();
 
-public partial class Program {}
+public partial class Program
+{
+}

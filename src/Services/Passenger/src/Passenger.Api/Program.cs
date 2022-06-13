@@ -1,6 +1,7 @@
 using BuildingBlocks.Domain;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.Exception;
+using BuildingBlocks.HealthCheck;
 using BuildingBlocks.IdsGenerator;
 using BuildingBlocks.Jwt;
 using BuildingBlocks.Logging;
@@ -39,7 +40,7 @@ builder.Services.AddCustomProblemDetails();
 builder.Services.AddCustomMapster(typeof(PassengerRoot).Assembly);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IEventMapper, EventMapper>();
-
+builder.Services.AddCustomHealthCheck();
 builder.Services.AddCustomMassTransit(typeof(PassengerRoot).Assembly, env);
 builder.Services.AddCustomOpenTelemetry();
 builder.Services.AddGrpc(options =>
@@ -67,6 +68,7 @@ app.UseProblemDetails();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCustomHealthCheck();
 
 app.UseEndpoints(endpoints =>
 {

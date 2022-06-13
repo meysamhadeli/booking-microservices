@@ -1,5 +1,6 @@
 using BuildingBlocks.Domain;
 using BuildingBlocks.EFCore;
+using BuildingBlocks.HealthCheck;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
@@ -42,7 +43,7 @@ builder.Services.AddValidatorsFromAssembly(typeof(IdentityRoot).Assembly);
 builder.Services.AddCustomProblemDetails();
 builder.Services.AddCustomMapster(typeof(IdentityRoot).Assembly);
 builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
-
+builder.Services.AddCustomHealthCheck();
 builder.Services.AddTransient<IEventMapper, EventMapper>();
 builder.Services.AddTransient<IBusPublisher, BusPublisher>();
 
@@ -69,6 +70,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseIdentityServer();
+app.UseCustomHealthCheck();
 
 app.UseEndpoints(endpoints =>
 {
