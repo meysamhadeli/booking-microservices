@@ -8,6 +8,10 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" Version="3.3.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.Elasticsearch" Version="6.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.EventStore" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="6.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="6.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.SQLite.Storage" Version="5.0.1" />
     <PackageReference Include="Ben.BlockingDetector" Version="0.0.4" />
     <PackageReference Include="EasyCaching.Core" Version="1.4.1" />
@@ -66,8 +70,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.2.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.2.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="5.0.1" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="6.0.2" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="6.0.1" />
     <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="6.0.1" />

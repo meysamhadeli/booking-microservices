@@ -5,6 +5,7 @@ using Booking.Extensions;
 using BuildingBlocks.Domain;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.EventStoreDB;
+using BuildingBlocks.HealthCheck;
 using BuildingBlocks.IdsGenerator;
 using BuildingBlocks.Jwt;
 using BuildingBlocks.Logging;
@@ -46,7 +47,7 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddTransient<IEventMapper, EventMapper>();
 builder.Services.AddTransient<IBusPublisher, BusPublisher>();
-
+builder.Services.AddCustomHealthCheck();
 builder.Services.AddCustomMassTransit(typeof(BookingRoot).Assembly, env);
 builder.Services.AddCustomOpenTelemetry();
 builder.Services.AddTransient<AuthHeaderHandler>();
@@ -76,6 +77,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseProblemDetails();
+app.UseCustomHealthCheck();
 
 app.UseEndpoints(endpoints =>
 {
