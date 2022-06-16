@@ -1,4 +1,4 @@
-namespace BuildingBlocks.Domain.Event;
+namespace BuildingBlocks.Core.Event;
 
 [Flags]
 public enum EventType

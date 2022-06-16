@@ -1,6 +1,6 @@
 using System.Data;
 using System.Text.Json;
-using BuildingBlocks.Domain;
+using BuildingBlocks.Core;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,16 +12,16 @@ public class EfTxBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TRe
 {
     private readonly ILogger<EfTxBehavior<TRequest, TResponse>> _logger;
     private readonly IDbContext _dbContextBase;
-    private readonly IBusPublisher _busPublisher;
+    private readonly IEventDispatcher _eventDispatcher;
 
     public EfTxBehavior(
         ILogger<EfTxBehavior<TRequest, TResponse>> logger,
         IDbContext dbContextBase,
-        IBusPublisher busPublisher)
+        IEventDispatcher eventDispatcher)
     {
         _logger = logger;
         _dbContextBase = dbContextBase;
-        _busPublisher = busPublisher;
+        _eventDispatcher = eventDispatcher;
     }
 
     public async Task<TResponse> Handle(
@@ -60,7 +60,7 @@ public class EfTxBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TRe
 
             var domainEvents = _dbContextBase.GetDomainEvents();
 
-            await _busPublisher.SendAsync(domainEvents.ToArray(), cancellationToken);
+            await _eventDispatcher.SendAsync(domainEvents.ToArray(), cancellationToken);
 
             return response;
         }

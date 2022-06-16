@@ -8,7 +8,7 @@ public class AirportConfiguration: IEntityTypeConfiguration<Airport>
 {
     public void Configure(EntityTypeBuilder<Airport> builder)
     {
-        builder.ToTable("Airport", "dbo");
+        builder.ToTable("Airport", FlightDbContext.DefaultSchema);
 
         builder.HasKey(r => r.Id);
         builder.Property(r => r.Id).ValueGeneratedNever();

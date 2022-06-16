@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using BuildingBlocks.MessageProcessor;
 using Flight.Flights.Dtos;
 using Flight.Flights.Features.CreateFlight;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
+using NSubstitute;
 using Unit.Test.Common;
 using Unit.Test.Fakes;
 using Xunit;
@@ -22,7 +25,7 @@ public class CreateFlightCommandHandlerTests
     public CreateFlightCommandHandlerTests(UnitTestFixture fixture)
     {
         _fixture = fixture;
-        _handler = new CreateFlightCommandHandler(fixture.Mapper, fixture.DbContext);
+        _handler = new CreateFlightCommandHandler(fixture.Mapper, fixture.DbContext, Substitute.For<IPersistMessageProcessor>());
     }
 
     [Fact]

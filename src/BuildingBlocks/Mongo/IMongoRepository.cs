@@ -1,4 +1,4 @@
-using BuildingBlocks.Domain.Model;
+using BuildingBlocks.Core.Model;
 
 namespace BuildingBlocks.Mongo;
 

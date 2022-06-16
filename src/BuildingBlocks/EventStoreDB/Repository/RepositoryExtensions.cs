@@ -1,4 +1,3 @@
-using BuildingBlocks.Domain.Model;
 using BuildingBlocks.EventStoreDB.Events;
 using BuildingBlocks.Exception;
 

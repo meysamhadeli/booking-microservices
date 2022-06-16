@@ -8,7 +8,7 @@ public class SeatConfiguration : IEntityTypeConfiguration<Seat>
 {
     public void Configure(EntityTypeBuilder<Seat> builder)
     {
-        builder.ToTable("Seat", "dbo");
+        builder.ToTable("Seat", FlightDbContext.DefaultSchema);
 
         builder.HasKey(r => r.Id);
         builder.Property(r => r.Id).ValueGeneratedNever();

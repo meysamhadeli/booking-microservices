@@ -7,7 +7,7 @@ public class BookingConfiguration : IEntityTypeConfiguration<Booking.Models.Book
 {
     public void Configure(EntityTypeBuilder<Booking.Models.Booking> builder)
     {
-        builder.ToTable("Booking", "dbo");
+        builder.ToTable("Booking", BookingDbContext.DefaultSchema);
 
         builder.HasKey(r => r.Id);
         builder.Property(r => r.Id).ValueGeneratedNever();

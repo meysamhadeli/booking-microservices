@@ -2,8 +2,8 @@ using System.Collections.Immutable;
 using System.Data;
 using System.Reflection;
 using System.Security.Claims;
-using BuildingBlocks.Domain.Event;
-using BuildingBlocks.Domain.Model;
+using BuildingBlocks.Core.Event;
+using BuildingBlocks.Core.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -19,6 +19,12 @@ public abstract class AppDbContextBase : DbContext, IDbContext
     protected AppDbContextBase(DbContextOptions options, IHttpContextAccessor httpContextAccessor) : base(options)
     {
         _httpContextAccessor = httpContextAccessor;
+    }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        // ref: https://github.com/pdevito3/MessageBusTestingInMemHarness/blob/main/RecipeManagement/src/RecipeManagement/Databases/RecipesDbContext.cs
+        builder.FilterSoftDeletedProperties();
     }
 
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
@@ -81,15 +87,6 @@ public abstract class AppDbContextBase : DbContext, IDbContext
         domainEntities.ForEach(entity => entity.ClearDomainEvents());
 
         return domainEvents.ToImmutableList();
-    }
-
-    protected override void OnModelCreating(ModelBuilder builder)
-    {
-        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        base.OnModelCreating(builder);
-
-        // ref: https://github.com/pdevito3/MessageBusTestingInMemHarness/blob/main/RecipeManagement/src/RecipeManagement/Databases/RecipesDbContext.cs
-        builder.FilterSoftDeletedProperties();
     }
 
     // ref: https://www.meziantou.net/entity-framework-core-generate-tracking-columns.htm

@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using BuildingBlocks.Domain.Model;
+using BuildingBlocks.Core.Model;
 using MongoDB.Driver;
 
 namespace BuildingBlocks.Mongo;

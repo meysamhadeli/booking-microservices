@@ -7,6 +7,8 @@ namespace Passenger.Data;
 
 public sealed class PassengerDbContext : AppDbContextBase
 {
+    public const string DefaultSchema = "dbo";
+
     public PassengerDbContext(DbContextOptions options, IHttpContextAccessor httpContextAccessor) : base(options, httpContextAccessor)
     {
     }

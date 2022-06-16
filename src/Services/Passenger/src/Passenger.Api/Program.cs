@@ -1,4 +1,4 @@
-using BuildingBlocks.Domain;
+using BuildingBlocks.Core;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.Exception;
 using BuildingBlocks.HealthCheck;
@@ -7,6 +7,7 @@ using BuildingBlocks.Jwt;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
+using BuildingBlocks.MessageProcessor;
 using BuildingBlocks.OpenTelemetry;
 using BuildingBlocks.Swagger;
 using BuildingBlocks.Web;
@@ -27,8 +28,9 @@ var env = builder.Environment;
 var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
 Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
-builder.Services.AddTransient<IBusPublisher, BusPublisher>();
 builder.Services.AddCustomDbContext<PassengerDbContext>(configuration);
+builder.Services.AddPersistMessage(configuration);
+
 builder.AddCustomSerilog();
 builder.Services.AddJwt();
 builder.Services.AddControllers();

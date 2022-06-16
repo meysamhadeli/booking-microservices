@@ -10,6 +10,7 @@ namespace Flight.Data;
 
 public sealed class FlightDbContext : AppDbContextBase
 {
+    public const string DefaultSchema = "dbo";
     public FlightDbContext(DbContextOptions<FlightDbContext> options, IHttpContextAccessor httpContextAccessor) : base(
         options, httpContextAccessor)
     {

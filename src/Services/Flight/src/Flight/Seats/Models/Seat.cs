@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using BuildingBlocks.Domain.Model;
+using BuildingBlocks.Core.Model;
 
 namespace Flight.Seats.Models;
 

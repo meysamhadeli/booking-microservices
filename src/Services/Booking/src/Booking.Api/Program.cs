@@ -2,7 +2,7 @@ using Booking;
 using Booking.Configuration;
 using Booking.Data;
 using Booking.Extensions;
-using BuildingBlocks.Domain;
+using BuildingBlocks.Core;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.EventStoreDB;
 using BuildingBlocks.HealthCheck;
@@ -11,6 +11,7 @@ using BuildingBlocks.Jwt;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
+using BuildingBlocks.MessageProcessor;
 using BuildingBlocks.OpenTelemetry;
 using BuildingBlocks.Swagger;
 using BuildingBlocks.Web;
@@ -30,8 +31,8 @@ builder.Services.Configure<GrpcOptions>(options => configuration.GetSection("Grp
 
 Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
-builder.Services.AddTransient<IBusPublisher, BusPublisher>();
 builder.Services.AddCustomDbContext<BookingDbContext>(configuration);
+builder.Services.AddPersistMessage(configuration);
 
 builder.AddCustomSerilog();
 builder.Services.AddJwt();
@@ -46,7 +47,6 @@ builder.Services.AddCustomMapster(typeof(BookingRoot).Assembly);
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddTransient<IEventMapper, EventMapper>();
-builder.Services.AddTransient<IBusPublisher, BusPublisher>();
 builder.Services.AddCustomHealthCheck();
 builder.Services.AddCustomMassTransit(typeof(BookingRoot).Assembly, env);
 builder.Services.AddCustomOpenTelemetry();

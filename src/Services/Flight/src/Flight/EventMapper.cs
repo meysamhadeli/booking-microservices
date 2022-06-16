@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.Domain;
-using BuildingBlocks.Domain.Event;
+using BuildingBlocks.Core;
+using BuildingBlocks.Core.Event;
 using Flight.Aircrafts.Events;
 using Flight.Airports.Events;
 using Flight.Flights.Events.Domain;

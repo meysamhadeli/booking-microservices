@@ -1,5 +1,5 @@
 using Booking.Booking.Models.ValueObjects;
-using BuildingBlocks.Domain.Event;
+using BuildingBlocks.Core.Event;
 
 namespace Booking.Booking.Events.Domain;
 

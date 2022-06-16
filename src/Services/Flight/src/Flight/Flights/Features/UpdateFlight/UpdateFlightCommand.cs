@@ -1,12 +1,13 @@
 using System;
 using BuildingBlocks.Caching;
+using BuildingBlocks.Core.CQRS;
 using Flight.Flights.Dtos;
 using Flight.Flights.Models;
 using MediatR;
 
 namespace Flight.Flights.Features.UpdateFlight;
 
-public record UpdateFlightCommand : IRequest<FlightResponseDto>, IInvalidateCacheRequest
+public record UpdateFlightCommand : ICommand<FlightResponseDto>, IInvalidateCacheRequest
 {
     public long Id { get; init; }
     public string FlightNumber { get; init; }

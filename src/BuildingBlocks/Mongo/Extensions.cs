@@ -17,8 +17,6 @@ namespace BuildingBlocks.Mongo
             where TContextService : IMongoDbContext
             where TContextImplementation : MongoDbContext, TContextService
         {
-            var mongoOptions = configuration.GetSection(nameof(MongoOptions)).Get<MongoOptions>() ?? new MongoOptions();
-
             services.Configure<MongoOptions>(configuration.GetSection(nameof(MongoOptions)));
             if (configurator is { })
             {

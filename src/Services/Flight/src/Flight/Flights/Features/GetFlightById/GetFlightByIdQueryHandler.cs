@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
+using BuildingBlocks.Core.CQRS;
 using Flight.Data;
 using Flight.Flights.Dtos;
 using Flight.Flights.Exceptions;
@@ -10,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Flight.Flights.Features.GetFlightById;
 
-public class GetFlightByIdQueryHandler : IRequestHandler<GetFlightByIdQuery, FlightResponseDto>
+public class GetFlightByIdQueryHandler : IQueryHandler<GetFlightByIdQuery, FlightResponseDto>
 {
     private readonly FlightDbContext _flightDbContext;
     private readonly IMapper _mapper;

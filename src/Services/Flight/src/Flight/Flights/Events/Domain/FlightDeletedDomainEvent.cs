@@ -1,5 +1,5 @@
 ﻿using System;
-using BuildingBlocks.Domain.Event;
+using BuildingBlocks.Core.Event;
 using Flight.Flights.Models;
 
 namespace Flight.Flights.Events.Domain;

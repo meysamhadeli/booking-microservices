@@ -1,6 +1,6 @@
-﻿using Flight.Flights.Dtos;
-using MediatR;
+﻿using BuildingBlocks.Core.CQRS;
+using Flight.Flights.Dtos;
 
 namespace Flight.Flights.Features.DeleteFlight;
 
-public record DeleteFlightCommand(long Id) : IRequest<FlightResponseDto>;
+public record DeleteFlightCommand(long Id) : ICommand<FlightResponseDto>;

@@ -5,8 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using BuildingBlocks.Domain.Event;
-using BuildingBlocks.Domain.Model;
+using BuildingBlocks.Core.Event;
+using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
 using Identity.Identity.Models;
 using Microsoft.AspNetCore.Http;
@@ -21,9 +21,12 @@ public sealed class IdentityContext : IdentityDbContext<ApplicationUser, Identit
     IdentityUserClaim<long>,
     IdentityUserRole<long>, IdentityUserLogin<long>, IdentityRoleClaim<long>, IdentityUserToken<long>>, IDbContext
 {
+    public const string DefaultSchema = "dbo";
 
     private IDbContextTransaction _currentTransaction;
-    public IdentityContext(DbContextOptions options, IHttpContextAccessor httpContextAccessor) : base(options)
+
+    public IdentityContext(DbContextOptions<IdentityContext> options, IHttpContextAccessor httpContextAccessor) :
+        base(options)
     {
     }
 
@@ -31,6 +34,8 @@ public sealed class IdentityContext : IdentityDbContext<ApplicationUser, Identit
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(builder);
+
+        builder.FilterSoftDeletedProperties();
     }
 
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)

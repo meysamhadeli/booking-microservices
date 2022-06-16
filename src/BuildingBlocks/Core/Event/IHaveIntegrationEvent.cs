@@ -1,4 +1,4 @@
-namespace BuildingBlocks.Domain.Event;
+namespace BuildingBlocks.Core.Event;
 
 public interface IHaveIntegrationEvent
 {

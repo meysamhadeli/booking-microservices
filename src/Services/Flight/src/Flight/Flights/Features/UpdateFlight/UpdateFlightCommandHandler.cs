@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
+using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.EventStoreDB.Repository;
 using Flight.Data;
 using Flight.Flights.Dtos;
@@ -12,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Flight.Flights.Features.UpdateFlight;
 
-public class UpdateFlightCommandHandler : IRequestHandler<UpdateFlightCommand, FlightResponseDto>
+public class UpdateFlightCommandHandler : ICommandHandler<UpdateFlightCommand, FlightResponseDto>
 {
     private readonly FlightDbContext _flightDbContext;
     private readonly IMapper _mapper;
