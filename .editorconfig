@@ -269,7 +269,7 @@ dotnet_diagnostic.S3903.severity = None
 
 #
 # MA0004: Use Task.ConfigureAwait(false)
-dotnet_diagnostic.MA0004.severity = Suggestion
+dotnet_diagnostic.MA0004.severity = None
 
 # MA0049: Type name should not match containing namespace
 dotnet_diagnostic.MA0049.severity = Suggestion

@@ -3,7 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.Domain;
+using BuildingBlocks.Core;
+using BuildingBlocks.Core.CQRS;
 using Identity.Identity.Dtos;
 using Identity.Identity.Exceptions;
 using Identity.Identity.Models;
@@ -12,16 +13,16 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Identity.Identity.Features.RegisterNewUser;
 
-public class RegisterNewUserCommandHandler : IRequestHandler<RegisterNewUserCommand, RegisterNewUserResponseDto>
+public class RegisterNewUserCommandHandler : ICommandHandler<RegisterNewUserCommand, RegisterNewUserResponseDto>
 {
-    private readonly IBusPublisher _busPublisher;
+    private readonly IEventDispatcher _eventDispatcher;
     private readonly UserManager<ApplicationUser> _userManager;
 
     public RegisterNewUserCommandHandler(UserManager<ApplicationUser> userManager,
-        IBusPublisher busPublisher)
+        IEventDispatcher eventDispatcher)
     {
         _userManager = userManager;
-        _busPublisher = busPublisher;
+        _eventDispatcher = eventDispatcher;
     }
 
     public async Task<RegisterNewUserResponseDto> Handle(RegisterNewUserCommand command,
@@ -48,7 +49,7 @@ public class RegisterNewUserCommandHandler : IRequestHandler<RegisterNewUserComm
         if (roleResult.Succeeded == false)
             throw new RegisterIdentityUserException(string.Join(',', roleResult.Errors.Select(e => e.Description)));
 
-        await _busPublisher.SendAsync(new UserCreated(applicationUser.Id, applicationUser.FirstName + " " + applicationUser.LastName,
+        await _eventDispatcher.SendAsync(new UserCreated(applicationUser.Id, applicationUser.FirstName + " " + applicationUser.LastName,
                 applicationUser.PassPortNumber), cancellationToken);
 
         return new RegisterNewUserResponseDto

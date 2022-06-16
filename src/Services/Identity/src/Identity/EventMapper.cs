@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using BuildingBlocks.Domain;
-using BuildingBlocks.Domain.Event;
+using BuildingBlocks.Core;
+using BuildingBlocks.Core.Event;
 
 namespace Identity;
 

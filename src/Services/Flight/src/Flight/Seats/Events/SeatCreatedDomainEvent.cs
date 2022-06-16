@@ -1,4 +1,4 @@
-using BuildingBlocks.Domain.Event;
+using BuildingBlocks.Core.Event;
 using Flight.Seats.Models;
 
 namespace Flight.Seats.Events;

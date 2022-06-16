@@ -1,8 +1,8 @@
-using BuildingBlocks.Domain.Event;
+using BuildingBlocks.Core.Event;
 
-namespace BuildingBlocks.Domain;
+namespace BuildingBlocks.Core;
 
-public interface IBusPublisher
+public interface IEventDispatcher
 {
     public Task SendAsync(IReadOnlyList<IDomainEvent> domainEvents, CancellationToken cancellationToken = default);
     public Task SendAsync(IDomainEvent domainEvent, CancellationToken cancellationToken = default);

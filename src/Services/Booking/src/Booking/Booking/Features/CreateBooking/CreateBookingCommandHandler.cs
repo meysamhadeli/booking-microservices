@@ -2,12 +2,13 @@ using Ardalis.GuardClauses;
 using Booking.Booking.Exceptions;
 using Booking.Booking.Models.ValueObjects;
 using BuildingBlocks.Contracts.Grpc;
+using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.EventStoreDB.Repository;
 using MediatR;
 
 namespace Booking.Booking.Features.CreateBooking;
 
-public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand, ulong>
+public class CreateBookingCommandHandler : ICommandHandler<CreateBookingCommand, ulong>
 {
     private readonly IEventStoreDBRepository<Models.Booking> _eventStoreDbRepository;
     private readonly IFlightGrpcService _flightGrpcService;

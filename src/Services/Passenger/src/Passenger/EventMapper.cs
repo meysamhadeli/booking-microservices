@@ -1,5 +1,5 @@
-using BuildingBlocks.Domain;
-using BuildingBlocks.Domain.Event;
+using BuildingBlocks.Core;
+using BuildingBlocks.Core.Event;
 
 namespace Passenger;
 

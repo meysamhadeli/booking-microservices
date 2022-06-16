@@ -1,6 +1,6 @@
-using BuildingBlocks.Domain.Event;
+using BuildingBlocks.Core.Event;
 
-namespace BuildingBlocks.Domain;
+namespace BuildingBlocks.Core;
 
 public interface IEventMapper
 {

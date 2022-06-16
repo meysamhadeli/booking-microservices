@@ -1,7 +1,7 @@
 using Booking.Booking.Events.Domain;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.Domain;
-using BuildingBlocks.Domain.Event;
+using BuildingBlocks.Core;
+using BuildingBlocks.Core.Event;
 
 namespace Booking;
 

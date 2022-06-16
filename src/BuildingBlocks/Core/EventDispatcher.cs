@@ -1,88 +1,71 @@
 using System.Security.Claims;
-using BuildingBlocks.Domain.Event;
+using BuildingBlocks.Core.Event;
+using BuildingBlocks.MessageProcessor;
 using BuildingBlocks.Web;
-using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MessageEnvelope = BuildingBlocks.Core.Event.MessageEnvelope;
 
-namespace BuildingBlocks.Domain;
+namespace BuildingBlocks.Core;
 
-public sealed class BusPublisher : IBusPublisher
+public sealed class EventDispatcher : IEventDispatcher
 {
     private readonly IEventMapper _eventMapper;
-    private readonly ILogger<BusPublisher> _logger;
-    private readonly IPublishEndpoint _publishEndpoint;
+    private readonly ILogger<EventDispatcher> _logger;
+    private readonly IPersistMessageProcessor _persistMessageProcessor;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public BusPublisher(IServiceScopeFactory serviceScopeFactory,
+    public EventDispatcher(IServiceScopeFactory serviceScopeFactory,
         IEventMapper eventMapper,
-        ILogger<BusPublisher> logger,
-        IPublishEndpoint publishEndpoint,
+        ILogger<EventDispatcher> logger,
+        IPersistMessageProcessor persistMessageProcessor,
         IHttpContextAccessor httpContextAccessor)
     {
         _serviceScopeFactory = serviceScopeFactory;
         _eventMapper = eventMapper;
         _logger = logger;
-        _publishEndpoint = publishEndpoint;
+        _persistMessageProcessor = persistMessageProcessor;
         _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task SendAsync(IDomainEvent domainEvent,
-        CancellationToken cancellationToken = default) => await SendAsync(new[] { domainEvent }, cancellationToken);
+        CancellationToken cancellationToken = default) => await SendAsync(new[] {domainEvent}, cancellationToken);
 
     public async Task SendAsync(IReadOnlyList<IDomainEvent> domainEvents, CancellationToken cancellationToken = default)
     {
         if (domainEvents is null) return;
 
-        _logger.LogTrace("Processing integration events start...");
-
         var integrationEvents = await MapDomainEventToIntegrationEventAsync(domainEvents).ConfigureAwait(false);
 
-        if (!integrationEvents.Any()) return;
+        if (integrationEvents.Count == 0) return;
 
-        await PublishMessageToBroker(integrationEvents, cancellationToken);
-
-        _logger.LogTrace("Processing integration events done...");
+        foreach (var integrationEvent in integrationEvents)
+        {
+            await _persistMessageProcessor.PublishMessageAsync(new MessageEnvelope(integrationEvent, SetHeaders()),
+                cancellationToken);
+        }
     }
-
 
 
     public async Task SendAsync(IIntegrationEvent integrationEvent,
-        CancellationToken cancellationToken = default) => await SendAsync(new[] { integrationEvent }, cancellationToken);
+        CancellationToken cancellationToken = default) => await SendAsync(new[] {integrationEvent}, cancellationToken);
 
-    public async Task SendAsync(IReadOnlyList<IIntegrationEvent> integrationEvents, CancellationToken cancellationToken = default)
+    public async Task SendAsync(IReadOnlyList<IIntegrationEvent> integrationEvents,
+        CancellationToken cancellationToken = default)
     {
         if (integrationEvents is null) return;
 
-        _logger.LogTrace("Processing integration events start...");
-
-        await PublishMessageToBroker(integrationEvents, cancellationToken);
-
-        _logger.LogTrace("Processing integration events done...");
-    }
-
-    private async Task PublishMessageToBroker(IReadOnlyList<IIntegrationEvent> integrationEvents, CancellationToken cancellationToken)
-    {
-        foreach (var integrationEvent in integrationEvents)
-        {
-            await _publishEndpoint.Publish((object) integrationEvent, context =>
-            {
-                context.CorrelationId = _httpContextAccessor?.HttpContext?.GetCorrelationId();
-                context.Headers.Set("UserId",
-                    _httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier));
-                context.Headers.Set("UserName",
-                    _httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.Name));
-            }, cancellationToken);
-
-            _logger.LogTrace("Publish a message with ID: {Id}", integrationEvent?.EventId);
-        }
+        await _persistMessageProcessor.PublishMessageAsync(new MessageEnvelope(integrationEvents, SetHeaders()),
+            cancellationToken);
     }
 
     private Task<IReadOnlyList<IIntegrationEvent>> MapDomainEventToIntegrationEventAsync(
         IReadOnlyList<IDomainEvent> events)
     {
+        _logger.LogTrace("Processing integration events start...");
+
         var wrappedIntegrationEvents = GetWrappedIntegrationEvents(events.ToList())?.ToList();
         if (wrappedIntegrationEvents?.Count > 0)
             return Task.FromResult<IReadOnlyList<IIntegrationEvent>>(wrappedIntegrationEvents);
@@ -101,6 +84,8 @@ public sealed class BusPublisher : IBusPublisher
             integrationEvents.Add(integrationEvent);
         }
 
+        _logger.LogTrace("Processing integration events done...");
+
         return Task.FromResult<IReadOnlyList<IIntegrationEvent>>(integrationEvents);
     }
 
@@ -117,5 +102,15 @@ public sealed class BusPublisher : IBusPublisher
 
             yield return domainNotificationEvent;
         }
+    }
+
+    private IDictionary<string, object> SetHeaders()
+    {
+        var headers = new Dictionary<string, object>();
+        headers.Add("CorrelationId", _httpContextAccessor?.HttpContext?.GetCorrelationId());
+        headers.Add("UserId", _httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier));
+        headers.Add("UserName", _httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.Name));
+
+        return headers;
     }
 }

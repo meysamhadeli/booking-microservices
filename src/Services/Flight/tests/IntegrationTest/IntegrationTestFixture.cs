@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using BuildingBlocks.Domain.Model;
+using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.MassTransit;
+using BuildingBlocks.MessageProcessor;
 using BuildingBlocks.Web;
 using Flight.Data;
 using FluentAssertions.Common;
@@ -66,8 +67,6 @@ public class IntegrationTestFixture : IAsyncLifetime
                 builder.UseEnvironment("test");
                 builder.ConfigureServices(services =>
                 {
-                    services.RemoveAll(typeof(IHostedService));
-                    services.ReplaceSingleton(AddHttpContextAccessorMock);
                     TestRegistrationServices?.Invoke(services);
                     services.AddMassTransitTestHarness(x =>
                     {

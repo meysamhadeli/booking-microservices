@@ -1,6 +1,6 @@
-namespace BuildingBlocks.Domain.Model;
+namespace BuildingBlocks.Core.Model;
 
-public interface IEntity
+public abstract class Entity : IEntity
 {
     public DateTime? CreatedAt { get; set; }
     public long? CreatedBy { get; set; }

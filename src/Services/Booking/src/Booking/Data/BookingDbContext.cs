@@ -7,6 +7,8 @@ namespace Booking.Data;
 
 public class BookingDbContext : AppDbContextBase
 {
+    public const string DefaultSchema = "dbo";
+
     public BookingDbContext(DbContextOptions options, IHttpContextAccessor httpContextAccessor) : base(options, httpContextAccessor)
     {
     }

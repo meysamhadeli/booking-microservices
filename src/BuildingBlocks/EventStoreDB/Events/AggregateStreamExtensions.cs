@@ -1,5 +1,4 @@
-﻿using BuildingBlocks.Domain.Model;
-using BuildingBlocks.EventStoreDB.Serialization;
+﻿using BuildingBlocks.EventStoreDB.Serialization;
 using EventStore.Client;
 
 namespace BuildingBlocks.EventStoreDB.Events;

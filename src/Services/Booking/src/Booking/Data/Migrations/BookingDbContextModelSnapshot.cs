@@ -50,6 +50,41 @@ namespace Booking.Data.Migrations
                     b.ToTable("Booking", "dbo");
                 });
 
+            modelBuilder.Entity("BuildingBlocks.MessageProcessor.PersistMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Data")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DataType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeliveryType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("MessageStatus")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int>("RetryCount")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PersistMessages", "dbo");
+                });
+
             modelBuilder.Entity("Booking.Booking.Models.Booking", b =>
                 {
                     b.OwnsOne("Booking.Booking.Models.ValueObjects.PassengerInfo", "PassengerInfo", b1 =>

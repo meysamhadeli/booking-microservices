@@ -1,5 +1,5 @@
 using System.Reflection;
-using BuildingBlocks.Domain.Event;
+using BuildingBlocks.Core.Event;
 using BuildingBlocks.Utils;
 using BuildingBlocks.Web;
 using Humanizer;

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
+using BuildingBlocks.Core.CQRS;
 using Flight.Data;
 using Flight.Flights.Dtos;
 using Flight.Flights.Exceptions;
@@ -12,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Flight.Flights.Features.GetAvailableFlights;
 
-public class GetAvailableFlightsQueryHandler : IRequestHandler<GetAvailableFlightsQuery, IEnumerable<FlightResponseDto>>
+public class GetAvailableFlightsQueryHandler : IQueryHandler<GetAvailableFlightsQuery, IEnumerable<FlightResponseDto>>
 {
     private readonly FlightDbContext _flightDbContext;
     private readonly IMapper _mapper;

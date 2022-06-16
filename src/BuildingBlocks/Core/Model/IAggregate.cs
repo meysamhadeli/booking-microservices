@@ -1,6 +1,6 @@
-﻿using BuildingBlocks.Domain.Event;
+﻿using BuildingBlocks.Core.Event;
 
-namespace BuildingBlocks.Domain.Model;
+namespace BuildingBlocks.Core.Model;
 
 public interface IAggregate : IEntity
 {

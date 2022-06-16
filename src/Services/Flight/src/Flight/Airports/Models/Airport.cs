@@ -1,4 +1,4 @@
-using BuildingBlocks.Domain.Model;
+using BuildingBlocks.Core.Model;
 using BuildingBlocks.IdsGenerator;
 using Flight.Airports.Events;
 

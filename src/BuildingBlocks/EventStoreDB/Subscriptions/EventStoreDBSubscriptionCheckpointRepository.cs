@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Domain.Event;
+﻿using BuildingBlocks.Core.Event;
 using BuildingBlocks.EventStoreDB.Events;
 using BuildingBlocks.EventStoreDB.Serialization;
 using EventStore.Client;

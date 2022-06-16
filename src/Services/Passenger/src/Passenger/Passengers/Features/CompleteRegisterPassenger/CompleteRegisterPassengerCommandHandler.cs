@@ -1,4 +1,5 @@
 using Ardalis.GuardClauses;
+using BuildingBlocks.Core.CQRS;
 using MapsterMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ using Passenger.Passengers.Exceptions;
 
 namespace Passenger.Passengers.Features.CompleteRegisterPassenger;
 
-public class CompleteRegisterPassengerCommandHandler : IRequestHandler<CompleteRegisterPassengerCommand, PassengerResponseDto>
+public class CompleteRegisterPassengerCommandHandler : ICommandHandler<CompleteRegisterPassengerCommand, PassengerResponseDto>
 {
     private readonly IMapper _mapper;
     private readonly PassengerDbContext _passengerDbContext;

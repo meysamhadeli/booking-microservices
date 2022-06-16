@@ -1,9 +1,10 @@
-using BuildingBlocks.Domain;
+using BuildingBlocks.Core;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.HealthCheck;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
+using BuildingBlocks.MessageProcessor;
 using BuildingBlocks.OpenTelemetry;
 using BuildingBlocks.Swagger;
 using BuildingBlocks.Utils;
@@ -26,13 +27,14 @@ var env = builder.Environment;
 var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
 Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
-builder.Services.AddTransient<IBusPublisher, BusPublisher>();
 builder.Services.AddScoped<IDbContext>(provider => provider.GetService<IdentityContext>()!);
 
 builder.Services.AddDbContext<IdentityContext>(options =>
         options.UseSqlServer(
             configuration.GetConnectionString("DefaultConnection"),
             x => x.MigrationsAssembly(typeof(IdentityRoot).Assembly.GetName().Name)));
+
+builder.Services.AddPersistMessage(configuration);
 
 builder.AddCustomSerilog();
 builder.Services.AddControllers();
@@ -45,7 +47,6 @@ builder.Services.AddCustomMapster(typeof(IdentityRoot).Assembly);
 builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
 builder.Services.AddCustomHealthCheck();
 builder.Services.AddTransient<IEventMapper, EventMapper>();
-builder.Services.AddTransient<IBusPublisher, BusPublisher>();
 
 builder.Services.AddCustomMassTransit(typeof(IdentityRoot).Assembly, env);
 builder.Services.AddCustomOpenTelemetry();
