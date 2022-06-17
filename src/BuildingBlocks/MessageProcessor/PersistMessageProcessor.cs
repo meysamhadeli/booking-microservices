@@ -37,16 +37,25 @@ public class PersistMessageProcessor : IPersistMessageProcessor
         await SavePersistMessageAsync(messageEnvelope, MessageDeliveryType.Outbox, cancellationToken);
     }
 
-    public async Task AddReceivedMessageAsync<TMessageEnvelope>(TMessageEnvelope messageEnvelope,
+    public Task<Guid> AddReceivedMessageAsync<TMessageEnvelope>(TMessageEnvelope messageEnvelope,
         CancellationToken cancellationToken = default) where TMessageEnvelope : MessageEnvelope
     {
-        await SavePersistMessageAsync(messageEnvelope, MessageDeliveryType.Inbox, cancellationToken);
+        return SavePersistMessageAsync(messageEnvelope, MessageDeliveryType.Inbox, cancellationToken);
     }
 
     public async Task AddInternalMessageAsync<TCommand>(TCommand internalCommand,
         CancellationToken cancellationToken = default) where TCommand : class, IInternalCommand
     {
         await SavePersistMessageAsync(new MessageEnvelope(internalCommand), MessageDeliveryType.Internal,
+            cancellationToken);
+    }
+
+    public Task<PersistMessage> ExistMessageAsync(Guid messageId, CancellationToken cancellationToken = default)
+    {
+        return _dbContext.PersistMessages.FirstOrDefaultAsync(x =>
+                x.Id == messageId &&
+                x.DeliveryType == MessageDeliveryType.Inbox &&
+                x.MessageStatus == MessageStatus.Processed,
             cancellationToken);
     }
 
@@ -64,23 +73,17 @@ public class PersistMessageProcessor : IPersistMessageProcessor
 
         switch (deliveryType)
         {
-            case MessageDeliveryType.Inbox:
-                await ProcessInbox(message, cancellationToken);
-                break;
             case MessageDeliveryType.Internal:
-                await ProcessInternal(message, cancellationToken);
+                await ProcessInternalAsync(message, cancellationToken);
                 break;
             case MessageDeliveryType.Outbox:
-                await ProcessOutbox(message, cancellationToken);
+                await ProcessOutboxAsync(message, cancellationToken);
                 break;
         }
 
-        message.ChangeState(MessageStatus.Processed);
-
-        _dbContext.PersistMessages.Update(message);
-
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await ChangeMessageStatusAsync(message, cancellationToken);
     }
+
 
     public async Task ProcessAllAsync(CancellationToken cancellationToken = default)
     {
@@ -93,7 +96,18 @@ public class PersistMessageProcessor : IPersistMessageProcessor
         }
     }
 
-    private async Task SavePersistMessageAsync(
+    public async Task ProcessInboxAsync(Guid messageId, CancellationToken cancellationToken = default)
+    {
+        var message = await _dbContext.PersistMessages.FirstOrDefaultAsync(
+                x => x.Id == messageId &&
+                     x.DeliveryType == MessageDeliveryType.Inbox &&
+                     x.MessageStatus == MessageStatus.InProgress,
+                cancellationToken);
+
+        await ChangeMessageStatusAsync(message, cancellationToken);
+    }
+
+    private async Task<Guid> SavePersistMessageAsync(
         MessageEnvelope messageEnvelope,
         MessageDeliveryType deliveryType,
         CancellationToken cancellationToken = default)
@@ -124,9 +138,11 @@ public class PersistMessageProcessor : IPersistMessageProcessor
             "Message with id: {MessageID} and delivery type: {DeliveryType} saved in persistence message store.",
             id,
             deliveryType.ToString());
+
+        return id;
     }
 
-    private async Task ProcessOutbox(PersistMessage message, CancellationToken cancellationToken)
+    private async Task ProcessOutboxAsync(PersistMessage message, CancellationToken cancellationToken)
     {
         MessageEnvelope? messageEnvelope = JsonSerializer.Deserialize<MessageEnvelope>(message.Data);
 
@@ -153,7 +169,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
         }
     }
 
-    private async Task ProcessInternal(PersistMessage message, CancellationToken cancellationToken)
+    private async Task ProcessInternalAsync(PersistMessage message, CancellationToken cancellationToken)
     {
         MessageEnvelope? messageEnvelope = JsonSerializer.Deserialize<MessageEnvelope>(message.Data);
 
@@ -174,8 +190,12 @@ public class PersistMessageProcessor : IPersistMessageProcessor
         }
     }
 
-    private Task ProcessInbox(PersistMessage message, CancellationToken cancellationToken)
+    private async Task ChangeMessageStatusAsync(PersistMessage message, CancellationToken cancellationToken)
     {
-        return Task.CompletedTask;
+        message.ChangeState(MessageStatus.Processed);
+
+        _dbContext.PersistMessages.Update(message);
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
