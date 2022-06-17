@@ -1,6 +1,9 @@
 ﻿using BuildingBlocks.EFCore;
+using BuildingBlocks.Logging;
 using BuildingBlocks.MassTransit;
+using BuildingBlocks.Mongo;
 using BuildingBlocks.Web;
+using DotNetCore.CAP.MongoDB;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -14,18 +17,22 @@ public static class Extensions
 {
     public static IServiceCollection AddCustomHealthCheck(this IServiceCollection services)
     {
+        var appOptions = services.GetOptions<AppOptions>("AppOptions");
         var sqlOptions = services.GetOptions<SqlOptions>("ConnectionStrings");
         var rabbitMqOptions = services.GetOptions<RabbitMqOptions>("RabbitMq");
+        var mongoOptions = services.GetOptions<MongoOptions>("MongoOptions");
+        var logOptions = services.GetOptions<LogOptions>("LogOptions");
 
         services.AddHealthChecks()
             .AddSqlServer(sqlOptions.DefaultConnection)
-            .AddRabbitMQ(rabbitConnectionString:
-                $"amqp://{rabbitMqOptions.UserName}:{rabbitMqOptions.Password}@{rabbitMqOptions.HostName}");
+            .AddMongoDb(mongoOptions.ConnectionString)
+            .AddRabbitMQ(rabbitConnectionString: $"amqp://{rabbitMqOptions.UserName}:{rabbitMqOptions.Password}@{rabbitMqOptions.HostName}")
+            .AddElasticsearch(logOptions.ElasticUri);
 
         services.AddHealthChecksUI(setup =>
         {
             setup.SetEvaluationTimeInSeconds(60); // time in seconds between check
-            setup.AddHealthCheckEndpoint("Basic Health Check", "/healthz");
+            setup.AddHealthCheckEndpoint($"Basic Health Check - {appOptions.Name}", "/healthz");
         }).AddInMemoryStorage();
 
         return services;
