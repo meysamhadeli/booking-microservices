@@ -26,10 +26,13 @@ Booking Microservices is a Sample application for booking ticket. This applicati
 - Microservices based on `Domain Driven Design (DDD)` implementation.
 - Correct `separation of bounded contexts` for each microservice.
 - Communication between bounded contexts through asynchronous `MessageBus` and `events`.
-- Simple `CQRS` implementation and event driven architecture.
+- Communication internally between our microservices with `gRPC` synchronously.
+- Simple `CQRS` implementation and Event Driven Architecture with using SqlServer in write side and MongoDB in read side. I use an internal processor for syncing read side and write side without event sourcing. In booking microservice, I also use event store to store all historical state of aggregate.
+- Using `Inbox Pattern` for guaranty message Idempotency for receiver microservice and `Exactly-once Delivery pattern` and using `Outbox Pattern` for ensuring about any message `lost and At-Least one Delivery` rule.
+- Implementing various types of testing like `Unit Testing`, `Integration Testing`.
+- Using `Health Check` for reporting the health of app infrastructure components.
 - Using `Best Practice` and `New Technologies` and `Design Patterns`.
 - Using `Docker-Compose` and `Kubernetes` for our deployment mechanism.
-- Implementing various types of testing like `Unit Testing`, `Integration Testing`.
 
 ## Plan
 
