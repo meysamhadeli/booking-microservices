@@ -135,7 +135,7 @@ Run this app in docker using the [docker-compose.yaml](./deployments/docker-comp
 ```bash
 docker-compose -f ./deployments/docker-compose/docker-compose.yaml up -d
 ```
-Also we have a seprate docker file for up and running [infrastracture.yaml](./deployments/docker-compose/infrastracture.yaml) independently.
+Also we have a seprate docker file for up and running [infrastracture.yaml](./deployments/docker-compose/infrastracture.yaml) independently:
 
 ```bash
 docker-compose -f ./deployments/docker-compose/infrastracture.yaml up -d
