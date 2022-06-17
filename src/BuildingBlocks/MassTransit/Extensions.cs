@@ -54,6 +54,8 @@ public static class Extensions
                                     ? type.Name.Underscore()
                                     : $"{rabbitMqOptions.ExchangeName}_{type.Name.Underscore()}", e =>
                                 {
+                                    e.UseConsumeFilter(typeof(ConsumeFilter<>), context); //generic filter
+
                                     foreach (var consumer in consumers)
                                     {
                                         configurator.ConfigureEndpoints(context, x => x.Exclude(consumer));
