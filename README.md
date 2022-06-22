@@ -27,7 +27,8 @@ Booking Microservices is a Sample application for booking ticket. This applicati
 - Correct `separation of bounded contexts` for each microservice.
 - Communication between bounded contexts through asynchronous `MessageBus` and `events`.
 - Communication internally between our microservices with `gRPC` synchronously.
-- Simple `CQRS` implementation and Event Driven Architecture with using `SqlServer` in `write side` and `MongoDB` in `read side`. I use an `internal processor` for syncing `read side` and `write side` without event sourcing. In booking microservice, I also use `event store` to store all historical state of aggregate.
+- Simple `CQRS` implementation and Event Driven Architecture with using `SqlServer` in `write side` and `MongoDB` in `read side`. I use an `internal processor` for syncing `read side` and `write side` without event sourcing.
+- Using `event store` to store all historical state of aggregate. (Booking-Microservice)
 - Using `Inbox Pattern` for guaranty message Idempotency for receiver microservice and `Exactly-once Delivery pattern` and using `Outbox Pattern` for ensuring about any message `lost and At-Least one Delivery` rule.
 - Implementing various types of testing like `Unit Testing`, `Integration Testing`.
 - Using `Health Check` for reporting the health of app infrastructure components.
@@ -158,8 +159,6 @@ If you like my work, feel free to:
 Thanks a bunch for supporting me!
 
 ## Contribution
-
-Contributions are always welcome! Please take a look at the [contribution guidelines](https://github.com/meysamhadeli/booking-microservices-sample/blob/main/contributing.md) pages first.
 
 Thanks to all [contributors](https://github.com/meysamhadeli/booking-microservices-sample/graphs/contributors), you're awesome and this wouldn't be possible without you! The goal is to build a categorized community-driven collection of very well-known resources.
 
