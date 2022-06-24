@@ -34,7 +34,7 @@ builder.Services.AddPersistMessage(configuration);
 builder.AddCustomSerilog();
 builder.Services.AddJwt();
 builder.Services.AddControllers();
-builder.Services.AddCustomSwagger(builder.Configuration, typeof(PassengerRoot).Assembly);
+builder.Services.AddCustomSwagger(configuration, typeof(PassengerRoot).Assembly);
 builder.Services.AddCustomVersioning();
 builder.Services.AddCustomMediatR();
 builder.Services.AddValidatorsFromAssembly(typeof(PassengerRoot).Assembly);
@@ -62,7 +62,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
-app.UseMigrations();
+app.UseMigration<PassengerDbContext>();
 app.UseCorrelationId();
 app.UseRouting();
 app.UseHttpMetrics();

@@ -31,7 +31,7 @@ public class CreateFlightCommandHandler : ICommandHandler<CreateFlightCommand, F
     {
         Guard.Against.Null(command, nameof(command));
 
-        var flight = await _flightDbContext.Flights.SingleOrDefaultAsync(x => x.Id == command.Id && !x.IsDeleted,
+        var flight = await _flightDbContext.Flights.SingleOrDefaultAsync(x => x.Id == command.Id,
             cancellationToken);
 
         if (flight is not null)

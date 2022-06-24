@@ -13,7 +13,7 @@ public static class MediatRExtensions
         services.AddMediatR(typeof(IdentityRoot).Assembly);
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(EfIdentityTxBehavior<,>));
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(EfTxBehavior<,>));
 
         return services;
     }

@@ -25,8 +25,7 @@ public class ReserveSeatCommandHandler : IRequestHandler<ReserveSeatCommand, Sea
     {
         Guard.Against.Null(command, nameof(command));
 
-        var seat = await _flightDbContext.Seats.SingleOrDefaultAsync(x => x.SeatNumber == command.SeatNumber && x.FlightId == command.FlightId
-            && !x.IsDeleted, cancellationToken);
+        var seat = await _flightDbContext.Seats.SingleOrDefaultAsync(x => x.SeatNumber == command.SeatNumber && x.FlightId == command.FlightId, cancellationToken);
 
         if (seat is null)
             throw new SeatNumberIncorrectException();
