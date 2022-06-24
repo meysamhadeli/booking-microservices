@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using BuildingBlocks.Core.Model;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +13,7 @@ public static class Extensions
     public static IServiceCollection AddCustomDbContext<TContext>(
         this IServiceCollection services,
         IConfiguration configuration)
-        where TContext : AppDbContextBase
+        where TContext : DbContext, IDbContext
     {
         services.AddDbContext<TContext>(options =>
             options.UseSqlServer(
@@ -23,6 +24,16 @@ public static class Extensions
 
         return services;
     }
+
+    public static IApplicationBuilder UseMigration<TContext>(this IApplicationBuilder app)
+        where TContext : DbContext, IDbContext
+    {
+        MigrateDatabaseAsync<TContext>(app.ApplicationServices).GetAwaiter().GetResult();
+        SeedDataAsync(app.ApplicationServices).GetAwaiter().GetResult();
+
+        return app;
+    }
+
 
     // ref: https://github.com/pdevito3/MessageBusTestingInMemHarness/blob/main/RecipeManagement/src/RecipeManagement/Databases/RecipesDbContext.cs
     public static void FilterSoftDeletedProperties(this ModelBuilder modelBuilder)
@@ -39,6 +50,25 @@ public static class Extensions
 
             // set filter
             mutableEntityType.SetQueryFilter(lambdaExpression);
+        }
+    }
+
+    private static async Task MigrateDatabaseAsync<TContext>(IServiceProvider serviceProvider)
+        where TContext : DbContext, IDbContext
+    {
+        using var scope = serviceProvider.CreateScope();
+
+        var context = scope.ServiceProvider.GetRequiredService<TContext>();
+        await context.Database.MigrateAsync();
+    }
+
+    private static async Task SeedDataAsync(IServiceProvider serviceProvider)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var seeders = scope.ServiceProvider.GetServices<IDataSeeder>();
+        foreach (var seeder in seeders)
+        {
+            await seeder.SeedAllAsync();
         }
     }
 }

@@ -37,6 +37,7 @@ Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
 builder.Services.AddCustomDbContext<FlightDbContext>(configuration);
 builder.Services.AddScoped<IDataSeeder, FlightDataSeeder>();
+
 builder.Services.AddMongoDbContext<FlightReadDbContext>(configuration);
 
 builder.Services.AddPersistMessage(configuration);
@@ -44,7 +45,7 @@ builder.Services.AddPersistMessage(configuration);
 builder.AddCustomSerilog();
 builder.Services.AddJwt();
 builder.Services.AddControllers();
-builder.Services.AddCustomSwagger(builder.Configuration, typeof(FlightRoot).Assembly);
+builder.Services.AddCustomSwagger(configuration, typeof(FlightRoot).Assembly);
 builder.Services.AddCustomVersioning();
 builder.Services.AddCustomMediatR();
 builder.Services.AddValidatorsFromAssembly(typeof(FlightRoot).Assembly);
@@ -82,7 +83,7 @@ app.UseSerilogRequestLogging();
 app.UseCorrelationId();
 app.UseRouting();
 app.UseHttpMetrics();
-app.UseMigrations();
+app.UseMigration<FlightDbContext>();
 app.UseProblemDetails();
 app.UseHttpsRedirection();
 app.UseCustomHealthCheck();

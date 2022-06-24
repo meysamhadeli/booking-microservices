@@ -38,7 +38,7 @@ builder.AddCustomSerilog();
 builder.Services.AddJwt();
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddCustomSwagger(builder.Configuration, typeof(BookingRoot).Assembly);
+builder.Services.AddCustomSwagger(configuration, typeof(BookingRoot).Assembly);
 builder.Services.AddCustomVersioning();
 builder.Services.AddCustomMediatR();
 builder.Services.AddValidatorsFromAssembly(typeof(BookingRoot).Assembly);
@@ -69,7 +69,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
-app.UseMigrations();
+app.UseMigration<BookingDbContext>();
 app.UseCorrelationId();
 app.UseRouting();
 app.UseHttpMetrics();

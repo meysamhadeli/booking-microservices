@@ -27,24 +27,19 @@ var env = builder.Environment;
 var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
 Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
-builder.Services.AddScoped<IDbContext>(provider => provider.GetService<IdentityContext>()!);
-
-builder.Services.AddDbContext<IdentityContext>(options =>
-        options.UseSqlServer(
-            configuration.GetConnectionString("DefaultConnection"),
-            x => x.MigrationsAssembly(typeof(IdentityRoot).Assembly.GetName().Name)));
+builder.Services.AddCustomDbContext<IdentityContext>(configuration);
+builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
 
 builder.Services.AddPersistMessage(configuration);
 
 builder.AddCustomSerilog();
 builder.Services.AddControllers();
-builder.Services.AddCustomSwagger(builder.Configuration, typeof(IdentityRoot).Assembly);
+builder.Services.AddCustomSwagger(configuration, typeof(IdentityRoot).Assembly);
 builder.Services.AddCustomVersioning();
 builder.Services.AddCustomMediatR();
 builder.Services.AddValidatorsFromAssembly(typeof(IdentityRoot).Assembly);
 builder.Services.AddCustomProblemDetails();
 builder.Services.AddCustomMapster(typeof(IdentityRoot).Assembly);
-builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
 builder.Services.AddCustomHealthCheck();
 builder.Services.AddTransient<IEventMapper, EventMapper>();
 
@@ -62,7 +57,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
-app.UseMigrations();
+app.UseMigration<IdentityContext>();
 app.UseCorrelationId();
 app.UseRouting();
 app.UseHttpMetrics();
