@@ -29,7 +29,7 @@ public class GetAvailableFlightsQueryHandler : IQueryHandler<GetAvailableFlights
     {
         Guard.Against.Null(query, nameof(query));
 
-        var flight = await _flightDbContext.Flights.Where(x => !x.IsDeleted).ToListAsync(cancellationToken);
+        var flight = await _flightDbContext.Flights.ToListAsync(cancellationToken);
 
         if (!flight.Any())
             throw new FlightNotFountException();

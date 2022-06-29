@@ -28,7 +28,7 @@ public class GetAvailableSeatsQueryHandler : IRequestHandler<GetAvailableSeatsQu
     {
         Guard.Against.Null(query, nameof(query));
 
-        var seats = await _flightDbContext.Seats.Where(x => x.FlightId == query.FlightId && !x.IsDeleted).ToListAsync(cancellationToken);
+        var seats = await _flightDbContext.Seats.Where(x => x.FlightId == query.FlightId).ToListAsync(cancellationToken);
 
         if (!seats.Any())
             throw new AllSeatsFullException();

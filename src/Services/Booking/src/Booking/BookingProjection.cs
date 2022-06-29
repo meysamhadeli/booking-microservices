@@ -30,7 +30,7 @@ public class BookingProjection : IProjectionProcessor
     private async Task Apply(BookingCreatedDomainEvent @event, CancellationToken cancellationToken = default)
     {
         var reservation =
-            await _bookingDbContext.Bookings.SingleOrDefaultAsync(x => x.Id == @event.Id && !x.IsDeleted,
+            await _bookingDbContext.Bookings.SingleOrDefaultAsync(x => x.Id == @event.Id,
                 cancellationToken);
 
         if (reservation == null)

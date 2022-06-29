@@ -31,7 +31,7 @@ public class CreateSeatCommandHandler : IRequestHandler<CreateSeatCommand, SeatR
     {
         Guard.Against.Null(command, nameof(command));
 
-        var seat = await _flightDbContext.Seats.SingleOrDefaultAsync(x => x.Id == command.Id && !x.IsDeleted, cancellationToken);
+        var seat = await _flightDbContext.Seats.SingleOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
 
         if (seat is not null)
             throw new SeatAlreadyExistException();
