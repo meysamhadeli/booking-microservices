@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Core;
+using BuildingBlocks.Mongo;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

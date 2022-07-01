@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Booking.Data;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.MassTransit;
+using BuildingBlocks.Mongo;
 using BuildingBlocks.Web;
 using Grpc.Net.Client;
 using MassTransit;
@@ -16,6 +17,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Mongo2Go;
 using NSubstitute;
 using Respawn;
 using Serilog;
@@ -33,6 +36,8 @@ public class IntegrationTestFixture : IAsyncLifetime
 {
     private WebApplicationFactory<Program> _factory;
     public Checkpoint Checkpoint { get; set; }
+
+    private MongoDbRunner _mongoRunner;
     public Action<IServiceCollection>? TestRegistrationServices { get; set; }
     public IServiceProvider ServiceProvider => _factory.Services;
     public IConfiguration Configuration => _factory.Services.GetRequiredService<IConfiguration>();
@@ -67,11 +72,13 @@ public class IntegrationTestFixture : IAsyncLifetime
                     });
 
                     Checkpoint = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
-
-                    TestRegistrationServices?.Invoke(services);
                 });
             });
 
+        // _mongoRunner = MongoDbRunner.Start();
+        // var mongoOptions = _factory.Services.GetRequiredService<IOptions<MongoOptions>>();
+        // if (mongoOptions is not null)
+        //     mongoOptions.Value.ConnectionString = _mongoRunner.ConnectionString;
         return Task.CompletedTask;
     }
 

@@ -5,7 +5,9 @@ using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.MessageProcessor;
+using BuildingBlocks.Mongo;
 using BuildingBlocks.Web;
+using DotNetCore.CAP.MongoDB;
 using Flight.Data;
 using FluentAssertions.Common;
 using Grpc.Net.Client;
@@ -20,6 +22,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Mongo2Go;
 using NSubstitute;
 using Respawn;
 using Serilog;
@@ -36,6 +40,8 @@ public class FixtureCollection : ICollectionFixture<IntegrationTestFixture>
 public class IntegrationTestFixture : IAsyncLifetime
 {
     private WebApplicationFactory<Program> _factory;
+
+    private MongoDbRunner _mongoRunner;
     public Checkpoint Checkpoint { get; set; }
     public Action<IServiceCollection>? TestRegistrationServices { get; set; }
     public IServiceProvider ServiceProvider => _factory.Services;
@@ -67,7 +73,6 @@ public class IntegrationTestFixture : IAsyncLifetime
                 builder.UseEnvironment("test");
                 builder.ConfigureServices(services =>
                 {
-                    TestRegistrationServices?.Invoke(services);
                     services.AddMassTransitTestHarness(x =>
                     {
                         x.UsingRabbitMq((context, cfg) =>
@@ -85,10 +90,12 @@ public class IntegrationTestFixture : IAsyncLifetime
                     });
 
                     Checkpoint = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
-
-                    TestRegistrationServices?.Invoke(services);
                 });
             });
+
+        _mongoRunner = MongoDbRunner.Start();
+        var mongoOptions = _factory.Services.GetRequiredService<IOptions<MongoOptions>>();
+        mongoOptions.Value.ConnectionString = _mongoRunner.ConnectionString;
 
         return Task.CompletedTask;
     }
@@ -99,6 +106,7 @@ public class IntegrationTestFixture : IAsyncLifetime
             await Checkpoint.Reset(Configuration?.GetConnectionString("DefaultConnection"));
 
         await _factory.DisposeAsync();
+        _mongoRunner.Dispose();
     }
 
     public async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)
