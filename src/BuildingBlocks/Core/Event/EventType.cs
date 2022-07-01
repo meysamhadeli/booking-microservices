@@ -4,5 +4,5 @@ namespace BuildingBlocks.Core.Event;
 public enum EventType
 {
     IntegrationEvent = 1,
-    DomainEvent = 2,
+    DomainEvent = 2
 }

@@ -30,36 +30,43 @@ public sealed class EventDispatcher : IEventDispatcher
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task SendAsync(IDomainEvent domainEvent,
-        CancellationToken cancellationToken = default) => await SendAsync(new[] {domainEvent}, cancellationToken);
 
-    public async Task SendAsync(IReadOnlyList<IDomainEvent> domainEvents, CancellationToken cancellationToken = default)
+    public async Task SendAsync<T>(IReadOnlyList<T> events, CancellationToken cancellationToken = default)
+        where T : IEvent
     {
-        if (domainEvents is null) return;
-
-        var integrationEvents = await MapDomainEventToIntegrationEventAsync(domainEvents).ConfigureAwait(false);
-
-        if (integrationEvents.Count == 0) return;
-
-        foreach (var integrationEvent in integrationEvents)
+        async Task PublishIntegrationEvent(IReadOnlyList<IIntegrationEvent> integrationEvents)
         {
-            await _persistMessageProcessor.PublishMessageAsync(new MessageEnvelope(integrationEvent, SetHeaders()),
-                cancellationToken);
+            foreach (var integrationEvent in integrationEvents)
+            {
+                await _persistMessageProcessor.PublishMessageAsync(new MessageEnvelope(integrationEvent, SetHeaders()),
+                    cancellationToken);
+            }
+        }
+
+        if (events.Count > 0)
+        {
+            switch (events)
+            {
+                case IReadOnlyList<IDomainEvent> domainEvents:
+                {
+                    var integrationEvents = await MapDomainEventToIntegrationEventAsync(domainEvents)
+                        .ConfigureAwait(false);
+
+                    await PublishIntegrationEvent(integrationEvents);
+                    break;
+                }
+
+                case IReadOnlyList<IIntegrationEvent> integrationEvents:
+                    await PublishIntegrationEvent(integrationEvents);
+                    break;
+            }
         }
     }
 
+    public async Task SendAsync<T>(T @event, CancellationToken cancellationToken = default)
+        where T : IEvent =>
+        await SendAsync(new[] {@event}, cancellationToken);
 
-    public async Task SendAsync(IIntegrationEvent integrationEvent,
-        CancellationToken cancellationToken = default) => await SendAsync(new[] {integrationEvent}, cancellationToken);
-
-    public async Task SendAsync(IReadOnlyList<IIntegrationEvent> integrationEvents,
-        CancellationToken cancellationToken = default)
-    {
-        if (integrationEvents is null) return;
-
-        await _persistMessageProcessor.PublishMessageAsync(new MessageEnvelope(integrationEvents, SetHeaders()),
-            cancellationToken);
-    }
 
     private Task<IReadOnlyList<IIntegrationEvent>> MapDomainEventToIntegrationEventAsync(
         IReadOnlyList<IDomainEvent> events)
