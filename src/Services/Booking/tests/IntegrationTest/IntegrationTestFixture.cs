@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Booking.Data;
+using BuildingBlocks.Contracts.Grpc;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.Web;
 using Grpc.Net.Client;
+using Integration.Test.Fakes;
+using MagicOnion;
 using MassTransit;
 using MassTransit.Testing;
 using MediatR;
@@ -35,12 +40,11 @@ public class FixtureCollection : ICollectionFixture<IntegrationTestFixture>
 public class IntegrationTestFixture : IAsyncLifetime
 {
     private WebApplicationFactory<Program> _factory;
-    public Checkpoint Checkpoint { get; set; }
-
+    private Checkpoint _checkpoint;
     private MongoDbRunner _mongoRunner;
-    public Action<IServiceCollection>? TestRegistrationServices { get; set; }
-    public IServiceProvider ServiceProvider => _factory.Services;
-    public IConfiguration Configuration => _factory.Services.GetRequiredService<IConfiguration>();
+    private IServiceProvider _serviceProvider;
+    private Action<IServiceCollection>? _testRegistrationServices;
+    private IConfiguration _configuration;
     public HttpClient HttpClient => _factory.CreateClient();
     public ITestHarness TestHarness => CreateHarness();
     public GrpcChannel Channel => CreateChannel();
@@ -53,68 +57,78 @@ public class IntegrationTestFixture : IAsyncLifetime
                 builder.UseEnvironment("test");
                 builder.ConfigureServices(services =>
                 {
-                    services.ReplaceSingleton(AddHttpContextAccessorMock);
-                    TestRegistrationServices?.Invoke(services);
-                    services.AddMassTransitTestHarness(x =>
-                    {
-                        x.UsingRabbitMq((context, cfg) =>
-                        {
-                            var rabbitMqOptions = services.GetOptions<RabbitMqOptions>("RabbitMq");
-                            var host = rabbitMqOptions.HostName;
-
-                            cfg.Host(host, h =>
-                            {
-                                h.Username(rabbitMqOptions.UserName);
-                                h.Password(rabbitMqOptions.Password);
-                            });
-                            cfg.ConfigureEndpoints(context);
-                        });
-                    });
-
-                    Checkpoint = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
+                    _testRegistrationServices?.Invoke(services);
                 });
             });
 
-        // _mongoRunner = MongoDbRunner.Start();
-        // var mongoOptions = _factory.Services.GetRequiredService<IOptions<MongoOptions>>();
-        // if (mongoOptions is not null)
-        //     mongoOptions.Value.ConnectionString = _mongoRunner.ConnectionString;
+        RegisterServices(services =>
+        {
+            MockFlightGrpcServices(services);
+            MockPassengerGrpcServices(services);
+            services.ReplaceSingleton(AddHttpContextAccessorMock);
+            services.AddMassTransitTestHarness(x =>
+            {
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    var rabbitMqOptions = services.GetOptions<RabbitMqOptions>("RabbitMq");
+                    var host = rabbitMqOptions.HostName;
+
+                    cfg.Host(host, h =>
+                    {
+                        h.Username(rabbitMqOptions.UserName);
+                        h.Password(rabbitMqOptions.Password);
+                    });
+                    cfg.ConfigureEndpoints(context);
+                });
+            });
+        });
+
+        _serviceProvider = _factory.Services;
+        _configuration = _factory.Services.GetRequiredService<IConfiguration>();
+
+        _checkpoint = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
+
+        _mongoRunner = MongoDbRunner.Start();
+        var mongoOptions = _factory.Services.GetRequiredService<IOptions<MongoOptions>>();
+        if (mongoOptions.Value.ConnectionString != null)
+            mongoOptions.Value.ConnectionString = _mongoRunner.ConnectionString;
+
         return Task.CompletedTask;
     }
 
+    public void RegisterServices(Action<IServiceCollection> services) => _testRegistrationServices = services;
+
     public virtual async Task DisposeAsync()
     {
-        if (!string.IsNullOrEmpty(Configuration?.GetConnectionString("DefaultConnection")))
-            await Checkpoint.Reset(Configuration?.GetConnectionString("DefaultConnection"));
+        if (!string.IsNullOrEmpty(_configuration?.GetConnectionString("DefaultConnection")))
+            await _checkpoint.Reset(_configuration?.GetConnectionString("DefaultConnection"));
 
         await _factory.DisposeAsync();
+        _mongoRunner.Dispose();
     }
 
     // ref: https://github.com/trbenning/serilog-sinks-xunit
     public ILogger CreateLogger(ITestOutputHelper output)
     {
         if (output != null)
+        {
             return new LoggerConfiguration()
                 .WriteTo.TestOutput(output)
                 .CreateLogger();
+        }
 
         return null;
     }
 
-    public void RegisterTestServices(Action<IServiceCollection> services)
-    {
-        TestRegistrationServices = services;
-    }
-
     public async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)
     {
-        using var scope = ServiceProvider.CreateScope();
+        using var scope = _serviceProvider.CreateScope();
         await action(scope.ServiceProvider);
     }
 
     public async Task<T> ExecuteScopeAsync<T>(Func<IServiceProvider, Task<T>> action)
     {
-        using var scope = ServiceProvider.CreateScope();
+        using var scope = _serviceProvider.CreateScope();
 
         var result = await action(scope.ServiceProvider);
 
@@ -245,7 +259,7 @@ public class IntegrationTestFixture : IAsyncLifetime
 
     private ITestHarness CreateHarness()
     {
-        var harness = ServiceProvider.GetTestHarness();
+        var harness = _serviceProvider.GetTestHarness();
         harness.Start().GetAwaiter().GetResult();
         return harness;
     }
@@ -265,5 +279,37 @@ public class IntegrationTestFixture : IAsyncLifetime
         httpContextAccessorMock.HttpContext.Request.Scheme = "http";
 
         return httpContextAccessorMock;
+    }
+
+    private void MockPassengerGrpcServices(IServiceCollection services)
+    {
+        services.Replace(ServiceDescriptor.Singleton(x =>
+        {
+            var mock = Substitute.For<IPassengerGrpcService>();
+            mock.GetById(Arg.Any<long>())
+                .Returns(new UnaryResult<PassengerResponseDto>(new FakePassengerResponseDto().Generate()));
+
+            return mock;
+        }));
+    }
+
+    private void MockFlightGrpcServices(IServiceCollection services)
+    {
+        services.Replace(ServiceDescriptor.Singleton(x =>
+        {
+            var mock = Substitute.For<IFlightGrpcService>();
+
+            mock.GetById(Arg.Any<long>())
+                .Returns(new UnaryResult<FlightResponseDto>(Task.FromResult(new FakeFlightResponseDto().Generate())));
+
+            mock.GetAvailableSeats(Arg.Any<long>())
+                .Returns(
+                    new UnaryResult<IEnumerable<SeatResponseDto>>(Task.FromResult(FakeSeatsResponseDto.Generate())));
+
+            mock.ReserveSeat(new FakeReserveSeatRequestDto().Generate())
+                .Returns(new UnaryResult<SeatResponseDto>(Task.FromResult(FakeSeatsResponseDto.Generate().First())));
+
+            return mock;
+        }));
     }
 }
