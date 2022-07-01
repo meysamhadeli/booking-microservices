@@ -1,11 +1,15 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using Flight.Data;
+using Flight.Flights.Exceptions;
 using Flight.Flights.Models.Reads;
 using MapsterMapper;
 using MediatR;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace Flight.Flights.Features.CreateFlight.Reads;
 
@@ -27,6 +31,12 @@ public class CreateFlightMongoCommandHandler : ICommandHandler<CreateFlightMongo
         Guard.Against.Null(command, nameof(command));
 
         var flightReadModel = _mapper.Map<FlightReadModel>(command);
+
+        var flight = await _flightReadDbContext.Flight.AsQueryable()
+            .FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
+
+        if (flight is not null)
+            throw new FlightAlreadyExistException();
 
         await _flightReadDbContext.Flight.InsertOneAsync(flightReadModel, cancellationToken: cancellationToken);
 

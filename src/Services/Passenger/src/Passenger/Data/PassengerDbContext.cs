@@ -9,7 +9,7 @@ public sealed class PassengerDbContext : AppDbContextBase
 {
     public const string DefaultSchema = "dbo";
 
-    public PassengerDbContext(DbContextOptions options, IHttpContextAccessor httpContextAccessor) : base(options, httpContextAccessor)
+    public PassengerDbContext(DbContextOptions<PassengerDbContext> options, IHttpContextAccessor httpContextAccessor) : base(options, httpContextAccessor)
     {
     }
 

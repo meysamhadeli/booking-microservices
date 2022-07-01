@@ -9,7 +9,7 @@ public class BookingDbContext : AppDbContextBase
 {
     public const string DefaultSchema = "dbo";
 
-    public BookingDbContext(DbContextOptions options, IHttpContextAccessor httpContextAccessor) : base(options, httpContextAccessor)
+    public BookingDbContext(DbContextOptions<BookingDbContext> options, IHttpContextAccessor httpContextAccessor) : base(options, httpContextAccessor)
     {
     }
 

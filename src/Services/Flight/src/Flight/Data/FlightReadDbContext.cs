@@ -8,7 +8,7 @@ namespace Flight.Data;
 
 public class FlightReadDbContext : MongoDbContext
 {
-    public FlightReadDbContext(IOptions<MongoOptions> options) : base(options.Value)
+    public FlightReadDbContext(IOptions<MongoOptions> options) : base(options)
     {
         Flight = GetCollection<FlightReadModel>(nameof(Flight).Underscore());
     }

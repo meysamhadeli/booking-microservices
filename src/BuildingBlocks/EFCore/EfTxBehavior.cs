@@ -1,6 +1,7 @@
 using System.Data;
 using System.Text.Json;
 using BuildingBlocks.Core;
+using BuildingBlocks.Core.Event;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
