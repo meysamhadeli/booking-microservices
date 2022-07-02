@@ -8,8 +8,7 @@ using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
-[Collection(nameof(IntegrationTestFixture))]
-public class CreateFlightTests
+public class CreateFlightTests : IClassFixture<IntegrationTestFixture>
 {
     private readonly IntegrationTestFixture _fixture;
     private readonly ITestHarness _testHarness;
@@ -17,7 +16,7 @@ public class CreateFlightTests
     public CreateFlightTests(IntegrationTestFixture fixture)
     {
         _fixture = fixture;
-        _testHarness = _fixture.TestHarness;
+        _testHarness = fixture.TestHarness;
     }
 
     [Fact]
@@ -32,6 +31,7 @@ public class CreateFlightTests
         // Assert
         response.Should().NotBeNull();
         response?.FlightNumber.Should().Be(command.FlightNumber);
+
         (await _testHarness.Published.Any<Fault<FlightCreated>>()).Should().BeFalse();
         (await _testHarness.Published.Any<FlightCreated>()).Should().BeTrue();
     }

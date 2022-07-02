@@ -7,9 +7,7 @@ using MagicOnion.Client;
 using Xunit;
 
 namespace Integration.Test.Seat.Features;
-
-[Collection(nameof(IntegrationTestFixture))]
-public class ReserveSeatTests
+public class ReserveSeatTests : IClassFixture<IntegrationTestFixture>
 {
     private readonly IntegrationTestFixture _fixture;
     private readonly GrpcChannel _channel;

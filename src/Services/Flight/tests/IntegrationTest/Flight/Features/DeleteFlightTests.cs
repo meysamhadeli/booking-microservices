@@ -11,8 +11,7 @@ using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
-[Collection(nameof(IntegrationTestFixture))]
-public class DeleteFlightTests
+public class DeleteFlightTests : IClassFixture<IntegrationTestFixture>
 {
     private readonly IntegrationTestFixture _fixture;
     private readonly ITestHarness _testHarness;

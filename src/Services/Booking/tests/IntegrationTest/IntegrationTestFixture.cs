@@ -21,7 +21,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Mongo2Go;
 using NSubstitute;
@@ -32,24 +31,19 @@ using Xunit.Abstractions;
 
 namespace Integration.Test;
 
-[CollectionDefinition(nameof(IntegrationTestFixture))]
-public class FixtureCollection : ICollectionFixture<IntegrationTestFixture>
-{
-}
-
 public class IntegrationTestFixture : IAsyncLifetime
 {
-    private WebApplicationFactory<Program> _factory;
     private Checkpoint _checkpoint;
+    private IConfiguration _configuration;
+    private WebApplicationFactory<Program> _factory;
     private MongoDbRunner _mongoRunner;
     private IServiceProvider _serviceProvider;
     private Action<IServiceCollection>? _testRegistrationServices;
-    private IConfiguration _configuration;
-    public HttpClient HttpClient => _factory.CreateClient();
-    public ITestHarness TestHarness => CreateHarness();
-    public GrpcChannel Channel => CreateChannel();
+    public ITestHarness TestHarness { get; private set; }
+    public HttpClient HttpClient { get; private set; }
+    public GrpcChannel Channel { get; private set; }
 
-    public virtual Task InitializeAsync()
+    public Task InitializeAsync()
     {
         _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
@@ -65,6 +59,7 @@ public class IntegrationTestFixture : IAsyncLifetime
         {
             MockFlightGrpcServices(services);
             MockPassengerGrpcServices(services);
+
             services.ReplaceSingleton(AddHttpContextAccessorMock);
             services.AddMassTransitTestHarness(x =>
             {
@@ -86,6 +81,10 @@ public class IntegrationTestFixture : IAsyncLifetime
         _serviceProvider = _factory.Services;
         _configuration = _factory.Services.GetRequiredService<IConfiguration>();
 
+        HttpClient = _factory.CreateClient();
+        Channel = CreateChannel();
+        TestHarness = CreateHarness();
+
         _checkpoint = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
 
         _mongoRunner = MongoDbRunner.Start();
@@ -96,15 +95,16 @@ public class IntegrationTestFixture : IAsyncLifetime
         return Task.CompletedTask;
     }
 
-    public void RegisterServices(Action<IServiceCollection> services) => _testRegistrationServices = services;
-
-    public virtual async Task DisposeAsync()
+    public async Task DisposeAsync()
     {
-        if (!string.IsNullOrEmpty(_configuration?.GetConnectionString("DefaultConnection")))
-            await _checkpoint.Reset(_configuration?.GetConnectionString("DefaultConnection"));
-
-        await _factory.DisposeAsync();
+        await _checkpoint.Reset(_configuration?.GetConnectionString("DefaultConnection"));
         _mongoRunner.Dispose();
+        await _factory.DisposeAsync();
+    }
+
+    public void RegisterServices(Action<IServiceCollection> services)
+    {
+        _testRegistrationServices = services;
     }
 
     // ref: https://github.com/trbenning/serilog-sinks-xunit
@@ -260,7 +260,6 @@ public class IntegrationTestFixture : IAsyncLifetime
     private ITestHarness CreateHarness()
     {
         var harness = _serviceProvider.GetTestHarness();
-        harness.Start().GetAwaiter().GetResult();
         return harness;
     }
 

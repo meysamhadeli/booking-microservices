@@ -13,9 +13,7 @@ using NSubstitute;
 using Xunit;
 
 namespace Integration.Test.Booking.Features;
-
-[Collection(nameof(IntegrationTestFixture))]
-public class CreateBookingTests
+public class CreateBookingTests: IClassFixture<IntegrationTestFixture>
 {
     private readonly GrpcChannel _channel;
     private readonly IntegrationTestFixture _fixture;

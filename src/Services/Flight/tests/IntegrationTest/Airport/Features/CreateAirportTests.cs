@@ -7,9 +7,7 @@ using MassTransit.Testing;
 using Xunit;
 
 namespace Integration.Test.Airport.Features;
-
-[Collection(nameof(IntegrationTestFixture))]
-public class CreateAirportTests
+public class CreateAirportTests : IClassFixture<IntegrationTestFixture>
 {
     private readonly IntegrationTestFixture _fixture;
     private readonly ITestHarness _testHarness;

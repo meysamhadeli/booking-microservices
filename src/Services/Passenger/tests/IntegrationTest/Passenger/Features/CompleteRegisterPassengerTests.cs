@@ -7,8 +7,7 @@ using Xunit;
 
 namespace Integration.Test.Passenger.Features;
 
-[Collection(nameof(IntegrationTestFixture))]
-public class CompleteRegisterPassengerTests
+public class CompleteRegisterPassengerTests : IClassFixture<IntegrationTestFixture>
 {
     private readonly IntegrationTestFixture _fixture;
     private readonly ITestHarness _testHarness;

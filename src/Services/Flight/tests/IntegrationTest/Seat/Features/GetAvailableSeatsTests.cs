@@ -9,8 +9,7 @@ using Xunit;
 
 namespace Integration.Test.Seat.Features;
 
-[Collection(nameof(IntegrationTestFixture))]
-public class GetAvailableSeatsTests
+public class GetAvailableSeatsTests : IClassFixture<IntegrationTestFixture>
 {
     private readonly IntegrationTestFixture _fixture;
     private readonly GrpcChannel _channel;
