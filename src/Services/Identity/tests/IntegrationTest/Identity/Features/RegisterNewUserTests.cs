@@ -8,8 +8,7 @@ using Xunit;
 
 namespace Integration.Test.Identity.Features;
 
-[Collection(nameof(IntegrationTestFixture))]
-public class RegisterNewUserTests
+public class RegisterNewUserTests : IClassFixture<IntegrationTestFixture>
 {
     private readonly IntegrationTestFixture _fixture;
     private readonly ITestHarness _testHarness;

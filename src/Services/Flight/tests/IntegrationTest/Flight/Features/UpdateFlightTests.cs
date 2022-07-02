@@ -7,9 +7,7 @@ using MassTransit.Testing;
 using Xunit;
 
 namespace Integration.Test.Flight.Features;
-
-[Collection(nameof(IntegrationTestFixture))]
-public class UpdateFlightTests
+public class UpdateFlightTests : IClassFixture<IntegrationTestFixture>
 {
     private readonly IntegrationTestFixture _fixture;
     private readonly ITestHarness _testHarness;
@@ -17,7 +15,7 @@ public class UpdateFlightTests
     public UpdateFlightTests(IntegrationTestFixture fixture)
     {
         _fixture = fixture;
-        _testHarness = _fixture.TestHarness;
+        _testHarness = fixture.TestHarness;
     }
 
     [Fact]

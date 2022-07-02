@@ -11,8 +11,7 @@ using Xunit;
 
 namespace Integration.Test.Passenger.Features;
 
-[Collection(nameof(IntegrationTestFixture))]
-public class GetPassengerByIdTests
+public class GetPassengerByIdTests : IClassFixture<IntegrationTestFixture>
 {
     private readonly IntegrationTestFixture _fixture;
     private readonly ITestHarness _testHarness;

@@ -10,8 +10,7 @@ using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
-[Collection(nameof(IntegrationTestFixture))]
-public class GetAvailableFlightsTests
+public class GetAvailableFlightsTests : IClassFixture<IntegrationTestFixture>
 {
     private readonly IntegrationTestFixture _fixture;
     private readonly GrpcChannel _channel;
