@@ -8,20 +8,19 @@ using Flight.Data;
 using Flight.Flights.Dtos;
 using Flight.Flights.Exceptions;
 using MapsterMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 namespace Flight.Flights.Features.GetAvailableFlights;
 
 public class GetAvailableFlightsQueryHandler : IQueryHandler<GetAvailableFlightsQuery, IEnumerable<FlightResponseDto>>
 {
-    private readonly FlightDbContext _flightDbContext;
     private readonly IMapper _mapper;
+    private readonly FlightReadDbContext _flightReadDbContext;
 
-    public GetAvailableFlightsQueryHandler(IMapper mapper, FlightDbContext flightDbContext)
+    public GetAvailableFlightsQueryHandler(IMapper mapper, FlightReadDbContext flightReadDbContext)
     {
         _mapper = mapper;
-        _flightDbContext = flightDbContext;
+        _flightReadDbContext = flightReadDbContext;
     }
 
     public async Task<IEnumerable<FlightResponseDto>> Handle(GetAvailableFlightsQuery query,
@@ -29,7 +28,8 @@ public class GetAvailableFlightsQueryHandler : IQueryHandler<GetAvailableFlights
     {
         Guard.Against.Null(query, nameof(query));
 
-        var flight = await _flightDbContext.Flights.ToListAsync(cancellationToken);
+        var flight = (await _flightReadDbContext.Flight.AsQueryable().ToListAsync(cancellationToken))
+            .Where(x => !x.IsDeleted);
 
         if (!flight.Any())
             throw new FlightNotFountException();

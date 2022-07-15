@@ -8,19 +8,19 @@ using Flight.Seats.Dtos;
 using Flight.Seats.Exceptions;
 using MapsterMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 namespace Flight.Seats.Features.GetAvailableSeats;
 
 public class GetAvailableSeatsQueryHandler : IRequestHandler<GetAvailableSeatsQuery, IEnumerable<SeatResponseDto>>
 {
-    private readonly FlightDbContext _flightDbContext;
     private readonly IMapper _mapper;
+    private readonly FlightReadDbContext _flightReadDbContext;
 
-    public GetAvailableSeatsQueryHandler(IMapper mapper, FlightDbContext flightDbContext)
+    public GetAvailableSeatsQueryHandler(IMapper mapper, FlightReadDbContext flightReadDbContext)
     {
         _mapper = mapper;
-        _flightDbContext = flightDbContext;
+        _flightReadDbContext = flightReadDbContext;
     }
 
 
@@ -28,7 +28,8 @@ public class GetAvailableSeatsQueryHandler : IRequestHandler<GetAvailableSeatsQu
     {
         Guard.Against.Null(query, nameof(query));
 
-        var seats = await _flightDbContext.Seats.Where(x => x.FlightId == query.FlightId).ToListAsync(cancellationToken);
+        var seats = (await _flightReadDbContext.Seat.AsQueryable().ToListAsync(cancellationToken))
+            .Where(x => !x.IsDeleted);
 
         if (!seats.Any())
             throw new AllSeatsFullException();

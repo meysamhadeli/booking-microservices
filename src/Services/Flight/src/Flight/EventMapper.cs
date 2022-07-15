@@ -9,6 +9,9 @@ using Flight.Flights.Events.Domain;
 using Flight.Flights.Features.CreateFlight.Reads;
 using Flight.Flights.Features.DeleteFlight.Reads;
 using Flight.Flights.Features.UpdateFlight.Reads;
+using Flight.Seats.Events;
+using Flight.Seats.Features.CreateSeat.Reads;
+using Flight.Seats.Features.ReserveSeat.Reads;
 
 namespace Flight;
 
@@ -24,6 +27,8 @@ public sealed class EventMapper : IEventMapper
             FlightDeletedDomainEvent e => new FlightDeleted(e.Id),
             AirportCreatedDomainEvent e => new AirportCreated(e.Id),
             AircraftCreatedDomainEvent e => new AircraftCreated(e.Id),
+            SeatCreatedDomainEvent e => new SeatCreated(e.Id),
+            SeatReservedDomainEvent e => new SeatReserved(e.Id),
             _ => null
         };
     }
@@ -40,6 +45,8 @@ public sealed class EventMapper : IEventMapper
                 e.ArriveDate, e.ArriveAirportId, e.DurationMinutes, e.FlightDate, e.Status, e.Price, e.IsDeleted),
             AircraftCreatedDomainEvent e => new CreateAircraftMongoCommand(e.Id, e.Name, e.Model, e.ManufacturingYear, e.IsDeleted),
             AirportCreatedDomainEvent e => new CreateAirportMongoCommand(e.Id, e.Name, e.Address, e.Code, e.IsDeleted),
+            SeatCreatedDomainEvent e => new CreateSeatMongoCommand(e.Id, e.SeatNumber, e.Type, e.Class, e.FlightId, e.IsDeleted),
+            SeatReservedDomainEvent e => new ReserveSeatMongoCommand(e.Id, e.SeatNumber, e.Type, e.Class, e.FlightId, e.IsDeleted),
             _ => null
         };
     }
