@@ -50,7 +50,7 @@ public class RegisterNewUserCommandHandler : ICommandHandler<RegisterNewUserComm
             throw new RegisterIdentityUserException(string.Join(',', roleResult.Errors.Select(e => e.Description)));
 
         await _eventDispatcher.SendAsync(new UserCreated(applicationUser.Id, applicationUser.FirstName + " " + applicationUser.LastName,
-                applicationUser.PassPortNumber), cancellationToken);
+                applicationUser.PassPortNumber), cancellationToken: cancellationToken);
 
         return new RegisterNewUserResponseDto
         {

@@ -14,7 +14,7 @@ public class Airport : Aggregate<long>
     public string Address { get; private set; }
     public string Code { get; private set; }
 
-    public static Airport Create(long id, string name, string address, string code)
+    public static Airport Create(long id, string name, string address, string code, bool isDeleted = false)
     {
         var airport = new Airport
         {
@@ -28,7 +28,8 @@ public class Airport : Aggregate<long>
             airport.Id,
             airport.Name,
             airport.Address,
-            airport.Code);
+            airport.Code,
+            isDeleted);
 
         airport.AddDomainEvent(@event);
 

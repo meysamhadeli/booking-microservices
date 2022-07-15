@@ -6,12 +6,8 @@ namespace Flight.Flights.Features.CreateFlight.Reads;
 
 public class CreateFlightMongoCommand : InternalCommand
 {
-    public CreateFlightMongoCommand()
-    {
-
-    }
-
-    public CreateFlightMongoCommand(long Id, string FlightNumber, long AircraftId, DateTime DepartureDate, long DepartureAirportId,
+    public CreateFlightMongoCommand(long Id, string FlightNumber, long AircraftId, DateTime DepartureDate,
+        long DepartureAirportId,
         DateTime ArriveDate, long ArriveAirportId, decimal DurationMinutes, DateTime FlightDate, FlightStatus Status,
         decimal Price, bool IsDeleted)
     {
@@ -29,15 +25,15 @@ public class CreateFlightMongoCommand : InternalCommand
         this.IsDeleted = IsDeleted;
     }
 
-    public string FlightNumber { get; init; }
-    public long AircraftId { get; init; }
-    public DateTime DepartureDate { get; init; }
-    public long DepartureAirportId { get; init; }
-    public DateTime ArriveDate { get; init; }
-    public long ArriveAirportId { get; init; }
-    public decimal DurationMinutes { get; init; }
-    public DateTime FlightDate { get; init; }
-    public FlightStatus Status { get; init; }
-    public decimal Price { get; init; }
-    public bool IsDeleted { get; init; }
+    public string FlightNumber { get; }
+    public long AircraftId { get; }
+    public DateTime DepartureDate { get; }
+    public long DepartureAirportId { get; }
+    public DateTime ArriveDate { get; }
+    public long ArriveAirportId { get; }
+    public decimal DurationMinutes { get; }
+    public DateTime FlightDate { get; }
+    public FlightStatus Status { get; }
+    public decimal Price { get; }
+    public bool IsDeleted { get; }
 }

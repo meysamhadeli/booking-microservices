@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
@@ -33,7 +32,7 @@ public class CreateFlightMongoCommandHandler : ICommandHandler<CreateFlightMongo
         var flightReadModel = _mapper.Map<FlightReadModel>(command);
 
         var flight = await _flightReadDbContext.Flight.AsQueryable()
-            .FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Id == flightReadModel.Id, cancellationToken);
 
         if (flight is not null)
             throw new FlightAlreadyExistException();

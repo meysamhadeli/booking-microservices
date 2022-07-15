@@ -44,10 +44,6 @@ public class CreateFlightCommandHandler : ICommandHandler<CreateFlightCommand, F
 
         var newFlight = await _flightDbContext.Flights.AddAsync(flightEntity, cancellationToken);
 
-        var createFlightMongoCommand = _mapper.Map<CreateFlightMongoCommand>(newFlight.Entity);
-
-        await _persistMessageProcessor.AddInternalMessageAsync(createFlightMongoCommand, cancellationToken);
-
         return _mapper.Map<FlightResponseDto>(newFlight.Entity);
     }
 }

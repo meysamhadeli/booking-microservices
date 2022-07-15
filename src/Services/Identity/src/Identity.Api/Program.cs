@@ -63,10 +63,10 @@ app.UseRouting();
 app.UseHttpMetrics();
 app.UseProblemDetails();
 app.UseHttpsRedirection();
+app.UseCustomHealthCheck();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseIdentityServer();
-app.UseCustomHealthCheck();
 
 app.UseEndpoints(endpoints =>
 {

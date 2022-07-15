@@ -7,16 +7,19 @@ namespace Booking;
 
 public sealed class EventMapper : IEventMapper
 {
-    public IEnumerable<IIntegrationEvent> MapAll(IEnumerable<IDomainEvent> events)
-    {
-        return events.Select(Map);
-    }
-
-    public IIntegrationEvent Map(IDomainEvent @event)
+    public IIntegrationEvent MapToIntegrationEvent(IDomainEvent @event)
     {
         return @event switch
         {
             BookingCreatedDomainEvent e => new BookingCreated(e.Id),
+            _ => null
+        };
+    }
+
+    public InternalCommand MapToInternalCommand(IDomainEvent @event)
+    {
+        return @event switch
+        {
             _ => null
         };
     }

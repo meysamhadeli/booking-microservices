@@ -61,7 +61,9 @@ public class EfTxBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TRe
 
             var domainEvents = _dbContextBase.GetDomainEvents();
 
-            await _eventDispatcher.SendAsync(domainEvents.ToArray(), cancellationToken);
+            var eventType = typeof(TRequest).IsAssignableTo(typeof(IInternalCommand)) ? EventType.InternalCommand : EventType.DomainEvent;
+
+            await _eventDispatcher.SendAsync(domainEvents.ToArray(), eventType, cancellationToken);
 
             return response;
         }

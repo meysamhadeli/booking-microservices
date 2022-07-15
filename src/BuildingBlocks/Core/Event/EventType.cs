@@ -3,6 +3,7 @@ namespace BuildingBlocks.Core.Event;
 [Flags]
 public enum EventType
 {
-    IntegrationEvent = 1,
-    DomainEvent = 2
+    DomainEvent = 1,
+    IntegrationEvent = 2,
+    InternalCommand = 4
 }

@@ -6,20 +6,20 @@ using Flight.Data;
 using Flight.Flights.Dtos;
 using Flight.Flights.Exceptions;
 using MapsterMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace Flight.Flights.Features.GetFlightById;
 
 public class GetFlightByIdQueryHandler : IQueryHandler<GetFlightByIdQuery, FlightResponseDto>
 {
-    private readonly FlightDbContext _flightDbContext;
     private readonly IMapper _mapper;
+    private readonly FlightReadDbContext _flightReadDbContext;
 
-    public GetFlightByIdQueryHandler(IMapper mapper, FlightDbContext flightDbContext)
+    public GetFlightByIdQueryHandler(IMapper mapper, FlightReadDbContext flightReadDbContext)
     {
         _mapper = mapper;
-        _flightDbContext = flightDbContext;
+        _flightReadDbContext = flightReadDbContext;
     }
 
     public async Task<FlightResponseDto> Handle(GetFlightByIdQuery query, CancellationToken cancellationToken)
@@ -27,7 +27,7 @@ public class GetFlightByIdQueryHandler : IQueryHandler<GetFlightByIdQuery, Fligh
         Guard.Against.Null(query, nameof(query));
 
         var flight =
-            await _flightDbContext.Flights.SingleOrDefaultAsync(x => x.Id == query.Id, cancellationToken);
+            await _flightReadDbContext.Flight.AsQueryable().SingleOrDefaultAsync(x => x.Id == query.Id, cancellationToken);
 
         if (flight is null)
             throw new FlightNotFountException();

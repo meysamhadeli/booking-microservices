@@ -56,6 +56,21 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 GET {{flight-api}}
 ###
 
+###
+# @name Create_Seat
+Post {{api-gateway}}/api/v1/flight/seat
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+
+{
+  "seatNumber": "12H9",
+  "type": 1,
+  "class": 1,
+  "flightId": 1
+}
+###
+
 
 ###
 # @name Reserve_Seat
@@ -66,7 +81,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
   "flightId": 1,
-  "seatNumber": "12C"
+  "seatNumber": "12H9"
 }
 ###
 
@@ -143,6 +158,20 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 }
 ###
 
+
+###
+# @name Delete_Flights
+DELETE   {{api-gateway}}/api/v1/flight
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+
+{
+  "id": 1
+}
+###
+
+
 ###
 # @name Create_Airport
 POST {{api-gateway}}/api/v1/flight/airport
@@ -167,9 +196,9 @@ Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
-  "name": "airbus",
-  "model": "320",
-  "manufacturingYear": 2010
+  "name": "airbus2",
+  "model": "322",
+  "manufacturingYear": 2012
 }
 ###
 
