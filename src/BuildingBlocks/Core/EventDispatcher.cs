@@ -31,20 +31,22 @@ public sealed class EventDispatcher : IEventDispatcher
     }
 
 
-    public async Task SendAsync<T>(IReadOnlyList<T> events, CancellationToken cancellationToken = default)
+    public async Task SendAsync<T>(IReadOnlyList<T> events, EventType eventType = default,
+        CancellationToken cancellationToken = default)
         where T : IEvent
     {
-        async Task PublishIntegrationEvent(IReadOnlyList<IIntegrationEvent> integrationEvents)
-        {
-            foreach (var integrationEvent in integrationEvents)
-            {
-                await _persistMessageProcessor.PublishMessageAsync(new MessageEnvelope(integrationEvent, SetHeaders()),
-                    cancellationToken);
-            }
-        }
-
         if (events.Count > 0)
         {
+            async Task PublishIntegrationEvent(IReadOnlyList<IIntegrationEvent> integrationEvents)
+            {
+                foreach (var integrationEvent in integrationEvents)
+                {
+                    await _persistMessageProcessor.PublishMessageAsync(
+                        new MessageEnvelope(integrationEvent, SetHeaders()),
+                        cancellationToken);
+                }
+            }
+
             switch (events)
             {
                 case IReadOnlyList<IDomainEvent> domainEvents:
@@ -60,12 +62,24 @@ public sealed class EventDispatcher : IEventDispatcher
                     await PublishIntegrationEvent(integrationEvents);
                     break;
             }
+
+            if (eventType == EventType.InternalCommand)
+            {
+                var internalMessages = await MapDomainEventToInternalCommandAsync(events as IReadOnlyList<IDomainEvent>)
+                    .ConfigureAwait(false);
+
+                foreach (var internalMessage in internalMessages)
+                {
+                    await _persistMessageProcessor.AddInternalMessageAsync(internalMessage, cancellationToken);
+                }
+            }
         }
     }
 
-    public async Task SendAsync<T>(T @event, CancellationToken cancellationToken = default)
+    public async Task SendAsync<T>(T @event, EventType eventType = default,
+        CancellationToken cancellationToken = default)
         where T : IEvent =>
-        await SendAsync(new[] {@event}, cancellationToken);
+        await SendAsync(new[] {@event}, eventType, cancellationToken);
 
 
     private Task<IReadOnlyList<IIntegrationEvent>> MapDomainEventToIntegrationEventAsync(
@@ -84,7 +98,7 @@ public sealed class EventDispatcher : IEventDispatcher
             var eventType = @event.GetType();
             _logger.LogTrace($"Handling domain event: {eventType.Name}");
 
-            var integrationEvent = _eventMapper.Map(@event);
+            var integrationEvent = _eventMapper.MapToIntegrationEvent(@event);
 
             if (integrationEvent is null) continue;
 
@@ -94,6 +108,31 @@ public sealed class EventDispatcher : IEventDispatcher
         _logger.LogTrace("Processing integration events done...");
 
         return Task.FromResult<IReadOnlyList<IIntegrationEvent>>(integrationEvents);
+    }
+
+
+    private Task<IReadOnlyList<InternalCommand>> MapDomainEventToInternalCommandAsync(
+        IReadOnlyList<IDomainEvent> events)
+    {
+        _logger.LogTrace("Processing internal message start...");
+
+        var internalCommands = new List<InternalCommand>();
+        using var scope = _serviceScopeFactory.CreateScope();
+        foreach (var @event in events)
+        {
+            var eventType = @event.GetType();
+            _logger.LogTrace($"Handling domain event: {eventType.Name}");
+
+            var integrationEvent = _eventMapper.MapToInternalCommand(@event);
+
+            if (integrationEvent is null) continue;
+
+            internalCommands.Add(integrationEvent);
+        }
+
+        _logger.LogTrace("Processing internal message done...");
+
+        return Task.FromResult<IReadOnlyList<InternalCommand>>(internalCommands);
     }
 
     private IEnumerable<IIntegrationEvent> GetWrappedIntegrationEvents(IReadOnlyList<IDomainEvent> domainEvents)

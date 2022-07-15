@@ -14,7 +14,7 @@ public class Aircraft : Aggregate<long>
     public string Model { get; private set; }
     public int ManufacturingYear { get; private set; }
 
-    public static Aircraft Create(long id, string name, string model, int manufacturingYear)
+    public static Aircraft Create(long id, string name, string model, int manufacturingYear, bool isDeleted = false)
     {
         var aircraft = new Aircraft
         {
@@ -28,7 +28,8 @@ public class Aircraft : Aggregate<long>
             aircraft.Id,
             aircraft.Name,
             aircraft.Model,
-            aircraft.ManufacturingYear);
+            aircraft.ManufacturingYear,
+            isDeleted);
 
         aircraft.AddDomainEvent(@event);
 

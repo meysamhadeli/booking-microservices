@@ -7,6 +7,7 @@ namespace Flight.Flights.Models.Reads;
 public class FlightReadModel
 {
     public long Id { get; init; }
+    public long FlightId { get; set; }
     public string FlightNumber { get; init; }
     public long AircraftId { get; init; }
     public DateTime DepartureDate { get; init; }

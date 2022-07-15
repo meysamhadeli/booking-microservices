@@ -143,6 +143,20 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 }
 ###
 
+
+###
+# @name Delete_Flights
+DELETE   {{api-gateway}}/api/v1/flight
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+
+{
+  "id": 1
+}
+###
+
+
 ###
 # @name Create_Airport
 POST {{api-gateway}}/api/v1/flight/airport

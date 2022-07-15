@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.Event;
 
@@ -7,12 +5,15 @@ namespace Identity;
 
 public sealed class EventMapper : IEventMapper
 {
-    public IEnumerable<IIntegrationEvent> MapAll(IEnumerable<IDomainEvent> events)
+    public IIntegrationEvent MapToIntegrationEvent(IDomainEvent @event)
     {
-        return events.Select(Map);
+        return @event switch
+        {
+            _ => null
+        };
     }
 
-    public IIntegrationEvent Map(IDomainEvent @event)
+    public InternalCommand MapToInternalCommand(IDomainEvent @event)
     {
         return @event switch
         {

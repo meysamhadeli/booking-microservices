@@ -10,14 +10,14 @@ using MediatR;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-namespace Flight.Flights.Features.CreateFlight.Reads;
+namespace Flight.Flights.Features.DeleteFlight.Reads;
 
-public class CreateFlightMongoCommandHandler : ICommandHandler<CreateFlightMongoCommand>
+public class DeleteFlightMongoCommandHandler : ICommandHandler<DeleteFlightMongoCommand>
 {
     private readonly FlightReadDbContext _flightReadDbContext;
     private readonly IMapper _mapper;
 
-    public CreateFlightMongoCommandHandler(
+    public DeleteFlightMongoCommandHandler(
         FlightReadDbContext flightReadDbContext,
         IMapper mapper)
     {
@@ -25,19 +25,23 @@ public class CreateFlightMongoCommandHandler : ICommandHandler<CreateFlightMongo
         _mapper = mapper;
     }
 
-    public async Task<Unit> Handle(CreateFlightMongoCommand command, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(DeleteFlightMongoCommand command, CancellationToken cancellationToken)
     {
         Guard.Against.Null(command, nameof(command));
 
         var flightReadModel = _mapper.Map<FlightReadModel>(command);
 
         var flight = await _flightReadDbContext.Flight.AsQueryable()
-            .FirstOrDefaultAsync(x => x.Id == flightReadModel.Id, cancellationToken);
+            .FirstOrDefaultAsync(x => x.FlightId == flightReadModel.FlightId, cancellationToken);
 
-        if (flight is not null)
-            throw new FlightAlreadyExistException();
+        if (flight is null)
+            throw new FlightNotFountException();
 
-        await _flightReadDbContext.Flight.InsertOneAsync(flightReadModel, cancellationToken: cancellationToken);
+        await _flightReadDbContext.Flight.UpdateOneAsync(
+            x => x.FlightId == flightReadModel.FlightId,
+            Builders<FlightReadModel>.Update
+                .Set(x => x.IsDeleted, flightReadModel.IsDeleted),
+            cancellationToken: cancellationToken);
 
         return Unit.Value;
     }

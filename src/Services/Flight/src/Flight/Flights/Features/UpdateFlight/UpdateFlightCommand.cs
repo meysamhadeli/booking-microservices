@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Flight.Flights.Features.UpdateFlight;
 
-public record UpdateFlightCommand : ICommand<FlightResponseDto>, IInvalidateCacheRequest
+public record UpdateFlightCommand : ICommand<FlightResponseDto>, IInvalidateCacheRequest, IInternalCommand
 {
     public long Id { get; init; }
     public string FlightNumber { get; init; }

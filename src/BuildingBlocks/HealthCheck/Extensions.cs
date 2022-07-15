@@ -23,11 +23,14 @@ public static class Extensions
         var mongoOptions = services.GetOptions<MongoOptions>("MongoOptions");
         var logOptions = services.GetOptions<LogOptions>("LogOptions");
 
-        services.AddHealthChecks()
+        var healthChecksBuilder = services.AddHealthChecks()
             .AddSqlServer(sqlOptions.DefaultConnection)
-            .AddMongoDb(mongoOptions.ConnectionString)
             .AddRabbitMQ(rabbitConnectionString: $"amqp://{rabbitMqOptions.UserName}:{rabbitMqOptions.Password}@{rabbitMqOptions.HostName}")
             .AddElasticsearch(logOptions.ElasticUri);
+
+        if (mongoOptions.ConnectionString is not null)
+            healthChecksBuilder.AddMongoDb(mongoOptions.ConnectionString);
+
 
         services.AddHealthChecksUI(setup =>
         {

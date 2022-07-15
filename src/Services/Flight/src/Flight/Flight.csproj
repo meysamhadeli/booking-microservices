@@ -16,7 +16,6 @@
     <Folder Include="Airports\Exceptions" />
     <Folder Include="Data\Migrations" />
     <Folder Include="Enum" />
-    <Folder Include="Flights\Features\UpdateFlight" />
     <Folder Include="Seats\Features\CreateSeat" />
   </ItemGroup>
 
