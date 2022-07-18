@@ -24,7 +24,6 @@ public abstract class AppDbContextBase : DbContext, IDbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         // ref: https://github.com/pdevito3/MessageBusTestingInMemHarness/blob/main/RecipeManagement/src/RecipeManagement/Databases/RecipesDbContext.cs
-        builder.FilterSoftDeletedProperties();
     }
 
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)

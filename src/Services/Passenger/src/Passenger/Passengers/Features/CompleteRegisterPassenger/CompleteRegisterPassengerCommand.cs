@@ -7,5 +7,5 @@ namespace Passenger.Passengers.Features.CompleteRegisterPassenger;
 
 public record CompleteRegisterPassengerCommand(string PassportNumber, PassengerType PassengerType, int Age) : ICommand<PassengerResponseDto>
 {
-    public long Id { get; set; } = SnowFlakIdGenerator.NewId();
+    public long Id { get; init; } = SnowFlakIdGenerator.NewId();
 }

@@ -10,5 +10,5 @@ public record CreateFlightCommand(string FlightNumber, long AircraftId, long Dep
     DateTime DepartureDate, DateTime ArriveDate, long ArriveAirportId,
     decimal DurationMinutes, DateTime FlightDate, FlightStatus Status, decimal Price) : ICommand<FlightResponseDto>, IInternalCommand
 {
-    public long Id { get; set; } = SnowFlakIdGenerator.NewId();
+    public long Id { get; init; } = SnowFlakIdGenerator.NewId();
 }

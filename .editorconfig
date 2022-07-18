@@ -341,6 +341,10 @@ dotnet_diagnostic.RCS1046.severity = Suggestion
 # RCS1047: Non-asynchronous method name should not end with 'Async'.
 dotnet_diagnostic.RCS1047.severity = error
 
+# https://github.com/JosefPihrt/Roslynator/blob/main/docs/analyzers/RCS1174.md
+# RCS1174: Remove redundant async/await.
+dotnet_diagnostic.RCS1174.severity = None
+
 ##################################################################################
 ## https://github.com/semihokur/asyncfixer
 ## AsyncFixer01

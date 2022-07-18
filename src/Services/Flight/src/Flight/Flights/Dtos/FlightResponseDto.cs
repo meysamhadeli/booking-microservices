@@ -6,6 +6,7 @@ public record FlightResponseDto
 {
     public long Id { get; init; }
     public string FlightNumber { get; init; }
+    public long FlightId { get; set; }
     public long AircraftId { get; init; }
     public long DepartureAirportId { get; init; }
     public DateTime DepartureDate { get; init; }

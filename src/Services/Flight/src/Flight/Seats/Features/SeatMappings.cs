@@ -16,6 +16,9 @@ public class SeatMappings : IRegister
         config.NewConfig<CreateSeatMongoCommand, SeatReadModel>()
             .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
             .Map(d => d.SeatId, s => s.Id);
+        config.NewConfig<Seat, SeatReadModel>()
+            .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
+            .Map(d => d.SeatId, s => s.Id);
         config.NewConfig<ReserveSeatMongoCommand, SeatReadModel>()
             .Map(d => d.SeatId, s => s.Id);
     }

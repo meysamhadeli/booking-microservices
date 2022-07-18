@@ -61,6 +61,8 @@ namespace BuildingBlocks.Contracts.Grpc;
         public FlightStatus Status { get; init; }
         [Key(10)]
         public decimal Price { get; init; }
+        [Key(11)]
+        public long FlightId { get; init; }
     }
 
     public enum FlightStatus

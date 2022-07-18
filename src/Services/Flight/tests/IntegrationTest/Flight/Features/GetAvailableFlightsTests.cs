@@ -1,42 +1,37 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using BuildingBlocks.Contracts.Grpc;
+using BuildingBlocks.TestBase;
+using Flight.Data;
+using Flight.Flights.Features.CreateFlight.Reads;
 using Flight.Flights.Features.GetAvailableFlights;
 using FluentAssertions;
-using Grpc.Net.Client;
 using Integration.Test.Fakes;
-using MagicOnion.Client;
 using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
-public class GetAvailableFlightsTests : IClassFixture<IntegrationTestFixture>
+public class GetAvailableFlightsTests : IntegrationTestBase<Program, FlightDbContext, FlightReadDbContext>
 {
-    private readonly IntegrationTestFixture _fixture;
-    private readonly GrpcChannel _channel;
-
-    public GetAvailableFlightsTests(IntegrationTestFixture fixture)
+    public GetAvailableFlightsTests(
+        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture)
+        : base(integrationTestFixture)
     {
-        _fixture = fixture;
-        _channel = fixture.Channel;
     }
 
     [Fact]
     public async Task should_return_available_flights()
     {
         // Arrange
-        var flightCommand1 = new FakeCreateFlightCommand().Generate();
-        var flightCommand2 = new FakeCreateFlightCommand().Generate();
+        var flightCommand = new FakeCreateFlightCommand().Generate();
 
-        var flightEntity1 = FakeFlightCreated.Generate(flightCommand1);
-        var flightEntity2 = FakeFlightCreated.Generate(flightCommand2);
+        await Fixture.SendAsync(flightCommand);
 
-        await _fixture.InsertAsync(flightEntity1, flightEntity2);
+        await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>();
 
         var query = new GetAvailableFlightsQuery();
 
         // Act
-        var response = (await _fixture.SendAsync(query))?.ToList();
+        var response = (await Fixture.SendAsync(query))?.ToList();
 
         // Assert
         response?.Should().NotBeNull();

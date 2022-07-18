@@ -62,7 +62,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
-app.UseMigration<PassengerDbContext>();
+app.UseMigration<PassengerDbContext>(env);
 app.UseCorrelationId();
 app.UseRouting();
 app.UseHttpMetrics();

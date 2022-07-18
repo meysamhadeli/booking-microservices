@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
+using BuildingBlocks.TestBase;
+using Flight.Data;
 using Flight.Flights.Features.DeleteFlight;
+using Flight.Flights.Features.DeleteFlight.Reads;
 using FluentAssertions;
-using Integration.Test.Fakes;
 using MassTransit;
 using MassTransit.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -11,33 +13,27 @@ using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
-public class DeleteFlightTests : IClassFixture<IntegrationTestFixture>
+public class DeleteFlightTests : IntegrationTestBase<Program, FlightDbContext, FlightReadDbContext>
 {
-    private readonly IntegrationTestFixture _fixture;
     private readonly ITestHarness _testHarness;
 
-    public DeleteFlightTests(IntegrationTestFixture fixture)
+    public DeleteFlightTests(
+        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
+        integrationTestFixture)
     {
-        _fixture = fixture;
-        _testHarness = fixture.TestHarness;
+        _testHarness = Fixture.TestHarness;
     }
 
     [Fact]
     public async Task should_delete_flight_from_db()
     {
         // Arrange
-        var createFlightCommand = new FakeCreateFlightCommand().Generate();
-        var flightEntity = global::Flight.Flights.Models.Flight.Create(
-            createFlightCommand.Id, createFlightCommand.FlightNumber, createFlightCommand.AircraftId, createFlightCommand.DepartureAirportId,
-            createFlightCommand.DepartureDate, createFlightCommand.ArriveDate, createFlightCommand.ArriveAirportId, createFlightCommand.DurationMinutes,
-            createFlightCommand.FlightDate, createFlightCommand.Status, createFlightCommand.Price);
-        await _fixture.InsertAsync(flightEntity);
-
+        var flightEntity = await Fixture.FindAsync<global::Flight.Flights.Models.Flight>(1);
         var command = new DeleteFlightCommand(flightEntity.Id);
 
         // Act
-        await _fixture.SendAsync(command);
-        var deletedFlight = (await _fixture.ExecuteDbContextAsync(db => db.Flights
+        await Fixture.SendAsync(command);
+        var deletedFlight = (await Fixture.ExecuteDbContextAsync(db => db.Flights
                 .Where(x => x.Id == command.Id)
                 .IgnoreQueryFilters()
                 .ToListAsync())
@@ -47,6 +43,6 @@ public class DeleteFlightTests : IClassFixture<IntegrationTestFixture>
         deletedFlight?.IsDeleted.Should().BeTrue();
         (await _testHarness.Published.Any<Fault<FlightDeleted>>()).Should().BeFalse();
         (await _testHarness.Published.Any<FlightDeleted>()).Should().BeTrue();
+        await Fixture.ShouldProcessedPersistInternalCommand<DeleteFlightMongoCommand>();
     }
 }
-

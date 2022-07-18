@@ -1,11 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BuildingBlocks.EFCore;
 using Flight.Aircrafts.Models;
+using Flight.Aircrafts.Models.Reads;
 using Flight.Airports.Models;
+using Flight.Airports.Models.Reads;
 using Flight.Flights.Models;
+using Flight.Flights.Models.Reads;
 using Flight.Seats.Models;
+using Flight.Seats.Models.Reads;
+using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Flight.Data.Seed;
@@ -13,10 +19,16 @@ namespace Flight.Data.Seed;
 public class FlightDataSeeder : IDataSeeder
 {
     private readonly FlightDbContext _flightDbContext;
+    private readonly FlightReadDbContext _flightReadDbContext;
+    private readonly IMapper _mapper;
 
-    public FlightDataSeeder(FlightDbContext flightDbContext)
+    public FlightDataSeeder(FlightDbContext flightDbContext,
+        FlightReadDbContext flightReadDbContext,
+        IMapper mapper)
     {
         _flightDbContext = flightDbContext;
+        _flightReadDbContext = flightReadDbContext;
+        _mapper = mapper;
     }
 
     public async Task SeedAllAsync()
@@ -39,6 +51,7 @@ public class FlightDataSeeder : IDataSeeder
 
             await _flightDbContext.Airports.AddRangeAsync(airports);
             await _flightDbContext.SaveChangesAsync();
+            await _flightReadDbContext.Airport.InsertManyAsync(_mapper.Map<List<AirportReadModel>>(airports));
         }
     }
 
@@ -55,6 +68,7 @@ public class FlightDataSeeder : IDataSeeder
 
             await _flightDbContext.Aircraft.AddRangeAsync(aircrafts);
             await _flightDbContext.SaveChangesAsync();
+            await _flightReadDbContext.Aircraft.InsertManyAsync(_mapper.Map<List<AircraftReadModel>>(aircrafts));
         }
     }
 
@@ -75,6 +89,7 @@ public class FlightDataSeeder : IDataSeeder
 
             await _flightDbContext.Seats.AddRangeAsync(seats);
             await _flightDbContext.SaveChangesAsync();
+            await _flightReadDbContext.Seat.InsertManyAsync(_mapper.Map<List<SeatReadModel>>(seats));
         }
     }
 
@@ -92,6 +107,7 @@ public class FlightDataSeeder : IDataSeeder
             };
             await _flightDbContext.Flights.AddRangeAsync(flights);
             await _flightDbContext.SaveChangesAsync();
+            await _flightReadDbContext.Flight.InsertManyAsync(_mapper.Map<List<FlightReadModel>>(flights));
         }
     }
 }

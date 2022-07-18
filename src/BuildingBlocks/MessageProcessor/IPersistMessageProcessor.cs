@@ -1,4 +1,5 @@
-﻿using BuildingBlocks.Core.Event;
+﻿using System.Linq.Expressions;
+using BuildingBlocks.Core.Event;
 
 namespace BuildingBlocks.MessageProcessor;
 
@@ -23,6 +24,10 @@ public interface IPersistMessageProcessor
         TCommand internalCommand,
         CancellationToken cancellationToken = default)
         where TCommand : class, IInternalCommand;
+
+    Task<IReadOnlyList<PersistMessage>> GetByFilterAsync(
+        Expression<Func<PersistMessage, bool>> predicate,
+        CancellationToken cancellationToken = default);
 
     Task<PersistMessage> ExistMessageAsync(
         Guid messageId,

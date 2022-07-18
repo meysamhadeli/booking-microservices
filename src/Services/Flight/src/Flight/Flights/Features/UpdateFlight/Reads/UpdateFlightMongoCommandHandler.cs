@@ -40,14 +40,12 @@ public class UpdateFlightMongoCommandHandler : ICommandHandler<UpdateFlightMongo
         await _flightReadDbContext.Flight.UpdateOneAsync(
             x => x.FlightId == flightReadModel.FlightId,
             Builders<FlightReadModel>.Update
-                .Set(x => x.Id, flightReadModel.Id)
                 .Set(x => x.Price, flightReadModel.Price)
                 .Set(x => x.ArriveDate, flightReadModel.ArriveDate)
                 .Set(x => x.AircraftId, flightReadModel.AircraftId)
                 .Set(x => x.DurationMinutes, flightReadModel.DurationMinutes)
                 .Set(x => x.DepartureDate, flightReadModel.DepartureDate)
                 .Set(x => x.FlightDate, flightReadModel.FlightDate)
-                .Set(x => x.FlightId, flightReadModel.FlightId)
                 .Set(x => x.FlightNumber, flightReadModel.FlightNumber)
                 .Set(x => x.IsDeleted, flightReadModel.IsDeleted)
                 .Set(x => x.Status, flightReadModel.Status)

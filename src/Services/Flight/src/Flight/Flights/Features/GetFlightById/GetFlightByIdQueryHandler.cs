@@ -27,7 +27,7 @@ public class GetFlightByIdQueryHandler : IQueryHandler<GetFlightByIdQuery, Fligh
         Guard.Against.Null(query, nameof(query));
 
         var flight =
-            await _flightReadDbContext.Flight.AsQueryable().SingleOrDefaultAsync(x => x.Id == query.Id, cancellationToken);
+            await _flightReadDbContext.Flight.AsQueryable().SingleOrDefaultAsync(x => x.FlightId == query.Id, cancellationToken);
 
         if (flight is null)
             throw new FlightNotFountException();

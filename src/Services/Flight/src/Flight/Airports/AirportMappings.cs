@@ -1,5 +1,6 @@
 ﻿using BuildingBlocks.IdsGenerator;
 using Flight.Airports.Features.CreateAirport.Reads;
+using Flight.Airports.Models;
 using Flight.Airports.Models.Reads;
 using Mapster;
 
@@ -10,6 +11,10 @@ public class AirportMappings : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<CreateAirportMongoCommand, AirportReadModel>()
+            .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
+            .Map(d => d.AirportId, s => s.Id);
+
+        config.NewConfig<Airport, AirportReadModel>()
             .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
             .Map(d => d.AirportId, s => s.Id);
     }

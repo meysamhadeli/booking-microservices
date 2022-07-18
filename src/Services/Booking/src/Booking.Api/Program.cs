@@ -69,7 +69,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
-app.UseMigration<BookingDbContext>();
+app.UseMigration<BookingDbContext>(env);
 app.UseCorrelationId();
 app.UseRouting();
 app.UseHttpMetrics();

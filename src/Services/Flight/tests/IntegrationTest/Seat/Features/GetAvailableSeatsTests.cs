@@ -1,23 +1,26 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using BuildingBlocks.Contracts.Grpc;
+using BuildingBlocks.TestBase;
+using Flight.Data;
+using Flight.Flights.Features.CreateFlight.Reads;
+using Flight.Seats.Features.CreateSeat.Reads;
 using FluentAssertions;
 using Grpc.Net.Client;
 using Integration.Test.Fakes;
 using MagicOnion.Client;
+using MassTransit.Testing;
 using Xunit;
 
 namespace Integration.Test.Seat.Features;
 
-public class GetAvailableSeatsTests : IClassFixture<IntegrationTestFixture>
+public class GetAvailableSeatsTests : IntegrationTestBase<Program, FlightDbContext, FlightReadDbContext>
 {
-    private readonly IntegrationTestFixture _fixture;
     private readonly GrpcChannel _channel;
 
-    public GetAvailableSeatsTests(IntegrationTestFixture fixture)
+    public GetAvailableSeatsTests(IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(integrationTestFixture)
     {
-        _fixture = fixture;
-        _channel = fixture.Channel;
+        _channel = Fixture.Channel;
     }
 
     [Fact]
@@ -25,24 +28,24 @@ public class GetAvailableSeatsTests : IClassFixture<IntegrationTestFixture>
     {
         // Arrange
         var flightCommand = new FakeCreateFlightCommand().Generate();
-        var flightEntity = FakeFlightCreated.Generate(flightCommand);
 
-        await _fixture.InsertAsync(flightEntity);
+        await Fixture.SendAsync(flightCommand);
 
-        var seatCommand1 = new FakeCreateSeatCommand(flightEntity.Id).Generate();
-        var seatCommand2 = new FakeCreateSeatCommand(flightEntity.Id).Generate();
-        var seatEntity1 = FakeSeatCreated.Generate(seatCommand1);
-        var seatEntity2 = FakeSeatCreated.Generate(seatCommand2);
+        await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>();
 
-        await _fixture.InsertAsync<global::Flight.Seats.Models.Seat, global::Flight.Seats.Models.Seat>(seatEntity1, seatEntity2);
+        var seatCommand = new FakeCreateSeatCommand(flightCommand.Id).Generate();
+
+        await Fixture.SendAsync(seatCommand);
+
+        await Fixture.ShouldProcessedPersistInternalCommand<CreateSeatMongoCommand>();
 
         var flightGrpcClient = MagicOnionClient.Create<IFlightGrpcService>(_channel);
 
         // Act
-        var response = await flightGrpcClient.GetAvailableSeats(flightEntity.Id);
+        var response = await flightGrpcClient.GetAvailableSeats(flightCommand.Id);
 
         // Assert
         response?.Should().NotBeNull();
-        response?.Count().Should().BeGreaterOrEqualTo(2);
+        response?.Count().Should().BeGreaterOrEqualTo(1);
     }
 }
