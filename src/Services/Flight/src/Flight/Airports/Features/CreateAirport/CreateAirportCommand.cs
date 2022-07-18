@@ -7,5 +7,5 @@ namespace Flight.Airports.Features.CreateAirport;
 
 public record CreateAirportCommand(string Name, string Address, string Code) : ICommand<AirportResponseDto>, IInternalCommand
 {
-    public long Id { get; set; } = SnowFlakIdGenerator.NewId();
+    public long Id { get; init; } = SnowFlakIdGenerator.NewId();
 }

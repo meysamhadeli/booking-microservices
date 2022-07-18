@@ -81,7 +81,7 @@ app.UseSerilogRequestLogging();
 app.UseCorrelationId();
 app.UseRouting();
 app.UseHttpMetrics();
-app.UseMigration<FlightDbContext>();
+app.UseMigration<FlightDbContext>(env);
 app.UseProblemDetails();
 app.UseHttpsRedirection();
 app.UseCustomHealthCheck();

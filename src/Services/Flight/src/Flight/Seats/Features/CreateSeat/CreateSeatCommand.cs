@@ -7,5 +7,5 @@ namespace Flight.Seats.Features.CreateSeat;
 
 public record CreateSeatCommand(string SeatNumber, SeatType Type, SeatClass Class, long FlightId) : ICommand<SeatResponseDto>, IInternalCommand
 {
-    public long Id { get; set; } = SnowFlakIdGenerator.NewId();
+    public long Id { get; init; } = SnowFlakIdGenerator.NewId();
 }

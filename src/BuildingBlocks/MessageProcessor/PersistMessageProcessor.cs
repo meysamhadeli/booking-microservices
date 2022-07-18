@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Linq.Expressions;
+using System.Text.Json;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.EFCore;
@@ -48,6 +49,12 @@ public class PersistMessageProcessor : IPersistMessageProcessor
     {
         await SavePersistMessageAsync(new MessageEnvelope(internalCommand), MessageDeliveryType.Internal,
             cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<PersistMessage>> GetByFilterAsync(Expression<Func<PersistMessage, bool>> predicate, CancellationToken cancellationToken = default)
+    {
+        var b =  (await _dbContext.PersistMessages.Where(predicate).ToListAsync(cancellationToken)).AsReadOnly();
+        return b;
     }
 
     public Task<PersistMessage> ExistMessageAsync(Guid messageId, CancellationToken cancellationToken = default)

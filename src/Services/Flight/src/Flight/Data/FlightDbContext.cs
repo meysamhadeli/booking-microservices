@@ -23,6 +23,7 @@ public sealed class FlightDbContext : AppDbContextBase
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder.FilterSoftDeletedProperties();
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(builder);
     }

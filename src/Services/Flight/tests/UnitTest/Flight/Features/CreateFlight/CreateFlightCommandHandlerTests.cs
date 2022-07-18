@@ -25,7 +25,7 @@ public class CreateFlightCommandHandlerTests
     public CreateFlightCommandHandlerTests(UnitTestFixture fixture)
     {
         _fixture = fixture;
-        _handler = new CreateFlightCommandHandler(fixture.Mapper, fixture.DbContext, Substitute.For<IPersistMessageProcessor>());
+        _handler = new CreateFlightCommandHandler(fixture.Mapper, fixture.DbContext);
     }
 
     [Fact]

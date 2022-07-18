@@ -1,5 +1,8 @@
 ﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
+using BuildingBlocks.TestBase;
+using Flight.Data;
+using Flight.Flights.Features.CreateFlight.Reads;
 using FluentAssertions;
 using Integration.Test.Fakes;
 using MassTransit;
@@ -8,15 +11,15 @@ using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
-public class CreateFlightTests : IClassFixture<IntegrationTestFixture>
+public class CreateFlightTests : IntegrationTestBase<Program, FlightDbContext, FlightReadDbContext>
 {
-    private readonly IntegrationTestFixture _fixture;
     private readonly ITestHarness _testHarness;
 
-    public CreateFlightTests(IntegrationTestFixture fixture)
+    public CreateFlightTests(
+        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
+        integrationTestFixture)
     {
-        _fixture = fixture;
-        _testHarness = fixture.TestHarness;
+        _testHarness = Fixture.TestHarness;
     }
 
     [Fact]
@@ -26,7 +29,7 @@ public class CreateFlightTests : IClassFixture<IntegrationTestFixture>
         var command = new FakeCreateFlightCommand().Generate();
 
         // Act
-        var response = await _fixture.SendAsync(command);
+        var response = await Fixture.SendAsync(command);
 
         // Assert
         response.Should().NotBeNull();
@@ -34,5 +37,7 @@ public class CreateFlightTests : IClassFixture<IntegrationTestFixture>
 
         (await _testHarness.Published.Any<Fault<FlightCreated>>()).Should().BeFalse();
         (await _testHarness.Published.Any<FlightCreated>()).Should().BeTrue();
+
+        await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>();
     }
 }

@@ -1,21 +1,21 @@
 ﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
+using BuildingBlocks.TestBase;
 using FluentAssertions;
 using Integration.Test.Fakes;
 using MassTransit.Testing;
+using Passenger.Data;
 using Xunit;
 
 namespace Integration.Test.Passenger.Features;
 
-public class CompleteRegisterPassengerTests : IClassFixture<IntegrationTestFixture>
+public class CompleteRegisterPassengerTests : IntegrationTestBase<Program, PassengerDbContext>
 {
-    private readonly IntegrationTestFixture _fixture;
     private readonly ITestHarness _testHarness;
 
-    public CompleteRegisterPassengerTests(IntegrationTestFixture fixture)
+    public CompleteRegisterPassengerTests(IntegrationTestFixture<Program, PassengerDbContext> integrationTestFixture) : base(integrationTestFixture)
     {
-        _fixture = fixture;
-        _testHarness = _fixture.TestHarness;
+        _testHarness = Fixture.TestHarness;
     }
 
     [Fact]
@@ -25,12 +25,12 @@ public class CompleteRegisterPassengerTests : IClassFixture<IntegrationTestFixtu
         var userCreated = new FakeUserCreated().Generate();
         await _testHarness.Bus.Publish(userCreated);
         await _testHarness.Consumed.Any<UserCreated>();
-        await _fixture.InsertAsync(FakePassengerCreated.Generate(userCreated));
+        await Fixture.InsertAsync(FakePassengerCreated.Generate(userCreated));
 
         var command = new FakeCompleteRegisterPassengerCommand(userCreated.PassportNumber).Generate();
 
         // Act
-        var response = await _fixture.SendAsync(command);
+        var response = await Fixture.SendAsync(command);
 
         // Assert
         response.Should().NotBeNull();

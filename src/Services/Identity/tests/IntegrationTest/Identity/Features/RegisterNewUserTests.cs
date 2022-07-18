@@ -1,6 +1,9 @@
 ﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
+using BuildingBlocks.TestBase;
 using FluentAssertions;
+using Grpc.Net.Client;
+using Identity.Data;
 using Integration.Test.Fakes;
 using MassTransit;
 using MassTransit.Testing;
@@ -8,15 +11,13 @@ using Xunit;
 
 namespace Integration.Test.Identity.Features;
 
-public class RegisterNewUserTests : IClassFixture<IntegrationTestFixture>
+public class RegisterNewUserTests : IntegrationTestBase<Program, IdentityContext>
 {
-    private readonly IntegrationTestFixture _fixture;
     private readonly ITestHarness _testHarness;
 
-    public RegisterNewUserTests(IntegrationTestFixture fixture)
+    public RegisterNewUserTests(IntegrationTestFixture<Program, IdentityContext> integrationTestFixture) : base(integrationTestFixture)
     {
-        _fixture = fixture;
-        _testHarness = _fixture.TestHarness;
+        _testHarness = Fixture.TestHarness;
     }
 
     [Fact]
@@ -26,7 +27,7 @@ public class RegisterNewUserTests : IClassFixture<IntegrationTestFixture>
         var command = new FakeRegisterNewUserCommand().Generate();
 
         // Act
-        var response = await _fixture.SendAsync(command);
+        var response = await Fixture.SendAsync(command);
 
         // Assert
         response?.Should().NotBeNull();

@@ -1,10 +1,13 @@
 using System.Linq.Expressions;
 using BuildingBlocks.Core.Model;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace BuildingBlocks.EFCore;
 
@@ -25,11 +28,13 @@ public static class Extensions
         return services;
     }
 
-    public static IApplicationBuilder UseMigration<TContext>(this IApplicationBuilder app)
+    public static IApplicationBuilder UseMigration<TContext>(this IApplicationBuilder app, IWebHostEnvironment env)
         where TContext : DbContext, IDbContext
     {
         MigrateDatabaseAsync<TContext>(app.ApplicationServices).GetAwaiter().GetResult();
-        SeedDataAsync(app.ApplicationServices).GetAwaiter().GetResult();
+
+        if (!env.IsEnvironment("test"))
+            SeedDataAsync(app.ApplicationServices).GetAwaiter().GetResult();
 
         return app;
     }

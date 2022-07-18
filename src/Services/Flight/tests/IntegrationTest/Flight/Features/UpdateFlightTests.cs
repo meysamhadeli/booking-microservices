@@ -1,5 +1,8 @@
 ﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
+using BuildingBlocks.TestBase;
+using Flight.Data;
+using Flight.Flights.Features.UpdateFlight.Reads;
 using FluentAssertions;
 using Integration.Test.Fakes;
 using MassTransit;
@@ -7,29 +10,25 @@ using MassTransit.Testing;
 using Xunit;
 
 namespace Integration.Test.Flight.Features;
-public class UpdateFlightTests : IClassFixture<IntegrationTestFixture>
+public class UpdateFlightTests : IntegrationTestBase<Program, FlightDbContext, FlightReadDbContext>
 {
-    private readonly IntegrationTestFixture _fixture;
     private readonly ITestHarness _testHarness;
 
-    public UpdateFlightTests(IntegrationTestFixture fixture)
+    public UpdateFlightTests(IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(integrationTestFixture)
     {
-        _fixture = fixture;
-        _testHarness = fixture.TestHarness;
+        _testHarness = Fixture.TestHarness;
     }
+
 
     [Fact]
     public async Task should_update_flight_to_db_and_publish_message_to_broker()
     {
         // Arrange
-        var fakeCreateCommandFlight = new FakeCreateFlightCommand().Generate();
-        var flightEntity = FakeFlightCreated.Generate(fakeCreateCommandFlight);
-        await _fixture.InsertAsync(flightEntity);
-
-        var command = new FakeUpdateFlightCommand(flightEntity.Id).Generate();
+        var flightEntity = await Fixture.FindAsync<global::Flight.Flights.Models.Flight>(1);
+        var command = new FakeUpdateFlightCommand(flightEntity).Generate();
 
         // Act
-        var response = await _fixture.SendAsync(command);
+        var response = await Fixture.SendAsync(command);
 
         // Assert
         response.Should().NotBeNull();
@@ -37,5 +36,6 @@ public class UpdateFlightTests : IClassFixture<IntegrationTestFixture>
         response?.Price.Should().NotBe(flightEntity?.Price);
         (await _testHarness.Published.Any<Fault<FlightUpdated>>()).Should().BeFalse();
         (await _testHarness.Published.Any<FlightUpdated>()).Should().BeTrue();
+        await Fixture.ShouldProcessedPersistInternalCommand<UpdateFlightMongoCommand>();
     }
 }

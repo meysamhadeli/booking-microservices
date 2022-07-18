@@ -15,16 +15,13 @@ namespace Flight.Flights.Features.CreateFlight;
 public class CreateFlightCommandHandler : ICommandHandler<CreateFlightCommand, FlightResponseDto>
 {
     private readonly FlightDbContext _flightDbContext;
-    private readonly IPersistMessageProcessor _persistMessageProcessor;
     private readonly IMapper _mapper;
 
     public CreateFlightCommandHandler(IMapper mapper,
-        FlightDbContext flightDbContext,
-        IPersistMessageProcessor persistMessageProcessor)
+        FlightDbContext flightDbContext)
     {
         _mapper = mapper;
         _flightDbContext = flightDbContext;
-        _persistMessageProcessor = persistMessageProcessor;
     }
 
     public async Task<FlightResponseDto> Handle(CreateFlightCommand command, CancellationToken cancellationToken)

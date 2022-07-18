@@ -1,5 +1,9 @@
 ﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.Grpc;
+using BuildingBlocks.TestBase;
+using Flight.Data;
+using Flight.Flights.Features.CreateFlight.Reads;
+using Flight.Seats.Features.CreateSeat.Reads;
 using FluentAssertions;
 using Grpc.Net.Client;
 using Integration.Test.Fakes;
@@ -7,15 +11,16 @@ using MagicOnion.Client;
 using Xunit;
 
 namespace Integration.Test.Seat.Features;
-public class ReserveSeatTests : IClassFixture<IntegrationTestFixture>
+
+public class ReserveSeatTests : IntegrationTestBase<Program, FlightDbContext, FlightReadDbContext>
 {
-    private readonly IntegrationTestFixture _fixture;
     private readonly GrpcChannel _channel;
 
-    public ReserveSeatTests(IntegrationTestFixture fixture)
+    public ReserveSeatTests(
+        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
+        integrationTestFixture)
     {
-        _fixture = fixture;
-        _channel = fixture.Channel;
+        _channel = Fixture.Channel;
     }
 
     [Fact]
@@ -23,23 +28,28 @@ public class ReserveSeatTests : IClassFixture<IntegrationTestFixture>
     {
         // Arrange
         var flightCommand = new FakeCreateFlightCommand().Generate();
-        var flightEntity = FakeFlightCreated.Generate(flightCommand);
 
-        await _fixture.InsertAsync(flightEntity);
+        await Fixture.SendAsync(flightCommand);
 
-        var seatCommand = new FakeCreateSeatCommand(flightEntity.Id).Generate();
-        var seatEntity = FakeSeatCreated.Generate(seatCommand);
+        await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>();
 
-        await _fixture.InsertAsync(seatEntity);
+        var seatCommand = new FakeCreateSeatCommand(flightCommand.Id).Generate();
+
+        await Fixture.SendAsync(seatCommand);
+
+        await Fixture.ShouldProcessedPersistInternalCommand<CreateSeatMongoCommand>();
 
         var flightGrpcClient = MagicOnionClient.Create<IFlightGrpcService>(_channel);
 
         // Act
-        var response = await flightGrpcClient.ReserveSeat(new ReserveSeatRequestDto{ FlightId = seatEntity.FlightId, SeatNumber = seatEntity.SeatNumber });
+        var response = await flightGrpcClient.ReserveSeat(new ReserveSeatRequestDto
+        {
+            FlightId = seatCommand.FlightId, SeatNumber = seatCommand.SeatNumber
+        });
 
         // Assert
         response?.Should().NotBeNull();
-        response?.SeatNumber.Should().Be(seatEntity.SeatNumber);
-        response?.FlightId.Should().Be(seatEntity.FlightId);
+        response?.SeatNumber.Should().Be(seatCommand.SeatNumber);
+        response?.FlightId.Should().Be(seatCommand.FlightId);
     }
 }
