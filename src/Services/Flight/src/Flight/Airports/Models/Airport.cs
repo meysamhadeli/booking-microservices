@@ -4,7 +4,7 @@ using Flight.Airports.Events;
 
 namespace Flight.Airports.Models;
 
-public class Airport : Aggregate<long>
+public record Airport : Aggregate<long>
 {
     public Airport()
     {

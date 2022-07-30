@@ -1,10 +1,11 @@
 ﻿using Ardalis.GuardClauses;
+using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
+using BuildingBlocks.EventStoreDB.Projections;
 using BuildingBlocks.MassTransit;
-using BuildingBlocks.MessageProcessor;
 using BuildingBlocks.Mongo;
-using BuildingBlocks.Utils;
+using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Web;
 using Grpc.Net.Client;
 using MassTransit;
@@ -50,6 +51,7 @@ public class IntegrationTestFixture<TEntryPoint> : IAsyncLifetime
                 {
                     TestRegistrationServices?.Invoke(services);
                     services.ReplaceSingleton(AddHttpContextAccessorMock);
+                    services.Unregister<IProjectionProcessor>();
                     services.AddMassTransitTestHarness(x =>
                     {
                         x.UsingRabbitMq((context, cfg) =>
@@ -88,9 +90,11 @@ public class IntegrationTestFixture<TEntryPoint> : IAsyncLifetime
     public ILogger CreateLogger(ITestOutputHelper output)
     {
         if (output != null)
+        {
             return new LoggerConfiguration()
                 .WriteTo.TestOutput(output)
                 .CreateLogger();
+        }
 
         return null;
     }
@@ -160,7 +164,7 @@ public class IntegrationTestFixture<TEntryPoint> : IAsyncLifetime
 
                 var filter = await persistMessageProcessor.GetByFilterAsync(x =>
                     x.DeliveryType == MessageDeliveryType.Internal &&
-                    TypeProvider.GetTypeName(typeof(TInternalCommand)) == x.DataType);
+                    typeof(TInternalCommand).ToString() == x.DataType);
 
                 var res = filter.Any(x => x.MessageStatus == MessageStatus.Processed);
 
@@ -294,7 +298,7 @@ public class IntegrationTestFixture<TEntryPoint, TWContext> : IntegrationTestFix
     }
 
     public Task<T> FindAsync<T>(long id)
-        where T : class, IEntity
+        where T : class, IAudit
     {
         return ExecuteDbContextAsync(db => db.Set<T>().FindAsync(id).AsTask());
     }
@@ -319,7 +323,8 @@ public class IntegrationTestFixture<TEntryPoint, TWContext, TRContext> : Integra
 public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
     where TEntryPoint : class
 {
-    private Checkpoint _checkpoint;
+    private Checkpoint _checkpointDefaultDB;
+    private Checkpoint _checkpointPersistMessageDB;
     private MongoDbRunner _mongoRunner;
 
     public IntegrationTestFixtureCore(IntegrationTestFixture<TEntryPoint> integrationTestFixture)
@@ -332,7 +337,8 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        _checkpoint = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
+        _checkpointDefaultDB = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
+        _checkpointPersistMessageDB = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
 
         _mongoRunner = MongoDbRunner.Start();
         var mongoOptions = Fixture.ServiceProvider.GetRequiredService<IOptions<MongoOptions>>();
@@ -344,7 +350,8 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
 
     public async Task DisposeAsync()
     {
-        await _checkpoint.Reset(Fixture.Configuration?.GetConnectionString("DefaultConnection"));
+        await _checkpointDefaultDB.Reset(Fixture.Configuration?.GetConnectionString("DefaultConnection"));
+        await _checkpointPersistMessageDB.Reset(Fixture.ServiceProvider.GetRequiredService<IOptions<PersistMessageOptions>>()?.Value?.ConnectionString);
         _mongoRunner.Dispose();
     }
 

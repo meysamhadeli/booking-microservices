@@ -4,7 +4,7 @@ using Flight.Flights.Events.Domain;
 
 namespace Flight.Flights.Models;
 
-public class Flight : Aggregate<long>
+public record Flight : Aggregate<long>
 {
     public string FlightNumber { get; private set; }
     public long AircraftId { get; private set; }

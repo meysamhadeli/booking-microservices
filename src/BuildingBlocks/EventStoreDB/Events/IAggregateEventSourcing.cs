@@ -3,10 +3,10 @@ using BuildingBlocks.Core.Model;
 
 namespace BuildingBlocks.EventStoreDB.Events
 {
-    public interface IAggregateEventSourcing : IProjection, IEntity
+    public interface IAggregateEventSourcing : IProjection, IAudit
     {
         IReadOnlyList<IDomainEvent> DomainEvents { get; }
-        IEvent[] ClearDomainEvents();
+        IDomainEvent[] ClearDomainEvents();
         long Version { get; }
     }
 

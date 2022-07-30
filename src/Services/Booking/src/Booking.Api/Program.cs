@@ -5,14 +5,17 @@ using Booking.Extensions;
 using BuildingBlocks.Core;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.EventStoreDB;
+using BuildingBlocks.EventStoreDB.Projections;
 using BuildingBlocks.HealthCheck;
 using BuildingBlocks.IdsGenerator;
 using BuildingBlocks.Jwt;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
-using BuildingBlocks.MessageProcessor;
+using BuildingBlocks.Mongo;
 using BuildingBlocks.OpenTelemetry;
+using BuildingBlocks.PersistMessageProcessor;
+using BuildingBlocks.PersistMessageProcessor.Data;
 using BuildingBlocks.Swagger;
 using BuildingBlocks.Web;
 using Figgle;
@@ -31,10 +34,11 @@ builder.Services.Configure<GrpcOptions>(options => configuration.GetSection("Grp
 
 Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
-builder.Services.AddCustomDbContext<BookingDbContext>(configuration);
 builder.Services.AddPersistMessage(configuration);
+builder.Services.AddMongoDbContext<BookingReadDbContext>(configuration);
 
 builder.AddCustomSerilog();
+builder.Services.AddCore();
 builder.Services.AddJwt();
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
@@ -44,9 +48,6 @@ builder.Services.AddCustomMediatR();
 builder.Services.AddValidatorsFromAssembly(typeof(BookingRoot).Assembly);
 builder.Services.AddCustomProblemDetails();
 builder.Services.AddCustomMapster(typeof(BookingRoot).Assembly);
-builder.Services.AddHttpContextAccessor();
-
-builder.Services.AddTransient<IEventMapper, EventMapper>();
 builder.Services.AddCustomHealthCheck();
 builder.Services.AddCustomMassTransit(typeof(BookingRoot).Assembly, env);
 builder.Services.AddCustomOpenTelemetry();
@@ -69,7 +70,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
-app.UseMigration<BookingDbContext>(env);
 app.UseCorrelationId();
 app.UseRouting();
 app.UseHttpMetrics();

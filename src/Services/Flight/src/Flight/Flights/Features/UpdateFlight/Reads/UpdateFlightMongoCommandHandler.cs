@@ -32,7 +32,7 @@ public class UpdateFlightMongoCommandHandler : ICommandHandler<UpdateFlightMongo
         var flightReadModel = _mapper.Map<FlightReadModel>(command);
 
         var flight = await _flightReadDbContext.Flight.AsQueryable()
-            .FirstOrDefaultAsync(x => x.FlightId == flightReadModel.FlightId, cancellationToken);
+            .FirstOrDefaultAsync(x => x.FlightId == flightReadModel.FlightId && !x.IsDeleted, cancellationToken);
 
         if (flight is null)
             throw new FlightNotFountException();

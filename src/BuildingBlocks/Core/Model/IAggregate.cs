@@ -2,7 +2,7 @@
 
 namespace BuildingBlocks.Core.Model;
 
-public interface IAggregate : IEntity
+public interface IAggregate : IAudit
 {
     IReadOnlyList<IDomainEvent> DomainEvents { get; }
     IEvent[] ClearDomainEvents();

@@ -1,5 +1,6 @@
 using System.Reflection;
 using BuildingBlocks.EFCore;
+using BuildingBlocks.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +10,7 @@ public sealed class PassengerDbContext : AppDbContextBase
 {
     public const string DefaultSchema = "dbo";
 
-    public PassengerDbContext(DbContextOptions<PassengerDbContext> options, IHttpContextAccessor httpContextAccessor) : base(options, httpContextAccessor)
+    public PassengerDbContext(DbContextOptions<PassengerDbContext> options, ICurrentUserProvider currentUserProvider) : base(options, currentUserProvider)
     {
     }
 

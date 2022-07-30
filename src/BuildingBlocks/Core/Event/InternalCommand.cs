@@ -1,14 +1,9 @@
-﻿using BuildingBlocks.IdsGenerator;
-using BuildingBlocks.Utils;
-using ICommand = BuildingBlocks.Core.CQRS.ICommand;
+﻿using BuildingBlocks.Core.CQRS;
+using BuildingBlocks.IdsGenerator;
 
 namespace BuildingBlocks.Core.Event;
 
 public class InternalCommand : IInternalCommand, ICommand
 {
-    public long Id { get; set; } = SnowFlakIdGenerator.NewId();
-
-    public DateTime OccurredOn => DateTime.Now;
-
-    public string Type { get => TypeProvider.GetTypeName(GetType()); }
+    public long Id { get; init; } = SnowFlakIdGenerator.NewId();
 }

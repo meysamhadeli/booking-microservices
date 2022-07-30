@@ -68,7 +68,8 @@ public static class EventStoreDBConfigExtensions
         );
     }
 
-    public static IServiceCollection AddProjections(this IServiceCollection services, params Assembly[] assembliesToScan)
+    public static IServiceCollection AddProjections(this IServiceCollection services,
+        params Assembly[] assembliesToScan)
     {
         services.AddSingleton<IProjectionPublisher, ProjectionPublisher>();
 
@@ -81,7 +82,7 @@ public static class EventStoreDBConfigExtensions
     {
         services.Scan(scan => scan
             .FromAssemblies(assembliesToScan)
-            .AddClasses(classes => classes.AssignableTo<IProjection>()) // Filter classes
+            .AddClasses(classes => classes.AssignableTo<IProjectionProcessor>()) // Filter classes
             .AsImplementedInterfaces()
             .WithTransientLifetime());
     }

@@ -1,4 +1,5 @@
 using BuildingBlocks.Core.CQRS;
+using BuildingBlocks.Core.Event;
 using BuildingBlocks.IdsGenerator;
 using Flight.Seats.Dtos;
 using Flight.Seats.Models;

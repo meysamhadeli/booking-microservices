@@ -1,6 +1,5 @@
 using BuildingBlocks.Mongo;
 using Flight.Aircrafts.Models.Reads;
-using Flight.Airports.Models;
 using Flight.Airports.Models.Reads;
 using Flight.Flights.Models.Reads;
 using Flight.Seats.Models.Reads;

@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Booking.Booking.Models.Reads;
 using Booking.Data;
 using BuildingBlocks.Contracts.Grpc;
+using BuildingBlocks.PersistMessageProcessor.Data;
 using BuildingBlocks.TestBase;
 using FluentAssertions;
 using Integration.Test.Fakes;
@@ -14,9 +16,10 @@ using Xunit;
 
 namespace Integration.Test.Booking.Features;
 
-public class CreateBookingTests : IntegrationTestBase<Program, BookingDbContext>
+public class CreateBookingTests : IntegrationTestBase<Program, PersistMessageDbContext, BookingReadDbContext>
 {
-    public CreateBookingTests(IntegrationTestFixture<Program, BookingDbContext> integrationTestFixture) : base(
+    public CreateBookingTests(
+        IntegrationTestFixture<Program, PersistMessageDbContext, BookingReadDbContext> integrationTestFixture) : base(
         integrationTestFixture)
     {
     }

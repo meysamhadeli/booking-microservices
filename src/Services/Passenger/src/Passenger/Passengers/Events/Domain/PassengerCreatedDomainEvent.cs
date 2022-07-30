@@ -1,5 +1,5 @@
-using BuildingBlocks.Core.Event;
+﻿using BuildingBlocks.Core.Event;
 
 namespace Passenger.Passengers.Events.Domain;
 
-public record PassengerCreatedDomainEvent(string FlightNumber) : IDomainEvent;
+public record PassengerCreatedDomainEvent(long Id, string Name, string PassportNumber, bool IsDeleted = false) : IDomainEvent;
