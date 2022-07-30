@@ -4,7 +4,7 @@ using Flight.Aircrafts.Events;
 
 namespace Flight.Aircrafts.Models;
 
-public class Aircraft : Aggregate<long>
+public record Aircraft : Aggregate<long>
 {
     public Aircraft()
     {

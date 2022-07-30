@@ -1,10 +1,11 @@
 using Ardalis.GuardClauses;
+using Booking.Booking.Events.Domain;
 using Booking.Booking.Exceptions;
 using Booking.Booking.Models.ValueObjects;
 using BuildingBlocks.Contracts.Grpc;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.EventStoreDB.Repository;
-using MediatR;
+using BuildingBlocks.Utils;
 
 namespace Booking.Booking.Features.CreateBooking;
 
@@ -12,15 +13,18 @@ public class CreateBookingCommandHandler : ICommandHandler<CreateBookingCommand,
 {
     private readonly IEventStoreDBRepository<Models.Booking> _eventStoreDbRepository;
     private readonly IFlightGrpcService _flightGrpcService;
+    private readonly ICurrentUserProvider _currentUserProvider;
     private readonly IPassengerGrpcService _passengerGrpcService;
 
     public CreateBookingCommandHandler(IEventStoreDBRepository<Models.Booking> eventStoreDbRepository,
         IPassengerGrpcService passengerGrpcService,
-        IFlightGrpcService flightGrpcService)
+        IFlightGrpcService flightGrpcService,
+        ICurrentUserProvider currentUserProvider)
     {
         _eventStoreDbRepository = eventStoreDbRepository;
         _passengerGrpcService = passengerGrpcService;
         _flightGrpcService = flightGrpcService;
+        _currentUserProvider = currentUserProvider;
     }
 
     public async Task<ulong> Handle(CreateBookingCommand command,
@@ -44,11 +48,12 @@ public class CreateBookingCommandHandler : ICommandHandler<CreateBookingCommand,
 
         var aggrigate = Models.Booking.Create(command.Id, new PassengerInfo(passenger.Name), new Trip(
             flight.FlightNumber, flight.AircraftId, flight.DepartureAirportId,
-            flight.ArriveAirportId, flight.FlightDate, flight.Price, command.Description, emptySeat?.SeatNumber));
+            flight.ArriveAirportId, flight.FlightDate, flight.Price, command.Description, emptySeat?.SeatNumber),
+            false, _currentUserProvider.GetCurrentUserId());
 
         await _flightGrpcService.ReserveSeat(new ReserveSeatRequestDto
         {
-            FlightId = flight.Id, SeatNumber = emptySeat?.SeatNumber
+            FlightId = flight.FlightId, SeatNumber = emptySeat?.SeatNumber
         });
 
         var result = await _eventStoreDbRepository.Add(

@@ -16,7 +16,6 @@ public class ReserveSeatMongoCommand : InternalCommand
         IsDeleted = isDeleted;
     }
 
-    public long Id { get; }
     public string SeatNumber { get; }
     public SeatType Type { get; }
     public SeatClass Class { get; }

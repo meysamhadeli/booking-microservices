@@ -6,23 +6,23 @@ namespace Flight.Flights.Features.CreateFlight.Reads;
 
 public class CreateFlightMongoCommand : InternalCommand
 {
-    public CreateFlightMongoCommand(long Id, string FlightNumber, long AircraftId, DateTime DepartureDate,
-        long DepartureAirportId,
-        DateTime ArriveDate, long ArriveAirportId, decimal DurationMinutes, DateTime FlightDate, FlightStatus Status,
-        decimal Price, bool IsDeleted)
+    public CreateFlightMongoCommand(long id, string flightNumber, long aircraftId, DateTime departureDate,
+        long departureAirportId,
+        DateTime arriveDate, long arriveAirportId, decimal durationMinutes, DateTime flightDate, FlightStatus status,
+        decimal price, bool isDeleted)
     {
-        this.Id = Id;
-        this.FlightNumber = FlightNumber;
-        this.AircraftId = AircraftId;
-        this.DepartureDate = DepartureDate;
-        this.DepartureAirportId = DepartureAirportId;
-        this.ArriveDate = ArriveDate;
-        this.ArriveAirportId = ArriveAirportId;
-        this.DurationMinutes = DurationMinutes;
-        this.FlightDate = FlightDate;
-        this.Status = Status;
-        this.Price = Price;
-        this.IsDeleted = IsDeleted;
+        Id = id;
+        FlightNumber = flightNumber;
+        AircraftId = aircraftId;
+        DepartureDate = departureDate;
+        DepartureAirportId = departureAirportId;
+        ArriveDate = arriveDate;
+        ArriveAirportId = arriveAirportId;
+        DurationMinutes = durationMinutes;
+        FlightDate = flightDate;
+        Status = status;
+        Price = price;
+        IsDeleted = isDeleted;
     }
 
     public string FlightNumber { get; }

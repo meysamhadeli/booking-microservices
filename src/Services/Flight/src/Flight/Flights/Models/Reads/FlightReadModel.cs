@@ -6,17 +6,17 @@ namespace Flight.Flights.Models.Reads;
 
 public class FlightReadModel
 {
-    public long Id { get; set; }
-    public long FlightId { get; set; }
-    public string FlightNumber { get; set; }
-    public long AircraftId { get; set; }
-    public DateTime DepartureDate { get; set; }
-    public long DepartureAirportId { get; set; }
-    public DateTime ArriveDate { get; set; }
-    public long ArriveAirportId { get; set; }
-    public decimal DurationMinutes { get; set; }
-    public DateTime FlightDate { get; set; }
-    public FlightStatus Status { get; set; }
-    public decimal Price { get; set; }
-    public bool IsDeleted { get; set; }
+    public long Id { get; init; }
+    public long FlightId { get; init; }
+    public string FlightNumber { get; init; }
+    public long AircraftId { get; init; }
+    public DateTime DepartureDate { get; init; }
+    public long DepartureAirportId { get; init; }
+    public DateTime ArriveDate { get; init; }
+    public long ArriveAirportId { get; init; }
+    public decimal DurationMinutes { get; init; }
+    public DateTime FlightDate { get; init; }
+    public FlightStatus Status { get; init; }
+    public decimal Price { get; init; }
+    public bool IsDeleted { get; init; }
 }

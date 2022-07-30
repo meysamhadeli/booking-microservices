@@ -1,10 +1,9 @@
 using System.Collections.Immutable;
 using System.Data;
-using System.Reflection;
-using System.Security.Claims;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
-using Microsoft.AspNetCore.Http;
+using BuildingBlocks.Utils;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -12,13 +11,13 @@ namespace BuildingBlocks.EFCore;
 
 public abstract class AppDbContextBase : DbContext, IDbContext
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ICurrentUserProvider _currentUserProvider;
 
     private IDbContextTransaction _currentTransaction;
 
-    protected AppDbContextBase(DbContextOptions options, IHttpContextAccessor httpContextAccessor) : base(options)
+    protected AppDbContextBase(DbContextOptions options, ICurrentUserProvider currentUserProvider = null) : base(options)
     {
-        _httpContextAccessor = httpContextAccessor;
+        _currentUserProvider = currentUserProvider;
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -92,13 +91,10 @@ public abstract class AppDbContextBase : DbContext, IDbContext
     // ref: https://www.meziantou.net/entity-framework-core-soft-delete-using-query-filters.htm
     private void OnBeforeSaving()
     {
-        var nameIdentifier = _httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        long.TryParse(nameIdentifier, out var userId);
-
         foreach (var entry in ChangeTracker.Entries<IAggregate>())
         {
             var isAuditable = entry.Entity.GetType().IsAssignableTo(typeof(IAggregate));
+            var userId = _currentUserProvider?.GetCurrentUserId();
 
             if (isAuditable)
             {

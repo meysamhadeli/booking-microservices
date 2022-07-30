@@ -1,19 +1,22 @@
 using Booking.Booking.Events.Domain;
+using Booking.Booking.Models.Reads;
 using Booking.Data;
 using BuildingBlocks.EventStoreDB.Events;
 using BuildingBlocks.EventStoreDB.Projections;
+using BuildingBlocks.IdsGenerator;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace Booking;
 
 public class BookingProjection : IProjectionProcessor
 {
-    private readonly BookingDbContext _bookingDbContext;
+    private readonly BookingReadDbContext _bookingReadDbContext;
 
-    public BookingProjection(BookingDbContext bookingDbContext)
+    public BookingProjection(BookingReadDbContext bookingReadDbContext)
     {
-        _bookingDbContext = bookingDbContext;
+        _bookingReadDbContext = bookingReadDbContext;
     }
 
     public async Task ProcessEventAsync<T>(StreamEvent<T> streamEvent, CancellationToken cancellationToken = default)
@@ -21,8 +24,8 @@ public class BookingProjection : IProjectionProcessor
     {
         switch (streamEvent.Data)
         {
-            case BookingCreatedDomainEvent reservationCreatedDomainEvent:
-                await Apply(reservationCreatedDomainEvent, cancellationToken);
+            case BookingCreatedDomainEvent bookingCreatedDomainEvent:
+                await Apply(bookingCreatedDomainEvent, cancellationToken);
                 break;
         }
     }
@@ -30,15 +33,21 @@ public class BookingProjection : IProjectionProcessor
     private async Task Apply(BookingCreatedDomainEvent @event, CancellationToken cancellationToken = default)
     {
         var reservation =
-            await _bookingDbContext.Bookings.SingleOrDefaultAsync(x => x.Id == @event.Id,
+            await _bookingReadDbContext.Booking.AsQueryable().SingleOrDefaultAsync(x => x.Id == @event.Id && !x.IsDeleted,
                 cancellationToken);
 
         if (reservation == null)
         {
-            var model = Booking.Models.Booking.Create(@event.Id, @event.PassengerInfo, @event.Trip, @event.IsDeleted);
+            var bookingReadModel = new BookingReadModel
+            {
+                Id = SnowFlakIdGenerator.NewId(),
+                Trip = @event.Trip,
+                BookId = @event.Id,
+                PassengerInfo = @event.PassengerInfo,
+                IsDeleted = @event.IsDeleted
+            };
 
-            await _bookingDbContext.Set<Booking.Models.Booking>().AddAsync(model, cancellationToken);
-            await _bookingDbContext.SaveChangesAsync(cancellationToken);
+            await _bookingReadDbContext.Booking.InsertOneAsync(bookingReadModel, cancellationToken: cancellationToken);
         }
     }
 }

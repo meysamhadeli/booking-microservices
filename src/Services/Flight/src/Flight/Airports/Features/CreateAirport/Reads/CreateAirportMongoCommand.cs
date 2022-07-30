@@ -13,7 +13,6 @@ public class CreateAirportMongoCommand : InternalCommand
         IsDeleted = isDeleted;
     }
 
-    public long Id { get; }
     public string Name { get; }
     public string Address { get; }
     public string Code { get; }

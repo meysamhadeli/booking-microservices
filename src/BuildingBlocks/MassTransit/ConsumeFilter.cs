@@ -1,5 +1,5 @@
 ﻿using BuildingBlocks.Core.Event;
-using BuildingBlocks.MessageProcessor;
+using BuildingBlocks.PersistMessageProcessor;
 using MassTransit;
 
 namespace BuildingBlocks.MassTransit;

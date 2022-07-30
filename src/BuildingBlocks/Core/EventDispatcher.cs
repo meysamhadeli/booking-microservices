@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using BuildingBlocks.Core.Event;
-using BuildingBlocks.MessageProcessor;
+using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,12 +31,16 @@ public sealed class EventDispatcher : IEventDispatcher
     }
 
 
-    public async Task SendAsync<T>(IReadOnlyList<T> events, EventType eventType = default,
+    public async Task SendAsync<T>(IReadOnlyList<T> events, Type type = null,
         CancellationToken cancellationToken = default)
         where T : IEvent
     {
         if (events.Count > 0)
         {
+            var eventType = type != null && type.IsAssignableTo(typeof(IInternalCommand))
+                ? EventType.InternalCommand
+                : EventType.DomainEvent;
+
             async Task PublishIntegrationEvent(IReadOnlyList<IIntegrationEvent> integrationEvents)
             {
                 foreach (var integrationEvent in integrationEvents)
@@ -63,7 +67,7 @@ public sealed class EventDispatcher : IEventDispatcher
                     break;
             }
 
-            if (eventType == EventType.InternalCommand)
+            if (type != null && eventType == EventType.InternalCommand)
             {
                 var internalMessages = await MapDomainEventToInternalCommandAsync(events as IReadOnlyList<IDomainEvent>)
                     .ConfigureAwait(false);
@@ -76,10 +80,10 @@ public sealed class EventDispatcher : IEventDispatcher
         }
     }
 
-    public async Task SendAsync<T>(T @event, EventType eventType = default,
+    public async Task SendAsync<T>(T @event, Type type = null,
         CancellationToken cancellationToken = default)
         where T : IEvent =>
-        await SendAsync(new[] {@event}, eventType, cancellationToken);
+        await SendAsync(new[] {@event}, type, cancellationToken);
 
 
     private Task<IReadOnlyList<IIntegrationEvent>> MapDomainEventToIntegrationEventAsync(
@@ -111,12 +115,12 @@ public sealed class EventDispatcher : IEventDispatcher
     }
 
 
-    private Task<IReadOnlyList<InternalCommand>> MapDomainEventToInternalCommandAsync(
+    private Task<IReadOnlyList<IInternalCommand>> MapDomainEventToInternalCommandAsync(
         IReadOnlyList<IDomainEvent> events)
     {
         _logger.LogTrace("Processing internal message start...");
 
-        var internalCommands = new List<InternalCommand>();
+        var internalCommands = new List<IInternalCommand>();
         using var scope = _serviceScopeFactory.CreateScope();
         foreach (var @event in events)
         {
@@ -132,7 +136,7 @@ public sealed class EventDispatcher : IEventDispatcher
 
         _logger.LogTrace("Processing internal message done...");
 
-        return Task.FromResult<IReadOnlyList<InternalCommand>>(internalCommands);
+        return Task.FromResult<IReadOnlyList<IInternalCommand>>(internalCommands);
     }
 
     private IEnumerable<IIntegrationEvent> GetWrappedIntegrationEvents(IReadOnlyList<IDomainEvent> domainEvents)

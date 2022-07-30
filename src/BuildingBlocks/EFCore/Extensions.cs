@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
 using BuildingBlocks.Core.Model;
+using BuildingBlocks.PersistMessageProcessor.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Configuration;
@@ -45,7 +45,7 @@ public static class Extensions
     {
         Expression<Func<IAggregate, bool>> filterExpr = e => !e.IsDeleted;
         foreach (var mutableEntityType in modelBuilder.Model.GetEntityTypes()
-                     .Where(m => m.ClrType.IsAssignableTo(typeof(IEntity))))
+                     .Where(m => m.ClrType.IsAssignableTo(typeof(IAudit))))
         {
             // modify expression to handle correct child type
             var parameter = Expression.Parameter(mutableEntityType.ClrType);
@@ -62,6 +62,9 @@ public static class Extensions
         where TContext : DbContext, IDbContext
     {
         using var scope = serviceProvider.CreateScope();
+
+        var persistMessageContext = scope.ServiceProvider.GetRequiredService<PersistMessageDbContext>();
+        await persistMessageContext.Database.MigrateAsync();
 
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
         await context.Database.MigrateAsync();

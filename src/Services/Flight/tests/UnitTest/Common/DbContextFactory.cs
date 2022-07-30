@@ -16,7 +16,7 @@ namespace Unit.Test.Common
             var options = new DbContextOptionsBuilder<FlightDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
 
-            var context = new FlightDbContext(options, httpContextAccessor: null);
+            var context = new FlightDbContext(options, currentUserProvider: null);
 
             // Seed our data
             FlightDataSeeder(context);

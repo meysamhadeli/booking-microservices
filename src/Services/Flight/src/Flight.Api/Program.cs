@@ -9,9 +9,9 @@ using BuildingBlocks.Jwt;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
-using BuildingBlocks.MessageProcessor;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.OpenTelemetry;
+using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Swagger;
 using BuildingBlocks.Web;
 using Figgle;
@@ -37,10 +37,10 @@ builder.Services.AddCustomDbContext<FlightDbContext>(configuration);
 builder.Services.AddScoped<IDataSeeder, FlightDataSeeder>();
 
 builder.Services.AddMongoDbContext<FlightReadDbContext>(configuration);
-
 builder.Services.AddPersistMessage(configuration);
 
 builder.AddCustomSerilog();
+builder.Services.AddCore();
 builder.Services.AddJwt();
 builder.Services.AddControllers();
 builder.Services.AddCustomSwagger(configuration, typeof(FlightRoot).Assembly);
@@ -50,7 +50,6 @@ builder.Services.AddValidatorsFromAssembly(typeof(FlightRoot).Assembly);
 builder.Services.AddCustomProblemDetails();
 builder.Services.AddCustomMapster(typeof(FlightRoot).Assembly);
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddTransient<IEventMapper, EventMapper>();
 builder.Services.AddCustomMassTransit(typeof(FlightRoot).Assembly, env);
 builder.Services.AddCustomOpenTelemetry();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);

@@ -5,6 +5,7 @@ using Ardalis.GuardClauses;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.CQRS;
+using BuildingBlocks.Core.Event;
 using Identity.Identity.Dtos;
 using Identity.Identity.Exceptions;
 using Identity.Identity.Models;
@@ -50,7 +51,7 @@ public class RegisterNewUserCommandHandler : ICommandHandler<RegisterNewUserComm
             throw new RegisterIdentityUserException(string.Join(',', roleResult.Errors.Select(e => e.Description)));
 
         await _eventDispatcher.SendAsync(new UserCreated(applicationUser.Id, applicationUser.FirstName + " " + applicationUser.LastName,
-                applicationUser.PassPortNumber), cancellationToken: cancellationToken);
+                applicationUser.PassPortNumber),cancellationToken: cancellationToken);
 
         return new RegisterNewUserResponseDto
         {

@@ -1,29 +1,26 @@
 using Booking.Booking.Events.Domain;
 using Booking.Booking.Models.ValueObjects;
 using BuildingBlocks.EventStoreDB.Events;
+using BuildingBlocks.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace Booking.Booking.Models;
 
-public class Booking : AggregateEventSourcing<long>
+public record Booking : AggregateEventSourcing<long>
 {
-    public Booking()
-    {
-    }
-
     public Trip Trip { get; private set; }
     public PassengerInfo PassengerInfo { get; private set; }
 
-    public static Booking Create(long id, PassengerInfo passengerInfo, Trip trip, bool isDeleted = false)
+    public static Booking Create(long id, PassengerInfo passengerInfo, Trip trip, bool isDeleted = false, long? userId = null)
     {
-        var booking = new Booking()
-        {
-            Id = id,
-            Trip = trip,
-            PassengerInfo = passengerInfo,
-            IsDeleted = isDeleted
-        };
+        var booking = new Booking { Id = id, Trip = trip, PassengerInfo = passengerInfo, IsDeleted = isDeleted };
 
-        var @event = new BookingCreatedDomainEvent(booking.Id, booking.PassengerInfo, booking.Trip, booking.IsDeleted);
+        var @event = new BookingCreatedDomainEvent(booking.Id, booking.PassengerInfo, booking.Trip)
+        {
+            IsDeleted = booking.IsDeleted,
+            CreatedAt = DateTime.Now,
+            CreatedBy = userId
+        };
 
         booking.AddDomainEvent(@event);
         booking.Apply(@event);
@@ -35,9 +32,9 @@ public class Booking : AggregateEventSourcing<long>
     {
         switch (@event)
         {
-            case BookingCreatedDomainEvent reservationCreated:
+            case BookingCreatedDomainEvent bookingCreated:
             {
-                Apply(reservationCreated);
+                Apply(bookingCreated);
                 return;
             }
         }

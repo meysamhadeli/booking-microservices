@@ -33,7 +33,7 @@ public sealed class EventMapper : IEventMapper
         };
     }
 
-    public InternalCommand MapToInternalCommand(IDomainEvent @event)
+    public IInternalCommand MapToInternalCommand(IDomainEvent @event)
     {
         return @event switch
         {

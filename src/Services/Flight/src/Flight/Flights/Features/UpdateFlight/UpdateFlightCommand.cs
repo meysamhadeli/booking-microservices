@@ -1,6 +1,7 @@
 using System;
 using BuildingBlocks.Caching;
 using BuildingBlocks.Core.CQRS;
+using BuildingBlocks.Core.Event;
 using Flight.Flights.Dtos;
 using Flight.Flights.Models;
 using MediatR;

@@ -28,6 +28,6 @@ public static class RepositoryExtensions
 
         action(entity);
 
-        return await repository.Update(entity, expectedVersion, cancellationToken);
+        return await repository.Update(entity, expectedVersion,cancellationToken);
     }
 }

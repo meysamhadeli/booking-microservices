@@ -2,11 +2,11 @@
 
 namespace BuildingBlocks.Core.Model
 {
-    public abstract class Aggregate : Aggregate<long>
+    public abstract record Aggregate : Aggregate<long>
     {
     }
 
-    public abstract class Aggregate<TId> : Entity, IAggregate<TId>
+    public abstract record Aggregate<TId> : Audit, IAggregate<TId>
     {
         private readonly List<IDomainEvent> _domainEvents = new();
         public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();

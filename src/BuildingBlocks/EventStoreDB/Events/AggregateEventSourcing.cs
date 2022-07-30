@@ -3,7 +3,7 @@ using BuildingBlocks.Core.Model;
 
 namespace BuildingBlocks.EventStoreDB.Events
 {
-    public abstract class AggregateEventSourcing<TId> : Entity, IAggregateEventSourcing<TId>
+    public abstract record AggregateEventSourcing<TId> : Audit, IAggregateEventSourcing<TId>
     {
         private readonly List<IDomainEvent> _domainEvents = new();
         public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
@@ -13,9 +13,9 @@ namespace BuildingBlocks.EventStoreDB.Events
             _domainEvents.Add(domainEvent);
         }
 
-        public IEvent[] ClearDomainEvents()
+        public IDomainEvent[] ClearDomainEvents()
         {
-            IEvent[] dequeuedEvents = _domainEvents.ToArray();
+            var dequeuedEvents = _domainEvents.ToArray();
 
             _domainEvents.Clear();
 

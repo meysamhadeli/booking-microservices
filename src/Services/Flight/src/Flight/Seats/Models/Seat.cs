@@ -5,7 +5,7 @@ using Flight.Seats.Events;
 
 namespace Flight.Seats.Models;
 
-public class Seat : Aggregate<long>
+public record Seat : Aggregate<long>
 {
     public static Seat Create(long id, string seatNumber, SeatType type, SeatClass @class, long flightId,
         bool isDeleted = false)

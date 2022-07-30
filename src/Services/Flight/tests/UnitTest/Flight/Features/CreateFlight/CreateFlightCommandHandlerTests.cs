@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using BuildingBlocks.MessageProcessor;
 using Flight.Flights.Dtos;
 using Flight.Flights.Features.CreateFlight;
 using FluentAssertions;

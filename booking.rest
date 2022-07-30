@@ -24,7 +24,7 @@ Content-Type: application/x-www-form-urlencoded
 grant_type=password
 &client_id=client
 &client_secret=secret
-&username=meysamh
+&username=samh
 &password=Admin@123456
 &scope=flight-api
 ###
@@ -39,11 +39,11 @@ Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
-  "firstName": "John6",
-  "lastName": "Doe6",
-  "username": "admin6",
-  "passportNumber": "1234567896",
-  "email": "admin6@admin.com",
+  "firstName": "John",
+  "lastName": "Do",
+  "username": "admin",
+  "passportNumber": "1290000000",
+  "email": "admin@admin.com",
   "password": "Admin6@12345",
   "confirmPassword": "Admin6@12345"
 }
@@ -219,7 +219,7 @@ Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
-  "passportNumber": "1234567896",
+  "passportNumber": "123456789",
   "passengerType": 1,
   "age": 30
 }
@@ -251,7 +251,7 @@ Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
-  "passengerId": 1,
+  "passengerId": 4776722699124736,
   "flightId": 1,
   "description": "I want to fly to iran"
 }
