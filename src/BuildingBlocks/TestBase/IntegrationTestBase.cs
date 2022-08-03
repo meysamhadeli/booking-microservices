@@ -2,7 +2,6 @@
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
-using BuildingBlocks.EventStoreDB.Projections;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.PersistMessageProcessor;
@@ -51,7 +50,6 @@ public class IntegrationTestFixture<TEntryPoint> : IAsyncLifetime
                 {
                     TestRegistrationServices?.Invoke(services);
                     services.ReplaceSingleton(AddHttpContextAccessorMock);
-                    services.Unregister<IProjectionProcessor>();
                     services.AddMassTransitTestHarness(x =>
                     {
                         x.UsingRabbitMq((context, cfg) =>
@@ -327,6 +325,17 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
     private Checkpoint _checkpointPersistMessageDB;
     private MongoDbRunner _mongoRunner;
 
+    private string MongoConnectionString
+    {
+        get => Fixture.ServiceProvider.GetRequiredService<IOptions<MongoOptions>>()?.Value?.ConnectionString;
+        set => Fixture.ServiceProvider.GetRequiredService<IOptions<MongoOptions>>().Value.ConnectionString = value;
+    }
+
+    private string PersistConnectionString => Fixture.ServiceProvider
+        .GetRequiredService<IOptions<PersistMessageOptions>>()?.Value.ConnectionString;
+
+    private string DefaultConnectionString => Fixture.Configuration?.GetConnectionString("DefaultConnection");
+
     public IntegrationTestFixtureCore(IntegrationTestFixture<TEntryPoint> integrationTestFixture)
     {
         Fixture = integrationTestFixture;
@@ -341,17 +350,21 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
         _checkpointPersistMessageDB = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
 
         _mongoRunner = MongoDbRunner.Start();
-        var mongoOptions = Fixture.ServiceProvider.GetRequiredService<IOptions<MongoOptions>>();
-        if (mongoOptions.Value.ConnectionString != null)
-            mongoOptions.Value.ConnectionString = _mongoRunner.ConnectionString;
+
+        if (MongoConnectionString != null)
+            MongoConnectionString = _mongoRunner.ConnectionString;
 
         await SeedDataAsync();
     }
 
     public async Task DisposeAsync()
     {
-        await _checkpointDefaultDB.Reset(Fixture.Configuration?.GetConnectionString("DefaultConnection"));
-        await _checkpointPersistMessageDB.Reset(Fixture.ServiceProvider.GetRequiredService<IOptions<PersistMessageOptions>>()?.Value?.ConnectionString);
+        if (!string.IsNullOrEmpty(DefaultConnectionString))
+            await _checkpointDefaultDB.Reset(DefaultConnectionString);
+
+        if (!string.IsNullOrEmpty(PersistConnectionString))
+            await _checkpointPersistMessageDB.Reset(PersistConnectionString);
+
         _mongoRunner.Dispose();
     }
 
