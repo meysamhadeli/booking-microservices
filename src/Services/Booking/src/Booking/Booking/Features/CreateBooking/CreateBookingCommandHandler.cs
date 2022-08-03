@@ -3,6 +3,7 @@ using Booking.Booking.Events.Domain;
 using Booking.Booking.Exceptions;
 using Booking.Booking.Models.ValueObjects;
 using BuildingBlocks.Contracts.Grpc;
+using BuildingBlocks.Core;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.EventStoreDB.Repository;
 using BuildingBlocks.Utils;
@@ -14,17 +15,20 @@ public class CreateBookingCommandHandler : ICommandHandler<CreateBookingCommand,
     private readonly IEventStoreDBRepository<Models.Booking> _eventStoreDbRepository;
     private readonly IFlightGrpcService _flightGrpcService;
     private readonly ICurrentUserProvider _currentUserProvider;
+    private readonly IEventDispatcher _eventDispatcher;
     private readonly IPassengerGrpcService _passengerGrpcService;
 
     public CreateBookingCommandHandler(IEventStoreDBRepository<Models.Booking> eventStoreDbRepository,
         IPassengerGrpcService passengerGrpcService,
         IFlightGrpcService flightGrpcService,
-        ICurrentUserProvider currentUserProvider)
+        ICurrentUserProvider currentUserProvider,
+        IEventDispatcher eventDispatcher)
     {
         _eventStoreDbRepository = eventStoreDbRepository;
         _passengerGrpcService = passengerGrpcService;
         _flightGrpcService = flightGrpcService;
         _currentUserProvider = currentUserProvider;
+        _eventDispatcher = eventDispatcher;
     }
 
     public async Task<ulong> Handle(CreateBookingCommand command,
@@ -47,9 +51,11 @@ public class CreateBookingCommandHandler : ICommandHandler<CreateBookingCommand,
             throw new BookingAlreadyExistException();
 
         var aggrigate = Models.Booking.Create(command.Id, new PassengerInfo(passenger.Name), new Trip(
-            flight.FlightNumber, flight.AircraftId, flight.DepartureAirportId,
-            flight.ArriveAirportId, flight.FlightDate, flight.Price, command.Description, emptySeat?.SeatNumber),
+                flight.FlightNumber, flight.AircraftId, flight.DepartureAirportId,
+                flight.ArriveAirportId, flight.FlightDate, flight.Price, command.Description, emptySeat?.SeatNumber),
             false, _currentUserProvider.GetCurrentUserId());
+
+        await _eventDispatcher.SendAsync(aggrigate.DomainEvents, cancellationToken: cancellationToken);
 
         await _flightGrpcService.ReserveSeat(new ReserveSeatRequestDto
         {
