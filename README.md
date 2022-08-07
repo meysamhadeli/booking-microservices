@@ -3,9 +3,7 @@
 
 ![](https://socialify.git.ci/meysamhadeli/booking-microservices/image?description=1&descriptionEditable=This%20application%20based%20on%20different%20software%20architecture%20and%20technologies%20like%20.Net%20Core%2C%20CQRS%2C%20DDD%2C%20Vertical%20Slice%20Architecture%2C%20Docker%2C%20kubernetes%2C%20tye%2C%20masstransit%2C%20RabbitMQ%2C%20Grpc%2C%20yarp%20reverse%20proxy%2C%20Identity%20Server%2C%20Redis%2C%20SqlServer%2C%20Entity%20Framework%20Core%2C%20Event%20Sourcing%20and%20different%20level%20of%20testing.&font=Raleway&forks=1&issues=1&logo=https%3A%2F%2Fcdn-icons-png.flaticon.com%2F512%2F1656%2F1656473.png&name=1&owner=1&pattern=Plus&pulls=1&stargazers=1&theme=Light)
 
-Booking Microservices is a Sample application for booking ticket. This application based on different software architecture and technologies like .Net Core, CQRS, DDD, Vertical Slice Architecture, Docker, kubernetes, tye, MassTransit, RabbitMQ, gRPC, yarp reverse proxy, Identity Server, Redis, SqlServer, Entity Framework Core, Event Sourcing and different level of testing.
-
-🌀 This repository is a work in progress and will be completed over time 🚀
+> **The main idea of creating this project is implementing an infrastructure for up and running distributed system with the latest technology and architecture like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq, Masstransit in .Net, and we will not deal mainly with business.** 🚀
 
 # Table of Contents
 
@@ -14,7 +12,6 @@ Booking Microservices is a Sample application for booking ticket. This applicati
 - [Technologies - Libraries](#technologies---libraries)
 - [The Domain and Bounded Context - Service Boundary](#the-domain-and-bounded-context---service-boundary)
 - [Structure of Project](#structure-of-project)
-- [Prerequisites](#prerequisites)
 - [How to Run](#how-to-run)
   - [Docker Compose](#docker-compose)
   - [Kubernetes](#kubernetes)
@@ -39,7 +36,7 @@ Booking Microservices is a Sample application for booking ticket. This applicati
 
 > This project is a work in progress, new features will be added over time.
 
-I will try to register future goals and additions in the [Issues](https://github.com/meysamhadeli/booking-microservices-sample/issues) section of this repository.
+I will try to register future goals and additions in the [Issues](https://github.com/meysamhadeli/booking-microservices/issues) section of this repository.
 
 High-level plan is represented in the table
 
@@ -50,7 +47,7 @@ High-level plan is represented in the table
 | Flight Service    | Completed ✔️   |
 | Passenger Service | Completed ✔️   |
 | Booking Service   | Completed ✔️   |
-| Building Blocks   | In Progress 👷‍♂️ |
+| Building Blocks   | Completed ✔️   |
 
 ## Technologies - Libraries
 
@@ -150,6 +147,8 @@ Also we have a seprate docker file for up and running [infrastracture.yaml](./de
 docker-compose -f ./deployments/docker-compose/infrastracture.yaml up -d
 ```
 
+### Kubernetes - TODO
+
 ### Documentation Apis
 
 Each microservice uses swagger open api, navigate to /swagger for a list of every endpoint.
@@ -165,7 +164,7 @@ Thanks a bunch for supporting me!
 
 ## Contribution
 
-Thanks to all [contributors](https://github.com/meysamhadeli/booking-microservices-sample/graphs/contributors), you're awesome and this wouldn't be possible without you! The goal is to build a categorized community-driven collection of very well-known resources.
+Thanks to all [contributors](https://github.com/meysamhadeli/booking-microservices/graphs/contributors), you're awesome and this wouldn't be possible without you! The goal is to build a categorized community-driven collection of very well-known resources.
 
 ## Project References & Credits
 
@@ -178,4 +177,4 @@ Thanks to all [contributors](https://github.com/meysamhadeli/booking-microservic
 - [https://github.com/devmentors/FeedR](https://github.com/devmentors/FeedR)
 
 ## License
-This project is made available under the MIT license. See [LICENSE](https://github.com/meysamhadeli/booking-microservices-sample/blob/main/LICENSE) for details.
+This project is made available under the MIT license. See [LICENSE](https://github.com/meysamhadeli/booking-microservices/blob/main/LICENSE) for details.
