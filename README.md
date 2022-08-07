@@ -34,7 +34,7 @@
 
 ## Plan
 
-> This project is a work in progress, new features will be added over time.
+> 🌀This project is a work in progress, new features will be added over time.🌀
 
 I will try to register future goals and additions in the [Issues](https://github.com/meysamhadeli/booking-microservices/issues) section of this repository.
 
