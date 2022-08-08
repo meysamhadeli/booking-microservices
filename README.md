@@ -1,7 +1,11 @@
+<a href="https://github.com/meysamhadeli/booking-microservices">
+   <img src="./assets/booking.png" style="display: block;margin-left: auto;
+  margin-right: auto;" with="120" height="120" alt="booking" >
+</a>
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Gitpod live code](https://img.shields.io/badge/Gitpod-live--code-blue?logo=gitpod&style=flat-square&color=ff69b4)](https://gitpod.io/#https://github.com/meysamhadeli/booking-microservices)
 
-![](./assets/header.png)
 
 # Booking Microservices
 
