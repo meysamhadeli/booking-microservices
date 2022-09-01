@@ -34,7 +34,7 @@ builder.Services.AddMongoDbContext<PassengerReadDbContext>(configuration);
 builder.Services.AddPersistMessage(configuration);
 
 builder.AddCustomSerilog();
-builder.Services.AddCore();
+builder.Services.AddCore(configuration);
 builder.Services.AddJwt();
 builder.Services.AddControllers();
 builder.Services.AddCustomSwagger(configuration, typeof(PassengerRoot).Assembly);
