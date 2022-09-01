@@ -17,10 +17,6 @@ public static class Extensions
 {
     public static WebApplicationBuilder AddCustomSerilog(this WebApplicationBuilder builder)
     {
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console()
-            .CreateBootstrapLogger();
-
         builder.Host.UseSerilog((context, loggerConfiguration) =>
         {
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
@@ -32,11 +28,11 @@ public static class Extensions
                 : LogEventLevel.Information;
 
             loggerConfiguration
-                .WriteTo.Console()
                 .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(loggOptions.ElasticUri))
                 {
                     AutoRegisterTemplate = true,
-                    IndexFormat = $"{appOptions.Name}-{environment?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}"
+                    IndexFormat =
+                        $"{appOptions.Name}-{environment?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}"
                 })
                 .WriteTo.SpectreConsole(loggOptions.LogTemplate, logLevel)
                 .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Error)
