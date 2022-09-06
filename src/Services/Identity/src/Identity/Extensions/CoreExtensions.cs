@@ -1,20 +1,20 @@
 ﻿using BuildingBlocks.Core;
-using BuildingBlocks.Web;
-using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Identity.Extensions;
 
 public static class CoreExtensions
 {
-    public static IServiceCollection AddCore(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddCore(this IServiceCollection services)
     {
-        services.AddOptions<AppOptions>()
-            .Bind(configuration.GetSection(nameof(AppOptions)))
-            .ValidateDataAnnotations();
-
-        services.AddTransient<IEventMapper, EventMapper>();
+        services.AddScoped<IEventMapper, EventMapper>();
         services.AddScoped<IEventDispatcher, EventDispatcher>();
+
+        services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.SuppressModelStateInvalidFilter = true;
+        });
 
         return services;
     }
