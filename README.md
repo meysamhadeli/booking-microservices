@@ -1,5 +1,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Gitpod live code](https://img.shields.io/badge/Gitpod-live--code-blue?logo=gitpod&style=flat-square&color=ff69b4)](https://gitpod.io/#https://github.com/meysamhadeli/booking-microservices)
+<a href="https://github.com/meysamhadeli/booking-microservices/actions/workflows/dotnet.yml"><img alt="build-status" src="https://github.com/meysamhadeli/booking-microservices/actions/workflows/dotnet.yml/badge.svg?branch=main&style=flat-square" /></a>
 
 ![](./assets/header.png)
 # Booking Microservices
