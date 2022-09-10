@@ -31,7 +31,7 @@ Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 builder.Services.AddPersistMessage(configuration);
 builder.Services.AddCustomDbContext<IdentityContext>(configuration);
 builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
-builder.Services.AddCore(configuration);
+builder.Services.AddCore();
 builder.AddCustomSerilog();
 builder.Services.AddControllers();
 builder.Services.AddCustomSwagger(configuration, typeof(IdentityRoot).Assembly);
