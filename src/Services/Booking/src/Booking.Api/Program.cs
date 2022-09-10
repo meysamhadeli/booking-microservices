@@ -34,7 +34,7 @@ builder.Services.AddPersistMessage(configuration);
 builder.Services.AddMongoDbContext<BookingReadDbContext>(configuration);
 
 builder.AddCustomSerilog();
-builder.Services.AddCore(configuration);
+builder.Services.AddCore();
 builder.Services.AddJwt();
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
