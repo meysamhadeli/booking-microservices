@@ -26,7 +26,7 @@ public static class Extensions
         var healthChecksBuilder = services.AddHealthChecks()
             .AddSqlServer(sqlOptions.DefaultConnection)
             .AddRabbitMQ(rabbitConnectionString: $"amqp://{rabbitMqOptions.UserName}:{rabbitMqOptions.Password}@{rabbitMqOptions.HostName}")
-            .AddElasticsearch(logOptions.ElasticUri);
+            .AddElasticsearch(logOptions.Elastic.ElasticServiceUrl);
 
         if (mongoOptions.ConnectionString is not null)
             healthChecksBuilder.AddMongoDb(mongoOptions.ConnectionString);
