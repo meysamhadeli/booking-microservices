@@ -1,9 +1,12 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Gitpod live code](https://img.shields.io/badge/Gitpod-live--code-blue?logo=gitpod&style=flat-square&color=ff69b4)](https://gitpod.io/#https://github.com/meysamhadeli/booking-microservices)
-<a href="https://github.com/meysamhadeli/booking-microservices/actions/workflows/dotnet.yml"><img alt="build-status" src="https://github.com/meysamhadeli/booking-microservices/actions/workflows/dotnet.yml/badge.svg?branch=main&style=flat-square" /></a>
-
-![](./assets/header.png)
-# Booking Microservices
+<div align="center" style="margin-bottom:20px">
+  <img src="assets/header.png" alt="booking-microservices" />
+       <h1>Booking Microservices</h1>
+    <div align="center">
+           <a href="https://github.com/meysamhadeli/booking-microservices/actions/workflows/dotnet.yml"><img alt="build-status" src="https://github.com/meysamhadeli/booking-microservices/actions/workflows/dotnet.yml/badge.svg?branch=main&style=flat-square"/></a>
+         <a href="https://gitpod.io/#https://github.com/meysamhadeli/booking-microservices"><img src="https://img.shields.io/badge/Gitpod-live--code-blue?logo=gitpod&style=flat-square&color=ff69b4"/></a>
+                 <a href="https://github.com/meysamhadeli/booking-microservices/blob/main/LICENSE"><img alt="build-status"          src="https://img.shields.io/github/license/meysamhadeli/booking-microservices?color=%234275f5&style=flat-square"/></a>
+    </div>   
+</div>
 
 > **The main idea of creating this project is implementing an infrastructure for up and running distributed system with the latest technology and architecture like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq, Masstransit in .Net, and we will not deal mainly with business.** 🚀
 
