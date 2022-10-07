@@ -37,7 +37,7 @@ namespace BuildingBlocks.Logging
                     .Enrich.FromLogContext()
                     .ReadFrom.Configuration(context.Configuration);
 
-                if (logOptions.Elastic.Enable)
+                if (logOptions.Elastic is { Enable: true })
                 {
                     loggerConfiguration.WriteTo.Elasticsearch(
                         new ElasticsearchSinkOptions(new Uri(logOptions.Elastic.ElasticServiceUrl))
@@ -48,7 +48,7 @@ namespace BuildingBlocks.Logging
                         });
                 }
 
-                if (logOptions.File.Enable)
+                if (logOptions.File is { Enable: true })
                 {
                     var path = string.IsNullOrWhiteSpace(logOptions.File.Path) ? "logs/.txt" : logOptions.File.Path;
                     if (!Enum.TryParse<RollingInterval>(logOptions.File.Interval, true, out var interval))
