@@ -3,8 +3,6 @@ using BuildingBlocks.Core;
 using BuildingBlocks.Core.Event;
 using Passenger.Passengers.Events.Domain;
 using Passenger.Passengers.Features.CompleteRegisterPassenger.Reads;
-using Passenger.Passengers.Models;
-using PassengerType = BuildingBlocks.Contracts.Grpc.PassengerType;
 
 namespace Passenger;
 
@@ -26,7 +24,7 @@ public sealed class EventMapper : IEventMapper
         {
             PassengerRegistrationCompletedDomainEvent e => new CompleteRegisterPassengerMongoCommand(e.Id, e.PassportNumber, e.Name, e.PassengerType,
                 e.Age, e.IsDeleted),
-            PassengerCreatedDomainEvent e => new CompleteRegisterPassengerMongoCommand(e.Id, e.PassportNumber, e.Name, Passengers.Models.PassengerType.Unknown,
+            PassengerCreatedDomainEvent e => new CompleteRegisterPassengerMongoCommand(e.Id, e.PassportNumber, e.Name, Passengers.Enums.PassengerType.Unknown,
                 0, e.IsDeleted),
             _ => null
         };

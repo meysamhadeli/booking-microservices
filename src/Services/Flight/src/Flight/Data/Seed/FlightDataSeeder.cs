@@ -79,12 +79,12 @@ public class FlightDataSeeder : IDataSeeder
         {
             var seats = new List<Seat>
             {
-                Seat.Create(1 ,"12A", SeatType.Window, SeatClass.Economy, 1),
-                Seat.Create(2, "12B", SeatType.Window, SeatClass.Economy, 1),
-                Seat.Create(3, "12C", SeatType.Middle, SeatClass.Economy, 1),
-                Seat.Create(4, "12D", SeatType.Middle, SeatClass.Economy, 1),
-                Seat.Create(5, "12E", SeatType.Aisle, SeatClass.Economy, 1),
-                Seat.Create(6, "12F", SeatType.Aisle, SeatClass.Economy, 1)
+                Seat.Create(1 ,"12A", Seats.Enums.SeatType.Window, Seats.Enums.SeatClass.Economy, 1),
+                Seat.Create(2, "12B", Seats.Enums.SeatType.Window, Seats.Enums.SeatClass.Economy, 1),
+                Seat.Create(3, "12C", Seats.Enums.SeatType.Middle, Seats.Enums.SeatClass.Economy, 1),
+                Seat.Create(4, "12D", Seats.Enums.SeatType.Middle, Seats.Enums.SeatClass.Economy, 1),
+                Seat.Create(5, "12E", Seats.Enums.SeatType.Aisle, Seats.Enums.SeatClass.Economy, 1),
+                Seat.Create(6, "12F", Seats.Enums.SeatType.Aisle, Seats.Enums.SeatClass.Economy, 1)
             };
 
             await _flightDbContext.Seats.AddRangeAsync(seats);
@@ -102,7 +102,7 @@ public class FlightDataSeeder : IDataSeeder
                 Flights.Models.Flight.Create(1, "BD467", 1, 1, new DateTime(2022, 1, 31, 12, 0, 0),
                     new DateTime(2022, 1, 31, 14, 0, 0),
                     2, 120m,
-                    new DateTime(2022, 1, 31), FlightStatus.Completed,
+                    new DateTime(2022, 1, 31), Flights.Enums.FlightStatus.Completed,
                     8000)
             };
             await _flightDbContext.Flights.AddRangeAsync(flights);

@@ -7,7 +7,7 @@ namespace Flight.Seats.Models;
 
 public record Seat : Aggregate<long>
 {
-    public static Seat Create(long id, string seatNumber, SeatType type, SeatClass @class, long flightId,
+    public static Seat Create(long id, string seatNumber, Enums.SeatType type, Enums.SeatClass @class, long flightId,
         bool isDeleted = false)
     {
         var seat = new Seat()
@@ -52,7 +52,7 @@ public record Seat : Aggregate<long>
     }
 
     public string SeatNumber { get; private set; }
-    public SeatType Type { get; private set; }
-    public SeatClass Class { get; private set; }
+    public Enums.SeatType Type { get; private set; }
+    public Enums.SeatClass Class { get; private set; }
     public long FlightId { get; private set; }
 }

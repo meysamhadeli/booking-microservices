@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Passenger;
 using Passenger.Data;
 using Passenger.Extensions;
+using Passenger.GrpcServer.Services;
 using Prometheus;
 using Serilog;
 
@@ -51,7 +52,6 @@ builder.Services.AddGrpc(options =>
 {
     options.Interceptors.Add<GrpcExceptionInterceptor>();
 });
-builder.Services.AddMagicOnion();
 
 SnowFlakIdGenerator.Configure(2);
 
@@ -78,7 +78,7 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
     endpoints.MapMetrics();
-    endpoints.MapMagicOnionService();
+    endpoints.MapGrpcService<PassengerGrpcServices>();
 });
 
 app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));

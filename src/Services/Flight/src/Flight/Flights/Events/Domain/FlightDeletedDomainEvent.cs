@@ -6,4 +6,4 @@ namespace Flight.Flights.Events.Domain;
 
 public record FlightDeletedDomainEvent(long Id, string FlightNumber, long AircraftId, DateTime DepartureDate,
     long DepartureAirportId, DateTime ArriveDate, long ArriveAirportId, decimal DurationMinutes,
-    DateTime FlightDate, FlightStatus Status, decimal Price, bool IsDeleted) : IDomainEvent;
+    DateTime FlightDate, Enums.FlightStatus Status, decimal Price, bool IsDeleted) : IDomainEvent;

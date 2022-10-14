@@ -1,16 +1,12 @@
 ﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.Contracts.Grpc;
 using BuildingBlocks.TestBase;
 using FluentAssertions;
 using Grpc.Net.Client;
 using Integration.Test.Fakes;
-using MagicOnion;
-using MagicOnion.Client;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using NSubstitute;
+using Passenger;
 using Passenger.Data;
 using Passenger.Passengers.Features.GetPassengerById;
 using Xunit;
@@ -22,7 +18,8 @@ public class GetPassengerByIdTests : IntegrationTestBase<Program, PassengerDbCon
     private readonly ITestHarness _testHarness;
     private readonly GrpcChannel _channel;
 
-    public GetPassengerByIdTests(IntegrationTestFixture<Program, PassengerDbContext> integrationTestFixture) : base(integrationTestFixture)
+    public GetPassengerByIdTests(IntegrationTestFixture<Program, PassengerDbContext> integrationTestFixture) : base(
+        integrationTestFixture)
     {
         _channel = Fixture.Channel;
         _testHarness = Fixture.TestHarness;
@@ -30,7 +27,6 @@ public class GetPassengerByIdTests : IntegrationTestBase<Program, PassengerDbCon
 
     protected override void RegisterTestsServices(IServiceCollection services)
     {
-        MockPassengerGrpcServices(services);
     }
 
 
@@ -64,25 +60,13 @@ public class GetPassengerByIdTests : IntegrationTestBase<Program, PassengerDbCon
         var passengerEntity = FakePassengerCreated.Generate(userCreated);
         await Fixture.InsertAsync(passengerEntity);
 
-        var passengerGrpcClient = MagicOnionClient.Create<IPassengerGrpcService>(_channel);
+        var passengerGrpcClient = new PassengerGrpcService.PassengerGrpcServiceClient(_channel);
 
         // Act
-        var response = await passengerGrpcClient.GetById(passengerEntity.Id);
+        var response = await passengerGrpcClient.GetByIdAsync(new GetByIdRequest {Id = passengerEntity.Id});
 
         // Assert
         response?.Should().NotBeNull();
         response?.Id.Should().Be(passengerEntity.Id);
-    }
-
-    private void MockPassengerGrpcServices(IServiceCollection services)
-    {
-        services.Replace(ServiceDescriptor.Singleton(x =>
-        {
-            var mock = Substitute.For<IPassengerGrpcService>();
-            mock.GetById(Arg.Any<long>())
-                .Returns(new UnaryResult<PassengerResponseDto>(new FakePassengerResponseDto().Generate()));
-
-            return mock;
-        }));
     }
 }

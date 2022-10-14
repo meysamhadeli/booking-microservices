@@ -1,4 +1,5 @@
 ﻿using AutoBogus;
+using Flight.Seats.Enums;
 using Flight.Seats.Features.CreateSeat;
 using Flight.Seats.Models;
 

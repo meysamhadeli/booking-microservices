@@ -14,12 +14,12 @@ public record Flight : Aggregate<long>
     public long ArriveAirportId { get; private set; }
     public decimal DurationMinutes { get; private set; }
     public DateTime FlightDate { get; private set; }
-    public FlightStatus Status { get; private set; }
+    public Enums.FlightStatus Status { get; private set; }
     public decimal Price { get; private set; }
 
     public static Flight Create(long id, string flightNumber, long aircraftId,
         long departureAirportId, DateTime departureDate, DateTime arriveDate,
-        long arriveAirportId, decimal durationMinutes, DateTime flightDate, FlightStatus status,
+        long arriveAirportId, decimal durationMinutes, DateTime flightDate, Enums.FlightStatus status,
         decimal price, bool isDeleted = false)
     {
         var flight = new Flight
@@ -51,7 +51,7 @@ public record Flight : Aggregate<long>
 
     public void Update(long id, string flightNumber, long aircraftId,
         long departureAirportId, DateTime departureDate, DateTime arriveDate,
-        long arriveAirportId, decimal durationMinutes, DateTime flightDate, FlightStatus status,
+        long arriveAirportId, decimal durationMinutes, DateTime flightDate, Enums.FlightStatus status,
         decimal price, bool isDeleted = false)
     {
         FlightNumber = flightNumber;
@@ -74,7 +74,7 @@ public record Flight : Aggregate<long>
 
     public void Delete(long id, string flightNumber, long aircraftId,
         long departureAirportId, DateTime departureDate, DateTime arriveDate,
-        long arriveAirportId, decimal durationMinutes, DateTime flightDate, FlightStatus status,
+        long arriveAirportId, decimal durationMinutes, DateTime flightDate, Enums.FlightStatus status,
         decimal price, bool isDeleted = true)
     {
         FlightNumber = flightNumber;

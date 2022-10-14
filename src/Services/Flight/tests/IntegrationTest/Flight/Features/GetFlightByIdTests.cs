@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
-using BuildingBlocks.Contracts.Grpc;
 using BuildingBlocks.TestBase;
+using Flight;
 using Flight.Data;
 using Flight.Flights.Features.CreateFlight.Reads;
 using Flight.Flights.Features.GetFlightById;
+using Flight.GrpcServer.Services;
 using FluentAssertions;
 using Grpc.Net.Client;
 using Integration.Test.Fakes;
-using MagicOnion.Client;
 using Xunit;
 
 namespace Integration.Test.Flight.Features;
@@ -16,7 +16,9 @@ public class GetFlightByIdTests : IntegrationTestBase<Program, FlightDbContext, 
 {
     private readonly GrpcChannel _channel;
 
-    public GetFlightByIdTests(IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(integrationTestFixture)
+    public GetFlightByIdTests(
+        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
+        integrationTestFixture)
     {
         _channel = Fixture.Channel;
     }
@@ -49,10 +51,10 @@ public class GetFlightByIdTests : IntegrationTestBase<Program, FlightDbContext, 
 
         await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>();
 
-        var flightGrpcClient = MagicOnionClient.Create<IFlightGrpcService>(_channel);
+        var flightGrpcClient = new FlightGrpcService.FlightGrpcServiceClient(_channel);
 
         // Act
-        var response = await flightGrpcClient.GetById(command.Id);
+        var response = await flightGrpcClient.GetByIdAsync(new GetByIdRequest {Id = command.Id});
 
         // Assert
         response?.Should().NotBeNull();

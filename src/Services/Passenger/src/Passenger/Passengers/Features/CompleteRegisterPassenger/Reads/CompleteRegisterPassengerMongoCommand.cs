@@ -6,7 +6,7 @@ namespace Passenger.Passengers.Features.CompleteRegisterPassenger.Reads;
 public class CompleteRegisterPassengerMongoCommand : InternalCommand
 {
     public CompleteRegisterPassengerMongoCommand(long id, string passportNumber, string name,
-        PassengerType passengerType, int age, bool isDeleted)
+        Enums.PassengerType passengerType, int age, bool isDeleted)
     {
         Id = id;
         PassportNumber = passportNumber;
@@ -18,7 +18,7 @@ public class CompleteRegisterPassengerMongoCommand : InternalCommand
 
     public string PassportNumber { get; }
     public string Name { get; }
-    public PassengerType PassengerType { get; }
+    public Enums.PassengerType PassengerType { get; }
     public int Age { get; }
     public bool IsDeleted { get; }
 }

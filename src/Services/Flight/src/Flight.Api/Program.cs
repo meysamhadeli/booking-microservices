@@ -1,3 +1,4 @@
+using System.Net;
 using System.Reflection;
 using BuildingBlocks.Caching;
 using BuildingBlocks.Core;
@@ -19,9 +20,11 @@ using Flight;
 using Flight.Data;
 using Flight.Data.Seed;
 using Flight.Extensions;
+using Flight.GrpcServer.Services;
 using FluentValidation;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Prometheus;
 using Serilog;
 
@@ -60,8 +63,6 @@ builder.Services.AddGrpc(options =>
     options.Interceptors.Add<GrpcExceptionInterceptor>();
 });
 
-builder.Services.AddMagicOnion();
-
 SnowFlakIdGenerator.Configure(1);
 
 builder.Services.AddCachingRequest(new List<Assembly> {typeof(FlightRoot).Assembly});
@@ -91,7 +92,7 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
     endpoints.MapMetrics();
-    endpoints.MapMagicOnionService();
+    endpoints.MapGrpcService<FlightGrpcServices>();
 });
 
 app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));

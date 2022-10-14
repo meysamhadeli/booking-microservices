@@ -1,5 +1,6 @@
 ﻿using AutoBogus;
 using BuildingBlocks.IdsGenerator;
+using Passenger.Passengers.Enums;
 using Passenger.Passengers.Features.CompleteRegisterPassenger;
 using Passenger.Passengers.Models;
 

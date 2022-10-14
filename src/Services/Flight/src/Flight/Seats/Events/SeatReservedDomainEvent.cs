@@ -3,4 +3,4 @@ using Flight.Seats.Models;
 
 namespace Flight.Seats.Events;
 
-public record SeatReservedDomainEvent(long Id, string SeatNumber, SeatType Type, SeatClass Class, long FlightId, bool IsDeleted) : IDomainEvent;
+public record SeatReservedDomainEvent(long Id, string SeatNumber, Enums.SeatType Type, Enums.SeatClass Class, long FlightId, bool IsDeleted) : IDomainEvent;

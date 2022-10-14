@@ -1,12 +1,12 @@
 ﻿using AutoBogus;
-using BuildingBlocks.Contracts.Grpc;
 using BuildingBlocks.IdsGenerator;
+using Passenger;
 
 namespace Integration.Test.Fakes;
 
-public class FakePassengerResponseDto : AutoFaker<PassengerResponseDto>
+public class FakePassengerResponse : AutoFaker<PassengerResponse>
 {
-    public FakePassengerResponseDto()
+    public FakePassengerResponse()
     {
         RuleFor(r => r.Id, _ => SnowFlakIdGenerator.NewId());
     }
