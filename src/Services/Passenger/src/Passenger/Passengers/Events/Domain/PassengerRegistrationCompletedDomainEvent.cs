@@ -4,4 +4,4 @@ using Passenger.Passengers.Models;
 namespace Passenger.Passengers.Events.Domain;
 
 public record PassengerRegistrationCompletedDomainEvent(long Id, string Name, string PassportNumber,
-    PassengerType PassengerType, int Age, bool IsDeleted = false) : IDomainEvent;
+    Enums.PassengerType PassengerType, int Age, bool IsDeleted = false) : IDomainEvent;

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using Flight.Aircrafts.Models;
 using Flight.Airports.Models;
 using Flight.Data;
+using Flight.Flights.Enums;
 using Flight.Flights.Models;
+using Flight.Seats.Enums;
 using Flight.Seats.Models;
 using Microsoft.EntityFrameworkCore;
 

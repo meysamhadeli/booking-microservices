@@ -1,0 +1,30 @@
+﻿syntax = "proto3";
+
+package passenger;
+
+service PassengerGrpcService {
+
+  rpc GetById (GetByIdRequest) returns (PassengerResponse);
+}
+
+message GetByIdRequest {
+  int64 Id = 1;
+}
+
+message PassengerResponse {
+  int64 Id = 1;
+  string Name = 2;
+  string PassportNumber = 3;
+  PassengerType PassengerType = 4;
+  int32 Age = 5;
+  string Email = 6;
+}
+
+
+    enum PassengerType {
+        PASSENGER_TYPE_UNKNOWN = 0;
+        PASSENGER_TYPE_MALE = 1;
+        PASSENGER_TYPE_FEMALE = 2;
+        PASSENGER_TYPE_BABY = 3;
+    }
+

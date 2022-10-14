@@ -1,13 +1,12 @@
 ﻿using System.Threading.Tasks;
-using BuildingBlocks.Contracts.Grpc;
 using BuildingBlocks.TestBase;
+using Flight;
 using Flight.Data;
 using Flight.Flights.Features.CreateFlight.Reads;
 using Flight.Seats.Features.CreateSeat.Reads;
 using FluentAssertions;
 using Grpc.Net.Client;
 using Integration.Test.Fakes;
-using MagicOnion.Client;
 using Xunit;
 
 namespace Integration.Test.Seat.Features;
@@ -39,10 +38,10 @@ public class ReserveSeatTests : IntegrationTestBase<Program, FlightDbContext, Fl
 
         await Fixture.ShouldProcessedPersistInternalCommand<CreateSeatMongoCommand>();
 
-        var flightGrpcClient = MagicOnionClient.Create<IFlightGrpcService>(_channel);
+        var flightGrpcClient = new FlightGrpcService.FlightGrpcServiceClient(_channel);
 
         // Act
-        var response = await flightGrpcClient.ReserveSeat(new ReserveSeatRequestDto
+        var response = await flightGrpcClient.ReserveSeatAsync(new ReserveSeatRequest()
         {
             FlightId = seatCommand.FlightId, SeatNumber = seatCommand.SeatNumber
         });

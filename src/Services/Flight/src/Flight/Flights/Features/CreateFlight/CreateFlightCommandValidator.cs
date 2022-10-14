@@ -10,10 +10,10 @@ public class CreateFlightCommandValidator : AbstractValidator<CreateFlightComman
         RuleFor(x => x.Price).GreaterThan(0).WithMessage("Price must be greater than 0");
 
         RuleFor(x => x.Status).Must(p => (p.GetType().IsEnum &&
-                                         p == FlightStatus.Flying) ||
-                                         p == FlightStatus.Canceled ||
-                                         p == FlightStatus.Delay ||
-                                         p == FlightStatus.Completed)
+                                         p == Enums.FlightStatus.Flying) ||
+                                         p == Enums.FlightStatus.Canceled ||
+                                         p == Enums.FlightStatus.Delay ||
+                                         p == Enums.FlightStatus.Completed)
             .WithMessage("Status must be Flying, Delay, Canceled or Completed");
 
         RuleFor(x => x.AircraftId).NotEmpty().WithMessage("AircraftId must be not empty");

@@ -13,7 +13,8 @@ public class CompleteRegisterPassengerTests : IntegrationTestBase<Program, Passe
 {
     private readonly ITestHarness _testHarness;
 
-    public CompleteRegisterPassengerTests(IntegrationTestFixture<Program, PassengerDbContext> integrationTestFixture) : base(integrationTestFixture)
+    public CompleteRegisterPassengerTests(IntegrationTestFixture<Program, PassengerDbContext> integrationTestFixture) :
+        base(integrationTestFixture)
     {
         _testHarness = Fixture.TestHarness;
     }
@@ -36,7 +37,7 @@ public class CompleteRegisterPassengerTests : IntegrationTestBase<Program, Passe
         response.Should().NotBeNull();
         response?.Name.Should().Be(userCreated.Name);
         response?.PassportNumber.Should().Be(command.PassportNumber);
-        response?.PassengerType.Should().Be(command.PassengerType);
+        response?.PassengerType.ToString().Should().Be(command.PassengerType.ToString());
         response?.Age.Should().Be(command.Age);
     }
 }

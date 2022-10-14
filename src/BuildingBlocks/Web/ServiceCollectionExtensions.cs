@@ -1,6 +1,4 @@
-﻿using BuildingBlocks.Contracts.Grpc;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
+﻿using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 
 namespace BuildingBlocks.Web;

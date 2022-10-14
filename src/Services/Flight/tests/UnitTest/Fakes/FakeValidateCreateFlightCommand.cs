@@ -1,5 +1,6 @@
 ﻿using System;
 using AutoBogus;
+using Flight.Flights.Enums;
 using Flight.Flights.Features.CreateFlight;
 using Flight.Flights.Models;
 

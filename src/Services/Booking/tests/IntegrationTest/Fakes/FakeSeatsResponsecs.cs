@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
-using BuildingBlocks.Contracts.Grpc;
+using Flight;
 
 namespace Integration.Test.Fakes;
 
-public static class FakeSeatsResponseDto
+public static class FakeSeatsResponse
 {
-    public static IEnumerable<SeatResponseDto> Generate()
+    public static ListSeatsResponse Generate()
     {
-        return new List<SeatResponseDto>()
+        var result = new ListSeatsResponse();
+        result.Items.AddRange(new List<SeatsResponse>
         {
-            new SeatResponseDto()
+            new SeatsResponse()
             {
                 FlightId = 1,
                 Class = SeatClass.Economy,
@@ -17,7 +18,7 @@ public static class FakeSeatsResponseDto
                 SeatNumber = "33F",
                 Id = 1
             },
-            new SeatResponseDto()
+            new SeatsResponse()
             {
                 FlightId = 1,
                 Class = SeatClass.Economy,
@@ -25,6 +26,8 @@ public static class FakeSeatsResponseDto
                 SeatNumber = "22D",
                 Id = 2
             }
-        };
+        });
+
+        return result;
     }
 }

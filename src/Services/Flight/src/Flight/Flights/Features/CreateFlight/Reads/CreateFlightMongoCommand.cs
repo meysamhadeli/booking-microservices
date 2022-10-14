@@ -8,7 +8,7 @@ public class CreateFlightMongoCommand : InternalCommand
 {
     public CreateFlightMongoCommand(long id, string flightNumber, long aircraftId, DateTime departureDate,
         long departureAirportId,
-        DateTime arriveDate, long arriveAirportId, decimal durationMinutes, DateTime flightDate, FlightStatus status,
+        DateTime arriveDate, long arriveAirportId, decimal durationMinutes, DateTime flightDate, Enums.FlightStatus status,
         decimal price, bool isDeleted)
     {
         Id = id;
@@ -33,7 +33,7 @@ public class CreateFlightMongoCommand : InternalCommand
     public long ArriveAirportId { get; }
     public decimal DurationMinutes { get; }
     public DateTime FlightDate { get; }
-    public FlightStatus Status { get; }
+    public Enums.FlightStatus Status { get; }
     public decimal Price { get; }
     public bool IsDeleted { get; }
 }

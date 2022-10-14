@@ -1,27 +1,30 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Booking.Booking.Models.Reads;
 using Booking.Data;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.Contracts.Grpc;
 using BuildingBlocks.PersistMessageProcessor.Data;
 using BuildingBlocks.TestBase;
+using Flight;
 using FluentAssertions;
+using Grpc.Core;
+using Grpc.Core.Testing;
 using Integration.Test.Fakes;
-using MagicOnion;
 using MassTransit;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NSubstitute;
+using Passenger;
 using Xunit;
+using GetByIdRequest = Flight.GetByIdRequest;
 
 namespace Integration.Test.Booking.Features;
 
 public class CreateBookingTests : IntegrationTestBase<Program, PersistMessageDbContext, BookingReadDbContext>
 {
     private readonly ITestHarness _testHarness;
+
     public CreateBookingTests(
         IntegrationTestFixture<Program, PersistMessageDbContext, BookingReadDbContext> integrationTestFixture) : base(
         integrationTestFixture)
@@ -56,11 +59,13 @@ public class CreateBookingTests : IntegrationTestBase<Program, PersistMessageDbC
     {
         services.Replace(ServiceDescriptor.Singleton(x =>
         {
-            var mock = Substitute.For<IPassengerGrpcService>();
-            mock.GetById(Arg.Any<long>())
-                .Returns(new UnaryResult<PassengerResponseDto>(new FakePassengerResponseDto().Generate()));
+            var mockPassenger = Substitute.For<PassengerGrpcService.PassengerGrpcServiceClient>();
 
-            return mock;
+            mockPassenger.GetByIdAsync(Arg.Any<Passenger.GetByIdRequest>())
+                .Returns(TestCalls.AsyncUnaryCall(Task.FromResult(new FakePassengerResponse().Generate()),
+                    Task.FromResult(new Metadata()), () => Status.DefaultSuccess, () => new Metadata(), () => { }));
+
+            return mockPassenger;
         }));
     }
 
@@ -68,19 +73,21 @@ public class CreateBookingTests : IntegrationTestBase<Program, PersistMessageDbC
     {
         services.Replace(ServiceDescriptor.Singleton(x =>
         {
-            var mock = Substitute.For<IFlightGrpcService>();
+            var mockFlight = Substitute.For<FlightGrpcService.FlightGrpcServiceClient>();
 
-            mock.GetById(Arg.Any<long>())
-                .Returns(new UnaryResult<FlightResponseDto>(Task.FromResult(new FakeFlightResponseDto().Generate())));
+            mockFlight.GetByIdAsync(Arg.Any<GetByIdRequest>())
+                .Returns(TestCalls.AsyncUnaryCall(Task.FromResult(new FakeFlightResponse().Generate()),
+                    Task.FromResult(new Metadata()), () => Status.DefaultSuccess, () => new Metadata(), () => { }));
 
-            mock.GetAvailableSeats(Arg.Any<long>())
-                .Returns(
-                    new UnaryResult<IEnumerable<SeatResponseDto>>(Task.FromResult(FakeSeatsResponseDto.Generate())));
+            mockFlight.GetAvailableSeatsAsync(Arg.Any<GetAvailableSeatsRequest>())
+                .Returns(TestCalls.AsyncUnaryCall(Task.FromResult(FakeSeatsResponse.Generate()),
+                    Task.FromResult(new Metadata()), () => Status.DefaultSuccess, () => new Metadata(), () => { }));
 
-            mock.ReserveSeat(new FakeReserveSeatRequestDto().Generate())
-                .Returns(new UnaryResult<SeatResponseDto>(Task.FromResult(FakeSeatsResponseDto.Generate().First())));
+            mockFlight.ReserveSeatAsync(Arg.Any<ReserveSeatRequest>())
+                .Returns(TestCalls.AsyncUnaryCall(Task.FromResult(FakeSeatsResponse.Generate()?.Items?.First()),
+                    Task.FromResult(new Metadata()), () => Status.DefaultSuccess, () => new Metadata(), () => { }));
 
-            return mock;
+            return mockFlight;
         }));
     }
 }

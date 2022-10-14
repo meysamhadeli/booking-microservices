@@ -15,9 +15,11 @@ using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Swagger;
 using BuildingBlocks.Web;
 using Figgle;
+using Flight;
 using FluentValidation;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Passenger;
 using Prometheus;
 using Serilog;
 
@@ -26,7 +28,6 @@ var configuration = builder.Configuration;
 var env = builder.Environment;
 
 var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
-builder.Services.Configure<GrpcOptions>(options => configuration.GetSection("Grpc").Bind(options));
 
 Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
@@ -49,13 +50,13 @@ builder.Services.AddCustomMassTransit(typeof(BookingRoot).Assembly, env);
 builder.Services.AddCustomOpenTelemetry();
 builder.Services.AddTransient<AuthHeaderHandler>();
 
-builder.Services.AddMagicOnionClients();
-
 SnowFlakIdGenerator.Configure(3);
 
 // ref: https://github.com/oskardudycz/EventSourcing.NetCore/tree/main/Sample/EventStoreDB/ECommerce
 builder.Services.AddEventStore(configuration, typeof(BookingRoot).Assembly)
     .AddEventStoreDBSubscriptionToAll();
+
+builder.Services.AddGrpcClients();
 
 var app = builder.Build();
 

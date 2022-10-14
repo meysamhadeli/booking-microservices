@@ -5,7 +5,7 @@ namespace Flight.Seats.Features.CreateSeat.Reads;
 
 public class CreateSeatMongoCommand : InternalCommand
 {
-    public CreateSeatMongoCommand(long id, string seatNumber, SeatType type, SeatClass @class,
+    public CreateSeatMongoCommand(long id, string seatNumber, Enums.SeatType type, Enums.SeatClass @class,
         long flightId, bool isDeleted)
     {
         Id = id;
@@ -18,8 +18,8 @@ public class CreateSeatMongoCommand : InternalCommand
 
     public long Id { get; }
     public string SeatNumber { get; }
-    public SeatType Type { get; }
-    public SeatClass Class { get; }
+    public Enums.SeatType Type { get; }
+    public Enums.SeatClass Class { get; }
     public long FlightId { get; }
     public bool IsDeleted { get; }
 }
