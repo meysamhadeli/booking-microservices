@@ -11,6 +11,7 @@ public static class Extensions
     public static IServiceCollection AddCustomOpenTelemetry(this IServiceCollection services)
     {
         services.AddOpenTelemetryTracing(builder => builder
+            .AddGrpcClientInstrumentation()
             .AddMassTransitInstrumentation()
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation()

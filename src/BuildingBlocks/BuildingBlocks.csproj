@@ -24,6 +24,7 @@
     <PackageReference Include="Grpc.Core.Testing" Version="2.46.5" />
     <PackageReference Include="Mongo2Go" Version="3.1.3" />
     <PackageReference Include="NSubstitute" Version="4.3.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.0.0-rc9.7" />
     <PackageReference Include="Polly" Version="7.2.3" />
     <PackageReference Include="protobuf-net.BuildTools" Version="3.0.115">
       <PrivateAssets>all</PrivateAssets>
@@ -95,11 +96,11 @@
     <PackageReference Include="prometheus-net" Version="6.0.0" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="6.0.0" />
 
-    <PackageReference Include="OpenTelemetry" Version="1.2.0-rc3" />
-    <PackageReference Include="OpenTelemetry.Exporter.Jaeger" Version="1.2.0-rc3" />
-    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.0.0-rc9" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc9" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.0.0-rc9" />
+    <PackageReference Include="OpenTelemetry" Version="1.4.0-beta.1" />
+    <PackageReference Include="OpenTelemetry.Exporter.Jaeger" Version="1.4.0-beta.1" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.0.0-rc9.7" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc9.7" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.0.0-rc9.7" />
 
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.0.64">
       <PrivateAssets>all</PrivateAssets>
