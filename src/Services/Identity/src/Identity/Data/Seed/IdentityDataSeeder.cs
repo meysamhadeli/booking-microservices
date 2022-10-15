@@ -7,7 +7,7 @@ using Identity.Identity.Constants;
 using Identity.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace Identity.Data;
+namespace Identity.Data.Seed;
 
 public class IdentityDataSeeder : IDataSeeder
 {

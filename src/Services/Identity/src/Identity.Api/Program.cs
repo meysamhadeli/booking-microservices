@@ -15,6 +15,7 @@ using FluentValidation;
 using Hellang.Middleware.ProblemDetails;
 using Identity;
 using Identity.Data;
+using Identity.Data.Seed;
 using Identity.Extensions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;

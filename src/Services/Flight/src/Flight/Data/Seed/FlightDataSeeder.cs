@@ -13,6 +13,8 @@ using Flight.Seats.Models;
 using Flight.Seats.Models.Reads;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace Flight.Data.Seed;
 
@@ -51,7 +53,9 @@ public class FlightDataSeeder : IDataSeeder
 
             await _flightDbContext.Airports.AddRangeAsync(airports);
             await _flightDbContext.SaveChangesAsync();
-            await _flightReadDbContext.Airport.InsertManyAsync(_mapper.Map<List<AirportReadModel>>(airports));
+
+            if (!await _flightReadDbContext.Airport.AsQueryable().AnyAsync())
+                await _flightReadDbContext.Airport.InsertManyAsync(_mapper.Map<List<AirportReadModel>>(airports));
         }
     }
 
@@ -68,7 +72,9 @@ public class FlightDataSeeder : IDataSeeder
 
             await _flightDbContext.Aircraft.AddRangeAsync(aircrafts);
             await _flightDbContext.SaveChangesAsync();
-            await _flightReadDbContext.Aircraft.InsertManyAsync(_mapper.Map<List<AircraftReadModel>>(aircrafts));
+
+            if (!await _flightReadDbContext.Aircraft.AsQueryable().AnyAsync())
+                await _flightReadDbContext.Aircraft.InsertManyAsync(_mapper.Map<List<AircraftReadModel>>(aircrafts));
         }
     }
 
@@ -79,7 +85,7 @@ public class FlightDataSeeder : IDataSeeder
         {
             var seats = new List<Seat>
             {
-                Seat.Create(1 ,"12A", Seats.Enums.SeatType.Window, Seats.Enums.SeatClass.Economy, 1),
+                Seat.Create(1, "12A", Seats.Enums.SeatType.Window, Seats.Enums.SeatClass.Economy, 1),
                 Seat.Create(2, "12B", Seats.Enums.SeatType.Window, Seats.Enums.SeatClass.Economy, 1),
                 Seat.Create(3, "12C", Seats.Enums.SeatType.Middle, Seats.Enums.SeatClass.Economy, 1),
                 Seat.Create(4, "12D", Seats.Enums.SeatType.Middle, Seats.Enums.SeatClass.Economy, 1),
@@ -89,7 +95,9 @@ public class FlightDataSeeder : IDataSeeder
 
             await _flightDbContext.Seats.AddRangeAsync(seats);
             await _flightDbContext.SaveChangesAsync();
-            await _flightReadDbContext.Seat.InsertManyAsync(_mapper.Map<List<SeatReadModel>>(seats));
+
+            if (!await _flightReadDbContext.Seat.AsQueryable().AnyAsync())
+                await _flightReadDbContext.Seat.InsertManyAsync(_mapper.Map<List<SeatReadModel>>(seats));
         }
     }
 
@@ -107,7 +115,9 @@ public class FlightDataSeeder : IDataSeeder
             };
             await _flightDbContext.Flights.AddRangeAsync(flights);
             await _flightDbContext.SaveChangesAsync();
-            await _flightReadDbContext.Flight.InsertManyAsync(_mapper.Map<List<FlightReadModel>>(flights));
+
+            if (!await _flightReadDbContext.Flight.AsQueryable().AnyAsync())
+                await _flightReadDbContext.Flight.InsertManyAsync(_mapper.Map<List<FlightReadModel>>(flights));
         }
     }
 }
