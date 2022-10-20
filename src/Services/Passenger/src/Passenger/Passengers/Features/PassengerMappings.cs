@@ -3,7 +3,7 @@ using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.IdsGenerator;
 using Mapster;
 using Passenger.Passengers.Dtos;
-using Passenger.Passengers.Features.CompleteRegisterPassenger.Reads;
+using Passenger.Passengers.Features.CompleteRegisterPassenger.Commands.V1.Reads;
 using Passenger.Passengers.Models.Reads;
 
 namespace Passenger.Passengers.Features;

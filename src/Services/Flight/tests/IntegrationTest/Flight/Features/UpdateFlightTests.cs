@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.TestBase;
+using Flight.Api;
 using Flight.Data;
-using Flight.Flights.Features.UpdateFlight.Reads;
+using Flight.Flights.Features.UpdateFlight.Commands.V1.Reads;
 using FluentAssertions;
 using Integration.Test.Fakes;
 using MassTransit;

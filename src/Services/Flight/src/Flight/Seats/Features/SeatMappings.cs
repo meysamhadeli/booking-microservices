@@ -1,7 +1,7 @@
 using BuildingBlocks.IdsGenerator;
 using Flight.Seats.Dtos;
-using Flight.Seats.Features.CreateSeat.Reads;
-using Flight.Seats.Features.ReserveSeat.Reads;
+using Flight.Seats.Features.CreateSeat.Commands.V1.Reads;
+using Flight.Seats.Features.ReserveSeat.Commands.V1.Reads;
 using Flight.Seats.Models;
 using Flight.Seats.Models.Reads;
 using Mapster;

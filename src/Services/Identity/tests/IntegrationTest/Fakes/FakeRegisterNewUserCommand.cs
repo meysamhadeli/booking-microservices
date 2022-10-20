@@ -1,5 +1,6 @@
 ﻿using AutoBogus;
 using Identity.Identity.Features.RegisterNewUser;
+using Identity.Identity.Features.RegisterNewUser.Commands.V1;
 
 namespace Integration.Test.Fakes;
 

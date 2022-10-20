@@ -1,5 +1,4 @@
 using Booking;
-using Booking.Configuration;
 using Booking.Data;
 using Booking.Extensions;
 using BuildingBlocks.EventStoreDB;
@@ -15,11 +14,9 @@ using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Swagger;
 using BuildingBlocks.Web;
 using Figgle;
-using Flight;
 using FluentValidation;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Passenger;
 using Prometheus;
 using Serilog;
 
@@ -34,7 +31,7 @@ Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 builder.Services.AddPersistMessage(configuration);
 builder.Services.AddMongoDbContext<BookingReadDbContext>(configuration);
 
-builder.AddCustomSerilog();
+builder.AddCustomSerilog(env);
 builder.Services.AddCore();
 builder.Services.AddJwt();
 builder.Services.AddControllers();
@@ -86,6 +83,9 @@ app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
 
 app.Run();
 
-public partial class Program
+namespace Booking.Api
 {
+    public partial class Program
+    {
+    }
 }

@@ -4,6 +4,7 @@ using BuildingBlocks.TestBase;
 using FluentAssertions;
 using Integration.Test.Fakes;
 using MassTransit.Testing;
+using Passenger.Api;
 using Passenger.Data;
 using Xunit;
 

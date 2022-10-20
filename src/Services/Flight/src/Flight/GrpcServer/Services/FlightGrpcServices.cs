@@ -1,7 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Flight.Flights.Features.GetFlightById;
+using Flight.Flights.Features.GetFlightById.Queries.V1;
 using Flight.Seats.Features.GetAvailableSeats;
+using Flight.Seats.Features.GetAvailableSeats.Queries.V1;
 using Flight.Seats.Features.ReserveSeat;
+using Flight.Seats.Features.ReserveSeat.Commands.V1;
 using Grpc.Core;
 using Mapster;
 using MediatR;

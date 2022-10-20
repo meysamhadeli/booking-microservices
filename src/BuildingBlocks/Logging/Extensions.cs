@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using BuildingBlocks.Web;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Events;
@@ -12,7 +13,7 @@ namespace BuildingBlocks.Logging
 {
     public static class Extensions
     {
-        public static WebApplicationBuilder AddCustomSerilog(this WebApplicationBuilder builder)
+        public static WebApplicationBuilder AddCustomSerilog(this WebApplicationBuilder builder, IWebHostEnvironment env)
         {
             builder.Host.UseSerilog((context, services, loggerConfiguration) =>
             {
@@ -50,14 +51,16 @@ namespace BuildingBlocks.Logging
 
                 if (logOptions.File is { Enable: true })
                 {
+                    var root = env.ContentRootPath;
+                    Directory.CreateDirectory(Path.Combine(root, "logs"));
+
                     var path = string.IsNullOrWhiteSpace(logOptions.File.Path) ? "logs/.txt" : logOptions.File.Path;
                     if (!Enum.TryParse<RollingInterval>(logOptions.File.Interval, true, out var interval))
                     {
                         interval = RollingInterval.Day;
                     }
 
-                    loggerConfiguration.WriteTo.File(path, rollingInterval: interval, encoding: Encoding.UTF8,
-                        outputTemplate: logOptions.LogTemplate);
+                    loggerConfiguration.WriteTo.File(path, rollingInterval: interval, encoding: Encoding.UTF8, outputTemplate: logOptions.LogTemplate);
                 }
             });
 

@@ -2,6 +2,7 @@
 using AutoBogus;
 using Flight.Flights.Enums;
 using Flight.Flights.Features.CreateFlight;
+using Flight.Flights.Features.CreateFlight.Commands.V1;
 using Flight.Flights.Models;
 
 namespace Unit.Test.Fakes;

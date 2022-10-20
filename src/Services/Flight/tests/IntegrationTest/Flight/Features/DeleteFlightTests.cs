@@ -2,9 +2,11 @@
 using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.TestBase;
+using Flight.Api;
 using Flight.Data;
 using Flight.Flights.Features.DeleteFlight;
-using Flight.Flights.Features.DeleteFlight.Reads;
+using Flight.Flights.Features.DeleteFlight.Commands.V1;
+using Flight.Flights.Features.DeleteFlight.Commands.V1.Reads;
 using FluentAssertions;
 using MassTransit;
 using MassTransit.Testing;

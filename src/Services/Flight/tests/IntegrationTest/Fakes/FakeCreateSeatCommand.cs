@@ -1,6 +1,7 @@
 ﻿using AutoBogus;
 using BuildingBlocks.IdsGenerator;
 using Flight.Seats.Features.CreateSeat;
+using Flight.Seats.Features.CreateSeat.Commands.V1;
 
 namespace Integration.Test.Fakes;
 

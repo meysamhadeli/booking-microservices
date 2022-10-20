@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Flight.Airports.Dtos;
 using Flight.Airports.Features.CreateAirport;
+using Flight.Airports.Features.CreateAirport.Commands.V1;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Unit.Test.Common;

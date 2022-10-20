@@ -1,5 +1,4 @@
 using Booking.Booking.Dtos;
-using Booking.Booking.Events.Domain;
 using Booking.Booking.Models.Reads;
 using BuildingBlocks.IdsGenerator;
 using Mapster;

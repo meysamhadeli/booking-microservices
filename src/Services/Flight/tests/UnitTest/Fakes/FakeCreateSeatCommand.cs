@@ -2,6 +2,7 @@
 using BuildingBlocks.IdsGenerator;
 using Flight.Seats.Enums;
 using Flight.Seats.Features.CreateSeat;
+using Flight.Seats.Features.CreateSeat.Commands.V1;
 using Flight.Seats.Models;
 
 namespace Unit.Test.Fakes;

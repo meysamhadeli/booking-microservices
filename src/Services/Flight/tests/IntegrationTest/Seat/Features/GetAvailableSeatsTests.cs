@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
 using BuildingBlocks.TestBase;
 using Flight;
+using Flight.Api;
 using Flight.Data;
-using Flight.Flights.Features.CreateFlight.Reads;
-using Flight.Seats.Features.CreateSeat.Reads;
+using Flight.Flights.Features.CreateFlight.Commands.V1.Reads;
+using Flight.Seats.Features.CreateSeat.Commands.V1.Reads;
 using FluentAssertions;
 using Grpc.Net.Client;
 using Integration.Test.Fakes;

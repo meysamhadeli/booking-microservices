@@ -18,9 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Aircrafts\Exceptions" />
-    <Folder Include="Airports\Exceptions" />
     <Folder Include="Data\Migrations" />
+    <Folder Include="Seats\Features\CreateSeat\Events\Domain" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,7 @@
 ﻿using AutoBogus;
 using BuildingBlocks.IdsGenerator;
 using Flight.Airports.Features.CreateAirport;
+using Flight.Airports.Features.CreateAirport.Commands.V1;
 
 namespace Integration.Test.Fakes;
 

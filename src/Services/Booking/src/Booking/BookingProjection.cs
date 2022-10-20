@@ -1,4 +1,4 @@
-using Booking.Booking.Events.Domain;
+using Booking.Booking.Features.CreateBooking.Events.Domain.V1;
 using Booking.Booking.Models.Reads;
 using Booking.Data;
 using BuildingBlocks.EventStoreDB.Events;

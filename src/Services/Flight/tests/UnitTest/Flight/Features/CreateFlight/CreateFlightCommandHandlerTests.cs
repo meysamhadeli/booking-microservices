@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Flight.Flights.Dtos;
 using Flight.Flights.Features.CreateFlight;
+using Flight.Flights.Features.CreateFlight.Commands.V1;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;

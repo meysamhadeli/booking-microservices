@@ -6,17 +6,16 @@ using Microsoft.AspNetCore.Authentication;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var env = builder.Environment;
 var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
 Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
-builder.AddCustomSerilog();
+builder.AddCustomSerilog(env);
 builder.Services.AddJwt();
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("Yarp"));
-
 
 var app = builder.Build();
 

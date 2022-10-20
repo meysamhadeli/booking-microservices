@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Booking.Api;
 using Booking.Data;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.PersistMessageProcessor.Data;

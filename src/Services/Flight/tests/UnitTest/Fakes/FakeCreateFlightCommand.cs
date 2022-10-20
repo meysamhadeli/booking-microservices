@@ -1,6 +1,7 @@
 ﻿using AutoBogus;
 using BuildingBlocks.IdsGenerator;
 using Flight.Flights.Features.CreateFlight;
+using Flight.Flights.Features.CreateFlight.Commands.V1;
 
 namespace Unit.Test.Fakes;
 

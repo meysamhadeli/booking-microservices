@@ -1,4 +1,3 @@
-using BuildingBlocks.Core;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.HealthCheck;
 using BuildingBlocks.IdsGenerator;
@@ -8,7 +7,6 @@ using BuildingBlocks.MassTransit;
 using BuildingBlocks.OpenTelemetry;
 using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Swagger;
-using BuildingBlocks.Utils;
 using BuildingBlocks.Web;
 using Figgle;
 using FluentValidation;
@@ -18,7 +16,6 @@ using Identity.Data;
 using Identity.Data.Seed;
 using Identity.Extensions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.EntityFrameworkCore;
 using Prometheus;
 using Serilog;
 
@@ -33,7 +30,7 @@ builder.Services.AddPersistMessage(configuration);
 builder.Services.AddCustomDbContext<IdentityContext>(configuration);
 builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
 builder.Services.AddCore();
-builder.AddCustomSerilog();
+builder.AddCustomSerilog(env);
 builder.Services.AddControllers();
 builder.Services.AddCustomSwagger(configuration, typeof(IdentityRoot).Assembly);
 builder.Services.AddCustomVersioning();
@@ -80,4 +77,7 @@ app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
 
 app.Run();
 
-public partial class Program {}
+namespace Identity.Api
+{
+    public partial class Program {}
+}

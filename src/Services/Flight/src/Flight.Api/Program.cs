@@ -1,7 +1,5 @@
-using System.Net;
 using System.Reflection;
 using BuildingBlocks.Caching;
-using BuildingBlocks.Core;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.Exception;
 using BuildingBlocks.HealthCheck;
@@ -24,10 +22,8 @@ using Flight.GrpcServer.Services;
 using FluentValidation;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Prometheus;
 using Serilog;
-
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -42,7 +38,7 @@ builder.Services.AddScoped<IDataSeeder, FlightDataSeeder>();
 builder.Services.AddMongoDbContext<FlightReadDbContext>(configuration);
 builder.Services.AddPersistMessage(configuration);
 
-builder.AddCustomSerilog();
+builder.AddCustomSerilog(env);
 builder.Services.AddCore();
 builder.Services.AddJwt();
 builder.Services.AddControllers();
@@ -98,6 +94,9 @@ app.UseEndpoints(endpoints =>
 app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
 app.Run();
 
-public partial class Program
+namespace Flight.Api
 {
+    public partial class Program
+    {
+    }
 }
