@@ -1,5 +1,5 @@
 ﻿using BuildingBlocks.IdsGenerator;
-using Flight.Aircrafts.Features.CreateAircraft.Reads;
+using Flight.Aircrafts.Features.CreateAircraft.Commands.V1.Reads;
 using Flight.Aircrafts.Models;
 using Flight.Aircrafts.Models.Reads;
 using Mapster;

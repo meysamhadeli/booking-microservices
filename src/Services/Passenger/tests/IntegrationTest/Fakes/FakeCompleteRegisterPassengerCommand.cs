@@ -2,6 +2,7 @@
 using BuildingBlocks.IdsGenerator;
 using Passenger.Passengers.Enums;
 using Passenger.Passengers.Features.CompleteRegisterPassenger;
+using Passenger.Passengers.Features.CompleteRegisterPassenger.Commands.V1;
 using Passenger.Passengers.Models;
 
 namespace Integration.Test.Fakes;

@@ -1,4 +1,4 @@
-using Booking.Booking.Events.Domain;
+using Booking.Booking.Features.CreateBooking.Events.Domain.V1;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.Event;

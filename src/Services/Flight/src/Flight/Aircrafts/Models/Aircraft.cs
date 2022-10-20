@@ -1,6 +1,6 @@
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.IdsGenerator;
-using Flight.Aircrafts.Events;
+using Flight.Aircrafts.Features.CreateAircraft.Events.Domain.V1;
 
 namespace Flight.Aircrafts.Models;
 

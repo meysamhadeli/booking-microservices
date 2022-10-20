@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Flight.Aircrafts.Dtos;
 using Flight.Aircrafts.Features.CreateAircraft;
+using Flight.Aircrafts.Features.CreateAircraft.Commands.V1;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Unit.Test.Common;

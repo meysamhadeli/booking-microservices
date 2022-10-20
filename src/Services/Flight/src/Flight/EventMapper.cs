@@ -1,17 +1,20 @@
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.Event;
-using Flight.Aircrafts.Events;
-using Flight.Aircrafts.Features.CreateAircraft.Reads;
-using Flight.Airports.Events;
-using Flight.Airports.Features.CreateAirport.Reads;
-using Flight.Flights.Events.Domain;
-using Flight.Flights.Features.CreateFlight.Reads;
-using Flight.Flights.Features.DeleteFlight.Reads;
-using Flight.Flights.Features.UpdateFlight.Reads;
-using Flight.Seats.Events;
-using Flight.Seats.Features.CreateSeat.Reads;
-using Flight.Seats.Features.ReserveSeat.Reads;
+using Flight.Aircrafts.Features.CreateAircraft.Commands.V1.Reads;
+using Flight.Aircrafts.Features.CreateAircraft.Events.Domain.V1;
+using Flight.Airports.Features.CreateAirport.Commands.V1.Reads;
+using Flight.Airports.Features.CreateAirport.Events.Domain.V1;
+using Flight.Flights.Features.CreateFlight.Commands.V1.Reads;
+using Flight.Flights.Features.CreateFlight.Events.Domain.V1;
+using Flight.Flights.Features.DeleteFlight.Commands.V1.Reads;
+using Flight.Flights.Features.DeleteFlight.Events.Domain.V1;
+using Flight.Flights.Features.UpdateFlight.Commands.V1.Reads;
+using Flight.Flights.Features.UpdateFlight.Events.V1;
+using Flight.Seats.Features.CreateSeat.Commands.V1.Reads;
+using Flight.Seats.Features.CreateSeat.Events.Domain.V1;
+using Flight.Seats.Features.ReserveSeat.Commands.V1.Reads;
+using Flight.Seats.Features.ReserveSeat.Events.Domain.V1;
 
 namespace Flight;
 

@@ -1,5 +1,6 @@
 ﻿using AutoBogus;
 using Flight.Flights.Features.UpdateFlight;
+using Flight.Flights.Features.UpdateFlight.Commands.V1;
 
 namespace Integration.Test.Fakes;
 

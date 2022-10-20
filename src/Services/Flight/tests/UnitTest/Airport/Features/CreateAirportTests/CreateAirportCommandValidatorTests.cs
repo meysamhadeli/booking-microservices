@@ -1,4 +1,5 @@
 ﻿using Flight.Airports.Features.CreateAirport;
+using Flight.Airports.Features.CreateAirport.Commands.V1;
 using FluentAssertions;
 using FluentValidation.TestHelper;
 using Unit.Test.Common;

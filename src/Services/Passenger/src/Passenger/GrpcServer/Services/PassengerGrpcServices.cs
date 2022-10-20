@@ -2,6 +2,7 @@
 using Mapster;
 using MediatR;
 using Passenger.Passengers.Features.GetPassengerById;
+using Passenger.Passengers.Features.GetPassengerById.Queries.V1;
 
 namespace Passenger.GrpcServer.Services;
 

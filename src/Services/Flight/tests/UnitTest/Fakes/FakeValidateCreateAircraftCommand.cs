@@ -1,5 +1,6 @@
 ﻿using AutoBogus;
 using Flight.Aircrafts.Features.CreateAircraft;
+using Flight.Aircrafts.Features.CreateAircraft.Commands.V1;
 
 namespace Unit.Test.Fakes;
 

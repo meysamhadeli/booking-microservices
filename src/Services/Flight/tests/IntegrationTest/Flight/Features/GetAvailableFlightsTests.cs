@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using BuildingBlocks.TestBase;
+using Flight.Api;
 using Flight.Data;
-using Flight.Flights.Features.CreateFlight.Reads;
+using Flight.Flights.Features.CreateFlight.Commands.V1.Reads;
 using Flight.Flights.Features.GetAvailableFlights;
+using Flight.Flights.Features.GetAvailableFlights.Queries.V1;
 using FluentAssertions;
 using Integration.Test.Fakes;
 using Xunit;

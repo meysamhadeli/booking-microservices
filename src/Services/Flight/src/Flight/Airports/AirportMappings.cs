@@ -1,5 +1,5 @@
 ﻿using BuildingBlocks.IdsGenerator;
-using Flight.Airports.Features.CreateAirport.Reads;
+using Flight.Airports.Features.CreateAirport.Commands.V1.Reads;
 using Flight.Airports.Models;
 using Flight.Airports.Models.Reads;
 using Mapster;

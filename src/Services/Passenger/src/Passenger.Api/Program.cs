@@ -1,4 +1,3 @@
-using BuildingBlocks.Core;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.Exception;
 using BuildingBlocks.HealthCheck;
@@ -34,7 +33,7 @@ builder.Services.AddCustomDbContext<PassengerDbContext>(configuration);
 builder.Services.AddMongoDbContext<PassengerReadDbContext>(configuration);
 builder.Services.AddPersistMessage(configuration);
 
-builder.AddCustomSerilog();
+builder.AddCustomSerilog(env);
 builder.Services.AddCore();
 builder.Services.AddJwt();
 builder.Services.AddControllers();
@@ -85,6 +84,9 @@ app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
 
 app.Run();
 
-public partial class Program
+namespace Passenger.Api
 {
+    public partial class Program
+    {
+    }
 }

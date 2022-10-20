@@ -3,6 +3,7 @@ using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.TestBase;
 using FluentAssertions;
 using Grpc.Net.Client;
+using Identity.Api;
 using Identity.Data;
 using Integration.Test.Fakes;
 using MassTransit;

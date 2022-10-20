@@ -1,8 +1,9 @@
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.Event;
-using Passenger.Passengers.Events.Domain;
-using Passenger.Passengers.Features.CompleteRegisterPassenger.Reads;
+using Passenger.Identity.Consumers.RegisterNewUser.Events.Domain.V1;
+using Passenger.Passengers.Features.CompleteRegisterPassenger.Commands.V1.Reads;
+using Passenger.Passengers.Features.CompleteRegisterPassenger.Events.Domain.V1;
 
 namespace Passenger;
 

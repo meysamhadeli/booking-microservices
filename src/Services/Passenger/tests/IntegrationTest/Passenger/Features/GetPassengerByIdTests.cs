@@ -7,8 +7,10 @@ using Integration.Test.Fakes;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Passenger;
+using Passenger.Api;
 using Passenger.Data;
 using Passenger.Passengers.Features.GetPassengerById;
+using Passenger.Passengers.Features.GetPassengerById.Queries.V1;
 using Xunit;
 
 namespace Integration.Test.Passenger.Features;

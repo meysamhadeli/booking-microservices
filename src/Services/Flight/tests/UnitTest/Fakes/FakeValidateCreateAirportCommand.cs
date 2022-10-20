@@ -1,5 +1,6 @@
 ﻿using AutoBogus;
 using Flight.Airports.Features.CreateAirport;
+using Flight.Airports.Features.CreateAirport.Commands.V1;
 
 namespace Unit.Test.Fakes;
 

@@ -2,6 +2,8 @@
 using BuildingBlocks.IdsGenerator;
 using Passenger;
 
+namespace Integration.Test.Fakes;
+
 public class FakePassengerResponse : AutoFaker<PassengerResponse>
 {
     public FakePassengerResponse()

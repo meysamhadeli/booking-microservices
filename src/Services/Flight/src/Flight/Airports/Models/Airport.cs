@@ -1,6 +1,6 @@
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.IdsGenerator;
-using Flight.Airports.Events;
+using Flight.Airports.Features.CreateAirport.Events.Domain.V1;
 
 namespace Flight.Airports.Models;
 

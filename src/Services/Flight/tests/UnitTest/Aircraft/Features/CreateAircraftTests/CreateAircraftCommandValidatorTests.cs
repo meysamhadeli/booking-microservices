@@ -1,4 +1,5 @@
 ﻿using Flight.Aircrafts.Features.CreateAircraft;
+using Flight.Aircrafts.Features.CreateAircraft.Commands.V1;
 using FluentAssertions;
 using FluentValidation.TestHelper;
 using Unit.Test.Common;

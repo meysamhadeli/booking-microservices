@@ -1,6 +1,8 @@
 using System;
 using BuildingBlocks.Core.Model;
-using Flight.Flights.Events.Domain;
+using Flight.Flights.Features.CreateFlight.Events.Domain.V1;
+using Flight.Flights.Features.DeleteFlight.Events.Domain.V1;
+using Flight.Flights.Features.UpdateFlight.Events.V1;
 
 namespace Flight.Flights.Models;
 

@@ -1,7 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using BuildingBlocks.Core.Model;
-using Flight.Seats.Events;
+using Flight.Seats.Features.CreateSeat.Events.Domain.V1;
+using Flight.Seats.Features.ReserveSeat.Events.Domain.V1;
 
 namespace Flight.Seats.Models;
 

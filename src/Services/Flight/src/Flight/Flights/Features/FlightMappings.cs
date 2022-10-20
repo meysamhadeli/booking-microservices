@@ -1,9 +1,9 @@
 using AutoMapper;
 using BuildingBlocks.IdsGenerator;
 using Flight.Flights.Dtos;
-using Flight.Flights.Features.CreateFlight.Reads;
-using Flight.Flights.Features.DeleteFlight.Reads;
-using Flight.Flights.Features.UpdateFlight.Reads;
+using Flight.Flights.Features.CreateFlight.Commands.V1.Reads;
+using Flight.Flights.Features.DeleteFlight.Commands.V1.Reads;
+using Flight.Flights.Features.UpdateFlight.Commands.V1.Reads;
 using Flight.Flights.Models.Reads;
 using Mapster;
 
