@@ -88,6 +88,7 @@
     <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="6.0.0" />
     <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0" />
+    <PackageReference Include="Testcontainers" Version="2.2.0" />
     <PackageReference Include="Yarp.ReverseProxy" Version="1.0.0" />
     <PackageReference Include="Microsoft.Identity.Web" Version="1.22.3" />
 

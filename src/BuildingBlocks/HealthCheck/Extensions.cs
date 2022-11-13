@@ -18,7 +18,7 @@ public static class Extensions
     public static IServiceCollection AddCustomHealthCheck(this IServiceCollection services)
     {
         var appOptions = services.GetOptions<AppOptions>("AppOptions");
-        var sqlOptions = services.GetOptions<SqlOptions>("ConnectionStrings");
+        var sqlOptions = services.GetOptions<ConnectionStrings>("ConnectionStrings");
         var rabbitMqOptions = services.GetOptions<RabbitMqOptions>("RabbitMq");
         var mongoOptions = services.GetOptions<MongoOptions>("MongoOptions");
         var logOptions = services.GetOptions<LogOptions>("LogOptions");
