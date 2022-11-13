@@ -18,6 +18,10 @@ public static class Extensions
         IConfiguration configuration)
         where TContext : DbContext, IDbContext
     {
+        services.AddOptions<ConnectionStrings>()
+            .Bind(configuration.GetSection(nameof(ConnectionStrings)))
+            .ValidateDataAnnotations();
+
         services.AddDbContext<TContext>(options =>
             options.UseSqlServer(
                 configuration.GetConnectionString("DefaultConnection"),
