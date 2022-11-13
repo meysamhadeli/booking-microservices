@@ -88,6 +88,7 @@
     <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="6.0.0" />
     <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0" />
+    <PackageReference Include="Testcontainers" Version="2.2.0" />
     <PackageReference Include="Yarp.ReverseProxy" Version="1.0.0" />
     <PackageReference Include="Microsoft.Identity.Web" Version="1.22.3" />
 
@@ -132,13 +133,6 @@
   <ItemGroup>
     <Folder Include="Contracts" />
     <Folder Include="EventStoreDB\BackgroundWorkers" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Reference Include="Testcontainers, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\.nuget\packages\testcontainers\2.2.0\lib\netstandard2.1\Testcontainers.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
