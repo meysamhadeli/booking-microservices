@@ -346,6 +346,7 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
+        //Todo: upgrade to new version Respawn
         _checkpointDefaultDB = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
         _checkpointPersistMessageDB = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
 

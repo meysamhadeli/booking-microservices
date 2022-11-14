@@ -1,101 +1,103 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
 
   <ItemGroup>
-    <PackageReference Include="Ardalis.GuardClauses" Version="3.3.0" />
-    <PackageReference Include="AspNetCore.HealthChecks.Elasticsearch" Version="6.0.1" />
-    <PackageReference Include="AspNetCore.HealthChecks.EventStore" Version="5.0.1" />
-    <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="6.0.1" />
+    <PackageReference Include="Ardalis.GuardClauses" Version="4.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.Elasticsearch" Version="6.0.2" />
+    <PackageReference Include="AspNetCore.HealthChecks.EventStore" Version="6.0.3" />
+    <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="6.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="6.0.2" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.SQLite.Storage" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.SQLite.Storage" Version="6.0.5" />
     <PackageReference Include="Ben.BlockingDetector" Version="0.0.4" />
-    <PackageReference Include="EasyCaching.Core" Version="1.4.1" />
-    <PackageReference Include="EasyCaching.InMemory" Version="1.4.1" />
-    <PackageReference Include="EFCore.NamingConventions" Version="6.0.0" />
-    <PackageReference Include="EntityFrameworkCore.Triggered" Version="3.0.0" />
-    <PackageReference Include="Figgle" Version="0.4.0" />
-    <PackageReference Include="FluentValidation" Version="10.3.6" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.6" />
+    <PackageReference Include="EasyCaching.Core" Version="1.7.0" />
+    <PackageReference Include="EasyCaching.InMemory" Version="1.7.0" />
+    <PackageReference Include="EFCore.NamingConventions" Version="7.0.0" />
+    <PackageReference Include="EntityFrameworkCore.Triggered" Version="3.2.1" />
+    <PackageReference Include="Figgle" Version="0.4.1" />
+    <PackageReference Include="FluentValidation" Version="11.3.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
     <PackageReference Include="Grpc.Core.Testing" Version="2.46.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="7.0.0" />
     <PackageReference Include="Mongo2Go" Version="3.1.3" />
-    <PackageReference Include="NSubstitute" Version="4.3.0" />
+    <PackageReference Include="NSubstitute" Version="4.4.0" />
     <PackageReference Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.0.0-rc9.7" />
     <PackageReference Include="Polly" Version="7.2.3" />
-    <PackageReference Include="protobuf-net.BuildTools" Version="3.0.115">
+    <PackageReference Include="protobuf-net.BuildTools" Version="3.1.25">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.3.0" />
+    <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
     <PackageReference Include="Humanizer.Core" Version="2.14.1" />
-    <PackageReference Include="IdGen" Version="3.0.0" />
+    <PackageReference Include="IdGen" Version="3.0.2" />
     <PackageReference Include="Mapster" Version="7.3.0" />
     <PackageReference Include="Mapster.DependencyInjection" Version="1.0.0" />
-    <PackageReference Include="MediatR" Version="9.0.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
+    <PackageReference Include="MediatR" Version="11.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
-    <PackageReference Include="MongoDB.Driver" Version="2.14.1" />
+    <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="OpenTelemetry.Contrib.Instrumentation.MassTransit" Version="1.0.0-beta2" />
-    <PackageReference Include="Scrutor" Version="3.3.0" />
+    <PackageReference Include="Scrutor" Version="4.2.0" />
     <PackageReference Include="Scrutor.AspNetCore" Version="3.3.0" />
-    <PackageReference Include="Serilog" Version="2.10.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
-    <PackageReference Include="Serilog.Enrichers.Span" Version="2.2.0" />
-    <PackageReference Include="Serilog.Exceptions" Version="8.1.0" />
+    <PackageReference Include="Serilog" Version="2.12.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+    <PackageReference Include="Serilog.Enrichers.Span" Version="3.0.0" />
+    <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
     <PackageReference Include="Serilog.Formatting.Elasticsearch" Version="8.4.1" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1" />
-    <PackageReference Include="Serilog.Sinks.Seq" Version="5.1.0" />
-    <PackageReference Include="Serilog.Sinks.SpectreConsole" Version="0.1.1" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.1" />
+    <PackageReference Include="Serilog.Sinks.SpectreConsole" Version="0.3.3" />
     <PackageReference Include="Serilog.Sinks.XUnit" Version="3.0.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.2.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.2.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.2.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="6.0.2" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.2" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="6.0.1" />
-    <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="6.0.1" />
-    <PackageReference Include="System.Interactive.Async" Version="5.1.0" />
-    <PackageReference Include="MassTransit" Version="8.0.0" />
-    <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.0" />
-    <PackageReference Include="DotNetCore.CAP" Version="6.0.0" />
-    <PackageReference Include="DotNetCore.CAP.Dashboard" Version="6.0.0" />
-    <PackageReference Include="DotNetCore.CAP.MongoDB" Version="6.0.0" />
-    <PackageReference Include="DotNetCore.CAP.OpenTelemetry" Version="6.0.0" />
-    <PackageReference Include="DotNetCore.CAP.RabbitMQ" Version="6.0.0" />
-    <PackageReference Include="DotNetCore.CAP.SqlServer" Version="6.0.0" />
-    <PackageReference Include="Duende.IdentityServer" Version="6.0.0" />
-    <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.0.0" />
-    <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="6.0.0" />
-    <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="6.0.5" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.5" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="6.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="7.0.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="6.0.2" />
+    <PackageReference Include="System.Interactive.Async" Version="6.0.1" />
+    <PackageReference Include="MassTransit" Version="8.0.8" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.8" />
+    <PackageReference Include="DotNetCore.CAP" Version="6.2.1" />
+    <PackageReference Include="DotNetCore.CAP.Dashboard" Version="6.2.1" />
+    <PackageReference Include="DotNetCore.CAP.MongoDB" Version="6.2.1" />
+    <PackageReference Include="DotNetCore.CAP.OpenTelemetry" Version="6.2.1" />
+    <PackageReference Include="DotNetCore.CAP.RabbitMQ" Version="6.2.1" />
+    <PackageReference Include="DotNetCore.CAP.SqlServer" Version="6.2.1" />
+    <PackageReference Include="Duende.IdentityServer" Version="6.1.7" />
+    <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.1.7" />
+    <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="6.1.7" />
+    <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.1.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Testcontainers" Version="2.2.0" />
-    <PackageReference Include="Yarp.ReverseProxy" Version="1.0.0" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="1.22.3" />
+    <PackageReference Include="Yarp.ReverseProxy" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.25.5" />
 
-    <PackageReference Include="Jaeger" Version="0.3.7" />
+    <PackageReference Include="Jaeger" Version="1.0.3" />
     <PackageReference Include="OpenTracing" Version="0.12.1" />
-    <PackageReference Include="prometheus-net" Version="6.0.0" />
-    <PackageReference Include="prometheus-net.AspNetCore" Version="6.0.0" />
+    <PackageReference Include="prometheus-net" Version="7.0.0" />
+    <PackageReference Include="prometheus-net.AspNetCore" Version="7.0.0" />
 
     <PackageReference Include="OpenTelemetry" Version="1.4.0-beta.1" />
     <PackageReference Include="OpenTelemetry.Exporter.Jaeger" Version="1.4.0-beta.1" />
@@ -109,23 +111,29 @@
     </PackageReference>
 
     <PackageReference Include="EventStore.Client.Grpc.Streams" Version="22.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.0" />
 
     <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
     <PackageReference Include="AutoBogus" Version="2.13.1" />
-    <PackageReference Include="Bogus" Version="34.0.1" />
-    <PackageReference Include="FluentAssertions" Version="6.2.0" />
+    <PackageReference Include="Bogus" Version="34.0.2" />
+    <PackageReference Include="FluentAssertions" Version="6.8.0" />
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="Respawn" Version="4.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.4" />
-    <PackageReference Include="Moq" Version="4.16.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.0" />
+    <PackageReference Include="Moq" Version="4.18.2" />
 
-    <PackageReference Include="Google.Protobuf" Version="3.21.7" />
+    <PackageReference Include="Google.Protobuf" Version="3.21.9" />
     <PackageReference Include="Grpc.Net.Client" Version="2.49.0" />
     <PackageReference Include="Grpc.Net.ClientFactory" Version="2.49.0" />
+    <PackageReference Update="AsyncFixer" Version="1.6.0" />
+    <PackageReference Update="Meziantou.Analyzer" Version="1.0.747" />
+    <PackageReference Remove="Microsoft.VisualStudio.Threading.Analyzers" />
+    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.4.27" />
+    <PackageReference Update="Roslynator.Analyzers" Version="4.1.2" />
+    <PackageReference Update="Roslynator.CodeAnalysis.Analyzers" Version="4.1.2" />
+    <PackageReference Update="Roslynator.Formatting.Analyzers" Version="4.1.2" />
 
   </ItemGroup>
 

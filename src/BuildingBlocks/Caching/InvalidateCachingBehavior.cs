@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using EasyCaching.Core;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -26,8 +22,7 @@ namespace BuildingBlocks.Caching
             _invalidateCacheRequest = invalidateCacheRequest;
         }
 
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
-            RequestHandlerDelegate<TResponse> next)
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             if (request is not IInvalidateCacheRequest || _invalidateCacheRequest == null)
             {

@@ -25,10 +25,8 @@ public class EfTxBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TRe
         _eventDispatcher = eventDispatcher;
     }
 
-    public async Task<TResponse> Handle(
-        TRequest request,
-        CancellationToken cancellationToken,
-        RequestHandlerDelegate<TResponse> next)
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
         _logger.LogInformation(
             "{Prefix} Handled command {MediatrRequest}",
