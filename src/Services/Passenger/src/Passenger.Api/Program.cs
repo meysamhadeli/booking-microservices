@@ -57,11 +57,6 @@ builder.AddMinimalEndpoints();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseCustomSwagger();
-}
-
 app.UseSerilogRequestLogging();
 app.UseMigration<PassengerDbContext>(env);
 app.UseCorrelationId();
@@ -82,6 +77,11 @@ app.UseEndpoints(endpoints =>
 });
 
 app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseCustomSwagger();
+}
 
 app.Run();
 
