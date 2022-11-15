@@ -1,26 +1,38 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
+using Flight.Flights.Dtos;
 using Flight.Flights.Features.CreateFlight.Commands.V1;
-using Microsoft.AspNetCore.Authorization;
+using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Flight.Flights.Features.CreateFlight.Endpoints.V1;
 
-[Route(BaseApiPath + "/flight")]
-public class CreateFlightEndpoint : BaseController
+public class CreateFlightEndpoint : IMinimalEndpoint
 {
-    [Authorize]
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [SwaggerOperation(Summary = "Create new flight", Description = "Create new flight")]
-    public async Task<ActionResult> Create([FromBody] CreateFlightCommand command, CancellationToken cancellationToken)
+    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder endpoints)
     {
-        var result = await Mediator.Send(command, cancellationToken);
+        endpoints.MapPost($"{EndpointConfig.BaseApiPath}/flight", CreateFlight)
+            .RequireAuthorization()
+            .WithTags("Flight")
+            .WithName("Create Flight")
+            .WithMetadata(new SwaggerOperationAttribute("Create Flight", "Create Flight"))
+            .WithApiVersionSet(endpoints.NewApiVersionSet("Flight").Build())
+            .Produces<FlightResponseDto>()
+            .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status400BadRequest)
+            .HasApiVersion(1.0);
 
-        return Ok(result);
+        return endpoints;
+    }
+
+    private async Task<IResult> CreateFlight(CreateFlightCommand command, IMediator mediator, CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(command, cancellationToken);
+
+        return Results.Ok(result);
     }
 }

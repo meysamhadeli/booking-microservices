@@ -36,7 +36,6 @@ builder.Services.AddPersistMessage(configuration);
 builder.AddCustomSerilog(env);
 builder.Services.AddCore();
 builder.Services.AddJwt();
-builder.Services.AddControllers();
 builder.Services.AddCustomSwagger(configuration, typeof(PassengerRoot).Assembly);
 builder.Services.AddCustomVersioning();
 builder.Services.AddCustomMediatR();
@@ -54,12 +53,13 @@ builder.Services.AddGrpc(options =>
 
 SnowFlakIdGenerator.Configure(2);
 
+builder.AddMinimalEndpoints();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    var provider = app.Services.GetService<IApiVersionDescriptionProvider>();
-    app.UseCustomSwagger(provider);
+    app.UseCustomSwagger();
 }
 
 app.UseSerilogRequestLogging();
@@ -73,9 +73,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseCustomHealthCheck();
 
+app.MapMinimalEndpoints();
+
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllers();
     endpoints.MapMetrics();
     endpoints.MapGrpcService<PassengerGrpcServices>();
 });

@@ -18,6 +18,7 @@ using Flight;
 using Flight.Data;
 using Flight.Data.Seed;
 using Flight.Extensions;
+using Flight.Flights.Features.CreateFlight.Endpoints.V1;
 using Flight.GrpcServer.Services;
 using FluentValidation;
 using Hellang.Middleware.ProblemDetails;
@@ -41,7 +42,6 @@ builder.Services.AddPersistMessage(configuration);
 builder.AddCustomSerilog(env);
 builder.Services.AddCore();
 builder.Services.AddJwt();
-builder.Services.AddControllers();
 builder.Services.AddCustomSwagger(configuration, typeof(FlightRoot).Assembly);
 builder.Services.AddCustomVersioning();
 builder.Services.AddCustomMediatR();
@@ -65,12 +65,13 @@ builder.Services.AddCachingRequest(new List<Assembly> {typeof(FlightRoot).Assemb
 
 builder.Services.AddEasyCaching(options => { options.UseInMemory(configuration, "mem"); });
 
+builder.AddMinimalEndpoints();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    var provider = app.Services.GetService<IApiVersionDescriptionProvider>();
-    app.UseCustomSwagger(provider);
+    app.UseCustomSwagger();
 }
 
 app.UseSerilogRequestLogging();
@@ -84,9 +85,11 @@ app.UseCustomHealthCheck();
 app.UseAuthentication();
 app.UseAuthorization();
 
+
+app.MapMinimalEndpoints();
+
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllers();
     endpoints.MapMetrics();
     endpoints.MapGrpcService<FlightGrpcServices>();
 });

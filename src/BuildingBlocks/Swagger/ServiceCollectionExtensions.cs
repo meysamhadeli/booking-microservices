@@ -1,46 +1,36 @@
 ﻿using System.Reflection;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace BuildingBlocks.Swagger;
 
-//https://github.com/domaindrivendev/Swashbuckle.AspNetCore/blob/master/README.md
 public static class ServiceCollectionExtensions
 {
     public const string HeaderName = "X-Api-Key";
+    public const string HeaderVersion = "api-version";
 
+    // https://github.com/domaindrivendev/Swashbuckle.AspNetCore/blob/master/README.md
+    // https://github.com/dotnet/aspnet-api-versioning/tree/88323136a97a59fcee24517a514c1a445530c7e2/examples/AspNetCore/WebApi/MinimalOpenApiExample
     public static IServiceCollection AddCustomSwagger(this IServiceCollection services,
         IConfiguration configuration,
-        Assembly assembly, string swaggerSectionName = "SwaggerOptions")
+        Assembly assembly)
     {
-        services.AddVersionedApiExplorer(options =>
-        {
-            // add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
-            // note: the specified format code will format the version as "'v'major[.minor][-status]"
-            options.GroupNameFormat = "'v'VVV";
-
-            // note: this option is only necessary when versioning by url segment. the SubstitutionFormat
-            // can also be used to control the format of the API version in route templates
-            options.SubstituteApiVersionInUrl = true;
-        });
-
-        services.AddOptions<SwaggerOptions>().Bind(configuration.GetSection(swaggerSectionName))
-            .ValidateDataAnnotations();
+         // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/openapi
+        services.AddEndpointsApiExplorer();
 
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+        services.AddOptions<SwaggerOptions>().Bind(configuration.GetSection(nameof(SwaggerOptions)))
+            .ValidateDataAnnotations();
 
         services.AddSwaggerGen(
             options =>
             {
-                // options.DescribeAllParametersInCamelCase();
                 options.OperationFilter<SwaggerDefaultValues>();
+
                 var xmlFile = XmlCommentsFilePath(assembly);
                 if (File.Exists(xmlFile)) options.IncludeXmlComments(xmlFile);
 
@@ -55,7 +45,8 @@ public static class ServiceCollectionExtensions
                     Scheme = "Bearer"
                 });
 
-                options.AddSecurityDefinition(HeaderName,
+                options.AddSecurityDefinition(
+                    HeaderName,
                     new OpenApiSecurityScheme
                     {
                         Description = "Api key needed to access the endpoints. X-Api-Key: My_API_Key",
@@ -82,49 +73,52 @@ public static class ServiceCollectionExtensions
                             Name = HeaderName,
                             Type = SecuritySchemeType.ApiKey,
                             In = ParameterLocation.Header,
-                            Reference = new OpenApiReference {Type = ReferenceType.SecurityScheme, Id = HeaderName}
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme, Id = HeaderName
+                            }
                         },
-                        new string[] { }
+                        Array.Empty<string>()
                     }
                 });
 
-                //https://rimdev.io/swagger-grouping-with-controller-name-fallback-using-swashbuckle-aspnetcore/
-                options.TagActionsBy(api =>
-                {
-                    if (api.GroupName != null) return new[] {api.GroupName};
+                options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 
-                    if (api.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
-                        return new[] {controllerActionDescriptor.ControllerName};
+                ////https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/467
+                // options.OperationFilter<TagByApiExplorerSettingsOperationFilter>();
+                // options.OperationFilter<TagBySwaggerOperationFilter>();
 
-                    throw new InvalidOperationException("Unable to determine tag for endpoint.");
-                });
-
-                options.DocInclusionPredicate((name, api) => true);
-
+                // Enables Swagger annotations (SwaggerOperationAttribute, SwaggerParameterAttribute etc.)
                 options.EnableAnnotations();
             });
 
-
-        return services;
+        services.Configure<SwaggerGeneratorOptions>(o => o.InferSecuritySchemes = true);
 
         static string XmlCommentsFilePath(Assembly assembly)
         {
-            var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+            var basePath = Path.GetDirectoryName(assembly.Location);
             var fileName = assembly.GetName().Name + ".xml";
             return Path.Combine(basePath, fileName);
         }
+
+        return services;
     }
 
-    public static IApplicationBuilder UseCustomSwagger(this IApplicationBuilder app,
-        IApiVersionDescriptionProvider provider)
+    public static IApplicationBuilder UseCustomSwagger(this WebApplication app)
     {
         app.UseSwagger();
         app.UseSwaggerUI(
             options =>
             {
-                foreach (var description in provider.ApiVersionDescriptions)
-                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
-                        description.GroupName.ToUpperInvariant());
+                var descriptions = app.DescribeApiVersions();
+
+                // build a swagger endpoint for each discovered API version
+                foreach (var description in descriptions)
+                {
+                    var url = $"/swagger/{description.GroupName}/swagger.json";
+                    var name = description.GroupName.ToUpperInvariant();
+                    options.SwaggerEndpoint(url, name);
+                }
             });
 
         return app;

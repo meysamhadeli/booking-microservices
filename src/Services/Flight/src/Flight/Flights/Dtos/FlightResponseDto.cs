@@ -14,6 +14,6 @@ public record FlightResponseDto
     public long ArriveAirportId { get; init; }
     public decimal DurationMinutes { get; init; }
     public DateTime FlightDate { get; init; }
-    public FlightStatus Status { get; init; }
+    public Enums.FlightStatus Status { get; init; }
     public decimal Price { get; init; }
 }
