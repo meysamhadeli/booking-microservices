@@ -24,17 +24,17 @@
 
 ## The Goals of This Project
 
-- Microservices based on `Domain Driven Design (DDD)` implementation.
-- Correct `separation of bounded contexts` for each microservice.
-- Communication between bounded contexts through asynchronous `MessageBus` and `events`.
-- Communication internally between our microservices with `gRPC` synchronously.
-- Simple `CQRS` implementation and Event Driven Architecture with using `SqlServer` in `write side` and `MongoDB` in `read side`. I use an `internal processor` for syncing `read side` and `write side` without event sourcing.
-- Using `event store` to store all historical state of aggregate. (Booking-Microservice)
-- Using `Inbox Pattern` for guaranty message Idempotency for receiver microservice and `Exactly-once Delivery pattern` and using `Outbox Pattern` for ensuring about any message `lost and At-Least one Delivery` rule.
-- Implementing various types of testing like `Unit Testing`, `Integration Testing`.
-- Using `Health Check` for reporting the health of app infrastructure components.
-- Using `Best Practice` and `New Technologies` and `Design Patterns`.
-- Using `Docker-Compose` and `Kubernetes` for our deployment mechanism.
+- :sparkle: Microservices based on `Domain Driven Design (DDD)` implementation.
+- :sparkle: Correct `separation of bounded contexts` for each microservice.
+- :sparkle: Communication between bounded contexts through asynchronous `MessageBus` and `events`.
+- :sparkle: Communication internally between our microservices with `gRPC` synchronously.
+- :sparkle: Simple `CQRS` implementation and Event Driven Architecture with using `SqlServer` in `write side` and `MongoDB` in `read side`. I use an `internal processor` for syncing `read side` and `write side` without event sourcing.
+- :sparkle: Using `event store` to store all historical state of aggregate. (Booking-Microservice)
+- :sparkle: Using `Inbox Pattern` for guaranty message Idempotency for receiver microservice and `Exactly-once Delivery pattern` and using `Outbox Pattern` for ensuring about any message `lost and At-Least one Delivery` rule.
+- :sparkle: Implementing various types of testing like `Unit Testing`, `Integration Testing`.
+- :sparkle: Using `Health Check` for reporting the health of app infrastructure components.
+- :sparkle: Using `Best Practice` and `New Technologies` and `Design Patterns`.
+- :sparkle: Using `Docker-Compose` and `Kubernetes` for our deployment mechanism.
 
 ## Plan
 
@@ -53,7 +53,7 @@ High-level plan is represented in the table
 | Booking Service   | Completed ✔️   |
 | Building Blocks   | Completed ✔️   |
 
-## Technologies - Libraries
+## :heart: Technologies - Libraries
 
 - ✔️ **[`.NET 7`](https://dotnet.microsoft.com/download)** - .NET Framework and .NET Core, including ASP.NET and ASP.NET Core
 - ✔️ **[`MVC Versioning API`](https://github.com/microsoft/aspnet-api-versioning)** - Set of libraries which add service API versioning to ASP.NET Web API, OData with ASP.NET Web API, and ASP.NET Core
