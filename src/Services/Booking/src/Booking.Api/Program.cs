@@ -34,7 +34,6 @@ builder.Services.AddMongoDbContext<BookingReadDbContext>(configuration);
 builder.AddCustomSerilog(env);
 builder.Services.AddCore();
 builder.Services.AddJwt();
-builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCustomSwagger(configuration, typeof(BookingRoot).Assembly);
 builder.Services.AddCustomVersioning();
@@ -55,12 +54,13 @@ builder.Services.AddEventStore(configuration, typeof(BookingRoot).Assembly)
 
 builder.Services.AddGrpcClients();
 
+builder.AddMinimalEndpoints();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    var provider = app.Services.GetService<IApiVersionDescriptionProvider>();
-    app.UseCustomSwagger(provider);
+    app.UseCustomSwagger();
 }
 
 app.UseSerilogRequestLogging();
@@ -73,9 +73,10 @@ app.UseAuthorization();
 app.UseProblemDetails();
 app.UseCustomHealthCheck();
 
+app.MapMinimalEndpoints();
+
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllers();
     endpoints.MapMetrics();
 });
 

@@ -33,19 +33,19 @@ grant_type=password
 
 ###
 # @name Register_New_User
-POST {{api-gateway}}/identity/register-user
+POST {{api-gateway}}/api/v1/identity/register-user
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
-  "firstName": "John",
-  "lastName": "Do",
-  "username": "admin",
-  "passportNumber": "12900000000",
-  "email": "admin@admin.com",
-  "password": "Admin@12345",
-  "confirmPassword": "Admin@12345"
+  "firstName": "4John",
+  "lastName": "4Do",
+  "username": "4admin",
+  "passportNumber": "412900000000",
+  "email": "4admin@admin.com",
+  "password": "4Admin@12345",
+  "confirmPassword": "4Admin@12345"
 }
 ###
 
@@ -64,7 +64,7 @@ Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
-  "seatNumber": "12H9",
+  "seatNumber": "1255",
   "type": 1,
   "class": 1,
   "flightId": 1
@@ -81,7 +81,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
   "flightId": 1,
-  "seatNumber": "12H9"
+  "seatNumber": "1255"
 }
 ###
 
@@ -161,14 +161,10 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Delete_Flights
-DELETE   {{api-gateway}}/api/v1/flight
+DELETE   {{api-gateway}}/api/v1/flight/{{flightid}}
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
-
-{
-  "id": 1
-}
 ###
 
 
@@ -219,7 +215,7 @@ Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
-  "passportNumber": "12900000000",
+  "passportNumber": "412900000000",
   "passengerType": 1,
   "age": 30
 }
@@ -251,7 +247,7 @@ Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
-  "passengerId": 7201620062109696,
+  "passengerId": 7225627535474688,
   "flightId": 1,
   "description": "I want to fly to iran"
 }

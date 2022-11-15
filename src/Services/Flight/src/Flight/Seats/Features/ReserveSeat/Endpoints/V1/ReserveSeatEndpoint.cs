@@ -1,26 +1,36 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
+using Flight.Seats.Dtos;
 using Flight.Seats.Features.ReserveSeat.Commands.V1;
-using Microsoft.AspNetCore.Authorization;
+using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Flight.Seats.Features.ReserveSeat.Endpoints.V1;
-
-[Route(BaseApiPath + "/flight/reserve-seat")]
-public class ReserveSeatEndpoint : BaseController
+public class ReserveSeatEndpoint : IMinimalEndpoint
 {
-    [Authorize]
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [SwaggerOperation(Summary = "Reserve seat", Description = "Reserve seat")]
-    public async Task<ActionResult> ReserveSeat([FromBody] ReserveSeatCommand command, CancellationToken cancellationToken)
+    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder endpoints)
     {
-        var result = await Mediator.Send(command, cancellationToken);
+        endpoints.MapPost($"{EndpointConfig.BaseApiPath}/flight/reserve-seat", ReserveSeat)
+            .RequireAuthorization()
+            .WithTags("Flight")
+            .WithName("Reserve Seat")
+            .WithMetadata(new SwaggerOperationAttribute("Reserve Seat", "Reserve Seat"))
+            .WithApiVersionSet(endpoints.NewApiVersionSet("Flight").Build())
+            .Produces<SeatResponseDto>()
+            .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status400BadRequest)
+            .HasApiVersion(1.0);
 
-        return Ok(result);
+        return endpoints;
+    }
+
+    private async Task<IResult> ReserveSeat(ReserveSeatCommand command, IMediator mediator, CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(command, cancellationToken);
+
+        return Results.Ok(result);
     }
 }

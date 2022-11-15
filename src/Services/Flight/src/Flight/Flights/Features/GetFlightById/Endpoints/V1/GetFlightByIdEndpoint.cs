@@ -1,25 +1,63 @@
+// using System.Threading;
+// using System.Threading.Tasks;
+// using BuildingBlocks.Web;
+// using Flight.Flights.Features.GetFlightById.Queries.V1;
+// using Microsoft.AspNetCore.Authorization;
+// using Microsoft.AspNetCore.Http;
+// using Microsoft.AspNetCore.Mvc;
+// using Swashbuckle.AspNetCore.Annotations;
+//
+// namespace Flight.Flights.Features.GetFlightById.Endpoints.V1;
+//
+// [Route(BaseApiPath + "/flight")]
+// public class GetFlightByIdEndpoint : BaseController
+// {
+//     [Authorize]
+//     [HttpGet("{id}")]
+//     [ProducesResponseType(StatusCodes.Status200OK)]
+//     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+//     [SwaggerOperation(Summary = "Get flight by id", Description = "Get flight by id")]
+//     public async Task<ActionResult> GetById([FromRoute] GetFlightByIdQuery query, CancellationToken cancellationToken)
+//     {
+//         var result = await Mediator.Send(query, cancellationToken);
+//         return Ok(result);
+//     }
+// }
+
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
+using Flight.Flights.Dtos;
 using Flight.Flights.Features.GetFlightById.Queries.V1;
-using Microsoft.AspNetCore.Authorization;
+using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Flight.Flights.Features.GetFlightById.Endpoints.V1;
-
-[Route(BaseApiPath + "/flight")]
-public class GetFlightByIdEndpoint : BaseController
+public class GetFlightByIdEndpoint : IMinimalEndpoint
 {
-    [Authorize]
-    [HttpGet("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [SwaggerOperation(Summary = "Get flight by id", Description = "Get flight by id")]
-    public async Task<ActionResult> GetById([FromRoute] GetFlightByIdQuery query, CancellationToken cancellationToken)
+    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder endpoints)
     {
-        var result = await Mediator.Send(query, cancellationToken);
-        return Ok(result);
+        endpoints.MapGet($"{EndpointConfig.BaseApiPath}/flight/{{id}}", GetById)
+            .RequireAuthorization()
+            .WithTags("Flight")
+            .WithName("Get Flight By Id")
+            .WithMetadata(new SwaggerOperationAttribute("Get Flight By Id", "Get Flight By Id"))
+            .WithApiVersionSet(endpoints.NewApiVersionSet("Flight").Build())
+            .Produces<FlightResponseDto>()
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status400BadRequest)
+            .HasApiVersion(1.0);
+
+        return endpoints;
+    }
+
+    private async Task<IResult> GetById(long id, IMediator mediator, CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(new GetFlightByIdQuery(id), cancellationToken);
+
+        return Results.Ok(result);
     }
 }

@@ -1,24 +1,36 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
+using Flight.Airports.Dtos;
 using Flight.Airports.Features.CreateAirport.Commands.V1;
+using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Flight.Airports.Features.CreateAirport.Endpoints.V1;
-
-[Route(BaseApiPath + "/flight/airport")]
-public class CreateAirportEndpoint : BaseController
+public class CreateAirportEndpoint : IMinimalEndpoint
 {
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [SwaggerOperation(Summary = "Create new airport", Description = "Create new airport")]
-    public async Task<ActionResult> Create([FromBody] CreateAirportCommand command, CancellationToken cancellationToken)
+    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder endpoints)
     {
-        var result = await Mediator.Send(command, cancellationToken);
+        endpoints.MapPost($"{EndpointConfig.BaseApiPath}/flight/airport", CreateAirport)
+            .RequireAuthorization()
+            .WithTags("Flight")
+            .WithName("Create Airport")
+            .WithMetadata(new SwaggerOperationAttribute("Create Airport", "Create Airport"))
+            .WithApiVersionSet(endpoints.NewApiVersionSet("Flight").Build())
+            .Produces<AirportResponseDto>()
+            .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status400BadRequest)
+            .HasApiVersion(1.0);
 
-        return Ok(result);
+        return endpoints;
+    }
+
+    private async Task<IResult> CreateAirport(CreateAirportCommand command, IMediator mediator, CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(command, cancellationToken);
+
+        return Results.Ok(result);
     }
 }

@@ -1,34 +1,39 @@
 using System.Threading;
 using System.Threading.Tasks;
+using BuildingBlocks.Web;
+using Identity.Identity.Dtos;
 using Identity.Identity.Features.RegisterNewUser.Commands.V1;
 using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Identity.Identity.Features.RegisterNewUser.Endpoints.V1;
 
-[Route("identity/register-user")]
-[ApiController]
-public class LoginEndpoint : ControllerBase
+public class RegisterNewUserEndpoint : IMinimalEndpoint
 {
-    private readonly IMediator _mediator;
-
-    public LoginEndpoint(IMediator mediator)
+    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder endpoints)
     {
-        _mediator = mediator;
+        endpoints.MapPost($"{EndpointConfig.BaseApiPath}/identity/register-user", RegisterNewUser)
+            .RequireAuthorization()
+            .WithTags("Identity")
+            .WithName("Register User")
+            .WithMetadata(new SwaggerOperationAttribute("Register User", "Register User"))
+            .WithApiVersionSet(endpoints.NewApiVersionSet("Identity").Build())
+            .Produces<RegisterNewUserResponseDto>()
+            .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status400BadRequest)
+            .HasApiVersion(1.0);
+
+        return endpoints;
     }
 
-    // [Authorize]
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [SwaggerOperation(Summary = "Register new user", Description = "Register new user")]
-    public async Task<ActionResult> RegisterNewUser([FromBody] RegisterNewUserCommand command,
-        CancellationToken cancellationToken)
+    private async Task<IResult> RegisterNewUser(RegisterNewUserCommand command, IMediator mediator, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(command, cancellationToken);
+        var result = await mediator.Send(command, cancellationToken);
 
-        return Ok(result);
+        return Results.Ok(result);
     }
 }

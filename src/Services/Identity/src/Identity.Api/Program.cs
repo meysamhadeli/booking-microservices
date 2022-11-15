@@ -30,8 +30,8 @@ builder.Services.AddPersistMessage(configuration);
 builder.Services.AddCustomDbContext<IdentityContext>(configuration);
 builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
 builder.Services.AddCore();
-builder.AddCustomSerilog(env);
 builder.Services.AddControllers();
+builder.AddCustomSerilog(env);
 builder.Services.AddCustomSwagger(configuration, typeof(IdentityRoot).Assembly);
 builder.Services.AddCustomVersioning();
 builder.Services.AddCustomMediatR();
@@ -47,12 +47,13 @@ SnowFlakIdGenerator.Configure(4);
 
 builder.Services.AddIdentityServer(env);
 
+builder.AddMinimalEndpoints();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    var provider = app.Services.GetService<IApiVersionDescriptionProvider>();
-    app.UseCustomSwagger(provider);
+    app.UseCustomSwagger();
 }
 
 app.UseSerilogRequestLogging();
@@ -66,6 +67,8 @@ app.UseCustomHealthCheck();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseIdentityServer();
+
+app.MapMinimalEndpoints();
 
 app.UseEndpoints(endpoints =>
 {
