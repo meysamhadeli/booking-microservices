@@ -24,17 +24,24 @@
 
 ## The Goals of This Project
 
-- :sparkle: Microservices based on `Domain Driven Design (DDD)` implementation.
-- :sparkle: Correct `separation of bounded contexts` for each microservice.
-- :sparkle: Communication between bounded contexts through asynchronous `MessageBus` and `events`.
-- :sparkle: Communication internally between our microservices with `gRPC` synchronously.
-- :sparkle: Simple `CQRS` implementation and Event Driven Architecture with using `SqlServer` in `write side` and `MongoDB` in `read side`. I use an `internal processor` for syncing `read side` and `write side` without event sourcing.
-- :sparkle: Using `event store` to store all historical state of aggregate. (Booking-Microservice)
-- :sparkle: Using `Inbox Pattern` for guaranty message Idempotency for receiver microservice and `Exactly-once Delivery pattern` and using `Outbox Pattern` for ensuring about any message `lost and At-Least one Delivery` rule.
-- :sparkle: Implementing various types of testing like `Unit Testing`, `Integration Testing`.
+- :sparkle: Using `Vertical Slice Architecture` for architecture level.
+- :sparkle: Using `Domain Driven Design (DDD)` to implement all business processes in microservices.
+- :sparkle: Using `Rabbitmq` on top of `Masstransit` for asynchronous communication (event driven architecture) between our microservices.
+- :sparkle: Using `gRPC` for internal communication between our microservices.
+- :sparkle: Using `CQRS` implementation with `MediatR` library.
+- :sparkle: Using `SqlServer` for `write side` of some microservices.
+- :sparkle: Using `MongoDB` for `read side` of all microservices.
+- :sparkle: Using `Event Store` for `write side` of Booking-Microservice to store all `historical state` of aggregate.
+- :sparkle: Using `Inbox Pattern` for guaranty message Idempotency for receiver microservice and `Exactly-once Delivery` rule. 
+- :sparkle: Using `Outbox Pattern` for ensuring about any message `lost and At-Least one Delivery` rule.
+- :sparkle: Using`Unit Testing`, `Integration Testing` for testing level.
+- :sparkle: Using `Fluent Validation` and a `Validation Pipeline Behaviour` on top of `MediatR`.
+- :sparkle: Using `Minimal API` for all endpoints.
 - :sparkle: Using `Health Check` for reporting the health of app infrastructure components.
-- :sparkle: Using `Best Practice` and `New Technologies` and `Design Patterns`.
 - :sparkle: Using `Docker-Compose` and `Kubernetes` for our deployment mechanism.
+- :sparkle: Using `OpenTelemetry` for distributed tracing.
+- :sparkle: Using `DuendeSoftware IdentityServer` for implementation authentication and authorization base on `OpenID-Connect` and `OAuth2`.
+- :sparkle: Using `Yarp` as a microservices gateway.
 
 ## Plan
 
@@ -59,7 +66,7 @@ High-level plan is represented in the table
 - ✔️ **[`MVC Versioning API`](https://github.com/microsoft/aspnet-api-versioning)** - Set of libraries which add service API versioning to ASP.NET Web API, OData with ASP.NET Web API, and ASP.NET Core
 - ✔️ **[`EF Core`](https://github.com/dotnet/efcore)** - Modern object-database mapper for .NET. It supports LINQ queries, change tracking, updates, and schema migrations
 - ✔️ **[`Masstransit`](https://github.com/MassTransit/MassTransit)** - Distributed Application Framework for .NET.
-- ✔️ **[`MediatR`]()** - Simple, unambitious mediator implementation in .NET.
+- ✔️ **[`MediatR`](https://github.com/jbogard/MediatR)** - Simple, unambitious mediator implementation in .NET.
 - ✔️ **[`FluentValidation`](https://github.com/FluentValidation/FluentValidation)** - Popular .NET validation library for building strongly-typed validation rules
 - ✔️ **[`Swagger & Swagger UI`](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)** - Swagger tools for documenting API's built on ASP.NET Core
 - ✔️ **[`Serilog`](https://github.com/serilog/serilog)** - Simple .NET logging with fully-structured events
