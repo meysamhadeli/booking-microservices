@@ -81,22 +81,22 @@
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="7.0.0" />
     <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="6.0.2" />
     <PackageReference Include="System.Interactive.Async" Version="6.0.1" />
-    <PackageReference Include="MassTransit" Version="8.0.8" />
-    <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.8" />
+    <PackageReference Include="MassTransit" Version="8.0.9-develop.658" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.9-develop.658" />
     <PackageReference Include="DotNetCore.CAP" Version="6.2.1" />
     <PackageReference Include="DotNetCore.CAP.Dashboard" Version="6.2.1" />
     <PackageReference Include="DotNetCore.CAP.MongoDB" Version="6.2.1" />
     <PackageReference Include="DotNetCore.CAP.OpenTelemetry" Version="6.2.1" />
     <PackageReference Include="DotNetCore.CAP.RabbitMQ" Version="6.2.1" />
     <PackageReference Include="DotNetCore.CAP.SqlServer" Version="6.2.1" />
-    <PackageReference Include="Duende.IdentityServer" Version="6.1.7" />
-    <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.1.7" />
-    <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="6.1.7" />
-    <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.1.7" />
+    <PackageReference Include="Duende.IdentityServer" Version="6.2.0-rc.1" />
+    <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.2.0-rc.1" />
+    <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="6.2.0-rc.1" />
+    <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.2.0-rc.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Testcontainers" Version="2.2.0" />
     <PackageReference Include="Yarp.ReverseProxy" Version="1.1.1" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="1.25.5" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="2.0.5-preview" />
 
     <PackageReference Include="Jaeger" Version="1.0.3" />
     <PackageReference Include="OpenTracing" Version="0.12.1" />

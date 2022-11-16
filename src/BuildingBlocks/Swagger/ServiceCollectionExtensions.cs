@@ -34,26 +34,6 @@ public static class ServiceCollectionExtensions
                 var xmlFile = XmlCommentsFilePath(assembly);
                 if (File.Exists(xmlFile)) options.IncludeXmlComments(xmlFile);
 
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n
-                              Enter 'Bearer' [space] and then your token in the text input below.
-                              \r\n\r\nExample: 'Bearer 12345abcdef'",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
-                });
-
-                options.AddSecurityDefinition(
-                    HeaderName,
-                    new OpenApiSecurityScheme
-                    {
-                        Description = "Api key needed to access the endpoints. X-Api-Key: My_API_Key",
-                        In = ParameterLocation.Header,
-                        Name = HeaderName,
-                        Type = SecuritySchemeType.ApiKey
-                    });
 
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -66,19 +46,6 @@ public static class ServiceCollectionExtensions
                             In = ParameterLocation.Header
                         },
                         new List<string>()
-                    },
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Name = HeaderName,
-                            Type = SecuritySchemeType.ApiKey,
-                            In = ParameterLocation.Header,
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme, Id = HeaderName
-                            }
-                        },
-                        Array.Empty<string>()
                     }
                 });
 

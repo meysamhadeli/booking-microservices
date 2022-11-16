@@ -6,7 +6,6 @@ using Identity.Identity.Features.RegisterNewUser.Commands.V1;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -17,7 +16,6 @@ public class RegisterNewUserEndpoint : IMinimalEndpoint
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost($"{EndpointConfig.BaseApiPath}/identity/register-user", RegisterNewUser)
-            .RequireAuthorization()
             .WithTags("Identity")
             .WithName("Register User")
             .WithMetadata(new SwaggerOperationAttribute("Register User", "Register User"))

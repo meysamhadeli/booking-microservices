@@ -5,7 +5,7 @@ namespace Flight.Aircrafts.Features.CreateAircraft.Exceptions;
 
 public class AircraftAlreadyExistException : AppException
 {
-    public AircraftAlreadyExistException() : base("Flight already exist!", HttpStatusCode.Conflict)
+    public AircraftAlreadyExistException() : base("Aircraft already exist!", HttpStatusCode.Conflict)
     {
     }
 }
