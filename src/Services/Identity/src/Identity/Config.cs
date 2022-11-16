@@ -24,7 +24,8 @@ public static class Config
         {
             new(Constants.StandardScopes.FlightApi),
             new(Constants.StandardScopes.PassengerApi),
-            new(Constants.StandardScopes.BookingApi)
+            new(Constants.StandardScopes.BookingApi),
+            new(Constants.StandardScopes.IdentityApi)
         };
 
 
@@ -33,7 +34,8 @@ public static class Config
         {
             new(Constants.StandardScopes.FlightApi),
             new(Constants.StandardScopes.PassengerApi),
-            new(Constants.StandardScopes.BookingApi)
+            new(Constants.StandardScopes.BookingApi),
+            new(Constants.StandardScopes.IdentityApi)
         };
 
     public static IEnumerable<Client> Clients =>
@@ -56,7 +58,8 @@ public static class Config
                     IdentityServerConstants.StandardScopes.Profile,
                     Constants.StandardScopes.FlightApi,
                     Constants.StandardScopes.PassengerApi,
-                    Constants.StandardScopes.BookingApi
+                    Constants.StandardScopes.BookingApi,
+                    new(Constants.StandardScopes.IdentityApi)
                 }
             }
         };

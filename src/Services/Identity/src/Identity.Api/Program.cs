@@ -15,7 +15,6 @@ using Identity;
 using Identity.Data;
 using Identity.Data.Seed;
 using Identity.Extensions;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Prometheus;
 using Serilog;
 
