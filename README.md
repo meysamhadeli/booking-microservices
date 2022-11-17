@@ -26,7 +26,7 @@
 
 - :sparkle: Using `Vertical Slice Architecture` for architecture level.
 - :sparkle: Using `Domain Driven Design (DDD)` to implement all business processes in microservices.
-- :sparkle: Using `Rabbitmq` on top of `Masstransit` for asynchronous communication (event driven architecture) between our microservices.
+- :sparkle: Using `Rabbitmq` on top of `Masstransit` for `Event Driven Architecture` between our microservices.
 - :sparkle: Using `gRPC` for internal communication between our microservices.
 - :sparkle: Using `CQRS` implementation with `MediatR` library.
 - :sparkle: Using `SqlServer` for `write side` of some microservices.
