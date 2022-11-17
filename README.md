@@ -40,7 +40,7 @@
 - :sparkle: Using `Health Check` for reporting the health of app infrastructure components.
 - :sparkle: Using `Docker-Compose` and `Kubernetes` for our deployment mechanism.
 - :sparkle: Using `OpenTelemetry` for distributed tracing.
-- :sparkle: Using `DuendeSoftware IdentityServer` for implementation authentication and authorization base on `OpenID-Connect` and `OAuth2`.
+- :sparkle: Using `IdentityServer` for implementation authentication and authorization base on `OpenID-Connect` and `OAuth2`.
 - :sparkle: Using `Yarp` as a microservices gateway.
 
 ## Plan
