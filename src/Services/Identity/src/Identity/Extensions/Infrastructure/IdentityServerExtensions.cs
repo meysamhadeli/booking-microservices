@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Identity.Extensions;
+namespace Identity.Extensions.Infrastructure;
 
 public static class IdentityServerExtensions
 {

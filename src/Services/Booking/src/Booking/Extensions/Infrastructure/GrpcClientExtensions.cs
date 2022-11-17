@@ -4,7 +4,7 @@ using Flight;
 using Microsoft.Extensions.DependencyInjection;
 using Passenger;
 
-namespace Booking.Extensions;
+namespace Booking.Extensions.Infrastructure;
 
 public static class GrpcClientExtensions
 {
