@@ -18,70 +18,23 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Passenger;
 using Passenger.Data;
 using Passenger.Extensions;
+using Passenger.Extensions.Infrastructure;
 using Passenger.GrpcServer.Services;
 using Prometheus;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-var configuration = builder.Configuration;
-var env = builder.Environment;
 
-var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
-Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
-
-builder.Services.AddCustomDbContext<PassengerDbContext>(configuration);
-builder.Services.AddMongoDbContext<PassengerReadDbContext>(configuration);
-builder.Services.AddPersistMessage(configuration);
-
-builder.AddCustomSerilog(env);
-builder.Services.AddCore();
-builder.Services.AddJwt();
-builder.Services.AddCustomSwagger(configuration, typeof(PassengerRoot).Assembly);
-builder.Services.AddCustomVersioning();
-builder.Services.AddCustomMediatR();
-builder.Services.AddValidatorsFromAssembly(typeof(PassengerRoot).Assembly);
-builder.Services.AddCustomProblemDetails();
-builder.Services.AddCustomMapster(typeof(PassengerRoot).Assembly);
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddCustomHealthCheck();
-builder.Services.AddCustomMassTransit(typeof(PassengerRoot).Assembly, env);
-builder.Services.AddCustomOpenTelemetry();
-builder.Services.AddGrpc(options =>
-{
-    options.Interceptors.Add<GrpcExceptionInterceptor>();
-});
-
-SnowFlakIdGenerator.Configure(2);
 
 builder.AddMinimalEndpoints();
+builder.AddInfrastructure();
 
 var app = builder.Build();
 
-app.UseSerilogRequestLogging();
-app.UseMigration<PassengerDbContext>(env);
-app.UseCorrelationId();
-app.UseRouting();
-app.UseHttpMetrics();
-app.UseProblemDetails();
-app.UseHttpsRedirection();
+app.MapMinimalEndpoints();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCustomHealthCheck();
-
-app.MapMinimalEndpoints();
-
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapMetrics();
-    endpoints.MapGrpcService<PassengerGrpcServices>();
-});
-
-app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseCustomSwagger();
-}
+app.UseInfrastructure();
 
 app.Run();
 

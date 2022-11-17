@@ -5,9 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 
-namespace Booking.Extensions;
+namespace Booking.Extensions.Infrastructure;
 
 public static class ProblemDetailsExtensions
 {
