@@ -8,26 +8,28 @@ public static class TestContainers
 {
     public static MsSqlTestcontainer SqlTestContainer => new TestcontainersBuilder<MsSqlTestcontainer>()
         .WithDatabase(
-            new MsSqlTestcontainerConfiguration {Database = "sql_test_db", Password = "localpassword#123uuuuu"})
+            new MsSqlTestcontainerConfiguration
+            {
+                Database = Guid.NewGuid().ToString("D"), Password = Guid.NewGuid().ToString("D")
+            })
         .WithImage("mcr.microsoft.com/mssql/server:2017-latest")
-        .WithCleanUp(true)
         .Build();
 
     public static MsSqlTestcontainer SqlPersistTestContainer => new TestcontainersBuilder<MsSqlTestcontainer>()
         .WithDatabase(new MsSqlTestcontainerConfiguration
         {
-            Database = "sql_test_persist_db", Password = "localpassword#123oooo"
+            Database = Guid.NewGuid().ToString("D"), Password = Guid.NewGuid().ToString("D")
         })
         .WithImage("mcr.microsoft.com/mssql/server:2017-latest")
-        .WithCleanUp(true)
         .Build();
 
     public static MongoDbTestcontainer MongoTestContainer => new TestcontainersBuilder<MongoDbTestcontainer>()
         .WithDatabase(new MongoDbTestcontainerConfiguration()
         {
-            Database = "mongo_test_db", Username = "mongo_db", Password = "mongo_db_pass"
+            Database = Guid.NewGuid().ToString("D"),
+            Username = Guid.NewGuid().ToString("D"),
+            Password = Guid.NewGuid().ToString("D")
         })
         .WithImage("mongo")
-        .WithCleanUp(true)
         .Build();
 }
