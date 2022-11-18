@@ -16,7 +16,7 @@ public class RegisterNewUserTests : IntegrationTestBase<Program, IdentityContext
 {
     private readonly ITestHarness _testHarness;
 
-    public RegisterNewUserTests(IntegrationTestFixture<Program, IdentityContext> integrationTestFixture) : base(integrationTestFixture)
+    public RegisterNewUserTests(IntegrationTestFactory<Program, IdentityContext> integrationTestFixture) : base(integrationTestFixture)
     {
         _testHarness = Fixture.TestHarness;
     }

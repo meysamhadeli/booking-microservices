@@ -19,7 +19,7 @@ public class GetFlightByIdTests : IntegrationTestBase<Program, FlightDbContext, 
     private readonly GrpcChannel _channel;
 
     public GetFlightByIdTests(
-        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
+        IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
         integrationTestFixture)
     {
         _channel = Fixture.Channel;

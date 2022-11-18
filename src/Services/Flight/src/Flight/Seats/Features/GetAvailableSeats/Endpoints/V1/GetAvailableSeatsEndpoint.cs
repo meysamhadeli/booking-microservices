@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
-using Flight.Flights.Dtos;
 using Flight.Seats.Dtos;
 using Flight.Seats.Features.GetAvailableSeats.Queries.V1;
 using MediatR;
@@ -10,6 +9,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
+
+namespace Flight.Seats.Features.GetAvailableSeats.Endpoints.V1;
 
 public class GetAvailableSeatsEndpoint : IMinimalEndpoint
 {

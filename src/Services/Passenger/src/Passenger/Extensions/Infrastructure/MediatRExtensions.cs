@@ -4,7 +4,7 @@ using BuildingBlocks.Validation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Passenger.Extensions;
+namespace Passenger.Extensions.Infrastructure;
 
 public static class MediatRExtensions
 {

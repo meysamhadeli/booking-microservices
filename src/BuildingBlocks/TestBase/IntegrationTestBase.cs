@@ -6,6 +6,7 @@ using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Web;
+using DotNet.Testcontainers.Containers;
 using Grpc.Net.Client;
 using MassTransit;
 using MassTransit.Testing;
@@ -26,7 +27,7 @@ using Xunit.Abstractions;
 
 namespace BuildingBlocks.TestBase;
 
-public class IntegrationTestFixture<TEntryPoint> : IAsyncLifetime
+public class IntegrationTestFactory<TEntryPoint> : IAsyncLifetime
     where TEntryPoint : class
 {
     private readonly WebApplicationFactory<TEntryPoint> _factory;
@@ -39,8 +40,7 @@ public class IntegrationTestFixture<TEntryPoint> : IAsyncLifetime
     public IServiceProvider ServiceProvider => _factory.Services;
     public IConfiguration Configuration => _factory.Services.GetRequiredService<IConfiguration>();
 
-
-    public IntegrationTestFixture()
+    public IntegrationTestFactory()
     {
         _factory = new WebApplicationFactory<TEntryPoint>()
             .WithWebHostBuilder(builder =>
@@ -68,6 +68,7 @@ public class IntegrationTestFixture<TEntryPoint> : IAsyncLifetime
                 });
             });
     }
+
 
     public Task InitializeAsync()
     {
@@ -195,7 +196,7 @@ public class IntegrationTestFixture<TEntryPoint> : IAsyncLifetime
     }
 }
 
-public class IntegrationTestFixture<TEntryPoint, TWContext> : IntegrationTestFixture<TEntryPoint>
+public class IntegrationTestFactory<TEntryPoint, TWContext> : IntegrationTestFactory<TEntryPoint>
     where TEntryPoint : class
     where TWContext : DbContext
 {
@@ -302,7 +303,7 @@ public class IntegrationTestFixture<TEntryPoint, TWContext> : IntegrationTestFix
     }
 }
 
-public class IntegrationTestFixture<TEntryPoint, TWContext, TRContext> : IntegrationTestFixture<TEntryPoint, TWContext>
+public class IntegrationTestFactory<TEntryPoint, TWContext, TRContext> : IntegrationTestFactory<TEntryPoint, TWContext>
     where TEntryPoint : class
     where TWContext : DbContext
     where TRContext : MongoDbContext
@@ -325,28 +326,36 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
     private Checkpoint _checkpointPersistMessageDB;
     private MongoDbRunner _mongoRunner;
 
+    private string DefaultConnectionString
+    {
+        get => Fixture.ServiceProvider.GetRequiredService<IOptions<ConnectionStrings>>()?.Value.DefaultConnection;
+        set => Fixture.ServiceProvider.GetRequiredService<IOptions<ConnectionStrings>>().Value.DefaultConnection =
+            value;
+    }
+
+    private string PersistConnectionString
+    {
+        get => Fixture.ServiceProvider.GetRequiredService<IOptions<PersistMessageOptions>>()?.Value.ConnectionString;
+        set => Fixture.ServiceProvider.GetRequiredService<IOptions<PersistMessageOptions>>().Value.ConnectionString =
+            value;
+    }
+
     private string MongoConnectionString
     {
         get => Fixture.ServiceProvider.GetRequiredService<IOptions<MongoOptions>>()?.Value?.ConnectionString;
         set => Fixture.ServiceProvider.GetRequiredService<IOptions<MongoOptions>>().Value.ConnectionString = value;
     }
 
-    private string PersistConnectionString => Fixture.ServiceProvider
-        .GetRequiredService<IOptions<PersistMessageOptions>>()?.Value.ConnectionString;
-
-    private string DefaultConnectionString => Fixture.Configuration?.GetConnectionString("DefaultConnection");
-
-    public IntegrationTestFixtureCore(IntegrationTestFixture<TEntryPoint> integrationTestFixture)
+    public IntegrationTestFixtureCore(IntegrationTestFactory<TEntryPoint> integrationTestFixture)
     {
         Fixture = integrationTestFixture;
         integrationTestFixture.RegisterServices(services => RegisterTestsServices(services));
     }
 
-    public IntegrationTestFixture<TEntryPoint> Fixture { get; }
+    public IntegrationTestFactory<TEntryPoint> Fixture { get; }
 
     public async Task InitializeAsync()
     {
-        //Todo: upgrade to new version Respawn
         _checkpointDefaultDB = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
         _checkpointPersistMessageDB = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
 
@@ -354,6 +363,10 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
 
         if (MongoConnectionString != null)
             MongoConnectionString = _mongoRunner.ConnectionString;
+
+        // DefaultConnectionString = TestContainers.SqlTestContainer?.ConnectionString;
+        // PersistConnectionString = TestContainers.SqlPersistTestContainer?.ConnectionString;
+        // MongoConnectionString = TestContainers.MongoTestContainer?.ConnectionString;
 
         await SeedDataAsync();
     }
@@ -366,7 +379,8 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
         if (!string.IsNullOrEmpty(PersistConnectionString))
             await _checkpointPersistMessageDB.Reset(PersistConnectionString);
 
-        _mongoRunner.Dispose();
+        if (!string.IsNullOrEmpty(PersistConnectionString))
+            _mongoRunner.Dispose();
     }
 
     protected virtual void RegisterTestsServices(IServiceCollection services)
@@ -383,43 +397,43 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
 }
 
 public abstract class IntegrationTestBase<TEntryPoint> : IntegrationTestFixtureCore<TEntryPoint>,
-    IClassFixture<IntegrationTestFixture<TEntryPoint>>
+    IClassFixture<IntegrationTestFactory<TEntryPoint>>
     where TEntryPoint : class
 {
     protected IntegrationTestBase(
-        IntegrationTestFixture<TEntryPoint> integrationTestFixture) : base(integrationTestFixture)
+        IntegrationTestFactory<TEntryPoint> integrationTestFixture) : base(integrationTestFixture)
     {
         Fixture = integrationTestFixture;
     }
 
-    public new IntegrationTestFixture<TEntryPoint> Fixture { get; }
+    public new IntegrationTestFactory<TEntryPoint> Fixture { get; }
 }
 
 public abstract class IntegrationTestBase<TEntryPoint, TWContext> : IntegrationTestFixtureCore<TEntryPoint>,
-    IClassFixture<IntegrationTestFixture<TEntryPoint, TWContext>>
+    IClassFixture<IntegrationTestFactory<TEntryPoint, TWContext>>
     where TEntryPoint : class
     where TWContext : DbContext
 {
     protected IntegrationTestBase(
-        IntegrationTestFixture<TEntryPoint, TWContext> integrationTestFixture) : base(integrationTestFixture)
+        IntegrationTestFactory<TEntryPoint, TWContext> integrationTestFixture) : base(integrationTestFixture)
     {
         Fixture = integrationTestFixture;
     }
 
-    public new IntegrationTestFixture<TEntryPoint, TWContext> Fixture { get; }
+    public new IntegrationTestFactory<TEntryPoint, TWContext> Fixture { get; }
 }
 
 public abstract class IntegrationTestBase<TEntryPoint, TWContext, TRContext> : IntegrationTestFixtureCore<TEntryPoint>,
-    IClassFixture<IntegrationTestFixture<TEntryPoint, TWContext, TRContext>>
+    IClassFixture<IntegrationTestFactory<TEntryPoint, TWContext, TRContext>>
     where TEntryPoint : class
     where TWContext : DbContext
     where TRContext : MongoDbContext
 {
     protected IntegrationTestBase(
-        IntegrationTestFixture<TEntryPoint, TWContext, TRContext> integrationTestFixture) : base(integrationTestFixture)
+        IntegrationTestFactory<TEntryPoint, TWContext, TRContext> integrationTestFixture) : base(integrationTestFixture)
     {
         Fixture = integrationTestFixture;
     }
 
-    public new IntegrationTestFixture<TEntryPoint, TWContext, TRContext> Fixture { get; }
+    public new IntegrationTestFactory<TEntryPoint, TWContext, TRContext> Fixture { get; }
 }

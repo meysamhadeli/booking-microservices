@@ -24,7 +24,6 @@
 //     }
 // }
 
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
@@ -35,6 +34,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
+
+namespace Flight.Flights.Features.GetFlightById.Endpoints.V1;
 
 public class GetFlightByIdEndpoint : IMinimalEndpoint
 {

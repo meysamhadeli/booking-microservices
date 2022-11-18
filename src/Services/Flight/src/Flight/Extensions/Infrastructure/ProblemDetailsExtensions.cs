@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Flight.Extensions;
+namespace Flight.Extensions.Infrastructure;
 
 public static class ProblemDetailsExtensions
 {

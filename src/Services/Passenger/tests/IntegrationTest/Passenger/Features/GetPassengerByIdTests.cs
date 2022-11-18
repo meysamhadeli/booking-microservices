@@ -20,7 +20,7 @@ public class GetPassengerByIdTests : IntegrationTestBase<Program, PassengerDbCon
     private readonly ITestHarness _testHarness;
     private readonly GrpcChannel _channel;
 
-    public GetPassengerByIdTests(IntegrationTestFixture<Program, PassengerDbContext> integrationTestFixture) : base(
+    public GetPassengerByIdTests(IntegrationTestFactory<Program, PassengerDbContext> integrationTestFixture) : base(
         integrationTestFixture)
     {
         _channel = Fixture.Channel;

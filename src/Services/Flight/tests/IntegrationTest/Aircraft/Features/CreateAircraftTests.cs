@@ -17,7 +17,7 @@ public class CreateAircraftTests : IntegrationTestBase<Program, FlightDbContext,
 {
     private readonly ITestHarness _testHarness;
 
-    public CreateAircraftTests(IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(integrationTestFixture)
+    public CreateAircraftTests(IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(integrationTestFixture)
     {
         _testHarness = Fixture.TestHarness;
     }

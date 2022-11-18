@@ -20,7 +20,7 @@ public class DeleteFlightTests : IntegrationTestBase<Program, FlightDbContext, F
     private readonly ITestHarness _testHarness;
 
     public DeleteFlightTests(
-        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
+        IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
         integrationTestFixture)
     {
         _testHarness = Fixture.TestHarness;
