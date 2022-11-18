@@ -27,7 +27,7 @@ using Xunit.Abstractions;
 
 namespace BuildingBlocks.TestBase;
 
-public class IntegrationTestFactory<TEntryPoint> : IAsyncLifetime
+public class IntegrationTestFactory<TEntryPoint> : IAsyncDisposable
     where TEntryPoint : class
 {
     private readonly WebApplicationFactory<TEntryPoint> _factory;
@@ -39,6 +39,10 @@ public class IntegrationTestFactory<TEntryPoint> : IAsyncLifetime
 
     public IServiceProvider ServiceProvider => _factory.Services;
     public IConfiguration Configuration => _factory.Services.GetRequiredService<IConfiguration>();
+
+    public MsSqlTestcontainer SqlTestContainer;
+    public MsSqlTestcontainer SqlPersistTestContainer;
+    public MongoDbTestcontainer MongoTestContainer;
 
     public IntegrationTestFactory()
     {
@@ -69,13 +73,7 @@ public class IntegrationTestFactory<TEntryPoint> : IAsyncLifetime
             });
     }
 
-
-    public Task InitializeAsync()
-    {
-        return Task.CompletedTask;
-    }
-
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await _factory.DisposeAsync();
     }
@@ -364,9 +362,18 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
         if (MongoConnectionString != null)
             MongoConnectionString = _mongoRunner.ConnectionString;
 
-        // DefaultConnectionString = TestContainers.SqlTestContainer?.ConnectionString;
-        // PersistConnectionString = TestContainers.SqlPersistTestContainer?.ConnectionString;
-        // MongoConnectionString = TestContainers.MongoTestContainer?.ConnectionString;
+        // <<For using test-container base>>
+        // Fixture.SqlTestContainer = TestContainers.SqlTestContainer;
+        // Fixture.SqlPersistTestContainer = TestContainers.SqlPersistTestContainer;
+        // Fixture.MongoTestContainer = TestContainers.MongoTestContainer;
+        //
+        // await Fixture.SqlTestContainer.StartAsync();
+        // await Fixture.SqlPersistTestContainer.StartAsync();
+        // await Fixture.MongoTestContainer.StartAsync();
+        //
+        // DefaultConnectionString = Fixture.SqlTestContainer?.ConnectionString;
+        // PersistConnectionString = Fixture.SqlPersistTestContainer?.ConnectionString;
+        // MongoConnectionString = Fixture.MongoTestContainer?.ConnectionString;
 
         await SeedDataAsync();
     }
@@ -381,6 +388,11 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
 
         if (!string.IsNullOrEmpty(PersistConnectionString))
             _mongoRunner.Dispose();
+
+        // <<For using test-container base>>
+        // await Fixture.SqlTestContainer.StopAsync();
+        // await Fixture.SqlPersistTestContainer.StopAsync();
+        // await Fixture.MongoTestContainer.StopAsync();
     }
 
     protected virtual void RegisterTestsServices(IServiceCollection services)
