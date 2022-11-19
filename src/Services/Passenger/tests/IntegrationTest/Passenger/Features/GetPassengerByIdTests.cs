@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Passenger;
 using Passenger.Api;
 using Passenger.Data;
-using Passenger.Passengers.Features.GetPassengerById;
 using Passenger.Passengers.Features.GetPassengerById.Queries.V1;
 using Xunit;
 
@@ -20,7 +19,7 @@ public class GetPassengerByIdTests : IntegrationTestBase<Program, PassengerDbCon
     private readonly ITestHarness _testHarness;
     private readonly GrpcChannel _channel;
 
-    public GetPassengerByIdTests(IntegrationTestFactory<Program, PassengerDbContext> integrationTestFixture) : base(
+    public GetPassengerByIdTests(IntegrationTestFixture<Program, PassengerDbContext> integrationTestFixture) : base(
         integrationTestFixture)
     {
         _channel = Fixture.Channel;

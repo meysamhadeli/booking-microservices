@@ -5,7 +5,6 @@ using Flight.Aircrafts.Features.CreateAircraft.Commands.V1.Reads;
 using Flight.Api;
 using Flight.Data;
 using FluentAssertions;
-using Grpc.Net.Client;
 using Integration.Test.Fakes;
 using MassTransit;
 using MassTransit.Testing;
@@ -17,7 +16,7 @@ public class CreateAircraftTests : IntegrationTestBase<Program, FlightDbContext,
 {
     private readonly ITestHarness _testHarness;
 
-    public CreateAircraftTests(IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(integrationTestFixture)
+    public CreateAircraftTests(IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(integrationTestFixture)
     {
         _testHarness = Fixture.TestHarness;
     }

@@ -2,24 +2,17 @@
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
-using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.PersistMessageProcessor;
-using BuildingBlocks.Web;
 using DotNet.Testcontainers.Containers;
 using Grpc.Net.Client;
-using MassTransit;
 using MassTransit.Testing;
 using MediatR;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Mongo2Go;
-using NSubstitute;
 using Respawn;
 using Serilog;
 using Xunit;
@@ -27,15 +20,17 @@ using Xunit.Abstractions;
 
 namespace BuildingBlocks.TestBase;
 
-public class IntegrationTestFactory<TEntryPoint> : IAsyncDisposable
+public class IntegrationTestFixture<TEntryPoint> : IDisposable
     where TEntryPoint : class
 {
-    private readonly WebApplicationFactory<TEntryPoint> _factory;
+    private readonly CustomWebApplicationFactory<TEntryPoint> _factory;
+
     private int Timeout => 180;
-    public Action<IServiceCollection> TestRegistrationServices { set; get; }
     public HttpClient HttpClient => _factory.CreateClient();
-    public ITestHarness TestHarness => CreateHarness();
-    public GrpcChannel Channel => CreateChannel();
+    public ITestHarness TestHarness => ServiceProvider.GetTestHarness();
+
+    public GrpcChannel Channel =>
+        GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions {HttpClient = HttpClient});
 
     public IServiceProvider ServiceProvider => _factory.Services;
     public IConfiguration Configuration => _factory.Services.GetRequiredService<IConfiguration>();
@@ -44,43 +39,20 @@ public class IntegrationTestFactory<TEntryPoint> : IAsyncDisposable
     public MsSqlTestcontainer SqlPersistTestContainer;
     public MongoDbTestcontainer MongoTestContainer;
 
-    public IntegrationTestFactory()
+    public IntegrationTestFixture()
     {
-        _factory = new WebApplicationFactory<TEntryPoint>()
-            .WithWebHostBuilder(builder =>
-            {
-                builder.UseEnvironment("test");
-                builder.ConfigureServices(services =>
-                {
-                    TestRegistrationServices?.Invoke(services);
-                    services.ReplaceSingleton(AddHttpContextAccessorMock);
-                    services.AddMassTransitTestHarness(x =>
-                    {
-                        x.UsingRabbitMq((context, cfg) =>
-                        {
-                            var rabbitMqOptions = services.GetOptions<RabbitMqOptions>("RabbitMq");
-                            var host = rabbitMqOptions.HostName;
-
-                            cfg.Host(host, h =>
-                            {
-                                h.Username(rabbitMqOptions.UserName);
-                                h.Password(rabbitMqOptions.Password);
-                            });
-                            cfg.ConfigureEndpoints(context);
-                        });
-                    });
-                });
-            });
+        // Ref: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-6.0#basic-tests-with-the-default-webapplicationfactory
+        _factory = new CustomWebApplicationFactory<TEntryPoint>();
     }
 
-    public async ValueTask DisposeAsync()
+    public void Dispose()
     {
-        await _factory.DisposeAsync();
+        _factory.Dispose();
     }
 
     public virtual void RegisterServices(Action<IServiceCollection> services)
     {
-        TestRegistrationServices = services;
+        _factory.TestRegistrationServices = services;
     }
 
     // ref: https://github.com/trbenning/serilog-sinks-xunit
@@ -169,32 +141,9 @@ public class IntegrationTestFactory<TEntryPoint> : IAsyncDisposable
             });
         });
     }
-
-    private ITestHarness CreateHarness()
-    {
-        var harness = ServiceProvider.GetTestHarness();
-        return harness;
-    }
-
-    private GrpcChannel CreateChannel()
-    {
-        return GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions {HttpClient = HttpClient});
-    }
-
-    private IHttpContextAccessor AddHttpContextAccessorMock(IServiceProvider serviceProvider)
-    {
-        var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
-        using var scope = serviceProvider.CreateScope();
-        httpContextAccessorMock.HttpContext = new DefaultHttpContext {RequestServices = scope.ServiceProvider};
-
-        httpContextAccessorMock.HttpContext.Request.Host = new HostString("localhost", 6012);
-        httpContextAccessorMock.HttpContext.Request.Scheme = "http";
-
-        return httpContextAccessorMock;
-    }
 }
 
-public class IntegrationTestFactory<TEntryPoint, TWContext> : IntegrationTestFactory<TEntryPoint>
+public class IntegrationTestFixture<TEntryPoint, TWContext> : IntegrationTestFixture<TEntryPoint>
     where TEntryPoint : class
     where TWContext : DbContext
 {
@@ -301,7 +250,7 @@ public class IntegrationTestFactory<TEntryPoint, TWContext> : IntegrationTestFac
     }
 }
 
-public class IntegrationTestFactory<TEntryPoint, TWContext, TRContext> : IntegrationTestFactory<TEntryPoint, TWContext>
+public class IntegrationTestFixture<TEntryPoint, TWContext, TRContext> : IntegrationTestFixture<TEntryPoint, TWContext>
     where TEntryPoint : class
     where TWContext : DbContext
     where TRContext : MongoDbContext
@@ -344,13 +293,13 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
         set => Fixture.ServiceProvider.GetRequiredService<IOptions<MongoOptions>>().Value.ConnectionString = value;
     }
 
-    public IntegrationTestFixtureCore(IntegrationTestFactory<TEntryPoint> integrationTestFixture)
+    public IntegrationTestFixtureCore(IntegrationTestFixture<TEntryPoint> integrationTestFixture)
     {
         Fixture = integrationTestFixture;
         integrationTestFixture.RegisterServices(services => RegisterTestsServices(services));
     }
 
-    public IntegrationTestFactory<TEntryPoint> Fixture { get; }
+    public IntegrationTestFixture<TEntryPoint> Fixture { get; }
 
     public async Task InitializeAsync()
     {
@@ -409,43 +358,43 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
 }
 
 public abstract class IntegrationTestBase<TEntryPoint> : IntegrationTestFixtureCore<TEntryPoint>,
-    IClassFixture<IntegrationTestFactory<TEntryPoint>>
+    IClassFixture<IntegrationTestFixture<TEntryPoint>>
     where TEntryPoint : class
 {
     protected IntegrationTestBase(
-        IntegrationTestFactory<TEntryPoint> integrationTestFixture) : base(integrationTestFixture)
+        IntegrationTestFixture<TEntryPoint> integrationTestFixture) : base(integrationTestFixture)
     {
         Fixture = integrationTestFixture;
     }
 
-    public new IntegrationTestFactory<TEntryPoint> Fixture { get; }
+    public IntegrationTestFixture<TEntryPoint> Fixture { get; }
 }
 
 public abstract class IntegrationTestBase<TEntryPoint, TWContext> : IntegrationTestFixtureCore<TEntryPoint>,
-    IClassFixture<IntegrationTestFactory<TEntryPoint, TWContext>>
+    IClassFixture<IntegrationTestFixture<TEntryPoint, TWContext>>
     where TEntryPoint : class
     where TWContext : DbContext
 {
     protected IntegrationTestBase(
-        IntegrationTestFactory<TEntryPoint, TWContext> integrationTestFixture) : base(integrationTestFixture)
+        IntegrationTestFixture<TEntryPoint, TWContext> integrationTestFixture) : base(integrationTestFixture)
     {
         Fixture = integrationTestFixture;
     }
 
-    public new IntegrationTestFactory<TEntryPoint, TWContext> Fixture { get; }
+    public IntegrationTestFixture<TEntryPoint, TWContext> Fixture { get; }
 }
 
 public abstract class IntegrationTestBase<TEntryPoint, TWContext, TRContext> : IntegrationTestFixtureCore<TEntryPoint>,
-    IClassFixture<IntegrationTestFactory<TEntryPoint, TWContext, TRContext>>
+    IClassFixture<IntegrationTestFixture<TEntryPoint, TWContext, TRContext>>
     where TEntryPoint : class
     where TWContext : DbContext
     where TRContext : MongoDbContext
 {
     protected IntegrationTestBase(
-        IntegrationTestFactory<TEntryPoint, TWContext, TRContext> integrationTestFixture) : base(integrationTestFixture)
+        IntegrationTestFixture<TEntryPoint, TWContext, TRContext> integrationTestFixture) : base(integrationTestFixture)
     {
         Fixture = integrationTestFixture;
     }
 
-    public new IntegrationTestFactory<TEntryPoint, TWContext, TRContext> Fixture { get; }
+    public IntegrationTestFixture<TEntryPoint, TWContext, TRContext> Fixture { get; }
 }

@@ -27,7 +27,7 @@ public class CreateBookingTests : IntegrationTestBase<Program, PersistMessageDbC
     private readonly ITestHarness _testHarness;
 
     public CreateBookingTests(
-        IntegrationTestFactory<Program, PersistMessageDbContext, BookingReadDbContext> integrationTestFixture) : base(
+        IntegrationTestFixture<Program, PersistMessageDbContext, BookingReadDbContext> integrationTestFixture) : base(
         integrationTestFixture)
     {
         _testHarness = Fixture.TestHarness;

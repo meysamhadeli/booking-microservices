@@ -4,9 +4,7 @@ using Flight;
 using Flight.Api;
 using Flight.Data;
 using Flight.Flights.Features.CreateFlight.Commands.V1.Reads;
-using Flight.Flights.Features.GetFlightById;
 using Flight.Flights.Features.GetFlightById.Queries.V1;
-using Flight.GrpcServer.Services;
 using FluentAssertions;
 using Grpc.Net.Client;
 using Integration.Test.Fakes;
@@ -19,7 +17,7 @@ public class GetFlightByIdTests : IntegrationTestBase<Program, FlightDbContext, 
     private readonly GrpcChannel _channel;
 
     public GetFlightByIdTests(
-        IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
+        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
         integrationTestFixture)
     {
         _channel = Fixture.Channel;
