@@ -4,7 +4,6 @@ using BuildingBlocks.TestBase;
 using Flight.Api;
 using Flight.Data;
 using Flight.Flights.Features.CreateFlight.Commands.V1.Reads;
-using Flight.Flights.Features.GetAvailableFlights;
 using Flight.Flights.Features.GetAvailableFlights.Queries.V1;
 using FluentAssertions;
 using Integration.Test.Fakes;
@@ -15,7 +14,7 @@ namespace Integration.Test.Flight.Features;
 public class GetAvailableFlightsTests : IntegrationTestBase<Program, FlightDbContext, FlightReadDbContext>
 {
     public GetAvailableFlightsTests(
-        IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture)
+        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture)
         : base(integrationTestFixture)
     {
     }

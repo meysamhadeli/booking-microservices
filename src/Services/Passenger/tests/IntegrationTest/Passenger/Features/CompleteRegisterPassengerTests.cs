@@ -14,7 +14,7 @@ public class CompleteRegisterPassengerTests : IntegrationTestBase<Program, Passe
 {
     private readonly ITestHarness _testHarness;
 
-    public CompleteRegisterPassengerTests(IntegrationTestFactory<Program, PassengerDbContext> integrationTestFixture) :
+    public CompleteRegisterPassengerTests(IntegrationTestFixture<Program, PassengerDbContext> integrationTestFixture) :
         base(integrationTestFixture)
     {
         _testHarness = Fixture.TestHarness;

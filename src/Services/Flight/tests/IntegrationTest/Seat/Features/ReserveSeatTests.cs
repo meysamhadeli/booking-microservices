@@ -17,7 +17,7 @@ public class ReserveSeatTests : IntegrationTestBase<Program, FlightDbContext, Fl
     private readonly GrpcChannel _channel;
 
     public ReserveSeatTests(
-        IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
+        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
         integrationTestFixture)
     {
         _channel = Fixture.Channel;

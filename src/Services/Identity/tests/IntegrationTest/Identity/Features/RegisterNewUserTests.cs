@@ -2,7 +2,6 @@
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.TestBase;
 using FluentAssertions;
-using Grpc.Net.Client;
 using Identity.Api;
 using Identity.Data;
 using Integration.Test.Fakes;
@@ -16,7 +15,7 @@ public class RegisterNewUserTests : IntegrationTestBase<Program, IdentityContext
 {
     private readonly ITestHarness _testHarness;
 
-    public RegisterNewUserTests(IntegrationTestFactory<Program, IdentityContext> integrationTestFixture) : base(integrationTestFixture)
+    public RegisterNewUserTests(IntegrationTestFixture<Program, IdentityContext> integrationTestFixture) : base(integrationTestFixture)
     {
         _testHarness = Fixture.TestHarness;
     }
