@@ -44,8 +44,7 @@ namespace BuildingBlocks.Logging
                         new ElasticsearchSinkOptions(new Uri(logOptions.Elastic.ElasticServiceUrl))
                         {
                             AutoRegisterTemplate = true,
-                            IndexFormat =
-                                $"{appOptions.Name}-{environment?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}"
+                            IndexFormat = $"{appOptions.Name}-{environment?.ToLower()}"
                         });
                 }
 
