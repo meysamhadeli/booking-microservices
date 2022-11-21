@@ -10,27 +10,23 @@ namespace BuildingBlocks.Caching
     {
         private readonly ILogger<InvalidateCachingBehavior<TRequest, TResponse>> _logger;
         private readonly IEasyCachingProvider _cachingProvider;
-        private readonly IInvalidateCacheRequest _invalidateCacheRequest;
-
 
         public InvalidateCachingBehavior(IEasyCachingProviderFactory cachingFactory,
-            ILogger<InvalidateCachingBehavior<TRequest, TResponse>> logger,
-            IInvalidateCacheRequest invalidateCacheRequest)
+            ILogger<InvalidateCachingBehavior<TRequest, TResponse>> logger)
         {
             _logger = logger;
             _cachingProvider = cachingFactory.GetCachingProvider("mem");
-            _invalidateCacheRequest = invalidateCacheRequest;
         }
 
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            if (request is not IInvalidateCacheRequest || _invalidateCacheRequest == null)
+            if (request is not IInvalidateCacheRequest invalidateCacheRequest)
             {
                 // No cache request found, so just continue through the pipeline
                 return await next();
             }
 
-            var cacheKey = _invalidateCacheRequest.CacheKey;
+            var cacheKey = invalidateCacheRequest.CacheKey;
             var response = await next();
 
             await _cachingProvider.RemoveAsync(cacheKey);

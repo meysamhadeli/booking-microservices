@@ -7,5 +7,5 @@ public class AirportReadModel
     public string Name { get; init; }
     public string Address { get; init; }
     public string Code { get; init; }
-    public bool IsDeleted { get; set; }
+    public bool IsDeleted { get; init; }
 }

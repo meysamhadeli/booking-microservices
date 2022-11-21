@@ -1,6 +1,6 @@
 using Booking.Booking.Dtos;
-using Booking.Booking.Models.Reads;
-using BuildingBlocks.IdsGenerator;
+using Booking.Booking.Features.CreateBooking.Commands.V1;
+using Booking.Booking.Features.CreateBooking.Dtos.V1;
 using Mapster;
 
 namespace Booking.Booking.Features;
@@ -12,15 +12,12 @@ public class BookingMappings : IRegister
         config.Default.NameMatchingStrategy(NameMatchingStrategy.Flexible);
 
         config.NewConfig<Models.Booking, BookingResponseDto>()
-            .Map(d => d.Name, s => s.PassengerInfo.Name)
-            .Map(d => d.Description, s => s.Trip.Description)
-            .Map(d => d.DepartureAirportId, s => s.Trip.DepartureAirportId)
-            .Map(d => d.ArriveAirportId, s => s.Trip.ArriveAirportId)
-            .Map(d => d.FlightNumber, s => s.Trip.FlightNumber)
-            .Map(d => d.FlightDate, s => s.Trip.FlightDate)
-            .Map(d => d.Price, s => s.Trip.Price)
-            .Map(d => d.SeatNumber, s => s.Trip.SeatNumber)
-            .Map(d => d.AircraftId, s => s.Trip.AircraftId);
+            .ConstructUsing(x => new BookingResponseDto(x.Id, x.PassengerInfo.Name, x.Trip.FlightNumber,
+                x.Trip.AircraftId, x.Trip.Price, x.Trip.FlightDate, x.Trip.SeatNumber, x.Trip.DepartureAirportId, x.Trip.ArriveAirportId,
+                x.Trip.Description));
+
+
+        config.NewConfig<CreateBookingRequestDto, CreateBookingCommand>()
+            .ConstructUsing(x => new CreateBookingCommand(x.PassengerId, x.FlightId, x.Description));
     }
 }
-

@@ -32,7 +32,7 @@ public class CreateSeatMongoCommandHandler : ICommandHandler<CreateSeatMongoComm
         var seatReadModel = _mapper.Map<SeatReadModel>(command);
 
         var seat = await _flightReadDbContext.Seat.AsQueryable()
-            .FirstOrDefaultAsync(x => x.Id == seatReadModel.Id, cancellationToken);
+            .FirstOrDefaultAsync(x => x.SeatId == seatReadModel.SeatId, cancellationToken);
 
         if (seat is not null)
             throw new SeatAlreadyExistException();

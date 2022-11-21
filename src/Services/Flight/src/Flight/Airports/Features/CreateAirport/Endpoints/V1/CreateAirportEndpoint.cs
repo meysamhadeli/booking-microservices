@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using BuildingBlocks.Web;
 using Flight.Airports.Dtos;
 using Flight.Airports.Features.CreateAirport.Commands.V1;
+using Flight.Airports.Features.CreateAirport.Dtos.V1;
+using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -29,8 +31,11 @@ public class CreateAirportEndpoint : IMinimalEndpoint
         return endpoints;
     }
 
-    private async Task<IResult> CreateAirport(CreateAirportCommand command, IMediator mediator, CancellationToken cancellationToken)
+    private async Task<IResult> CreateAirport(CreateAirportRequestDto request, IMediator mediator, IMapper mapper,
+        CancellationToken cancellationToken)
     {
+        var command = mapper.Map<CreateAirportCommand>(request);
+
         var result = await mediator.Send(command, cancellationToken);
 
         return Results.Ok(result);

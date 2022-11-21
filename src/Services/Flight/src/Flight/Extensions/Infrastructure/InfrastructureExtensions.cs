@@ -90,8 +90,6 @@ public static class InfrastructureExtensions
 
         SnowFlakIdGenerator.Configure(1);
 
-        builder.Services.AddCachingRequest(new List<Assembly> {typeof(FlightRoot).Assembly});
-
         builder.Services.AddEasyCaching(options => { options.UseInMemory(configuration, "mem"); });
 
         return builder;
@@ -103,11 +101,11 @@ public static class InfrastructureExtensions
         var env = app.Environment;
         var appOptions = app.GetOptions<AppOptions>("AppOptions");
 
+        app.UseProblemDetails();
         app.UseSerilogRequestLogging();
         app.UseCorrelationId();
         app.UseHttpMetrics();
         app.UseMigration<FlightDbContext>(env);
-        app.UseProblemDetails();
         app.UseHttpsRedirection();
         app.MapMetrics();
         app.UseCustomHealthCheck();

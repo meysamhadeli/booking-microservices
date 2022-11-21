@@ -1,12 +1,12 @@
 using BuildingBlocks.Web;
+using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Passenger.Passengers.Dtos;
 using Passenger.Passengers.Features.CompleteRegisterPassenger.Commands.V1;
+using Passenger.Passengers.Features.CompleteRegisterPassenger.Dtos.V1;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Passenger.Passengers.Features.CompleteRegisterPassenger.Endpoints.V1;
@@ -29,8 +29,11 @@ public class CompleteRegisterPassengerEndpoint : IMinimalEndpoint
         return endpoints;
     }
 
-    private async Task<IResult> CompleteRegisterPassenger(CompleteRegisterPassengerCommand command, IMediator mediator, CancellationToken cancellationToken)
+    private async Task<IResult> CompleteRegisterPassenger(CompleteRegisterPassengerRequestDto request, IMapper mapper,
+        IMediator mediator, CancellationToken cancellationToken)
     {
+        var command = mapper.Map<CompleteRegisterPassengerCommand>(request);
+
         var result = await mediator.Send(command, cancellationToken);
 
         return Results.Ok(result);

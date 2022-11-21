@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using BuildingBlocks.Web;
 using Flight.Seats.Dtos;
 using Flight.Seats.Features.ReserveSeat.Commands.V1;
+using Flight.Seats.Features.ReserveSeat.Dtos.V1;
+using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -29,8 +31,10 @@ public class ReserveSeatEndpoint : IMinimalEndpoint
         return endpoints;
     }
 
-    private async Task<IResult> ReserveSeat(ReserveSeatCommand command, IMediator mediator, CancellationToken cancellationToken)
+    private async Task<IResult> ReserveSeat(ReserveSeatRequestDto request, IMediator mediator, IMapper mapper, CancellationToken cancellationToken)
     {
+        var command = mapper.Map<ReserveSeatCommand>(request);
+
         var result = await mediator.Send(command, cancellationToken);
 
         return Results.Ok(result);

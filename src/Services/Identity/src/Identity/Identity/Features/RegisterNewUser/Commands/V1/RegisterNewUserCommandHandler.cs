@@ -29,7 +29,7 @@ public class RegisterNewUserCommandHandler : ICommandHandler<RegisterNewUserComm
     {
         Guard.Against.Null(command, nameof(command));
 
-        var applicationUser = new ApplicationUser
+        var applicationUser = new ApplicationUser()
         {
             FirstName = command.FirstName,
             LastName = command.LastName,
@@ -51,13 +51,7 @@ public class RegisterNewUserCommandHandler : ICommandHandler<RegisterNewUserComm
         await _eventDispatcher.SendAsync(new UserCreated(applicationUser.Id, applicationUser.FirstName + " " + applicationUser.LastName,
                 applicationUser.PassPortNumber),cancellationToken: cancellationToken);
 
-        return new RegisterNewUserResponseDto
-        {
-            Id = applicationUser.Id,
-            FirstName = applicationUser.FirstName,
-            LastName = applicationUser.LastName,
-            Username = applicationUser.UserName,
-            PassportNumber = applicationUser.PassPortNumber
-        };
+        return new RegisterNewUserResponseDto(applicationUser.Id, applicationUser.FirstName, applicationUser.LastName,
+            applicationUser.UserName, applicationUser.PassPortNumber);
     }
 }

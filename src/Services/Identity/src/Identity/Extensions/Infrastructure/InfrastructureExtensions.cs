@@ -84,6 +84,7 @@ public static class InfrastructureExtensions
         var env = app.Environment;
         var appOptions = app.GetOptions<AppOptions>("AppOptions");
 
+        app.UseProblemDetails();
         app.UseSerilogRequestLogging();
         app.UseMigration<IdentityContext>(env);
         app.UseCorrelationId();

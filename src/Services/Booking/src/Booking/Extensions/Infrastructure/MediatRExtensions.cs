@@ -10,8 +10,8 @@ public static class MediatRExtensions
     public static IServiceCollection AddCustomMediatR(this IServiceCollection services)
     {
         services.AddMediatR(typeof(BookingRoot).Assembly);
-        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
         return services;
     }

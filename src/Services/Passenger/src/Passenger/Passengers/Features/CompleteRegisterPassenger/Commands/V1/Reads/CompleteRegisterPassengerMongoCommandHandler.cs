@@ -29,7 +29,7 @@ public class CompleteRegisterPassengerMongoCommandHandler : ICommandHandler<Comp
         var passengerReadModel = _mapper.Map<PassengerReadModel>(command);
 
         var passenger = await _passengerReadDbContext.Passenger.AsQueryable()
-            .FirstOrDefaultAsync(x => x.PassengerId == command.Id && !x.IsDeleted, cancellationToken);
+            .FirstOrDefaultAsync(x => x.PassengerId == passengerReadModel.PassengerId && !x.IsDeleted, cancellationToken);
 
         if (passenger is not null)
         {

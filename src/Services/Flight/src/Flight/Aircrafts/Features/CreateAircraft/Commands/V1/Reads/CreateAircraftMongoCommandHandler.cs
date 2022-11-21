@@ -32,7 +32,7 @@ public class CreateAircraftMongoCommandHandler : ICommandHandler<CreateAircraftM
         var aircraftReadModel = _mapper.Map<AircraftReadModel>(command);
 
         var aircraft = await _flightReadDbContext.Aircraft.AsQueryable()
-            .FirstOrDefaultAsync(x => x.Id == aircraftReadModel.Id, cancellationToken);
+            .FirstOrDefaultAsync(x => x.AircraftId == aircraftReadModel.AircraftId, cancellationToken);
 
         if (aircraft is not null)
             throw new AircraftAlreadyExistException();

@@ -39,13 +39,13 @@ Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
-  "firstName": "4John",
-  "lastName": "4Do",
-  "username": "4admin",
+  "firstName": "John",
+  "lastName": "Do",
+  "username": "admin",
   "passportNumber": "412900000000",
-  "email": "4admin@admin.com",
-  "password": "4Admin@12345",
-  "confirmPassword": "4Admin@12345"
+  "email": "admin@admin.com",
+  "password": "Admin@12345",
+  "confirmPassword": "Admin@12345"
 }
 ###
 

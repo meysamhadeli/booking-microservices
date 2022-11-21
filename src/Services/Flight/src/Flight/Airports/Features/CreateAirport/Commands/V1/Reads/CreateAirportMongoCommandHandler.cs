@@ -32,7 +32,7 @@ public class CreateAirportMongoCommandHandler : ICommandHandler<CreateAirportMon
         var airportReadModel = _mapper.Map<AirportReadModel>(command);
 
         var aircraft = await _flightReadDbContext.Airport.AsQueryable()
-            .FirstOrDefaultAsync(x => x.Id == airportReadModel.Id, cancellationToken);
+            .FirstOrDefaultAsync(x => x.AirportId == airportReadModel.AirportId, cancellationToken);
 
         if (aircraft is not null)
             throw new AirportAlreadyExistException();

@@ -92,13 +92,12 @@ public static class InfrastructureExtensions
         var env = app.Environment;
         var appOptions = app.GetOptions<AppOptions>("AppOptions");
 
+        app.UseProblemDetails();
         app.UseSerilogRequestLogging();
         app.UseCorrelationId();
         app.UseRouting();
         app.UseHttpMetrics();
         app.UseHttpsRedirection();
-
-        app.UseProblemDetails();
         app.UseCustomHealthCheck();
         app.MapMetrics();
         app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));

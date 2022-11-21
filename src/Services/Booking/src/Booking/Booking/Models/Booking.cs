@@ -1,8 +1,6 @@
 using Booking.Booking.Features.CreateBooking.Events.Domain.V1;
 using Booking.Booking.Models.ValueObjects;
 using BuildingBlocks.EventStoreDB.Events;
-using BuildingBlocks.Utils;
-using Microsoft.AspNetCore.Http;
 
 namespace Booking.Booking.Models;
 

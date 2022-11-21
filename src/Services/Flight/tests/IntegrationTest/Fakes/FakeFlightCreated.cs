@@ -1,5 +1,4 @@
-﻿using Flight.Flights.Features.CreateFlight;
-using Flight.Flights.Features.CreateFlight.Commands.V1;
+﻿using Flight.Flights.Features.CreateFlight.Commands.V1;
 
 namespace Integration.Test.Fakes;
 

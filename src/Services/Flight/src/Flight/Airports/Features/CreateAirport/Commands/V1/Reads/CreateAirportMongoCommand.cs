@@ -2,19 +2,4 @@
 
 namespace Flight.Airports.Features.CreateAirport.Commands.V1.Reads;
 
-public class CreateAirportMongoCommand : InternalCommand
-{
-    public CreateAirportMongoCommand(long id, string name, string address, string code, bool isDeleted)
-    {
-        Id = id;
-        Name = name;
-        Address = address;
-        Code = code;
-        IsDeleted = isDeleted;
-    }
-
-    public string Name { get; }
-    public string Address { get; }
-    public string Code { get; }
-    public bool IsDeleted { get; }
-}
+public record CreateAirportMongoCommand(long Id, string Name, string Address, string Code, bool IsDeleted) : InternalCommand;

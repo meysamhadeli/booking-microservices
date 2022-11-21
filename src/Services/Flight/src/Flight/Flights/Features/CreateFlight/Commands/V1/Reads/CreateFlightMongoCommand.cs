@@ -3,36 +3,6 @@ using BuildingBlocks.Core.Event;
 
 namespace Flight.Flights.Features.CreateFlight.Commands.V1.Reads;
 
-public class CreateFlightMongoCommand : InternalCommand
-{
-    public CreateFlightMongoCommand(long id, string flightNumber, long aircraftId, DateTime departureDate,
-        long departureAirportId,
-        DateTime arriveDate, long arriveAirportId, decimal durationMinutes, DateTime flightDate, Enums.FlightStatus status,
-        decimal price, bool isDeleted)
-    {
-        Id = id;
-        FlightNumber = flightNumber;
-        AircraftId = aircraftId;
-        DepartureDate = departureDate;
-        DepartureAirportId = departureAirportId;
-        ArriveDate = arriveDate;
-        ArriveAirportId = arriveAirportId;
-        DurationMinutes = durationMinutes;
-        FlightDate = flightDate;
-        Status = status;
-        Price = price;
-        IsDeleted = isDeleted;
-    }
-
-    public string FlightNumber { get; }
-    public long AircraftId { get; }
-    public DateTime DepartureDate { get; }
-    public long DepartureAirportId { get; }
-    public DateTime ArriveDate { get; }
-    public long ArriveAirportId { get; }
-    public decimal DurationMinutes { get; }
-    public DateTime FlightDate { get; }
-    public Enums.FlightStatus Status { get; }
-    public decimal Price { get; }
-    public bool IsDeleted { get; }
-}
+public record CreateFlightMongoCommand(long Id, string FlightNumber, long AircraftId, DateTime DepartureDate,
+    long DepartureAirportId, DateTime ArriveDate, long ArriveAirportId, decimal DurationMinutes, DateTime FlightDate,
+    Enums.FlightStatus Status, decimal Price, bool IsDeleted) : InternalCommand;

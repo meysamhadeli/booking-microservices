@@ -6,10 +6,6 @@ namespace Flight.Airports.Models;
 
 public record Airport : Aggregate<long>
 {
-    public Airport()
-    {
-    }
-
     public string Name { get; private set; }
     public string Address { get; private set; }
     public string Code { get; private set; }

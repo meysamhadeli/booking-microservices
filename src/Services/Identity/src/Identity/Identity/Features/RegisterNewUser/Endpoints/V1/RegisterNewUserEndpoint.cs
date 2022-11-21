@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using BuildingBlocks.Web;
 using Identity.Identity.Dtos;
 using Identity.Identity.Features.RegisterNewUser.Commands.V1;
+using Identity.Identity.Features.RegisterNewUser.Dtos.V1;
+using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -28,8 +30,11 @@ public class RegisterNewUserEndpoint : IMinimalEndpoint
         return endpoints;
     }
 
-    private async Task<IResult> RegisterNewUser(RegisterNewUserCommand command, IMediator mediator, CancellationToken cancellationToken)
+    private async Task<IResult> RegisterNewUser(RegisterNewUserRequestDto request, IMediator mediator, IMapper mapper,
+        CancellationToken cancellationToken)
     {
+        var command = mapper.Map<RegisterNewUserCommand>(request);
+
         var result = await mediator.Send(command, cancellationToken);
 
         return Results.Ok(result);

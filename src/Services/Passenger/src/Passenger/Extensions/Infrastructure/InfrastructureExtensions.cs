@@ -91,11 +91,11 @@ public static class InfrastructureExtensions
         var env = app.Environment;
         var appOptions = app.GetOptions<AppOptions>("AppOptions");
 
+        app.UseProblemDetails();
         app.UseSerilogRequestLogging();
         app.UseMigration<PassengerDbContext>(env);
         app.UseCorrelationId();
         app.UseHttpMetrics();
-        app.UseProblemDetails();
         app.UseHttpsRedirection();
         app.UseCustomHealthCheck();
         app.MapMetrics();

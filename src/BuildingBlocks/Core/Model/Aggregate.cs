@@ -27,6 +27,6 @@ namespace BuildingBlocks.Core.Model
 
         public long Version { get; set; } = -1;
 
-        public TId Id { get; protected set;  }
+        public TId Id { get; set;  }
     }
 }

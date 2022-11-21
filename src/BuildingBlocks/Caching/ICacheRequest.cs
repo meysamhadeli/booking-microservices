@@ -1,5 +1,3 @@
-using MediatR;
-
 namespace BuildingBlocks.Caching;
 
 public interface ICacheRequest

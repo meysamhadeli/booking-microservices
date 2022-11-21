@@ -39,7 +39,7 @@ public class GetFlightByIdTests : IntegrationTestBase<Program, FlightDbContext, 
 
         // Assert
         response.Should().NotBeNull();
-        response?.FlightId.Should().Be(command.Id);
+        response?.Id.Should().Be(command.Id);
     }
 
     [Fact]
