@@ -2,17 +2,24 @@
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
+using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.PersistMessageProcessor;
+using BuildingBlocks.Web;
 using DotNet.Testcontainers.Containers;
 using Grpc.Net.Client;
+using MassTransit;
 using MassTransit.Testing;
 using MediatR;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Mongo2Go;
+using NSubstitute;
 using Respawn;
 using Serilog;
 using Xunit;
@@ -23,7 +30,7 @@ namespace BuildingBlocks.TestBase;
 public class IntegrationTestFixture<TEntryPoint> : IDisposable
     where TEntryPoint : class
 {
-    private readonly CustomWebApplicationFactory<TEntryPoint> _factory;
+    private readonly WebApplicationFactory<TEntryPoint> _factory;
 
     private int Timeout => 180;
     public HttpClient HttpClient => _factory.CreateClient();
@@ -32,6 +39,7 @@ public class IntegrationTestFixture<TEntryPoint> : IDisposable
     public GrpcChannel Channel =>
         GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions {HttpClient = HttpClient});
 
+    public Action<IServiceCollection> TestRegistrationServices { get; set; }
     public IServiceProvider ServiceProvider => _factory.Services;
     public IConfiguration Configuration => _factory.Services.GetRequiredService<IConfiguration>();
 
@@ -41,8 +49,31 @@ public class IntegrationTestFixture<TEntryPoint> : IDisposable
 
     public IntegrationTestFixture()
     {
-        // Ref: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-6.0#basic-tests-with-the-default-webapplicationfactory
-        _factory = new CustomWebApplicationFactory<TEntryPoint>();
+        _factory = new WebApplicationFactory<TEntryPoint>()
+            .WithWebHostBuilder(builder =>
+            {
+                builder.UseEnvironment("test");
+                builder.ConfigureServices(services =>
+                {
+                    TestRegistrationServices?.Invoke(services);
+                    services.ReplaceSingleton(AddHttpContextAccessorMock);
+                    services.AddMassTransitTestHarness(x =>
+                    {
+                        x.UsingRabbitMq((context, cfg) =>
+                        {
+                            var rabbitMqOptions = services.GetOptions<RabbitMqOptions>("RabbitMq");
+                            var host = rabbitMqOptions.HostName;
+
+                            cfg.Host(host, h =>
+                            {
+                                h.Username(rabbitMqOptions.UserName);
+                                h.Password(rabbitMqOptions.Password);
+                            });
+                            cfg.ConfigureEndpoints(context);
+                        });
+                    });
+                });
+            });
     }
 
     public void Dispose()
@@ -52,7 +83,7 @@ public class IntegrationTestFixture<TEntryPoint> : IDisposable
 
     public virtual void RegisterServices(Action<IServiceCollection> services)
     {
-        _factory.TestRegistrationServices = services;
+        TestRegistrationServices = services;
     }
 
     // ref: https://github.com/trbenning/serilog-sinks-xunit
@@ -140,6 +171,18 @@ public class IntegrationTestFixture<TEntryPoint> : IDisposable
                 return res;
             });
         });
+    }
+
+    private IHttpContextAccessor AddHttpContextAccessorMock(IServiceProvider serviceProvider)
+    {
+        var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
+        using var scope = serviceProvider.CreateScope();
+        httpContextAccessorMock.HttpContext = new DefaultHttpContext {RequestServices = scope.ServiceProvider};
+
+        httpContextAccessorMock.HttpContext.Request.Host = new HostString("localhost", 6012);
+        httpContextAccessorMock.HttpContext.Request.Scheme = "http";
+
+        return httpContextAccessorMock;
     }
 }
 
