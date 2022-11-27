@@ -13,11 +13,9 @@ namespace Integration.Test.Identity.Features;
 
 public class RegisterNewUserTests : IntegrationTestBase<Program, IdentityContext>
 {
-    private readonly ITestHarness _testHarness;
-
-    public RegisterNewUserTests(IntegrationTestFixture<Program, IdentityContext> integrationTestFixture) : base(integrationTestFixture)
+    public RegisterNewUserTests(IntegrationTestFixture<Program, IdentityContext> integrationTestFixture) : base(
+        integrationTestFixture)
     {
-        _testHarness = Fixture.TestHarness;
     }
 
     [Fact]
@@ -32,7 +30,7 @@ public class RegisterNewUserTests : IntegrationTestBase<Program, IdentityContext
         // Assert
         response?.Should().NotBeNull();
         response?.Username.Should().Be(command.Username);
-        (await _testHarness.Published.Any<Fault<UserCreated>>()).Should().BeFalse();
-        (await _testHarness.Published.Any<UserCreated>()).Should().BeTrue();
+
+        await Fixture.WaitForPublishing<UserCreated>();
     }
 }

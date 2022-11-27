@@ -40,8 +40,6 @@ public class CreateFlightCommandHandler : ICommandHandler<CreateFlightCommand, F
 
         var newFlight = await _flightDbContext.Flights.AddAsync(flightEntity, cancellationToken);
 
-        var f = _mapper.Map<FlightResponseDto>(newFlight.Entity);
-
-        return f;
+        return _mapper.Map<FlightResponseDto>(newFlight.Entity);
     }
 }

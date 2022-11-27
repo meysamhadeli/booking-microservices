@@ -6,18 +6,16 @@ using Integration.Test.Fakes;
 using MassTransit.Testing;
 using Passenger.Api;
 using Passenger.Data;
+using Passenger.Passengers.Features.CompleteRegisterPassenger.Commands.V1.Reads;
 using Xunit;
 
 namespace Integration.Test.Passenger.Features;
 
 public class CompleteRegisterPassengerTests : IntegrationTestBase<Program, PassengerDbContext>
 {
-    private readonly ITestHarness _testHarness;
-
     public CompleteRegisterPassengerTests(IntegrationTestFixture<Program, PassengerDbContext> integrationTestFixture) :
         base(integrationTestFixture)
     {
-        _testHarness = Fixture.TestHarness;
     }
 
     [Fact]
@@ -25,9 +23,10 @@ public class CompleteRegisterPassengerTests : IntegrationTestBase<Program, Passe
     {
         // Arrange
         var userCreated = new FakeUserCreated().Generate();
-        await _testHarness.Bus.Publish(userCreated);
-        await _testHarness.Consumed.Any<UserCreated>();
-        await Fixture.InsertAsync(FakePassengerCreated.Generate(userCreated));
+
+        await Fixture.Publish(userCreated);
+        await Fixture.WaitForPublishing<UserCreated>();
+        await Fixture.WaitForConsuming<UserCreated>();
 
         var command = new FakeCompleteRegisterPassengerCommand(userCreated.PassportNumber).Generate();
 

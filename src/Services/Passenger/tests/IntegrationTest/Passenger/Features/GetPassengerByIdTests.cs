@@ -16,18 +16,12 @@ namespace Integration.Test.Passenger.Features;
 
 public class GetPassengerByIdTests : IntegrationTestBase<Program, PassengerDbContext>
 {
-    private readonly ITestHarness _testHarness;
     private readonly GrpcChannel _channel;
 
     public GetPassengerByIdTests(IntegrationTestFixture<Program, PassengerDbContext> integrationTestFixture) : base(
         integrationTestFixture)
     {
         _channel = Fixture.Channel;
-        _testHarness = Fixture.TestHarness;
-    }
-
-    protected override void RegisterTestsServices(IServiceCollection services)
-    {
     }
 
 
@@ -36,8 +30,7 @@ public class GetPassengerByIdTests : IntegrationTestBase<Program, PassengerDbCon
     {
         // Arrange
         var userCreated = new FakeUserCreated().Generate();
-        await _testHarness.Bus.Publish(userCreated);
-        await _testHarness.Consumed.Any<UserCreated>();
+
         var passengerEntity = FakePassengerCreated.Generate(userCreated);
         await Fixture.InsertAsync(passengerEntity);
 
@@ -56,8 +49,7 @@ public class GetPassengerByIdTests : IntegrationTestBase<Program, PassengerDbCon
     {
         // Arrange
         var userCreated = new FakeUserCreated().Generate();
-        await _testHarness.Bus.Publish(userCreated);
-        await _testHarness.Consumed.Any<UserCreated>();
+
         var passengerEntity = FakePassengerCreated.Generate(userCreated);
         await Fixture.InsertAsync(passengerEntity);
 

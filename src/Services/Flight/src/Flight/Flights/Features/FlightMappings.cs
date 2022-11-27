@@ -29,6 +29,9 @@ public class FlightMappings : IRegister
             .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
             .Map(d => d.FlightId, s => s.Id);
 
+        config.NewConfig<FlightReadModel, FlightResponseDto>()
+            .Map(d => d.Id, s => s.FlightId);
+
         config.NewConfig<UpdateFlightMongoCommand, FlightReadModel>()
             .Map(d => d.FlightId, s => s.Id);
 

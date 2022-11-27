@@ -6,21 +6,16 @@ using Flight.Api;
 using Flight.Data;
 using FluentAssertions;
 using Integration.Test.Fakes;
-using MassTransit;
-using MassTransit.Testing;
 using Xunit;
 
 namespace Integration.Test.Airport.Features;
 
 public class CreateAirportTests : IntegrationTestBase<Program, FlightDbContext, FlightReadDbContext>
 {
-    private readonly ITestHarness _testHarness;
-
     public CreateAirportTests(
         IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
         integrationTestFixture)
     {
-        _testHarness = Fixture.TestHarness;
     }
 
     [Fact]
@@ -35,8 +30,8 @@ public class CreateAirportTests : IntegrationTestBase<Program, FlightDbContext, 
         // Assert
         response?.Should().NotBeNull();
         response?.Name.Should().Be(command.Name);
-        (await _testHarness.Published.Any<Fault<AirportCreated>>()).Should().BeFalse();
-        (await _testHarness.Published.Any<AirportCreated>()).Should().BeTrue();
+
+        await Fixture.WaitForPublishing<AirportCreated>();
 
         await Fixture.ShouldProcessedPersistInternalCommand<CreateAirportMongoCommand>();
     }

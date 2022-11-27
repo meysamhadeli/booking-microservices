@@ -6,19 +6,16 @@ using Flight.Api;
 using Flight.Data;
 using FluentAssertions;
 using Integration.Test.Fakes;
-using MassTransit;
-using MassTransit.Testing;
 using Xunit;
 
 namespace Integration.Test.Aircraft.Features;
 
 public class CreateAircraftTests : IntegrationTestBase<Program, FlightDbContext, FlightReadDbContext>
 {
-    private readonly ITestHarness _testHarness;
-
-    public CreateAircraftTests(IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(integrationTestFixture)
+    public CreateAircraftTests(
+        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
+        integrationTestFixture)
     {
-        _testHarness = Fixture.TestHarness;
     }
 
     [Fact]
@@ -33,8 +30,8 @@ public class CreateAircraftTests : IntegrationTestBase<Program, FlightDbContext,
         // Assert
         response?.Should().NotBeNull();
         response?.Name.Should().Be(command.Name);
-        (await _testHarness.Published.Any<Fault<AircraftCreated>>()).Should().BeFalse();
-        (await _testHarness.Published.Any<AircraftCreated>()).Should().BeTrue();
+
+        await Fixture.WaitForPublishing<AircraftCreated>();
 
         await Fixture.ShouldProcessedPersistInternalCommand<CreateAircraftMongoCommand>();
     }
