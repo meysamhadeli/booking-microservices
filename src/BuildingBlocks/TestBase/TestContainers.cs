@@ -10,7 +10,8 @@ public static class TestContainers
         .WithDatabase(
             new MsSqlTestcontainerConfiguration
             {
-                Database = Guid.NewGuid().ToString("D"), Password = Guid.NewGuid().ToString("D")
+                Database = Guid.NewGuid().ToString("D"),
+                Password = Guid.NewGuid().ToString("D")
             })
         .WithImage("mcr.microsoft.com/mssql/server:2017-latest")
         .Build();
@@ -31,5 +32,14 @@ public static class TestContainers
             Password = Guid.NewGuid().ToString("D")
         })
         .WithImage("mongo")
+        .Build();
+
+    public static RabbitMqTestcontainer RabbitMqTestContainer => new TestcontainersBuilder<RabbitMqTestcontainer>()
+        .WithMessageBroker(new RabbitMqTestcontainerConfiguration()
+        {
+            Password = "guest",
+            Username = "guest"
+        })
+        .WithImage("rabbitmq:3-management")
         .Build();
 }

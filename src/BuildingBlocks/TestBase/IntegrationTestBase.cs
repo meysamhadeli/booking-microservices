@@ -32,9 +32,10 @@ public class IntegrationTestFixture<TEntryPoint> : IDisposable
 {
     private readonly WebApplicationFactory<TEntryPoint> _factory;
 
-    private int Timeout => 180;
+
+    private int Timeout => 60; // Second
+    private ITestHarness TestHarness => ServiceProvider.GetTestHarness();
     public HttpClient HttpClient => _factory.CreateClient();
-    public ITestHarness TestHarness => ServiceProvider.GetTestHarness();
 
     public GrpcChannel Channel =>
         GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions {HttpClient = HttpClient});
@@ -46,6 +47,7 @@ public class IntegrationTestFixture<TEntryPoint> : IDisposable
     public MsSqlTestcontainer SqlTestContainer;
     public MsSqlTestcontainer SqlPersistTestContainer;
     public MongoDbTestcontainer MongoTestContainer;
+    public RabbitMqTestcontainer RabbitMqTestContainer;
 
     public IntegrationTestFixture()
     {
@@ -57,21 +59,6 @@ public class IntegrationTestFixture<TEntryPoint> : IDisposable
                 {
                     TestRegistrationServices?.Invoke(services);
                     services.ReplaceSingleton(AddHttpContextAccessorMock);
-                    services.AddMassTransitTestHarness(x =>
-                    {
-                        x.UsingRabbitMq((context, cfg) =>
-                        {
-                            var rabbitMqOptions = services.GetOptions<RabbitMqOptions>("RabbitMq");
-                            var host = rabbitMqOptions.HostName;
-
-                            cfg.Host(host, h =>
-                            {
-                                h.Username(rabbitMqOptions.UserName);
-                                h.Password(rabbitMqOptions.Password);
-                            });
-                            cfg.ConfigureEndpoints(context);
-                        });
-                    });
                 });
             });
     }
@@ -131,6 +118,36 @@ public class IntegrationTestFixture<TEntryPoint> : IDisposable
             var mediator = sp.GetRequiredService<IMediator>();
 
             return mediator.Send(request);
+        });
+    }
+
+    public async Task Publish<TMessage>(TMessage message, CancellationToken cancellationToken = default)
+        where TMessage : class, IEvent
+    {
+        await TestHarness.Bus.Publish<TMessage>(message, cancellationToken);
+    }
+
+    public async Task WaitForPublishing<TMessage>(CancellationToken cancellationToken = default)
+        where TMessage : class, IEvent
+    {
+        await WaitUntilConditionMet(async () =>
+        {
+            var published = await TestHarness.Published.Any<TMessage>(cancellationToken);
+            var faulty = await TestHarness.Published.Any<Fault<TMessage>>(cancellationToken);
+
+            return published && faulty == false;
+        });
+    }
+
+    public async Task WaitForConsuming<TMessage>(CancellationToken cancellationToken = default)
+        where TMessage : class, IEvent
+    {
+        await WaitUntilConditionMet(async () =>
+        {
+            var consumed = await TestHarness.Consumed.Any<TMessage>(cancellationToken);
+            var faulty = await TestHarness.Consumed.Any<Fault<TMessage>>(cancellationToken);
+
+            return consumed && faulty == false;
         });
     }
 
@@ -336,6 +353,9 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
         set => Fixture.ServiceProvider.GetRequiredService<IOptions<MongoOptions>>().Value.ConnectionString = value;
     }
 
+    private RabbitMqOptions RabbitMqOptions =>
+        Fixture.ServiceProvider.GetRequiredService<IOptions<RabbitMqOptions>>()?.Value;
+
     public IntegrationTestFixtureCore(IntegrationTestFixture<TEntryPoint> integrationTestFixture)
     {
         Fixture = integrationTestFixture;
@@ -349,46 +369,64 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
         _checkpointDefaultDB = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
         _checkpointPersistMessageDB = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
 
-        _mongoRunner = MongoDbRunner.Start();
-
-        if (MongoConnectionString != null)
-            MongoConnectionString = _mongoRunner.ConnectionString;
-
-        // <<For using test-container base>>
-        // Fixture.SqlTestContainer = TestContainers.SqlTestContainer;
-        // Fixture.SqlPersistTestContainer = TestContainers.SqlPersistTestContainer;
-        // Fixture.MongoTestContainer = TestContainers.MongoTestContainer;
-        //
-        // await Fixture.SqlTestContainer.StartAsync();
-        // await Fixture.SqlPersistTestContainer.StartAsync();
-        // await Fixture.MongoTestContainer.StartAsync();
-        //
-        // DefaultConnectionString = Fixture.SqlTestContainer?.ConnectionString;
-        // PersistConnectionString = Fixture.SqlPersistTestContainer?.ConnectionString;
-        // MongoConnectionString = Fixture.MongoTestContainer?.ConnectionString;
-
-        await SeedDataAsync();
-    }
-
-    public async Task DisposeAsync()
-    {
         if (!string.IsNullOrEmpty(DefaultConnectionString))
             await _checkpointDefaultDB.Reset(DefaultConnectionString);
 
         if (!string.IsNullOrEmpty(PersistConnectionString))
             await _checkpointPersistMessageDB.Reset(PersistConnectionString);
 
+        _mongoRunner = MongoDbRunner.Start();
+
+        if (MongoConnectionString != null)
+            MongoConnectionString = _mongoRunner.ConnectionString;
+
+        //await StartTestContainerAsync();
+
+        await SeedDataAsync();
+    }
+
+    public async Task DisposeAsync()
+    {
         if (!string.IsNullOrEmpty(PersistConnectionString))
             _mongoRunner.Dispose();
 
-        // <<For using test-container base>>
-        // await Fixture.SqlTestContainer.StopAsync();
-        // await Fixture.SqlPersistTestContainer.StopAsync();
-        // await Fixture.MongoTestContainer.StopAsync();
+        //await StopTestContainerAsync();
     }
 
     protected virtual void RegisterTestsServices(IServiceCollection services)
     {
+    }
+
+    private async Task StartTestContainerAsync()
+    {
+        // <<For using test-container base>>
+        Fixture.SqlTestContainer = TestContainers.SqlTestContainer;
+        Fixture.SqlPersistTestContainer = TestContainers.SqlPersistTestContainer;
+        Fixture.MongoTestContainer = TestContainers.MongoTestContainer;
+        Fixture.RabbitMqTestContainer = TestContainers.RabbitMqTestContainer;
+
+        await Fixture.SqlTestContainer.StartAsync();
+        await Fixture.SqlPersistTestContainer.StartAsync();
+        await Fixture.MongoTestContainer.StartAsync();
+        await Fixture.RabbitMqTestContainer.StartAsync();
+
+        DefaultConnectionString = Fixture.SqlTestContainer?.ConnectionString;
+        PersistConnectionString = Fixture.SqlPersistTestContainer?.ConnectionString;
+        MongoConnectionString = Fixture.MongoTestContainer?.ConnectionString;
+
+        RabbitMqOptions.Password = Fixture.RabbitMqTestContainer.Password;
+        RabbitMqOptions.UserName = Fixture.RabbitMqTestContainer.Username;
+        RabbitMqOptions.HostName = Fixture.RabbitMqTestContainer.Hostname;
+        RabbitMqOptions.Port = (ushort)Fixture.RabbitMqTestContainer.Port;
+    }
+
+    private async Task StopTestContainerAsync()
+    {
+        // <<For using test-container base>>
+        await Fixture.SqlTestContainer.StopAsync();
+        await Fixture.SqlPersistTestContainer.StopAsync();
+        await Fixture.MongoTestContainer.StopAsync();
+        await Fixture.RabbitMqTestContainer.StopAsync();
     }
 
     private async Task SeedDataAsync()
