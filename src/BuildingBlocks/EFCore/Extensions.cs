@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using BuildingBlocks.Core.Model;
-using BuildingBlocks.PersistMessageProcessor.Data;
+using BuildingBlocks.PersistMessageProcessor;
+using BuildingBlocks.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -18,14 +19,17 @@ public static class Extensions
         IConfiguration configuration)
         where TContext : DbContext, IDbContext
     {
-        services.AddOptions<ConnectionStrings>()
-            .Bind(configuration.GetSection(nameof(ConnectionStrings)))
+        services.AddOptions<DatabaseOptions>()
+            .Bind(configuration.GetSection(nameof(DatabaseOptions)))
             .ValidateDataAnnotations();
 
-        services.AddDbContext<TContext>(options =>
-            options.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection"),
-                x => x.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name)));
+        services.AddDbContext<TContext>((sp, options) =>
+        {
+            var databaseOptions = services.GetOptions<DatabaseOptions>(nameof(DatabaseOptions));
+
+            options.UseSqlServer(databaseOptions?.DefaultConnection,
+                dbOptions => dbOptions.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name));
+        });
 
         services.AddScoped<IDbContext>(provider => provider.GetService<TContext>());
 
@@ -67,10 +71,8 @@ public static class Extensions
     {
         using var scope = serviceProvider.CreateScope();
 
-        var persistMessageContext = scope.ServiceProvider.GetRequiredService<PersistMessageDbContext>();
-        await persistMessageContext.Database.MigrateAsync();
-
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
+
         await context.Database.MigrateAsync();
     }
 

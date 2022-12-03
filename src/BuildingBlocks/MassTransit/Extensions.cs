@@ -46,7 +46,7 @@ public static class Extensions
 
         configure.UsingRabbitMq((context, configurator) =>
         {
-            var rabbitMqOptions = services.GetOptions<RabbitMqOptions>("RabbitMq");
+            var rabbitMqOptions = services.GetOptions<RabbitMqOptions>(nameof(RabbitMqOptions));
             var host = IsRunningInContainer ? "rabbitmq" : rabbitMqOptions.HostName;
 
             configurator.Host(host, rabbitMqOptions?.Port ?? 5672, "/", h =>

@@ -8,11 +8,13 @@ using System.Threading.Tasks;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
+using Humanizer;
 using Identity.Identity.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Identity.Data;
@@ -21,8 +23,6 @@ public sealed class IdentityContext : IdentityDbContext<ApplicationUser, Identit
     IdentityUserClaim<long>,
     IdentityUserRole<long>, IdentityUserLogin<long>, IdentityRoleClaim<long>, IdentityUserToken<long>>, IDbContext
 {
-    public const string DefaultSchema = "dbo";
-
     private IDbContextTransaction _currentTransaction;
 
     public IdentityContext(DbContextOptions<IdentityContext> options, IHttpContextAccessor httpContextAccessor) :
@@ -34,6 +34,13 @@ public sealed class IdentityContext : IdentityDbContext<ApplicationUser, Identit
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(builder);
+
+        // https://andrewlock.net/customising-asp-net-core-identity-ef-core-naming-conventions-for-postgresql/
+        foreach (var entity in builder.Model.GetEntityTypes())
+        {
+            // Replace schema
+            entity.SetSchema(AppDbContextBase.DefaultSchema);
+        }
 
         builder.FilterSoftDeletedProperties();
     }

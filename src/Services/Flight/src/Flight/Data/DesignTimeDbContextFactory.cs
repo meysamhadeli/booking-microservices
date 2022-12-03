@@ -9,8 +9,7 @@ namespace Flight.Data
         {
             var builder = new DbContextOptionsBuilder<FlightDbContext>();
 
-            builder.UseSqlServer(
-                "Data Source=.\\sqlexpress;Initial Catalog=FlightDB;Persist Security Info=False;Integrated Security=SSPI");
+            builder.UseSqlServer("Data Source=.\\sqlexpress;Initial Catalog=FlightDB;Persist Security Info=False;Integrated Security=SSPI;TrustServerCertificate=True");
             return new FlightDbContext(builder.Options, null);
         }
     }

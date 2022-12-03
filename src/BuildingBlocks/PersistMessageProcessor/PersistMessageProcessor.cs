@@ -2,6 +2,7 @@
 using System.Text.Json;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Event;
+using BuildingBlocks.EFCore;
 using BuildingBlocks.IdsGenerator;
 using BuildingBlocks.Utils;
 using MassTransit;
@@ -15,18 +16,18 @@ public class PersistMessageProcessor : IPersistMessageProcessor
 {
     private readonly ILogger<PersistMessageProcessor> _logger;
     private readonly IMediator _mediator;
-    private readonly IPersistMessageDbContext _persistMessageDbContext;
+    private readonly IDbContext _dbContext;
     private readonly IPublishEndpoint _publishEndpoint;
 
     public PersistMessageProcessor(
         ILogger<PersistMessageProcessor> logger,
         IMediator mediator,
-        IPersistMessageDbContext persistMessageDbContext,
+        IDbContext dbContext,
         IPublishEndpoint publishEndpoint)
     {
         _logger = logger;
         _mediator = mediator;
-        _persistMessageDbContext = persistMessageDbContext;
+        _dbContext = dbContext;
         _publishEndpoint = publishEndpoint;
     }
 
@@ -54,13 +55,13 @@ public class PersistMessageProcessor : IPersistMessageProcessor
     public async Task<IReadOnlyList<PersistMessage>> GetByFilterAsync(Expression<Func<PersistMessage, bool>> predicate,
         CancellationToken cancellationToken = default)
     {
-        return (await _persistMessageDbContext.PersistMessages.Where(predicate).ToListAsync(cancellationToken))
+        return (await _dbContext.PersistMessages.Where(predicate).ToListAsync(cancellationToken))
             .AsReadOnly();
     }
 
     public Task<PersistMessage> ExistMessageAsync(long messageId, CancellationToken cancellationToken = default)
     {
-        return _persistMessageDbContext.PersistMessages.FirstOrDefaultAsync(x =>
+        return _dbContext.PersistMessages.FirstOrDefaultAsync(x =>
                 x.Id == messageId &&
                 x.DeliveryType == MessageDeliveryType.Inbox &&
                 x.MessageStatus == MessageStatus.Processed,
@@ -73,7 +74,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
         CancellationToken cancellationToken = default)
     {
         var message =
-            await _persistMessageDbContext.PersistMessages.FirstOrDefaultAsync(
+            await _dbContext.PersistMessages.FirstOrDefaultAsync(
                 x => x.Id == messageId && x.DeliveryType == deliveryType, cancellationToken);
 
         if (message is null)
@@ -110,7 +111,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
 
     public async Task ProcessAllAsync(CancellationToken cancellationToken = default)
     {
-        var messages = await _persistMessageDbContext.PersistMessages
+        var messages = await _dbContext.PersistMessages
             .Where(x => x.MessageStatus != MessageStatus.Processed)
             .ToListAsync(cancellationToken);
 
@@ -119,7 +120,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
 
     public async Task ProcessInboxAsync(long messageId, CancellationToken cancellationToken = default)
     {
-        var message = await _persistMessageDbContext.PersistMessages.FirstOrDefaultAsync(
+        var message = await _dbContext.PersistMessages.FirstOrDefaultAsync(
             x => x.Id == messageId &&
                  x.DeliveryType == MessageDeliveryType.Inbox &&
                  x.MessageStatus == MessageStatus.InProgress,
@@ -190,7 +191,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
         else
             id = SnowFlakIdGenerator.NewId();
 
-        await _persistMessageDbContext.PersistMessages.AddAsync(
+        await _dbContext.PersistMessages.AddAsync(
             new PersistMessage(
                 id,
                 messageEnvelope.Message.GetType().ToString(),
@@ -198,7 +199,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
                 deliveryType),
             cancellationToken);
 
-        await _persistMessageDbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation(
             "Message with id: {MessageID} and delivery type: {DeliveryType} saved in persistence message store.",
@@ -212,8 +213,8 @@ public class PersistMessageProcessor : IPersistMessageProcessor
     {
         message.ChangeState(MessageStatus.Processed);
 
-        _persistMessageDbContext.PersistMessages.Update(message);
+        _dbContext.PersistMessages.Update(message);
 
-        await _persistMessageDbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

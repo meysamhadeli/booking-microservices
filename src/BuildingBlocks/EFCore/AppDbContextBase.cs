@@ -2,8 +2,8 @@ using System.Collections.Immutable;
 using System.Data;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
+using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Utils;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -11,6 +11,8 @@ namespace BuildingBlocks.EFCore;
 
 public abstract class AppDbContextBase : DbContext, IDbContext
 {
+    public const string DefaultSchema = "dbo";
+
     private readonly ICurrentUserProvider _currentUserProvider;
 
     private IDbContextTransaction _currentTransaction;
@@ -69,7 +71,7 @@ public abstract class AppDbContextBase : DbContext, IDbContext
         OnBeforeSaving();
         return base.SaveChangesAsync(cancellationToken);
     }
-
+    
     public IReadOnlyList<IDomainEvent> GetDomainEvents()
     {
         var domainEntities = ChangeTracker

@@ -45,7 +45,7 @@ public static class InfrastructureExtensions
             options.SuppressModelStateInvalidFilter = true;
         });
 
-        var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
+        var appOptions = builder.Services.GetOptions<AppOptions>(nameof(AppOptions));
         Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
         builder.Services.AddRateLimiter(options =>
@@ -59,9 +59,9 @@ public static class InfrastructureExtensions
                     }));
         });
 
+        builder.Services.AddPersistMessageProcessor();
         builder.Services.AddCustomDbContext<PassengerDbContext>(configuration);
         builder.Services.AddMongoDbContext<PassengerReadDbContext>(configuration);
-        builder.Services.AddPersistMessage(configuration);
 
         builder.AddCustomSerilog(env);
         builder.Services.AddJwt();
@@ -89,7 +89,7 @@ public static class InfrastructureExtensions
     public static WebApplication UseInfrastructure(this WebApplication app)
     {
         var env = app.Environment;
-        var appOptions = app.GetOptions<AppOptions>("AppOptions");
+        var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
         app.UseProblemDetails();
         app.UseSerilogRequestLogging();

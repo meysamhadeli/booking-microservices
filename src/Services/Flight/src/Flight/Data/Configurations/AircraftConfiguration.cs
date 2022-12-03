@@ -1,3 +1,4 @@
+using BuildingBlocks.EFCore;
 using Flight.Aircrafts.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -8,7 +9,7 @@ public class AircraftConfiguration : IEntityTypeConfiguration<Aircraft>
 {
     public void Configure(EntityTypeBuilder<Aircraft> builder)
     {
-        builder.ToTable("Aircraft", FlightDbContext.DefaultSchema);
+        builder.ToTable("Aircraft", AppDbContextBase.DefaultSchema);
         builder.HasKey(r => r.Id);
         builder.Property(r => r.Id).ValueGeneratedNever();
     }

@@ -1,13 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using BuildingBlocks.EFCore;
+using BuildingBlocks.PersistMessageProcessor;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BuildingBlocks.PersistMessageProcessor.Data.Configurations;
+namespace Identity.Data.Configurations;
 
 public class PersistMessageConfiguration : IEntityTypeConfiguration<PersistMessage>
 {
     public void Configure(EntityTypeBuilder<PersistMessage> builder)
     {
-        builder.ToTable("PersistMessage", PersistMessageDbContext.DefaultSchema);
+        builder.ToTable("PersistMessage", AppDbContextBase.DefaultSchema);
 
         builder.HasKey(x => x.Id);
 

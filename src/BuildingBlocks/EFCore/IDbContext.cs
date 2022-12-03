@@ -1,12 +1,13 @@
 using BuildingBlocks.Core.Event;
+using BuildingBlocks.PersistMessageProcessor;
 using Microsoft.EntityFrameworkCore;
 
 namespace BuildingBlocks.EFCore;
 
 public interface IDbContext
 {
-    DbSet<TEntity> Set<TEntity>()
-        where TEntity : class;
+    DbSet<TEntity> Set<TEntity>() where TEntity : class;
+    DbSet<PersistMessage> PersistMessages => Set<PersistMessage>();
 
     IReadOnlyList<IDomainEvent> GetDomainEvents();
     Task BeginTransactionAsync(CancellationToken cancellationToken = default);

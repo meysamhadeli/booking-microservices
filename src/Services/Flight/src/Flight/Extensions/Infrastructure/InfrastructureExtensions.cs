@@ -52,7 +52,7 @@ public static class InfrastructureExtensions
         builder.Services.AddCustomMediatR();
         builder.Services.AddCustomProblemDetails();
 
-        var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
+        var appOptions = builder.Services.GetOptions<AppOptions>(nameof(AppOptions));
         Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
         builder.Services.AddRateLimiter(options =>
@@ -66,11 +66,11 @@ public static class InfrastructureExtensions
                     }));
         });
 
+        builder.Services.AddPersistMessageProcessor();
         builder.Services.AddCustomDbContext<FlightDbContext>(configuration);
         builder.Services.AddScoped<IDataSeeder, FlightDataSeeder>();
-
         builder.Services.AddMongoDbContext<FlightReadDbContext>(configuration);
-        builder.Services.AddPersistMessage(configuration);
+
 
         builder.AddCustomSerilog(env);
         builder.Services.AddJwt();
@@ -99,7 +99,7 @@ public static class InfrastructureExtensions
     public static WebApplication UseInfrastructure(this WebApplication app)
     {
         var env = app.Environment;
-        var appOptions = app.GetOptions<AppOptions>("AppOptions");
+        var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
         app.UseProblemDetails();
         app.UseSerilogRequestLogging();

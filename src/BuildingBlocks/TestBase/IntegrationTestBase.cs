@@ -2,7 +2,6 @@
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
-using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Web;
@@ -14,6 +13,7 @@ using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,33 +21,31 @@ using Microsoft.Extensions.Options;
 using Mongo2Go;
 using NSubstitute;
 using Respawn;
+using Respawn.Graph;
 using Serilog;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace BuildingBlocks.TestBase;
 
-public class IntegrationTestFixture<TEntryPoint> : IDisposable
+public class IntegrationTestFixture<TEntryPoint> : IAsyncLifetime
     where TEntryPoint : class
 {
     private readonly WebApplicationFactory<TEntryPoint> _factory;
-
-
     private int Timeout => 60; // Second
-    private ITestHarness TestHarness => ServiceProvider.GetTestHarness();
-    public HttpClient HttpClient => _factory.CreateClient();
+
+    public MsSqlTestcontainer MsSqlTestContainer;
+    public RabbitMqTestcontainer RabbitMqTestContainer;
+
+    private ITestHarness TestHarness => ServiceProvider?.GetTestHarness();
+    public HttpClient HttpClient => _factory?.CreateClient();
 
     public GrpcChannel Channel =>
-        GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions {HttpClient = HttpClient});
+        GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions { HttpClient = HttpClient });
 
     public Action<IServiceCollection> TestRegistrationServices { get; set; }
-    public IServiceProvider ServiceProvider => _factory.Services;
-    public IConfiguration Configuration => _factory.Services.GetRequiredService<IConfiguration>();
-
-    public MsSqlTestcontainer SqlTestContainer;
-    public MsSqlTestcontainer SqlPersistTestContainer;
-    public MongoDbTestcontainer MongoTestContainer;
-    public RabbitMqTestcontainer RabbitMqTestContainer;
+    public IServiceProvider ServiceProvider => _factory?.Services;
+    public IConfiguration Configuration => _factory?.Services.GetRequiredService<IConfiguration>();
 
     public IntegrationTestFixture()
     {
@@ -60,12 +58,21 @@ public class IntegrationTestFixture<TEntryPoint> : IDisposable
                     TestRegistrationServices?.Invoke(services);
                     services.ReplaceSingleton(AddHttpContextAccessorMock);
                 });
+
+                builder.ConfigureAppConfiguration(AddCustomAppSettings);
             });
     }
 
-    public void Dispose()
+
+    public async Task InitializeAsync()
     {
-        _factory.Dispose();
+        await StartTestContainerAsync();
+    }
+
+    public async Task DisposeAsync()
+    {
+        await StopTestContainerAsync();
+        _factory?.DisposeAsync();
     }
 
     public virtual void RegisterServices(Action<IServiceCollection> services)
@@ -190,11 +197,39 @@ public class IntegrationTestFixture<TEntryPoint> : IDisposable
         });
     }
 
+
+    private async Task StartTestContainerAsync()
+    {
+        MsSqlTestContainer = TestContainers.MsSqlTestContainer;
+        RabbitMqTestContainer = TestContainers.RabbitMqTestContainer;
+
+        await MsSqlTestContainer.StartAsync();
+        await RabbitMqTestContainer.StartAsync();
+    }
+
+    private async Task StopTestContainerAsync()
+    {
+        await MsSqlTestContainer.StopAsync();
+        await RabbitMqTestContainer.StopAsync();
+    }
+
+    private void AddCustomAppSettings(IConfigurationBuilder configuration)
+    {
+        configuration.AddInMemoryCollection(new KeyValuePair<string, string>[]
+        {
+            new("DatabaseOptions:DefaultConnection", MsSqlTestContainer.ConnectionString + "TrustServerCertificate=True"),
+            new("RabbitMqOptions:HostName", RabbitMqTestContainer.Hostname),
+            new("RabbitMqOptions:UserName", RabbitMqTestContainer.Username),
+            new("RabbitMqOptions:Password", RabbitMqTestContainer.Password),
+            new("RabbitMqOptions:Port", RabbitMqTestContainer.Port.ToString())
+        });
+    }
+
     private IHttpContextAccessor AddHttpContextAccessorMock(IServiceProvider serviceProvider)
     {
         var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
         using var scope = serviceProvider.CreateScope();
-        httpContextAccessorMock.HttpContext = new DefaultHttpContext {RequestServices = scope.ServiceProvider};
+        httpContextAccessorMock.HttpContext = new DefaultHttpContext { RequestServices = scope.ServiceProvider };
 
         httpContextAccessorMock.HttpContext.Request.Host = new HostString("localhost", 6012);
         httpContextAccessorMock.HttpContext.Request.Scheme = "http";
@@ -329,32 +364,9 @@ public class IntegrationTestFixture<TEntryPoint, TWContext, TRContext> : Integra
 public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
     where TEntryPoint : class
 {
-    private Checkpoint _checkpointDefaultDB;
-    private Checkpoint _checkpointPersistMessageDB;
+    private Respawner _reSpawnerDefaultDb;
     private MongoDbRunner _mongoRunner;
 
-    private string DefaultConnectionString
-    {
-        get => Fixture.ServiceProvider.GetRequiredService<IOptions<ConnectionStrings>>()?.Value.DefaultConnection;
-        set => Fixture.ServiceProvider.GetRequiredService<IOptions<ConnectionStrings>>().Value.DefaultConnection =
-            value;
-    }
-
-    private string PersistConnectionString
-    {
-        get => Fixture.ServiceProvider.GetRequiredService<IOptions<PersistMessageOptions>>()?.Value.ConnectionString;
-        set => Fixture.ServiceProvider.GetRequiredService<IOptions<PersistMessageOptions>>().Value.ConnectionString =
-            value;
-    }
-
-    private string MongoConnectionString
-    {
-        get => Fixture.ServiceProvider.GetRequiredService<IOptions<MongoOptions>>()?.Value?.ConnectionString;
-        set => Fixture.ServiceProvider.GetRequiredService<IOptions<MongoOptions>>().Value.ConnectionString = value;
-    }
-
-    private RabbitMqOptions RabbitMqOptions =>
-        Fixture.ServiceProvider.GetRequiredService<IOptions<RabbitMqOptions>>()?.Value;
 
     public IntegrationTestFixtureCore(IntegrationTestFixture<TEntryPoint> integrationTestFixture)
     {
@@ -364,69 +376,41 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
 
     public IntegrationTestFixture<TEntryPoint> Fixture { get; }
 
+
     public async Task InitializeAsync()
     {
-        _checkpointDefaultDB = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
-        _checkpointPersistMessageDB = new Checkpoint {TablesToIgnore = new[] {"__EFMigrationsHistory"}};
+        var databaseOptions = Fixture.ServiceProvider.GetRequiredService<IOptions<DatabaseOptions>>()?.Value;
+        var mongoOptions = Fixture.ServiceProvider.GetRequiredService<IOptions<MongoOptions>>()?.Value;
 
-        if (!string.IsNullOrEmpty(DefaultConnectionString))
-            await _checkpointDefaultDB.Reset(DefaultConnectionString);
+        if (!string.IsNullOrEmpty(databaseOptions?.DefaultConnection))
+        {
+            var dbConnection = new SqlConnection(databaseOptions.DefaultConnection);
+            await dbConnection.OpenAsync();
 
-        if (!string.IsNullOrEmpty(PersistConnectionString))
-            await _checkpointPersistMessageDB.Reset(PersistConnectionString);
+            _reSpawnerDefaultDb = await Respawner.CreateAsync(dbConnection,
+                new RespawnerOptions
+                {
+                    TablesToIgnore = new Table[] { "__EFMigrationsHistory" },
+                });
+
+            await _reSpawnerDefaultDb.ResetAsync(dbConnection);
+        }
 
         _mongoRunner = MongoDbRunner.Start();
 
-        if (MongoConnectionString != null)
-            MongoConnectionString = _mongoRunner.ConnectionString;
-
-        //await StartTestContainerAsync();
+        if (!string.IsNullOrEmpty(mongoOptions?.ConnectionString))
+            mongoOptions.ConnectionString = _mongoRunner.ConnectionString;
 
         await SeedDataAsync();
     }
 
     public async Task DisposeAsync()
     {
-        if (!string.IsNullOrEmpty(PersistConnectionString))
-            _mongoRunner.Dispose();
-
-        //await StopTestContainerAsync();
+        _mongoRunner.Dispose();
     }
 
     protected virtual void RegisterTestsServices(IServiceCollection services)
     {
-    }
-
-    private async Task StartTestContainerAsync()
-    {
-        // <<For using test-container base>>
-        Fixture.SqlTestContainer = TestContainers.SqlTestContainer;
-        Fixture.SqlPersistTestContainer = TestContainers.SqlPersistTestContainer;
-        Fixture.MongoTestContainer = TestContainers.MongoTestContainer;
-        Fixture.RabbitMqTestContainer = TestContainers.RabbitMqTestContainer;
-
-        await Fixture.SqlTestContainer.StartAsync();
-        await Fixture.SqlPersistTestContainer.StartAsync();
-        await Fixture.MongoTestContainer.StartAsync();
-        await Fixture.RabbitMqTestContainer.StartAsync();
-
-        DefaultConnectionString = Fixture.SqlTestContainer?.ConnectionString;
-        PersistConnectionString = Fixture.SqlPersistTestContainer?.ConnectionString;
-        MongoConnectionString = Fixture.MongoTestContainer?.ConnectionString;
-
-        RabbitMqOptions.Password = Fixture.RabbitMqTestContainer.Password;
-        RabbitMqOptions.UserName = Fixture.RabbitMqTestContainer.Username;
-        RabbitMqOptions.HostName = Fixture.RabbitMqTestContainer.Hostname;
-        RabbitMqOptions.Port = (ushort)Fixture.RabbitMqTestContainer.Port;
-    }
-
-    private async Task StopTestContainerAsync()
-    {
-        // <<For using test-container base>>
-        await Fixture.SqlTestContainer.StopAsync();
-        await Fixture.SqlPersistTestContainer.StopAsync();
-        await Fixture.MongoTestContainer.StopAsync();
-        await Fixture.RabbitMqTestContainer.StopAsync();
     }
 
     private async Task SeedDataAsync()

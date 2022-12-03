@@ -1,18 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Booking.Api;
 using Booking.Data;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.PersistMessageProcessor.Data;
+using BuildingBlocks.EFCore;
 using BuildingBlocks.TestBase;
 using Flight;
 using FluentAssertions;
 using Grpc.Core;
 using Grpc.Core.Testing;
 using Integration.Test.Fakes;
-using MassTransit;
-using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NSubstitute;
@@ -22,10 +19,10 @@ using GetByIdRequest = Flight.GetByIdRequest;
 
 namespace Integration.Test.Booking.Features;
 
-public class CreateBookingTests : IntegrationTestBase<Program, PersistMessageDbContext, BookingReadDbContext>
+public class CreateBookingTests : IntegrationTestBase<Program, AppDbContextBase, BookingReadDbContext>
 {
     public CreateBookingTests(
-        IntegrationTestFixture<Program, PersistMessageDbContext, BookingReadDbContext> integrationTestFixture) : base(
+        IntegrationTestFixture<Program, AppDbContextBase, BookingReadDbContext> integrationTestFixture) : base(
         integrationTestFixture)
     {
     }
