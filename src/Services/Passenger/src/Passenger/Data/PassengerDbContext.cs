@@ -1,15 +1,12 @@
 using System.Reflection;
 using BuildingBlocks.EFCore;
-using BuildingBlocks.Utils;
-using Microsoft.AspNetCore.Http;
+using BuildingBlocks.Web;
 using Microsoft.EntityFrameworkCore;
 
 namespace Passenger.Data;
 
 public sealed class PassengerDbContext : AppDbContextBase
 {
-    public const string DefaultSchema = "dbo";
-
     public PassengerDbContext(DbContextOptions<PassengerDbContext> options, ICurrentUserProvider currentUserProvider) : base(options, currentUserProvider)
     {
     }

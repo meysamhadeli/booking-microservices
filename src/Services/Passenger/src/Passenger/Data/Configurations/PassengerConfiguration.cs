@@ -1,3 +1,4 @@
+using BuildingBlocks.EFCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -7,7 +8,7 @@ public class PassengerConfiguration: IEntityTypeConfiguration<Passengers.Models.
 {
     public void Configure(EntityTypeBuilder<Passengers.Models.Passenger> builder)
     {
-        builder.ToTable("Passenger", "dbo");
+        builder.ToTable("Passenger", AppDbContextBase.DefaultSchema);
 
         builder.HasKey(r => r.Id);
         builder.Property(r => r.Id).ValueGeneratedNever();

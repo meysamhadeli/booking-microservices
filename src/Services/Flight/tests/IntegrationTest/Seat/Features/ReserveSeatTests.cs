@@ -6,21 +6,16 @@ using Flight.Data;
 using Flight.Flights.Features.CreateFlight.Commands.V1.Reads;
 using Flight.Seats.Features.CreateSeat.Commands.V1.Reads;
 using FluentAssertions;
-using Grpc.Net.Client;
 using Integration.Test.Fakes;
 using Xunit;
 
 namespace Integration.Test.Seat.Features;
 
-public class ReserveSeatTests : IntegrationTestBase<Program, FlightDbContext, FlightReadDbContext>
+public class ReserveSeatTests : FlightIntegrationTestBase
 {
-    private readonly GrpcChannel _channel;
-
     public ReserveSeatTests(
-        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
-        integrationTestFixture)
+        IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
-        _channel = Fixture.Channel;
     }
 
     [Fact]
@@ -31,15 +26,15 @@ public class ReserveSeatTests : IntegrationTestBase<Program, FlightDbContext, Fl
 
         await Fixture.SendAsync(flightCommand);
 
-        await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>();
+        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>()).Should().Be(true);
 
         var seatCommand = new FakeCreateSeatCommand(flightCommand.Id).Generate();
 
         await Fixture.SendAsync(seatCommand);
 
-        await Fixture.ShouldProcessedPersistInternalCommand<CreateSeatMongoCommand>();
+        (await Fixture.ShouldProcessedPersistInternalCommand<CreateSeatMongoCommand>()).Should().Be(true);
 
-        var flightGrpcClient = new FlightGrpcService.FlightGrpcServiceClient(_channel);
+        var flightGrpcClient = new FlightGrpcService.FlightGrpcServiceClient(Fixture.Channel);
 
         // Act
         var response = await flightGrpcClient.ReserveSeatAsync(new ReserveSeatRequest()

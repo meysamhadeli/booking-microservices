@@ -6,21 +6,16 @@ using Flight.Data;
 using Flight.Flights.Features.CreateFlight.Commands.V1.Reads;
 using Flight.Flights.Features.GetFlightById.Queries.V1;
 using FluentAssertions;
-using Grpc.Net.Client;
 using Integration.Test.Fakes;
 using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
-public class GetFlightByIdTests : IntegrationTestBase<Program, FlightDbContext, FlightReadDbContext>
+public class GetFlightByIdTests : FlightIntegrationTestBase
 {
-    private readonly GrpcChannel _channel;
-
     public GetFlightByIdTests(
-        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
-        integrationTestFixture)
+        IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
-        _channel = Fixture.Channel;
     }
 
     [Fact]
@@ -30,7 +25,7 @@ public class GetFlightByIdTests : IntegrationTestBase<Program, FlightDbContext, 
         var command = new FakeCreateFlightCommand().Generate();
         await Fixture.SendAsync(command);
 
-        await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>();
+        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>()).Should().Be(true);
 
         var query = new GetFlightByIdQuery(command.Id);
 
@@ -49,9 +44,9 @@ public class GetFlightByIdTests : IntegrationTestBase<Program, FlightDbContext, 
         var command = new FakeCreateFlightCommand().Generate();
         await Fixture.SendAsync(command);
 
-        await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>();
+        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>()).Should().Be(true);
 
-        var flightGrpcClient = new FlightGrpcService.FlightGrpcServiceClient(_channel);
+        var flightGrpcClient = new FlightGrpcService.FlightGrpcServiceClient(Fixture.Channel);
 
         // Act
         var response = await flightGrpcClient.GetByIdAsync(new GetByIdRequest {Id = command.Id});

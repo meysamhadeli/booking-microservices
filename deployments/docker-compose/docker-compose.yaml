@@ -1,9 +1,9 @@
 version: "3.3"
 services:
 
-    #######################################################
-    #  Gateway
-    #######################################################
+  #######################################################
+  #  Gateway
+  #######################################################
   gateway:
     image: gateway
     build:
@@ -19,17 +19,15 @@ services:
       - db
       - rabbitmq
       - jaeger
-      - eventstore.db
       - elasticsearch
       - kibana
-      # - mongo
     volumes:
-        - '${USERPROFILE}\.aspnet\https:/https/'
+      - '${USERPROFILE}\.aspnet\https:/https/'
     environment:
-        - 'ASPNETCORE_URLS=https://+;http://+'
-        - ASPNETCORE_HTTPS_PORT=5001
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - 'ASPNETCORE_URLS=https://+;http://+'
+      - ASPNETCORE_HTTPS_PORT=5001
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     networks:
       - booking
 
@@ -52,17 +50,16 @@ services:
       - db
       - rabbitmq
       - jaeger
-      - eventstore.db
       - elasticsearch
       - kibana
-      # - mongo
+      - mongo
     volumes:
-        - '${USERPROFILE}\.aspnet\https:/https/'
+      - '${USERPROFILE}\.aspnet\https:/https/'
     environment:
-        - 'ASPNETCORE_URLS=https://+;http://+'
-        - ASPNETCORE_HTTPS_PORT=5003
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - 'ASPNETCORE_URLS=https://+;http://+'
+      - ASPNETCORE_HTTPS_PORT=5003
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     networks:
       - booking
 
@@ -85,17 +82,15 @@ services:
       - db
       - rabbitmq
       - jaeger
-      - eventstore.db
       - elasticsearch
       - kibana
-      # - mongo
     volumes:
-        - '${USERPROFILE}\.aspnet\https:/https/'
+      - '${USERPROFILE}\.aspnet\https:/https/'
     environment:
-        - 'ASPNETCORE_URLS=https://+;http://+'
-        - ASPNETCORE_HTTPS_PORT=5005
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - 'ASPNETCORE_URLS=https://+;http://+'
+      - ASPNETCORE_HTTPS_PORT=5005
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     networks:
       - booking
 
@@ -118,17 +113,16 @@ services:
       - db
       - rabbitmq
       - jaeger
-      - eventstore.db
       - elasticsearch
       - kibana
-      # - mongo
+      - mongo
     volumes:
-        - '${USERPROFILE}\.aspnet\https:/https/'
+      - '${USERPROFILE}\.aspnet\https:/https/'
     environment:
-        - 'ASPNETCORE_URLS=https://+;http://+'
-        - ASPNETCORE_HTTPS_PORT=5012
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - 'ASPNETCORE_URLS=https://+;http://+'
+      - ASPNETCORE_HTTPS_PORT=5012
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     networks:
       - booking
 
@@ -154,17 +148,48 @@ services:
       - eventstore.db
       - elasticsearch
       - kibana
-      # - mongo
+      - mongo
     volumes:
-        - '${USERPROFILE}\.aspnet\https:/https/'
+      - '${USERPROFILE}\.aspnet\https:/https/'
     environment:
-        - 'ASPNETCORE_URLS=https://+;http://+'
-        - ASPNETCORE_HTTPS_PORT=5010
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - 'ASPNETCORE_URLS=https://+;http://+'
+      - ASPNETCORE_HTTPS_PORT=5010
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     networks:
       - booking
 
+
+    #######################################################
+    #  SqlServer
+    #######################################################
+  db:
+    container_name: sqldb
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: unless-stopped
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "@Aa123456"
+      ACCEPT_EULA: "Y"
+    networks:
+      - booking
+
+
+#    ######################################################
+#    #  Postgres
+#    ######################################################
+#  postgres:
+#    image: postgres:latest
+#    container_name: postgres
+#    restart: on-failure
+#    ports:
+#      - '5432:5432'
+#    environment:
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=postgres
+#    networks:
+#      - booking
 
 
     #######################################################
@@ -177,22 +202,6 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
-    networks:
-      - booking
-
-
-    #######################################################
-    #  SqlServer
-    #######################################################
-  db:
-    container_name: sqldb
-    image: mcr.microsoft.com/mssql/server:2017-latest
-    restart: unless-stopped
-    ports:
-      - "1433:1433"
-    environment:
-      SA_PASSWORD: "@Aa123456"
-      ACCEPT_EULA: "Y"
     networks:
       - booking
 
@@ -220,29 +229,29 @@ services:
     #  EventStoreDB
     #######################################################
   eventstore.db:
-      image: eventstore/eventstore:21.2.0-buster-slim
-      restart: on-failure
-      environment:
-          - EVENTSTORE_CLUSTER_SIZE=1
-          - EVENTSTORE_RUN_PROJECTIONS=All
-          - EVENTSTORE_START_STANDARD_PROJECTIONS=true
-          - EVENTSTORE_EXT_TCP_PORT=1010
-          - EVENTSTORE_EXT_HTTP_PORT=2113
-          - EVENTSTORE_INSECURE=true
-          - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
-          - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
-      ports:
-          - '1010:1113'
-          - '2113:2113'
-      networks:
-          - booking
+    image: eventstore/eventstore:21.2.0-buster-slim
+    restart: on-failure
+    environment:
+      - EVENTSTORE_CLUSTER_SIZE=1
+      - EVENTSTORE_RUN_PROJECTIONS=All
+      - EVENTSTORE_START_STANDARD_PROJECTIONS=true
+      - EVENTSTORE_EXT_TCP_PORT=1010
+      - EVENTSTORE_EXT_HTTP_PORT=2113
+      - EVENTSTORE_INSECURE=true
+      - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
+      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+    ports:
+      - '1010:1113'
+      - '2113:2113'
+    networks:
+      - booking
 
 
     #######################################################
     #  Mongo
     #######################################################
   mongo:
-    image: mongo
+    image: mongo:4
     container_name: mongo
     restart: unless-stopped
     # environment:
@@ -254,43 +263,43 @@ services:
       - 27017:27017
     volumes:
       - mongo:/data/db
-      
+
 
     #######################################################
     #  Elastic Search
     #######################################################
   elasticsearch:
-   container_name: elasticsearch
-   image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
-   restart: unless-stopped
-   ports:
-    - 9200:9200
-   volumes:
-    - elasticsearch-data:/usr/share/elasticsearch/data
-   environment:
-    - xpack.monitoring.enabled=true
-    - xpack.watcher.enabled=false
-    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    - discovery.type=single-node
-   networks:
-    - booking
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+    restart: unless-stopped
+    ports:
+      - 9200:9200
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    environment:
+      - xpack.monitoring.enabled=true
+      - xpack.watcher.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    networks:
+      - booking
 
-    #######################################################
-    #  Kibana
-    #######################################################
+      #######################################################
+      #  Kibana
+      #######################################################
   kibana:
-   container_name: kibana
-   image: docker.elastic.co/kibana/kibana:7.9.2
-   restart: unless-stopped
-   ports:
-    - 5601:5601
-   depends_on:
-    - elasticsearch
-   environment:
-    - ELASTICSEARCH_URL=http://localhost:9200
-   networks:
-    - booking
-  
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:7.9.2
+    restart: unless-stopped
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_URL=http://localhost:9200
+    networks:
+      - booking
+
 
 
 networks:
@@ -303,7 +312,7 @@ volumes:
     external: false
   mongo:
     driver: local
-  elasticsearch-data:  
+  elasticsearch-data:
 
 
 

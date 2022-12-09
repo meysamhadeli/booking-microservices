@@ -12,17 +12,18 @@ using Passenger.Data;
 namespace Passenger.Data.Migrations
 {
     [DbContext(typeof(PassengerDbContext))]
-    [Migration("20220728180020_initial")]
+    [Migration("20221206180929_initial")]
     partial class initial
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("ProductVersion", "7.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Passenger.Passengers.Models.Passenger", b =>
                 {

@@ -10,17 +10,17 @@ using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
-public class CreateFlightTests : IntegrationTestBase<Program, FlightDbContext, FlightReadDbContext>
+public class CreateFlightTests : FlightIntegrationTestBase
 {
     public CreateFlightTests(
-        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
-        integrationTestFixture)
-    { }
+        IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
+    {
+    }
 
     [Fact]
     public async Task should_create_new_flight_to_db_and_publish_message_to_broker()
     {
-        // Arrange
+        //Arrange
         var command = new FakeCreateFlightCommand().Generate();
 
         // Act
@@ -30,9 +30,9 @@ public class CreateFlightTests : IntegrationTestBase<Program, FlightDbContext, F
         response.Should().NotBeNull();
         response?.FlightNumber.Should().Be(command.FlightNumber);
 
-        await Fixture.WaitForPublishing<FlightCreated>();
-        await Fixture.WaitForConsuming<FlightCreated>();
+        (await Fixture.WaitForPublishing<FlightCreated>()).Should().Be(true);
+        (await Fixture.WaitForConsuming<FlightCreated>()).Should().Be(true);
 
-        await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>();
+        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>()).Should().Be(true);
     }
 }

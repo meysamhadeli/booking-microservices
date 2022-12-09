@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Booking.Api;
 using Booking.Data;
@@ -11,8 +10,6 @@ using FluentAssertions;
 using Grpc.Core;
 using Grpc.Core.Testing;
 using Integration.Test.Fakes;
-using MassTransit;
-using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NSubstitute;
@@ -22,11 +19,9 @@ using GetByIdRequest = Flight.GetByIdRequest;
 
 namespace Integration.Test.Booking.Features;
 
-public class CreateBookingTests : IntegrationTestBase<Program, PersistMessageDbContext, BookingReadDbContext>
+public class CreateBookingTests : BookingIntegrationTestBase
 {
-    public CreateBookingTests(
-        IntegrationTestFixture<Program, PersistMessageDbContext, BookingReadDbContext> integrationTestFixture) : base(
-        integrationTestFixture)
+    public CreateBookingTests(IntegrationTestFactory<Program, PersistMessageDbContext, BookingReadDbContext> integrationTestFixture) : base(integrationTestFixture)
     {
     }
 
@@ -49,7 +44,7 @@ public class CreateBookingTests : IntegrationTestBase<Program, PersistMessageDbC
         // Assert
         response.Should().BeGreaterOrEqualTo(0);
 
-        await Fixture.WaitForPublishing<BookingCreated>();
+        (await Fixture.WaitForPublishing<BookingCreated>()).Should().Be(true);
     }
 
 

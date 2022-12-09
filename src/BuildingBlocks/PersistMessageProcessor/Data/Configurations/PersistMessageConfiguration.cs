@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BuildingBlocks.EFCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BuildingBlocks.PersistMessageProcessor.Data.Configurations;
@@ -7,12 +8,12 @@ public class PersistMessageConfiguration : IEntityTypeConfiguration<PersistMessa
 {
     public void Configure(EntityTypeBuilder<PersistMessage> builder)
     {
-        builder.ToTable("PersistMessage", PersistMessageDbContext.DefaultSchema);
+        builder.ToTable("PersistMessage", AppDbContextBase.DefaultSchema);
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Id)
-            .IsRequired();
+        builder.Property(r => r.Id)
+            .IsRequired().ValueGeneratedNever();
 
         builder.Property(x => x.DeliveryType)
             .HasMaxLength(50)

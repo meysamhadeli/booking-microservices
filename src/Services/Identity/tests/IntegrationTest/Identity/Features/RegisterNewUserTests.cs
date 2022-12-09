@@ -5,16 +5,14 @@ using FluentAssertions;
 using Identity.Api;
 using Identity.Data;
 using Integration.Test.Fakes;
-using MassTransit;
-using MassTransit.Testing;
 using Xunit;
 
 namespace Integration.Test.Identity.Features;
 
-public class RegisterNewUserTests : IntegrationTestBase<Program, IdentityContext>
+public class RegisterNewUserTests : IdentityIntegrationTestBase
 {
-    public RegisterNewUserTests(IntegrationTestFixture<Program, IdentityContext> integrationTestFixture) : base(
-        integrationTestFixture)
+    public RegisterNewUserTests(
+        IntegrationTestFactory<Program, IdentityContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 
@@ -31,6 +29,6 @@ public class RegisterNewUserTests : IntegrationTestBase<Program, IdentityContext
         response?.Should().NotBeNull();
         response?.Username.Should().Be(command.Username);
 
-        await Fixture.WaitForPublishing<UserCreated>();
+        (await Fixture.WaitForPublishing<UserCreated>()).Should().Be(true);
     }
 }

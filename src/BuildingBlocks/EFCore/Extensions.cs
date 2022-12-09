@@ -1,11 +1,11 @@
 using System.Linq.Expressions;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.PersistMessageProcessor.Data;
+using BuildingBlocks.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -14,18 +14,24 @@ namespace BuildingBlocks.EFCore;
 public static class Extensions
 {
     public static IServiceCollection AddCustomDbContext<TContext>(
-        this IServiceCollection services,
-        IConfiguration configuration)
+        this IServiceCollection services)
         where TContext : DbContext, IDbContext
     {
-        services.AddOptions<ConnectionStrings>()
-            .Bind(configuration.GetSection(nameof(ConnectionStrings)))
+
+        services.AddOptions<DatabaseOptions>()
+            .BindConfiguration(nameof(DatabaseOptions))
             .ValidateDataAnnotations();
 
-        services.AddDbContext<TContext>(options =>
-            options.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection"),
-                x => x.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name)));
+        services.AddDbContext<TContext>((sp, options) =>
+        {
+            var databaseOptions = services.GetOptions<DatabaseOptions>(nameof(DatabaseOptions));
+
+            options.UseSqlServer(databaseOptions?.DefaultConnection,
+                dbOptions =>
+                {
+                    dbOptions.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name);
+                });
+        });
 
         services.AddScoped<IDbContext>(provider => provider.GetService<TContext>());
 

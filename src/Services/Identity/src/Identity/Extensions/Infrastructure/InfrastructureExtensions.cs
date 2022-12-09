@@ -41,7 +41,7 @@ public static class InfrastructureExtensions
             options.SuppressModelStateInvalidFilter = true;
         });
 
-        var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
+        var appOptions = builder.Services.GetOptions<AppOptions>(nameof(AppOptions));
         Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
         builder.Services.AddRateLimiter(options =>
@@ -56,8 +56,8 @@ public static class InfrastructureExtensions
         });
 
         builder.Services.AddControllers();
-        builder.Services.AddPersistMessage(configuration);
-        builder.Services.AddCustomDbContext<IdentityContext>(configuration);
+        builder.Services.AddPersistMessageProcessor();
+        builder.Services.AddCustomDbContext<IdentityContext>();
         builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
         builder.AddCustomSerilog(env);
         builder.Services.AddCustomSwagger(configuration, typeof(IdentityRoot).Assembly);
@@ -82,7 +82,7 @@ public static class InfrastructureExtensions
     public static WebApplication UseInfrastructure(this WebApplication app)
     {
         var env = app.Environment;
-        var appOptions = app.GetOptions<AppOptions>("AppOptions");
+        var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
         app.UseProblemDetails();
         app.UseSerilogRequestLogging();

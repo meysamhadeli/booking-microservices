@@ -12,11 +12,10 @@ using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
-public class DeleteFlightTests : IntegrationTestBase<Program, FlightDbContext, FlightReadDbContext>
+public class DeleteFlightTests : FlightIntegrationTestBase
 {
     public DeleteFlightTests(
-        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
-        integrationTestFixture)
+        IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 
@@ -38,8 +37,8 @@ public class DeleteFlightTests : IntegrationTestBase<Program, FlightDbContext, F
         // Assert
         deletedFlight?.IsDeleted.Should().BeTrue();
 
-        await Fixture.WaitForPublishing<FlightDeleted>();
+        (await Fixture.WaitForPublishing<FlightDeleted>()).Should().Be(true);
 
-        await Fixture.ShouldProcessedPersistInternalCommand<DeleteFlightMongoCommand>();
+        (await Fixture.ShouldProcessedPersistInternalCommand<DeleteFlightMongoCommand>()).Should().Be(true);
     }
 }

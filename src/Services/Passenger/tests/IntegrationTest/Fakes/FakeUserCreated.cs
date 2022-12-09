@@ -9,7 +9,7 @@ public class FakeUserCreated : AutoFaker<UserCreated>
     public FakeUserCreated()
     {
         RuleFor(r => r.Id,  _ => SnowFlakIdGenerator.NewId());
-        RuleFor(r => r.Name, _ => "Meysam");
-        RuleFor(r => r.PassportNumber, _ => "1299878");
+        RuleFor(r => r.Name, _ => "Sam");
+        RuleFor(r => r.PassportNumber, _ => "123456789");
     }
 }

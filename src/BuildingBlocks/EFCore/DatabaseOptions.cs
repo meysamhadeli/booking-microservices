@@ -1,6 +1,6 @@
 namespace BuildingBlocks.EFCore;
 
-public class ConnectionStrings
+public class DatabaseOptions
 {
     public string DefaultConnection { get; set; }
 }

@@ -3,7 +3,7 @@ using System.Data;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.Utils;
-using JetBrains.Annotations;
+using BuildingBlocks.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -11,6 +11,8 @@ namespace BuildingBlocks.EFCore;
 
 public abstract class AppDbContextBase : DbContext, IDbContext
 {
+    public const string DefaultSchema = "dbo";
+
     private readonly ICurrentUserProvider _currentUserProvider;
 
     private IDbContextTransaction _currentTransaction;
@@ -117,6 +119,7 @@ public abstract class AppDbContextBase : DbContext, IDbContext
                         entry.Entity.LastModifiedBy = userId;
                         entry.Entity.LastModified = DateTime.Now;
                         entry.Entity.IsDeleted = true;
+                        entry.Entity.Version++;
                         break;
                 }
             }

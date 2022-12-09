@@ -1,6 +1,7 @@
 ﻿using System.Threading.RateLimiting;
 using Booking.Data;
 using BuildingBlocks.Core;
+using BuildingBlocks.EFCore;
 using BuildingBlocks.EventStoreDB;
 using BuildingBlocks.HealthCheck;
 using BuildingBlocks.IdsGenerator;
@@ -11,8 +12,8 @@ using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.OpenTelemetry;
 using BuildingBlocks.PersistMessageProcessor;
+using BuildingBlocks.PersistMessageProcessor.Data;
 using BuildingBlocks.Swagger;
-using BuildingBlocks.Utils;
 using BuildingBlocks.Web;
 using Figgle;
 using FluentValidation;
@@ -43,7 +44,7 @@ public static class InfrastructureExtensions
             options.SuppressModelStateInvalidFilter = true;
         });
 
-        var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
+        var appOptions = builder.Services.GetOptions<AppOptions>(nameof(AppOptions));
 
         Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
@@ -58,7 +59,7 @@ public static class InfrastructureExtensions
                     }));
         });
 
-        builder.Services.AddPersistMessage(configuration);
+        builder.Services.AddPersistMessageProcessor();
         builder.Services.AddMongoDbContext<BookingReadDbContext>(configuration);
 
         builder.AddCustomSerilog(env);
@@ -90,13 +91,14 @@ public static class InfrastructureExtensions
     public static WebApplication UseInfrastructure(this WebApplication app)
     {
         var env = app.Environment;
-        var appOptions = app.GetOptions<AppOptions>("AppOptions");
+        var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
         app.UseProblemDetails();
         app.UseSerilogRequestLogging();
         app.UseCorrelationId();
         app.UseRouting();
         app.UseHttpMetrics();
+        app.UseMigration<PersistMessageDbContext>(env);
         app.UseHttpsRedirection();
         app.UseCustomHealthCheck();
         app.MapMetrics();

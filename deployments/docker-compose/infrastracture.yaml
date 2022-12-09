@@ -20,7 +20,7 @@ services:
     #######################################################
   db:
     container_name: sqldb
-    image: mcr.microsoft.com/mssql/server:2017-latest
+    image: mcr.microsoft.com/mssql/server:2022-latest
     restart: unless-stopped
     ports:
       - "1433:1433"
@@ -30,6 +30,21 @@ services:
     networks:
       - booking
 
+
+#    #######################################################
+#    #  Postgres
+#    ######################################################
+#  postgres:
+#    image: postgres:latest
+#    container_name: postgres
+#    restart: on-failure
+#    ports:
+#      - '5432:5432'
+#    environment:
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=postgres
+#    networks:
+#      - booking
 
     #######################################################
     #  Jaeger
@@ -76,7 +91,7 @@ services:
     #  Mongo
     #######################################################
   mongo:
-    image: mongo
+    image: mongo:4
     container_name: mongo
     restart: unless-stopped
     # environment:
@@ -88,7 +103,7 @@ services:
       - 27017:27017
     volumes:
       - mongo:/data/db
-      
+
 
     #######################################################
     #  Elastic Search
@@ -124,7 +139,19 @@ services:
     - ELASTICSEARCH_URL=http://localhost:9200
    networks:
     - booking
-  
+
+    #######################################################
+    #  Redis
+    #######################################################
+  redis:
+    image: redis
+    container_name: redis
+    restart: unless-stopped
+    networks:
+      - booking
+    ports:
+      - 6379:6379
+
 
 
 networks:
@@ -137,7 +164,8 @@ volumes:
     external: false
   mongo:
     driver: local
-  elasticsearch-data:  
+  elasticsearch-data:
+
 
 
 

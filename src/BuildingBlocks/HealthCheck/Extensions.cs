@@ -3,7 +3,6 @@ using BuildingBlocks.Logging;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.Web;
-using DotNetCore.CAP.MongoDB;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -17,11 +16,11 @@ public static class Extensions
 {
     public static IServiceCollection AddCustomHealthCheck(this IServiceCollection services)
     {
-        var appOptions = services.GetOptions<AppOptions>("AppOptions");
-        var sqlOptions = services.GetOptions<ConnectionStrings>("ConnectionStrings");
-        var rabbitMqOptions = services.GetOptions<RabbitMqOptions>("RabbitMq");
-        var mongoOptions = services.GetOptions<MongoOptions>("MongoOptions");
-        var logOptions = services.GetOptions<LogOptions>("LogOptions");
+        var appOptions = services.GetOptions<AppOptions>(nameof(AppOptions));
+        var sqlOptions = services.GetOptions<DatabaseOptions>(nameof(DatabaseOptions));
+        var rabbitMqOptions = services.GetOptions<RabbitMqOptions>(nameof(RabbitMqOptions));
+        var mongoOptions = services.GetOptions<MongoOptions>(nameof(MongoOptions));
+        var logOptions = services.GetOptions<LogOptions>(nameof(LogOptions));
 
         var healthChecksBuilder = services.AddHealthChecks()
             .AddRabbitMQ(rabbitConnectionString: $"amqp://{rabbitMqOptions.UserName}:{rabbitMqOptions.Password}@{rabbitMqOptions.HostName}")
