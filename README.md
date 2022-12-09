@@ -85,7 +85,6 @@ High-level plan is represented in the table
 - ✔️ **[`MongoDB.Driver`](https://github.com/mongodb/mongo-csharp-driver)** - .NET Driver for MongoDB.
 - ✔️ **[`xUnit.net`](https://github.com/xunit/xunit)** - A free, open source, community-focused unit testing tool for the .NET Framework.
 - ✔️ **[`Respawn`](https://github.com/jbogard/Respawn)** - Respawn is a small utility to help in resetting test databases to a clean state.
-- ✔️ **[`Mongo2Go`](https://github.com/Mongo2Go/Mongo2Go)** - Providing multiple, temporary and isolated MongoDB databases for unit tests (or to be precise: integration tests).
 - ✔️ **[`Testcontainers`](https://github.com/testcontainers/testcontainers-dotnet)** - Testcontainers for .NET is a library to support tests with throwaway instances of Docker containers.
 
 ## The Domain And Bounded Context - Service Boundary
