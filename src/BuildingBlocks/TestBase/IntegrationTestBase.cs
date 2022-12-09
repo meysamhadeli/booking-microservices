@@ -2,10 +2,12 @@
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
+using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Web;
 using DotNet.Testcontainers.Containers;
+using EasyNetQ.Management.Client;
 using Grpc.Net.Client;
 using MassTransit;
 using MassTransit.Testing;
@@ -18,7 +20,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Mongo2Go;
+using MongoDB.Driver;
 using NSubstitute;
 using Respawn;
 using Respawn.Graph;
@@ -28,41 +30,42 @@ using Xunit.Abstractions;
 
 namespace BuildingBlocks.TestBase;
 
-public class IntegrationTestFixture<TEntryPoint> : IAsyncLifetime
+public class IntegrationTestFactory<TEntryPoint> : IAsyncLifetime
     where TEntryPoint : class
 {
     private readonly WebApplicationFactory<TEntryPoint> _factory;
-    private int Timeout => 60; // Second
+    private int Timeout => 120; // Second
 
     public MsSqlTestcontainer MsSqlTestContainer;
+    public MsSqlTestcontainer MsSqlPersistTestContainer;
     public RabbitMqTestcontainer RabbitMqTestContainer;
+    public MongoDbTestcontainer MongoDbTestContainer;
 
     private ITestHarness TestHarness => ServiceProvider?.GetTestHarness();
     public HttpClient HttpClient => _factory?.CreateClient();
 
-    public GrpcChannel Channel =>
-        GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions { HttpClient = HttpClient });
+    public GrpcChannel Channel => GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions { HttpClient = HttpClient });
 
     public Action<IServiceCollection> TestRegistrationServices { get; set; }
     public IServiceProvider ServiceProvider => _factory?.Services;
     public IConfiguration Configuration => _factory?.Services.GetRequiredService<IConfiguration>();
+    public ILogger Logger { get; set; }
 
-    public IntegrationTestFixture()
+    public IntegrationTestFactory()
     {
         _factory = new WebApplicationFactory<TEntryPoint>()
             .WithWebHostBuilder(builder =>
             {
+                builder.ConfigureAppConfiguration(AddCustomAppSettings);
+
                 builder.UseEnvironment("test");
                 builder.ConfigureServices(services =>
                 {
                     TestRegistrationServices?.Invoke(services);
                     services.ReplaceSingleton(AddHttpContextAccessorMock);
                 });
-
-                builder.ConfigureAppConfiguration(AddCustomAppSettings);
             });
     }
-
 
     public async Task InitializeAsync()
     {
@@ -134,32 +137,35 @@ public class IntegrationTestFixture<TEntryPoint> : IAsyncLifetime
         await TestHarness.Bus.Publish<TMessage>(message, cancellationToken);
     }
 
-    public async Task WaitForPublishing<TMessage>(CancellationToken cancellationToken = default)
+    public async Task<bool> WaitForPublishing<TMessage>(CancellationToken cancellationToken = default)
         where TMessage : class, IEvent
     {
-        await WaitUntilConditionMet(async () =>
+        var result = await WaitUntilConditionMet(async () =>
         {
             var published = await TestHarness.Published.Any<TMessage>(cancellationToken);
             var faulty = await TestHarness.Published.Any<Fault<TMessage>>(cancellationToken);
 
             return published && faulty == false;
         });
+        return result;
     }
 
-    public async Task WaitForConsuming<TMessage>(CancellationToken cancellationToken = default)
+    public async Task<bool> WaitForConsuming<TMessage>(CancellationToken cancellationToken = default)
         where TMessage : class, IEvent
     {
-        await WaitUntilConditionMet(async () =>
+        var result = await WaitUntilConditionMet(async () =>
         {
             var consumed = await TestHarness.Consumed.Any<TMessage>(cancellationToken);
             var faulty = await TestHarness.Consumed.Any<Fault<TMessage>>(cancellationToken);
 
             return consumed && faulty == false;
         });
+
+        return result;
     }
 
     // Ref: https://tech.energyhelpline.com/in-memory-testing-with-masstransit/
-    public async ValueTask WaitUntilConditionMet(Func<Task<bool>> conditionToMet, int? timeoutSecond = null)
+    public async Task<bool> WaitUntilConditionMet(Func<Task<bool>> conditionToMet, int? timeoutSecond = null)
     {
         var time = timeoutSecond ?? Timeout;
 
@@ -168,18 +174,20 @@ public class IntegrationTestFixture<TEntryPoint> : IAsyncLifetime
         var meet = await conditionToMet.Invoke();
         while (!meet)
         {
-            if (timeoutExpired) throw new TimeoutException("Condition not met for the test.");
+            if (timeoutExpired) return false;
 
             await Task.Delay(100);
             meet = await conditionToMet.Invoke();
             timeoutExpired = DateTime.Now - startTime > TimeSpan.FromSeconds(time);
         }
+
+        return true;
     }
 
-    public async ValueTask ShouldProcessedPersistInternalCommand<TInternalCommand>()
+    public async Task<bool> ShouldProcessedPersistInternalCommand<TInternalCommand>()
         where TInternalCommand : class, IInternalCommand
     {
-        await WaitUntilConditionMet(async () =>
+        var result = await WaitUntilConditionMet(async () =>
         {
             return await ExecuteScopeAsync(async sp =>
             {
@@ -195,22 +203,30 @@ public class IntegrationTestFixture<TEntryPoint> : IAsyncLifetime
                 return res;
             });
         });
+
+        return result;
     }
 
 
     private async Task StartTestContainerAsync()
     {
         MsSqlTestContainer = TestContainers.MsSqlTestContainer;
+        MsSqlPersistTestContainer = TestContainers.MsSqlPersistTestContainer;
         RabbitMqTestContainer = TestContainers.RabbitMqTestContainer;
+        MongoDbTestContainer = TestContainers.MongoTestContainer;
 
+        await MongoDbTestContainer.StartAsync();
         await MsSqlTestContainer.StartAsync();
+        await MsSqlPersistTestContainer.StartAsync();
         await RabbitMqTestContainer.StartAsync();
     }
 
     private async Task StopTestContainerAsync()
     {
         await MsSqlTestContainer.StopAsync();
+        await MsSqlPersistTestContainer.StopAsync();
         await RabbitMqTestContainer.StopAsync();
+        await MongoDbTestContainer.StopAsync();
     }
 
     private void AddCustomAppSettings(IConfigurationBuilder configuration)
@@ -218,10 +234,13 @@ public class IntegrationTestFixture<TEntryPoint> : IAsyncLifetime
         configuration.AddInMemoryCollection(new KeyValuePair<string, string>[]
         {
             new("DatabaseOptions:DefaultConnection", MsSqlTestContainer.ConnectionString + "TrustServerCertificate=True"),
+            new("PersistMessageOptions:ConnectionString", MsSqlPersistTestContainer.ConnectionString + "TrustServerCertificate=True"),
             new("RabbitMqOptions:HostName", RabbitMqTestContainer.Hostname),
             new("RabbitMqOptions:UserName", RabbitMqTestContainer.Username),
             new("RabbitMqOptions:Password", RabbitMqTestContainer.Password),
-            new("RabbitMqOptions:Port", RabbitMqTestContainer.Port.ToString())
+            new("RabbitMqOptions:Port", RabbitMqTestContainer.Port.ToString()),
+            new("MongoOptions:ConnectionString", MongoDbTestContainer.ConnectionString),
+            new("MongoOptions:DatabaseName", MongoDbTestContainer.Database)
         });
     }
 
@@ -238,7 +257,7 @@ public class IntegrationTestFixture<TEntryPoint> : IAsyncLifetime
     }
 }
 
-public class IntegrationTestFixture<TEntryPoint, TWContext> : IntegrationTestFixture<TEntryPoint>
+public class IntegrationTestFactory<TEntryPoint, TWContext> : IntegrationTestFactory<TEntryPoint>
     where TEntryPoint : class
     where TWContext : DbContext
 {
@@ -345,7 +364,7 @@ public class IntegrationTestFixture<TEntryPoint, TWContext> : IntegrationTestFix
     }
 }
 
-public class IntegrationTestFixture<TEntryPoint, TWContext, TRContext> : IntegrationTestFixture<TEntryPoint, TWContext>
+public class IntegrationTestFactory<TEntryPoint, TWContext, TRContext> : IntegrationTestFactory<TEntryPoint, TWContext>
     where TEntryPoint : class
     where TWContext : DbContext
     where TRContext : MongoDbContext
@@ -365,48 +384,93 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
     where TEntryPoint : class
 {
     private Respawner _reSpawnerDefaultDb;
-    private MongoDbRunner _mongoRunner;
+    private Respawner _reSpawnerPersistDb;
+    private SqlConnection DefaultDbConnection { get; set; }
+    private SqlConnection PersistDbConnection { get; set; }
 
-
-    public IntegrationTestFixtureCore(IntegrationTestFixture<TEntryPoint> integrationTestFixture)
+    public IntegrationTestFixtureCore(IntegrationTestFactory<TEntryPoint> integrationTestFixture, ITestOutputHelper outputHelper)
     {
         Fixture = integrationTestFixture;
         integrationTestFixture.RegisterServices(services => RegisterTestsServices(services));
+        integrationTestFixture.Logger = integrationTestFixture.CreateLogger(outputHelper);
     }
 
-    public IntegrationTestFixture<TEntryPoint> Fixture { get; }
+    public IntegrationTestFactory<TEntryPoint> Fixture { get; }
 
 
     public async Task InitializeAsync()
     {
         var databaseOptions = Fixture.ServiceProvider.GetRequiredService<IOptions<DatabaseOptions>>()?.Value;
-        var mongoOptions = Fixture.ServiceProvider.GetRequiredService<IOptions<MongoOptions>>()?.Value;
+        var persistOptions = Fixture.ServiceProvider.GetRequiredService<IOptions<PersistMessageOptions>>()?.Value;
+
+        if (!string.IsNullOrEmpty(persistOptions?.ConnectionString))
+        {
+            PersistDbConnection = new SqlConnection(persistOptions?.ConnectionString);
+            await PersistDbConnection.OpenAsync();
+
+            _reSpawnerPersistDb = await Respawner.CreateAsync(PersistDbConnection,
+                new RespawnerOptions { TablesToIgnore = new Table[] { "__EFMigrationsHistory" }, });
+
+            await _reSpawnerPersistDb.ResetAsync(PersistDbConnection);
+        }
 
         if (!string.IsNullOrEmpty(databaseOptions?.DefaultConnection))
         {
-            var dbConnection = new SqlConnection(databaseOptions.DefaultConnection);
-            await dbConnection.OpenAsync();
+            DefaultDbConnection = new SqlConnection(databaseOptions.DefaultConnection);
+            await DefaultDbConnection.OpenAsync();
 
-            _reSpawnerDefaultDb = await Respawner.CreateAsync(dbConnection,
-                new RespawnerOptions
-                {
-                    TablesToIgnore = new Table[] { "__EFMigrationsHistory" },
-                });
+            _reSpawnerDefaultDb = await Respawner.CreateAsync(DefaultDbConnection,
+                new RespawnerOptions { TablesToIgnore = new Table[] { "__EFMigrationsHistory" }, });
 
-            await _reSpawnerDefaultDb.ResetAsync(dbConnection);
+            await _reSpawnerDefaultDb.ResetAsync(DefaultDbConnection);
+
+            await SeedDataAsync();
         }
-
-        _mongoRunner = MongoDbRunner.Start();
-
-        if (!string.IsNullOrEmpty(mongoOptions?.ConnectionString))
-            mongoOptions.ConnectionString = _mongoRunner.ConnectionString;
-
-        await SeedDataAsync();
     }
 
     public async Task DisposeAsync()
     {
-        _mongoRunner.Dispose();
+        await ResetMongoAsync();
+        await ResetRabbitMqAsync();
+    }
+
+    private async Task ResetMongoAsync(CancellationToken cancellationToken = default)
+    {
+        //https://stackoverflow.com/questions/3366397/delete-everything-in-a-mongodb-database
+        MongoClient dbClient = new MongoClient(Fixture.MongoDbTestContainer?.ConnectionString);
+        var collections = await dbClient.GetDatabase(Fixture.MongoDbTestContainer?.Database)
+            .ListCollectionsAsync(cancellationToken: cancellationToken);
+
+        foreach (var collection in collections.ToList())
+        {
+            await dbClient.GetDatabase(Fixture.MongoDbTestContainer?.Database)
+                .DropCollectionAsync(collection["name"].AsString, cancellationToken);
+        }
+    }
+
+    private async Task ResetRabbitMqAsync(CancellationToken cancellationToken = default)
+    {
+        var port = Fixture.RabbitMqTestContainer?.GetMappedPublicPort(15672) ?? 15672;
+
+        var rabbitmqOptions = Fixture.ServiceProvider.GetRequiredService<IOptions<RabbitMqOptions>>()?.Value;
+
+        var managementClient = new ManagementClient(rabbitmqOptions?.HostName, rabbitmqOptions?.UserName,
+            rabbitmqOptions?.Password, port);
+
+        var bd = await managementClient.GetBindingsAsync(cancellationToken);
+        var bindings = bd.Where(x => !string.IsNullOrEmpty(x.Source) && !string.IsNullOrEmpty(x.Destination));
+
+        foreach (var binding in bindings)
+        {
+            await managementClient.DeleteBindingAsync(binding, cancellationToken);
+        }
+
+        var queues = await managementClient.GetQueuesAsync(cancellationToken);
+
+        foreach (var queue in queues)
+        {
+            await managementClient.DeleteQueueAsync(queue, cancellationToken);
+        }
     }
 
     protected virtual void RegisterTestsServices(IServiceCollection services)
@@ -422,44 +486,32 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
     }
 }
 
-public abstract class IntegrationTestBase<TEntryPoint> : IntegrationTestFixtureCore<TEntryPoint>,
-    IClassFixture<IntegrationTestFixture<TEntryPoint>>
-    where TEntryPoint : class
-{
-    protected IntegrationTestBase(
-        IntegrationTestFixture<TEntryPoint> integrationTestFixture) : base(integrationTestFixture)
-    {
-        Fixture = integrationTestFixture;
-    }
-
-    public IntegrationTestFixture<TEntryPoint> Fixture { get; }
-}
-
-public abstract class IntegrationTestBase<TEntryPoint, TWContext> : IntegrationTestFixtureCore<TEntryPoint>,
-    IClassFixture<IntegrationTestFixture<TEntryPoint, TWContext>>
+public abstract class IntegrationTestBase<TEntryPoint, TWContext> : IntegrationTestFixtureCore<TEntryPoint>
+    //,IClassFixture<IntegrationTestFactory<TEntryPoint, TWContext>>
     where TEntryPoint : class
     where TWContext : DbContext
 {
     protected IntegrationTestBase(
-        IntegrationTestFixture<TEntryPoint, TWContext> integrationTestFixture) : base(integrationTestFixture)
+        IntegrationTestFactory<TEntryPoint, TWContext> integrationTestFixture, ITestOutputHelper outputHelper = null) : base(integrationTestFixture, outputHelper)
     {
         Fixture = integrationTestFixture;
     }
 
-    public IntegrationTestFixture<TEntryPoint, TWContext> Fixture { get; }
+    public IntegrationTestFactory<TEntryPoint, TWContext> Fixture { get; }
 }
 
-public abstract class IntegrationTestBase<TEntryPoint, TWContext, TRContext> : IntegrationTestFixtureCore<TEntryPoint>,
-    IClassFixture<IntegrationTestFixture<TEntryPoint, TWContext, TRContext>>
+public abstract class IntegrationTestBase<TEntryPoint, TWContext, TRContext> : IntegrationTestFixtureCore<TEntryPoint>
+    //,IClassFixture<IntegrationTestFactory<TEntryPoint, TWContext, TRContext>>
     where TEntryPoint : class
     where TWContext : DbContext
     where TRContext : MongoDbContext
 {
     protected IntegrationTestBase(
-        IntegrationTestFixture<TEntryPoint, TWContext, TRContext> integrationTestFixture) : base(integrationTestFixture)
+        IntegrationTestFactory<TEntryPoint, TWContext, TRContext> integrationTestFixture, ITestOutputHelper outputHelper = null) : base(integrationTestFixture, outputHelper)
     {
         Fixture = integrationTestFixture;
     }
 
-    public IntegrationTestFixture<TEntryPoint, TWContext, TRContext> Fixture { get; }
+    public IntegrationTestFactory<TEntryPoint, TWContext, TRContext> Fixture { get; }
 }
+

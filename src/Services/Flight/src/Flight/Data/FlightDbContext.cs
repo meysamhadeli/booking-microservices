@@ -1,5 +1,6 @@
 using BuildingBlocks.EFCore;
 using BuildingBlocks.Utils;
+using BuildingBlocks.Web;
 using Flight.Aircrafts.Models;
 using Flight.Airports.Models;
 using Flight.Seats.Models;

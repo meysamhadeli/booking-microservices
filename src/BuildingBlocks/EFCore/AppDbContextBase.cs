@@ -2,8 +2,8 @@ using System.Collections.Immutable;
 using System.Data;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
-using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Utils;
+using BuildingBlocks.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -71,7 +71,7 @@ public abstract class AppDbContextBase : DbContext, IDbContext
         OnBeforeSaving();
         return base.SaveChangesAsync(cancellationToken);
     }
-    
+
     public IReadOnlyList<IDomainEvent> GetDomainEvents()
     {
         var domainEntities = ChangeTracker
@@ -119,6 +119,7 @@ public abstract class AppDbContextBase : DbContext, IDbContext
                         entry.Entity.LastModifiedBy = userId;
                         entry.Entity.LastModified = DateTime.Now;
                         entry.Entity.IsDeleted = true;
+                        entry.Entity.Version++;
                         break;
                 }
             }

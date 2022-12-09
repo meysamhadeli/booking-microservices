@@ -10,11 +10,10 @@ using Xunit;
 
 namespace Integration.Test.Airport.Features;
 
-public class CreateAirportTests : IntegrationTestBase<Program, FlightDbContext, FlightReadDbContext>
+public class CreateAirportTests : FlightIntegrationTestBase
 {
     public CreateAirportTests(
-        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
-        integrationTestFixture)
+        IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 
@@ -31,8 +30,8 @@ public class CreateAirportTests : IntegrationTestBase<Program, FlightDbContext, 
         response?.Should().NotBeNull();
         response?.Name.Should().Be(command.Name);
 
-        await Fixture.WaitForPublishing<AirportCreated>();
+        (await Fixture.WaitForPublishing<AirportCreated>()).Should().Be(true);
 
-        await Fixture.ShouldProcessedPersistInternalCommand<CreateAirportMongoCommand>();
+        (await Fixture.ShouldProcessedPersistInternalCommand<CreateAirportMongoCommand>()).Should().Be(true);
     }
 }

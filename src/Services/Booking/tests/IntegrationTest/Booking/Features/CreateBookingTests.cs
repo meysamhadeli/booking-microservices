@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Booking.Api;
 using Booking.Data;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.EFCore;
+using BuildingBlocks.PersistMessageProcessor.Data;
 using BuildingBlocks.TestBase;
 using Flight;
 using FluentAssertions;
@@ -19,11 +19,9 @@ using GetByIdRequest = Flight.GetByIdRequest;
 
 namespace Integration.Test.Booking.Features;
 
-public class CreateBookingTests : IntegrationTestBase<Program, AppDbContextBase, BookingReadDbContext>
+public class CreateBookingTests : BookingIntegrationTestBase
 {
-    public CreateBookingTests(
-        IntegrationTestFixture<Program, AppDbContextBase, BookingReadDbContext> integrationTestFixture) : base(
-        integrationTestFixture)
+    public CreateBookingTests(IntegrationTestFactory<Program, PersistMessageDbContext, BookingReadDbContext> integrationTestFixture) : base(integrationTestFixture)
     {
     }
 
@@ -46,7 +44,7 @@ public class CreateBookingTests : IntegrationTestBase<Program, AppDbContextBase,
         // Assert
         response.Should().BeGreaterOrEqualTo(0);
 
-        await Fixture.WaitForPublishing<BookingCreated>();
+        (await Fixture.WaitForPublishing<BookingCreated>()).Should().Be(true);
     }
 
 

@@ -1,11 +1,7 @@
 ﻿using System.Threading.Tasks;
-using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.TestBase;
 using FluentAssertions;
-using Grpc.Net.Client;
 using Integration.Test.Fakes;
-using MassTransit.Testing;
-using Microsoft.Extensions.DependencyInjection;
 using Passenger;
 using Passenger.Api;
 using Passenger.Data;
@@ -14,16 +10,12 @@ using Xunit;
 
 namespace Integration.Test.Passenger.Features;
 
-public class GetPassengerByIdTests : IntegrationTestBase<Program, PassengerDbContext>
+public class GetPassengerByIdTests : PassengerIntegrationTestBase
 {
-    private readonly GrpcChannel _channel;
-
-    public GetPassengerByIdTests(IntegrationTestFixture<Program, PassengerDbContext> integrationTestFixture) : base(
-        integrationTestFixture)
+    public GetPassengerByIdTests(
+        IntegrationTestFactory<Program, PassengerDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
-        _channel = Fixture.Channel;
     }
-
 
     [Fact]
     public async Task should_retrive_a_passenger_by_id_currectly()
@@ -53,7 +45,7 @@ public class GetPassengerByIdTests : IntegrationTestBase<Program, PassengerDbCon
         var passengerEntity = FakePassengerCreated.Generate(userCreated);
         await Fixture.InsertAsync(passengerEntity);
 
-        var passengerGrpcClient = new PassengerGrpcService.PassengerGrpcServiceClient(_channel);
+        var passengerGrpcClient = new PassengerGrpcService.PassengerGrpcServiceClient(Fixture.Channel);
 
         // Act
         var response = await passengerGrpcClient.GetByIdAsync(new GetByIdRequest {Id = passengerEntity.Id});

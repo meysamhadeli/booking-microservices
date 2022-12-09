@@ -4,7 +4,7 @@ using Booking.Booking.Models.ValueObjects;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.EventStoreDB.Repository;
-using BuildingBlocks.Utils;
+using BuildingBlocks.Web;
 using Flight;
 using Passenger;
 

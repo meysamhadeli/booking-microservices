@@ -10,11 +10,10 @@ using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
-public class UpdateFlightTests : IntegrationTestBase<Program, FlightDbContext, FlightReadDbContext>
+public class UpdateFlightTests : FlightIntegrationTestBase
 {
     public UpdateFlightTests(
-        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(
-        integrationTestFixture)
+        IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 
@@ -33,8 +32,8 @@ public class UpdateFlightTests : IntegrationTestBase<Program, FlightDbContext, F
         response?.Id.Should().Be(flightEntity?.Id);
         response?.Price.Should().NotBe(flightEntity?.Price);
 
-        await Fixture.WaitForPublishing<FlightUpdated>();
+        (await Fixture.WaitForPublishing<FlightUpdated>()).Should().Be(true);
 
-        await Fixture.ShouldProcessedPersistInternalCommand<UpdateFlightMongoCommand>();
+        (await Fixture.ShouldProcessedPersistInternalCommand<UpdateFlightMongoCommand>()).Should().Be(true);
     }
 }

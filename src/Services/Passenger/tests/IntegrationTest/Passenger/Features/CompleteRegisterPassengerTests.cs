@@ -3,18 +3,16 @@ using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.TestBase;
 using FluentAssertions;
 using Integration.Test.Fakes;
-using MassTransit.Testing;
 using Passenger.Api;
 using Passenger.Data;
-using Passenger.Passengers.Features.CompleteRegisterPassenger.Commands.V1.Reads;
 using Xunit;
 
 namespace Integration.Test.Passenger.Features;
 
-public class CompleteRegisterPassengerTests : IntegrationTestBase<Program, PassengerDbContext>
+public class CompleteRegisterPassengerTests : PassengerIntegrationTestBase
 {
-    public CompleteRegisterPassengerTests(IntegrationTestFixture<Program, PassengerDbContext> integrationTestFixture) :
-        base(integrationTestFixture)
+    public CompleteRegisterPassengerTests(
+        IntegrationTestFactory<Program, PassengerDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 

@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using BuildingBlocks.EFCore;
 using Flight.Aircrafts.Models;
 using Flight.Aircrafts.Models.Reads;
 using Flight.Airports.Models;
 using Flight.Airports.Models.Reads;
-using Flight.Flights.Models;
 using Flight.Flights.Models.Reads;
 using Flight.Seats.Models;
 using Flight.Seats.Models.Reads;

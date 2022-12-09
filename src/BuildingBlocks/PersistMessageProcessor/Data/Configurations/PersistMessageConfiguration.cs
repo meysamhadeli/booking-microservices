@@ -1,10 +1,8 @@
-﻿using System;
-using BuildingBlocks.EFCore;
-using BuildingBlocks.PersistMessageProcessor;
+﻿using BuildingBlocks.EFCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Identity.Data.Configurations;
+namespace BuildingBlocks.PersistMessageProcessor.Data.Configurations;
 
 public class PersistMessageConfiguration : IEntityTypeConfiguration<PersistMessage>
 {
@@ -14,8 +12,8 @@ public class PersistMessageConfiguration : IEntityTypeConfiguration<PersistMessa
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Id)
-            .IsRequired();
+        builder.Property(r => r.Id)
+            .IsRequired().ValueGeneratedNever();
 
         builder.Property(x => x.DeliveryType)
             .HasMaxLength(50)

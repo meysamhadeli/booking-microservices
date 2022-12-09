@@ -21,6 +21,10 @@ public static class Extensions
     public static IServiceCollection AddCustomMassTransit(this IServiceCollection services, Assembly assembly,
         IWebHostEnvironment env)
     {
+        services.AddOptions<RabbitMqOptions>()
+            .BindConfiguration(nameof(RabbitMqOptions))
+            .ValidateDataAnnotations();
+
         if (env.IsEnvironment("test"))
         {
             services.AddMassTransitTestHarness(configure =>
@@ -47,12 +51,13 @@ public static class Extensions
         configure.UsingRabbitMq((context, configurator) =>
         {
             var rabbitMqOptions = services.GetOptions<RabbitMqOptions>(nameof(RabbitMqOptions));
+
             var host = IsRunningInContainer ? "rabbitmq" : rabbitMqOptions.HostName;
 
             configurator.Host(host, rabbitMqOptions?.Port ?? 5672, "/", h =>
             {
-                h.Username(rabbitMqOptions.UserName);
-                h.Password(rabbitMqOptions.Password);
+                h.Username(rabbitMqOptions?.UserName);
+                h.Password(rabbitMqOptions?.Password);
             });
 
             var types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())

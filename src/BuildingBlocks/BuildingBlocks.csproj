@@ -20,6 +20,7 @@
     <PackageReference Include="Ben.BlockingDetector" Version="0.0.4" />
     <PackageReference Include="EasyCaching.Core" Version="1.7.0" />
     <PackageReference Include="EasyCaching.InMemory" Version="1.7.0" />
+    <PackageReference Include="EasyNetQ.Management.Client" Version="1.4.2" />
     <PackageReference Include="EFCore.NamingConventions" Version="7.0.0" />
     <PackageReference Include="EntityFrameworkCore.Triggered" Version="3.2.1" />
     <PackageReference Include="Figgle" Version="0.4.1" />
@@ -149,6 +150,7 @@
   <ItemGroup>
     <Folder Include="Contracts" />
     <Folder Include="EventStoreDB\BackgroundWorkers" />
+    <Folder Include="PersistMessageProcessor\Data\Migrations" />
   </ItemGroup>
 
 </Project>

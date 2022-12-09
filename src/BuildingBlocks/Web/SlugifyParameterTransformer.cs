@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Routing;
 
-namespace BuildingBlocks.Utils;
+namespace BuildingBlocks.Web;
 
 public class SlugifyParameterTransformer : IOutboundParameterTransformer
 {

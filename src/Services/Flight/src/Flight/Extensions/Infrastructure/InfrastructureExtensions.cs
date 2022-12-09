@@ -66,11 +66,10 @@ public static class InfrastructureExtensions
                     }));
         });
 
-        builder.Services.AddPersistMessageProcessor();
-        builder.Services.AddCustomDbContext<FlightDbContext>(configuration);
+        builder.Services.AddCustomDbContext<FlightDbContext>();
         builder.Services.AddScoped<IDataSeeder, FlightDataSeeder>();
         builder.Services.AddMongoDbContext<FlightReadDbContext>(configuration);
-
+        builder.Services.AddPersistMessageProcessor();
 
         builder.AddCustomSerilog(env);
         builder.Services.AddJwt();

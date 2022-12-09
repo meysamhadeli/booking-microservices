@@ -11,11 +11,10 @@ using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
-public class GetAvailableFlightsTests : IntegrationTestBase<Program, FlightDbContext, FlightReadDbContext>
+public class GetAvailableFlightsTests : FlightIntegrationTestBase
 {
     public GetAvailableFlightsTests(
-        IntegrationTestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture)
-        : base(integrationTestFixture)
+        IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 
@@ -27,7 +26,7 @@ public class GetAvailableFlightsTests : IntegrationTestBase<Program, FlightDbCon
 
         await Fixture.SendAsync(flightCommand);
 
-        await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>();
+        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>()).Should().Be(true);
 
         var query = new GetAvailableFlightsQuery();
 

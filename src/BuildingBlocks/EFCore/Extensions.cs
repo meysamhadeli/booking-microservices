@@ -1,12 +1,11 @@
 using System.Linq.Expressions;
 using BuildingBlocks.Core.Model;
-using BuildingBlocks.PersistMessageProcessor;
+using BuildingBlocks.PersistMessageProcessor.Data;
 using BuildingBlocks.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -15,12 +14,12 @@ namespace BuildingBlocks.EFCore;
 public static class Extensions
 {
     public static IServiceCollection AddCustomDbContext<TContext>(
-        this IServiceCollection services,
-        IConfiguration configuration)
+        this IServiceCollection services)
         where TContext : DbContext, IDbContext
     {
+
         services.AddOptions<DatabaseOptions>()
-            .Bind(configuration.GetSection(nameof(DatabaseOptions)))
+            .BindConfiguration(nameof(DatabaseOptions))
             .ValidateDataAnnotations();
 
         services.AddDbContext<TContext>((sp, options) =>
@@ -28,7 +27,10 @@ public static class Extensions
             var databaseOptions = services.GetOptions<DatabaseOptions>(nameof(DatabaseOptions));
 
             options.UseSqlServer(databaseOptions?.DefaultConnection,
-                dbOptions => dbOptions.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name));
+                dbOptions =>
+                {
+                    dbOptions.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name);
+                });
         });
 
         services.AddScoped<IDbContext>(provider => provider.GetService<TContext>());
@@ -71,8 +73,10 @@ public static class Extensions
     {
         using var scope = serviceProvider.CreateScope();
 
-        var context = scope.ServiceProvider.GetRequiredService<TContext>();
+        var persistMessageContext = scope.ServiceProvider.GetRequiredService<PersistMessageDbContext>();
+        await persistMessageContext.Database.MigrateAsync();
 
+        var context = scope.ServiceProvider.GetRequiredService<TContext>();
         await context.Database.MigrateAsync();
     }
 

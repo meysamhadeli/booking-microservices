@@ -1,6 +1,7 @@
 ﻿using System.Threading.RateLimiting;
 using Booking.Data;
 using BuildingBlocks.Core;
+using BuildingBlocks.EFCore;
 using BuildingBlocks.EventStoreDB;
 using BuildingBlocks.HealthCheck;
 using BuildingBlocks.IdsGenerator;
@@ -11,8 +12,8 @@ using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.OpenTelemetry;
 using BuildingBlocks.PersistMessageProcessor;
+using BuildingBlocks.PersistMessageProcessor.Data;
 using BuildingBlocks.Swagger;
-using BuildingBlocks.Utils;
 using BuildingBlocks.Web;
 using Figgle;
 using FluentValidation;
@@ -97,6 +98,7 @@ public static class InfrastructureExtensions
         app.UseCorrelationId();
         app.UseRouting();
         app.UseHttpMetrics();
+        app.UseMigration<PersistMessageDbContext>(env);
         app.UseHttpsRedirection();
         app.UseCustomHealthCheck();
         app.MapMetrics();

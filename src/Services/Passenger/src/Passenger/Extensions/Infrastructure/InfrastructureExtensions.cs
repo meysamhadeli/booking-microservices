@@ -60,7 +60,7 @@ public static class InfrastructureExtensions
         });
 
         builder.Services.AddPersistMessageProcessor();
-        builder.Services.AddCustomDbContext<PassengerDbContext>(configuration);
+        builder.Services.AddCustomDbContext<PassengerDbContext>();
         builder.Services.AddMongoDbContext<PassengerReadDbContext>(configuration);
 
         builder.AddCustomSerilog(env);
