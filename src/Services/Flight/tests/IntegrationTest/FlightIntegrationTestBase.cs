@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.TestBase;
+﻿using BuildingBlocks.TestBase.IntegrationTest;
 using Flight.Api;
 using Flight.Data;
 using Xunit;

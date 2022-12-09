@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -7,18 +8,18 @@ namespace BuildingBlocks.PersistMessageProcessor;
 public class PersistMessageBackgroundService : BackgroundService
 {
     private readonly ILogger<PersistMessageBackgroundService> _logger;
-    private readonly IPersistMessageProcessor _persistMessageProcessor;
+    private readonly IServiceProvider _serviceProvider;
     private PersistMessageOptions _options;
 
     private Task? _executingTask;
 
     public PersistMessageBackgroundService(
         ILogger<PersistMessageBackgroundService> logger,
-        IPersistMessageProcessor persistMessageProcessor,
+        IServiceProvider serviceProvider,
         IOptions<PersistMessageOptions> options)
     {
         _logger = logger;
-        _persistMessageProcessor = persistMessageProcessor;
+        _serviceProvider = serviceProvider;
         _options = options.Value;
     }
 
@@ -44,7 +45,11 @@ public class PersistMessageBackgroundService : BackgroundService
         {
             try
             {
-                await _persistMessageProcessor.ProcessAllAsync(stoppingToken);
+                await using (var scope = _serviceProvider.CreateAsyncScope())
+                {
+                    var service = scope.ServiceProvider.GetRequiredService<IPersistMessageProcessor>();
+                    await service.ProcessAllAsync(stoppingToken);
+                }
 
                 var delay = _options.Interval is { }
                     ? TimeSpan.FromSeconds((int)_options.Interval)

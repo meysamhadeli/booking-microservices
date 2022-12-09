@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.TestBase;
+﻿using BuildingBlocks.TestBase.IntegrationTest;
 using Identity.Api;
 using Identity.Data;
 using Xunit;

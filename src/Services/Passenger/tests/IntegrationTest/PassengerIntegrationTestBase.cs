@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.TestBase;
+﻿using BuildingBlocks.TestBase.IntegrationTest;
 using Passenger.Api;
 using Passenger.Data;
 using Xunit;

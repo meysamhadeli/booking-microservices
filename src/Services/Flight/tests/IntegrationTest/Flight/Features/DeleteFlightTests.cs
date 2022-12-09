@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.TestBase;
+using BuildingBlocks.TestBase.IntegrationTest;
 using Flight.Api;
 using Flight.Data;
 using Flight.Flights.Features.DeleteFlight.Commands.V1;

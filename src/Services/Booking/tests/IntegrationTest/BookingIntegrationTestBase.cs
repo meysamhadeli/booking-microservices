@@ -1,7 +1,7 @@
 ﻿using Booking.Api;
 using Booking.Data;
 using BuildingBlocks.PersistMessageProcessor.Data;
-using BuildingBlocks.TestBase;
+using BuildingBlocks.TestBase.IntegrationTest;
 using Xunit;
 
 namespace Integration.Test;

@@ -1,10 +1,12 @@
-﻿using Ardalis.GuardClauses;
+﻿using System.Security.Claims;
+using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.PersistMessageProcessor;
+using BuildingBlocks.TestBase.EndToEndTest.Auth;
 using BuildingBlocks.Web;
 using DotNet.Testcontainers.Containers;
 using EasyNetQ.Management.Client;
@@ -27,8 +29,9 @@ using Respawn.Graph;
 using Serilog;
 using Xunit;
 using Xunit.Abstractions;
+using ILogger = Serilog.ILogger;
 
-namespace BuildingBlocks.TestBase;
+namespace BuildingBlocks.TestBase.IntegrationTest;
 
 public class IntegrationTestFactory<TEntryPoint> : IAsyncLifetime
     where TEntryPoint : class
@@ -43,9 +46,7 @@ public class IntegrationTestFactory<TEntryPoint> : IAsyncLifetime
 
     private ITestHarness TestHarness => ServiceProvider?.GetTestHarness();
     public HttpClient HttpClient => _factory?.CreateClient();
-
     public GrpcChannel Channel => GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions { HttpClient = HttpClient });
-
     public Action<IServiceCollection> TestRegistrationServices { get; set; }
     public IServiceProvider ServiceProvider => _factory?.Services;
     public IConfiguration Configuration => _factory?.Services.GetRequiredService<IConfiguration>();
@@ -63,6 +64,11 @@ public class IntegrationTestFactory<TEntryPoint> : IAsyncLifetime
                 {
                     TestRegistrationServices?.Invoke(services);
                     services.ReplaceSingleton(AddHttpContextAccessorMock);
+                    // Add our custom handler
+                    services.AddTestAuthentication();
+
+                    // Register a default user, so all requests have it by default
+                    services.AddScoped(_ => GetMockUser());
                 });
             });
     }
@@ -255,6 +261,10 @@ public class IntegrationTestFactory<TEntryPoint> : IAsyncLifetime
 
         return httpContextAccessorMock;
     }
+
+    private MockAuthUser GetMockUser() =>
+        new MockAuthUser(new Claim("sub", Guid.NewGuid().ToString()),
+            new Claim("email", "sam@test.com"));
 }
 
 public class IntegrationTestFactory<TEntryPoint, TWContext> : IntegrationTestFactory<TEntryPoint>
@@ -514,4 +524,3 @@ public abstract class IntegrationTestBase<TEntryPoint, TWContext, TRContext> : I
 
     public IntegrationTestFactory<TEntryPoint, TWContext, TRContext> Fixture { get; }
 }
-
