@@ -34,7 +34,7 @@
 - :sparkle: Using `Event Store` for `write side` of Booking-Microservice to store all `historical state` of aggregate.
 - :sparkle: Using `Inbox Pattern` for ensuring message idempotency for receiver and `Exactly once Delivery`. 
 - :sparkle: Using `Outbox Pattern` for ensuring no message is lost and there is at `Least One Delivery`.
-- :sparkle: Using `Unit Testing`, `Integration Testing` for testing level.
+- :sparkle: Using `Unit Testing`, `Integration Testing`, `End To End Testing` for testing level.
 - :sparkle: Using `Fluent Validation` and a `Validation Pipeline Behaviour` on top of `MediatR`.
 - :sparkle: Using `Minimal API` for all endpoints.
 - :sparkle: Using `Health Check` for reporting the health of app infrastructure components.
