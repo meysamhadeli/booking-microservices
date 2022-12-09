@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.TestBase;
+using BuildingBlocks.TestBase.IntegrationTest;
 using Flight.Aircrafts.Features.CreateAircraft.Commands.V1.Reads;
 using Flight.Api;
 using Flight.Data;

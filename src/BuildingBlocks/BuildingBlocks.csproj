@@ -94,10 +94,10 @@
     <PackageReference Include="DotNetCore.CAP.OpenTelemetry" Version="6.2.1" />
     <PackageReference Include="DotNetCore.CAP.RabbitMQ" Version="6.2.1" />
     <PackageReference Include="DotNetCore.CAP.SqlServer" Version="6.2.1" />
-    <PackageReference Include="Duende.IdentityServer" Version="6.2.0-rc.1" />
-    <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.2.0-rc.1" />
-    <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="6.2.0-rc.1" />
-    <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.2.0-rc.1" />
+    <PackageReference Include="Duende.IdentityServer" Version="6.2.0" />
+    <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.2.0" />
+    <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="6.2.0" />
+    <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Testcontainers" Version="2.2.0" />
     <PackageReference Include="Yarp.ReverseProxy" Version="1.1.1" />

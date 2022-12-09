@@ -4,7 +4,7 @@ using Booking.Api;
 using Booking.Data;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.PersistMessageProcessor.Data;
-using BuildingBlocks.TestBase;
+using BuildingBlocks.TestBase.IntegrationTest;
 using Flight;
 using FluentAssertions;
 using Grpc.Core;
