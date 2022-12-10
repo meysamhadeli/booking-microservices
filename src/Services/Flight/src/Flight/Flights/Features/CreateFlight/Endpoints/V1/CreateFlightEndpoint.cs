@@ -21,7 +21,7 @@ public class CreateFlightEndpoint : IMinimalEndpoint
         endpoints.MapPost($"{EndpointConfig.BaseApiPath}/flight", CreateFlight)
             .RequireAuthorization()
             .WithTags("Flight")
-            .WithName("Create Flight")
+            .WithName("CreateFlight")
             .WithMetadata(new SwaggerOperationAttribute("Create Flight", "Create Flight"))
             .WithApiVersionSet(endpoints.NewApiVersionSet("Flight").Build())
             .Produces<FlightResponseDto>()
@@ -39,6 +39,6 @@ public class CreateFlightEndpoint : IMinimalEndpoint
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return Results.Ok(result);
+        return Results.CreatedAtRoute("GetFlightById", new {id = result.Id}, result);
     }
 }

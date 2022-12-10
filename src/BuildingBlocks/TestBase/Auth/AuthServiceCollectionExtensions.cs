@@ -1,14 +1,18 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BuildingBlocks.TestBase.EndToEndTest.Auth;
+namespace BuildingBlocks.TestBase.Auth;
 
 //ref: https://blog.joaograssi.com/posts/2021/asp-net-core-testing-permission-protected-api-endpoints/
 public static class AuthServiceCollectionExtensions
 {
-    public static AuthenticationBuilder AddTestAuthentication(
-        this IServiceCollection services)
+    private static MockAuthUser GetMockUser() =>
+        new MockAuthUser(new Claim("sub", Guid.NewGuid().ToString()),
+            new Claim("email", "sam@test.com"));
+
+    public static AuthenticationBuilder AddTestAuthentication(this IServiceCollection services)
     {
         services.AddAuthorization(options =>
         {
@@ -17,6 +21,9 @@ public static class AuthServiceCollectionExtensions
                 .RequireAuthenticatedUser()
                 .Build();
         });
+
+        // Register a default user, so all requests have it by default
+        services.AddScoped(_ => GetMockUser());
 
         // Register our custom authentication handler
         return services.AddAuthentication("Test")

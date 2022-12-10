@@ -18,11 +18,11 @@ public class DeleteFlightEndpoint : IMinimalEndpoint
         endpoints.MapDelete($"{EndpointConfig.BaseApiPath}/flight/{{id}}", DeleteFlight)
             .RequireAuthorization()
             .WithTags("Flight")
-            .WithName("Delete Flight")
+            .WithName("DeleteFlight")
             .WithMetadata(new SwaggerOperationAttribute("Delete Flight", "Delete Flight"))
             .WithApiVersionSet(endpoints.NewApiVersionSet("Flight").Build())
             .Produces<FlightResponseDto>()
-            .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status400BadRequest)
             .HasApiVersion(1.0);
 
@@ -33,6 +33,6 @@ public class DeleteFlightEndpoint : IMinimalEndpoint
     {
         var result = await mediator.Send(new DeleteFlightCommand(id), cancellationToken);
 
-        return Results.Ok(result);
+        return Results.NoContent();
     }
 }

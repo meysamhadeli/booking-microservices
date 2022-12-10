@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.TestBase.IntegrationTest;
+using BuildingBlocks.TestBase;
 using FluentAssertions;
 using Integration.Test.Fakes;
 using Passenger.Api;
@@ -12,7 +12,7 @@ namespace Integration.Test.Passenger.Features;
 public class CompleteRegisterPassengerTests : PassengerIntegrationTestBase
 {
     public CompleteRegisterPassengerTests(
-        IntegrationTestFactory<Program, PassengerDbContext> integrationTestFactory) : base(integrationTestFactory)
+        TestFactory<Program, PassengerDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 

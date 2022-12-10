@@ -19,11 +19,11 @@ public class CreateBookingEndpoint : IMinimalEndpoint
         endpoints.MapPost($"{EndpointConfig.BaseApiPath}/booking", CreateBooking)
             .RequireAuthorization()
             .WithTags("Booking")
-            .WithName("Create Booking")
+            .WithName("CreateBooking")
             .WithMetadata(new SwaggerOperationAttribute("Create Booking", "Create Booking"))
             .WithApiVersionSet(endpoints.NewApiVersionSet("Booking").Build())
             .Produces<ulong>()
-            .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
             .HasApiVersion(1.0);
 

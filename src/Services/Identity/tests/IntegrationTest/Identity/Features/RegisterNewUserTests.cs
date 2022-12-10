@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.TestBase.IntegrationTest;
+using BuildingBlocks.TestBase;
 using FluentAssertions;
 using Identity.Api;
 using Identity.Data;
@@ -12,7 +12,7 @@ namespace Integration.Test.Identity.Features;
 public class RegisterNewUserTests : IdentityIntegrationTestBase
 {
     public RegisterNewUserTests(
-        IntegrationTestFactory<Program, IdentityContext> integrationTestFactory) : base(integrationTestFactory)
+        TestFactory<Program, IdentityContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 

@@ -19,7 +19,7 @@ public class GetAvailableSeatsEndpoint : IMinimalEndpoint
         endpoints.MapGet($"{EndpointConfig.BaseApiPath}/flight/get-available-seats/{{id}}", GetAvailableSeats)
             .RequireAuthorization()
             .WithTags("Flight")
-            .WithName("Get Available Seats")
+            .WithName("GetAvailableSeats")
             .WithMetadata(new SwaggerOperationAttribute("Get Available Seats", "Get Available Seats"))
             .WithApiVersionSet(endpoints.NewApiVersionSet("Flight").Build())
             .Produces<IEnumerable<SeatResponseDto>>()

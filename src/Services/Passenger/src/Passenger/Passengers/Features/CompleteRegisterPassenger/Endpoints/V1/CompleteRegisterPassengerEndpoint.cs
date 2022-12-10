@@ -18,11 +18,11 @@ public class CompleteRegisterPassengerEndpoint : IMinimalEndpoint
         endpoints.MapPost($"{EndpointConfig.BaseApiPath}/passenger/complete-registration", CompleteRegisterPassenger)
             .RequireAuthorization()
             .WithTags("Passenger")
-            .WithName("Complete Register Passenger")
+            .WithName("CompleteRegisterPassenger")
             .WithMetadata(new SwaggerOperationAttribute("Complete Register Passenger", "Complete Register Passenger"))
             .WithApiVersionSet(endpoints.NewApiVersionSet("Passenger").Build())
             .Produces<PassengerResponseDto>()
-            .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
             .HasApiVersion(1.0);
 

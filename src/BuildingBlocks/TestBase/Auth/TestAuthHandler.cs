@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace BuildingBlocks.TestBase.EndToEndTest.Auth;
+namespace BuildingBlocks.TestBase.Auth;
 
 //ref: https://blog.joaograssi.com/posts/2021/asp-net-core-testing-permission-protected-api-endpoints/
 public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
+
+
     private readonly MockAuthUser _mockAuthUser;
 
     public TestAuthHandler(

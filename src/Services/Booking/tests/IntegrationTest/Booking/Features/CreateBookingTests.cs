@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Booking.Api;
 using Booking.Data;
 using BuildingBlocks.Contracts.EventBus.Messages;
+using BuildingBlocks.EFCore;
 using BuildingBlocks.PersistMessageProcessor.Data;
-using BuildingBlocks.TestBase.IntegrationTest;
+using BuildingBlocks.TestBase;
 using Flight;
 using FluentAssertions;
 using Grpc.Core;
@@ -21,7 +23,7 @@ namespace Integration.Test.Booking.Features;
 
 public class CreateBookingTests : BookingIntegrationTestBase
 {
-    public CreateBookingTests(IntegrationTestFactory<Program, PersistMessageDbContext, BookingReadDbContext> integrationTestFixture) : base(integrationTestFixture)
+    public CreateBookingTests(TestFactory<Program, AppDbContextBase, BookingReadDbContext> integrationTestFixture) : base(integrationTestFixture)
     {
     }
 
@@ -39,12 +41,21 @@ public class CreateBookingTests : BookingIntegrationTestBase
         var command = new FakeCreateBookingCommand().Generate();
 
         // Act
-        var response = await Fixture.SendAsync(command);
+        try
+        {
+            var response = await Fixture.SendAsync(command);
 
-        // Assert
-        response.Should().BeGreaterOrEqualTo(0);
+            // Assert
+            response.Should().BeGreaterOrEqualTo(0);
 
-        (await Fixture.WaitForPublishing<BookingCreated>()).Should().Be(true);
+            (await Fixture.WaitForPublishing<BookingCreated>()).Should().Be(true);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
     }
 
 

@@ -20,11 +20,11 @@ public class ReserveSeatEndpoint : IMinimalEndpoint
         endpoints.MapPost($"{EndpointConfig.BaseApiPath}/flight/reserve-seat", ReserveSeat)
             .RequireAuthorization()
             .WithTags("Flight")
-            .WithName("Reserve Seat")
+            .WithName("ReserveSeat")
             .WithMetadata(new SwaggerOperationAttribute("Reserve Seat", "Reserve Seat"))
             .WithApiVersionSet(endpoints.NewApiVersionSet("Flight").Build())
             .Produces<SeatResponseDto>()
-            .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
             .HasApiVersion(1.0);
 

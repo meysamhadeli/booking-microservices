@@ -20,11 +20,11 @@ public class CreateAircraftEndpoint : IMinimalEndpoint
         endpoints.MapPost($"{EndpointConfig.BaseApiPath}/flight/aircraft", CreateAircraft)
             .RequireAuthorization()
             .WithTags("Flight")
-            .WithName("Create Aircraft")
+            .WithName("CreateAircraft")
             .WithMetadata(new SwaggerOperationAttribute("Create Aircraft", "Create Aircraft"))
             .WithApiVersionSet(endpoints.NewApiVersionSet("Flight").Build())
             .Produces<AircraftResponseDto>()
-            .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
             .HasApiVersion(1.0);
 

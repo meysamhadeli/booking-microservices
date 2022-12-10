@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.TestBase.IntegrationTest;
+using BuildingBlocks.TestBase;
 using Flight.Api;
 using Flight.Data;
 using Flight.Flights.Features.CreateFlight.Commands.V1.Reads;
@@ -13,7 +13,7 @@ namespace Integration.Test.Flight.Features;
 public class CreateFlightTests : FlightIntegrationTestBase
 {
     public CreateFlightTests(
-        IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
+        TestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 
