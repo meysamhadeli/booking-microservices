@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace BuildingBlocks.TestBase.EndToEndTest.Auth;
+namespace BuildingBlocks.TestBase.Auth;
 
 public class MockAuthUser
 {

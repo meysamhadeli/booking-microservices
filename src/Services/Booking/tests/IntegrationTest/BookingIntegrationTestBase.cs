@@ -1,21 +1,22 @@
 ﻿using Booking.Api;
 using Booking.Data;
+using BuildingBlocks.EFCore;
 using BuildingBlocks.PersistMessageProcessor.Data;
-using BuildingBlocks.TestBase.IntegrationTest;
+using BuildingBlocks.TestBase;
 using Xunit;
 
 namespace Integration.Test;
 
 [Collection(IntegrationTestCollection.Name)]
-public class BookingIntegrationTestBase: IntegrationTestBase<Program, PersistMessageDbContext, BookingReadDbContext>
+public class BookingIntegrationTestBase: TestBase<Program, AppDbContextBase, BookingReadDbContext>
 {
-    public BookingIntegrationTestBase(IntegrationTestFactory<Program, PersistMessageDbContext, BookingReadDbContext> integrationTestFixture) : base(integrationTestFixture)
+    public BookingIntegrationTestBase(TestFactory<Program, AppDbContextBase, BookingReadDbContext> integrationTestFixture) : base(integrationTestFixture)
     {
     }
 }
 
 [CollectionDefinition(Name)]
-public class IntegrationTestCollection : ICollectionFixture<IntegrationTestFactory<Program, PersistMessageDbContext, BookingReadDbContext>>
+public class IntegrationTestCollection : ICollectionFixture<TestFactory<Program, AppDbContextBase, BookingReadDbContext>>
 {
     public const string Name = "Booking Integration Test";
 }

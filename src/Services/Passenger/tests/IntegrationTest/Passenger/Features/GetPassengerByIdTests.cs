@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using BuildingBlocks.TestBase.IntegrationTest;
+using BuildingBlocks.TestBase;
 using FluentAssertions;
 using Integration.Test.Fakes;
 using Passenger;
@@ -13,7 +13,7 @@ namespace Integration.Test.Passenger.Features;
 public class GetPassengerByIdTests : PassengerIntegrationTestBase
 {
     public GetPassengerByIdTests(
-        IntegrationTestFactory<Program, PassengerDbContext> integrationTestFactory) : base(integrationTestFactory)
+        TestFactory<Program, PassengerDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 

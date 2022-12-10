@@ -19,11 +19,11 @@ public class RegisterNewUserEndpoint : IMinimalEndpoint
     {
         endpoints.MapPost($"{EndpointConfig.BaseApiPath}/identity/register-user", RegisterNewUser)
             .WithTags("Identity")
-            .WithName("Register User")
+            .WithName("RegisterUser")
             .WithMetadata(new SwaggerOperationAttribute("Register User", "Register User"))
             .WithApiVersionSet(endpoints.NewApiVersionSet("Identity").Build())
             .Produces<RegisterNewUserResponseDto>()
-            .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
             .HasApiVersion(1.0);
 

@@ -21,7 +21,7 @@ public static class ProblemDetailsExtensions
             };
             x.Map<ConflictException>(ex => new ProblemDetailsWithCode
             {
-                Title = "Application rule broken",
+                Title = ex.GetType().Name,
                 Status = StatusCodes.Status409Conflict,
                 Detail = ex.Message,
                 Type = "https://somedomain/application-rule-validation-error"
@@ -30,35 +30,35 @@ public static class ProblemDetailsExtensions
             // Exception will produce and returns from our FluentValidation RequestValidationBehavior
             x.Map<ValidationException>(ex => new ProblemDetailsWithCode
             {
-                Title = "input validation rules broken",
+                Title = ex.GetType().Name,
                 Status = (int)ex.StatusCode,
                 Detail = ex.Message,
                 Type = "https://somedomain/input-validation-rules-error"
             });
             x.Map<BadRequestException>(ex => new ProblemDetailsWithCode
             {
-                Title = "bad request exception",
+                Title = ex.GetType().Name,
                 Status = StatusCodes.Status400BadRequest,
                 Detail = ex.Message,
                 Type = "https://somedomain/bad-request-error"
             });
             x.Map<NotFoundException>(ex => new ProblemDetailsWithCode
             {
-                Title = "not found exception",
+                Title = ex.GetType().Name,
                 Status = StatusCodes.Status404NotFound,
                 Detail = ex.Message,
                 Type = "https://somedomain/not-found-error"
             });
             x.Map<InternalServerException>(ex => new ProblemDetailsWithCode
             {
-                Title = "api server exception",
+                Title = ex.GetType().Name,
                 Status = StatusCodes.Status500InternalServerError,
                 Detail = ex.Message,
                 Type = "https://somedomain/api-server-error"
             });
             x.Map<AppException>(ex => new ProblemDetailsWithCode
             {
-                Title = "application exception",
+                Title = ex.GetType().Name,
                 Status = StatusCodes.Status400BadRequest,
                 Detail = ex.Message,
                 Type = "https://somedomain/application-error"

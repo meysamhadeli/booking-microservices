@@ -20,11 +20,11 @@ public class UpdateFlightEndpoint : IMinimalEndpoint
         endpoints.MapPut($"{EndpointConfig.BaseApiPath}/flight", UpdateFlight)
             .RequireAuthorization()
             .WithTags("Flight")
-            .WithName("Update Flight")
+            .WithName("UpdateFlight")
             .WithMetadata(new SwaggerOperationAttribute("Update Flight", "Update Flight"))
             .WithApiVersionSet(endpoints.NewApiVersionSet("Flight").Build())
             .Produces<FlightResponseDto>()
-            .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status400BadRequest)
             .HasApiVersion(1.0);
 
@@ -37,6 +37,6 @@ public class UpdateFlightEndpoint : IMinimalEndpoint
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return Results.Ok(result);
+        return Results.NoContent();
     }
 }

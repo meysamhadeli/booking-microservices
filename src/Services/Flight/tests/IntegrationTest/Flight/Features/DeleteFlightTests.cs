@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.TestBase.IntegrationTest;
+using BuildingBlocks.TestBase;
 using Flight.Api;
 using Flight.Data;
 using Flight.Flights.Features.DeleteFlight.Commands.V1;
@@ -15,7 +15,7 @@ namespace Integration.Test.Flight.Features;
 public class DeleteFlightTests : FlightIntegrationTestBase
 {
     public DeleteFlightTests(
-        IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
+        TestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 

@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using BuildingBlocks.TestBase.IntegrationTest;
+using BuildingBlocks.TestBase;
 using Flight;
 using Flight.Api;
 using Flight.Data;
@@ -14,7 +14,7 @@ namespace Integration.Test.Seat.Features;
 public class GetAvailableSeatsTests : FlightIntegrationTestBase
 {
     public GetAvailableSeatsTests(
-        IntegrationTestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
+        TestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 

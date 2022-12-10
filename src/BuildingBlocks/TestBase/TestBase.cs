@@ -1,12 +1,11 @@
-﻿using System.Security.Claims;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.PersistMessageProcessor;
-using BuildingBlocks.TestBase.EndToEndTest.Auth;
+using BuildingBlocks.TestBase.Auth;
 using BuildingBlocks.Web;
 using DotNet.Testcontainers.Containers;
 using EasyNetQ.Management.Client;
@@ -31,9 +30,9 @@ using Xunit;
 using Xunit.Abstractions;
 using ILogger = Serilog.ILogger;
 
-namespace BuildingBlocks.TestBase.IntegrationTest;
+namespace BuildingBlocks.TestBase;
 
-public class IntegrationTestFactory<TEntryPoint> : IAsyncLifetime
+public class TestFactory<TEntryPoint> : IAsyncLifetime
     where TEntryPoint : class
 {
     private readonly WebApplicationFactory<TEntryPoint> _factory;
@@ -52,7 +51,7 @@ public class IntegrationTestFactory<TEntryPoint> : IAsyncLifetime
     public IConfiguration Configuration => _factory?.Services.GetRequiredService<IConfiguration>();
     public ILogger Logger { get; set; }
 
-    public IntegrationTestFactory()
+    public TestFactory()
     {
         _factory = new WebApplicationFactory<TEntryPoint>()
             .WithWebHostBuilder(builder =>
@@ -64,11 +63,7 @@ public class IntegrationTestFactory<TEntryPoint> : IAsyncLifetime
                 {
                     TestRegistrationServices?.Invoke(services);
                     services.ReplaceSingleton(AddHttpContextAccessorMock);
-                    // Add our custom handler
                     services.AddTestAuthentication();
-
-                    // Register a default user, so all requests have it by default
-                    services.AddScoped(_ => GetMockUser());
                 });
             });
     }
@@ -261,13 +256,9 @@ public class IntegrationTestFactory<TEntryPoint> : IAsyncLifetime
 
         return httpContextAccessorMock;
     }
-
-    private MockAuthUser GetMockUser() =>
-        new MockAuthUser(new Claim("sub", Guid.NewGuid().ToString()),
-            new Claim("email", "sam@test.com"));
 }
 
-public class IntegrationTestFactory<TEntryPoint, TWContext> : IntegrationTestFactory<TEntryPoint>
+public class TestFactory<TEntryPoint, TWContext> : TestFactory<TEntryPoint>
     where TEntryPoint : class
     where TWContext : DbContext
 {
@@ -374,7 +365,7 @@ public class IntegrationTestFactory<TEntryPoint, TWContext> : IntegrationTestFac
     }
 }
 
-public class IntegrationTestFactory<TEntryPoint, TWContext, TRContext> : IntegrationTestFactory<TEntryPoint, TWContext>
+public class TestFactory<TEntryPoint, TWContext, TRContext> : TestFactory<TEntryPoint, TWContext>
     where TEntryPoint : class
     where TWContext : DbContext
     where TRContext : MongoDbContext
@@ -390,7 +381,7 @@ public class IntegrationTestFactory<TEntryPoint, TWContext, TRContext> : Integra
     }
 }
 
-public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
+public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
     where TEntryPoint : class
 {
     private Respawner _reSpawnerDefaultDb;
@@ -398,14 +389,14 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
     private SqlConnection DefaultDbConnection { get; set; }
     private SqlConnection PersistDbConnection { get; set; }
 
-    public IntegrationTestFixtureCore(IntegrationTestFactory<TEntryPoint> integrationTestFixture, ITestOutputHelper outputHelper)
+    public TestFixtureCore(TestFactory<TEntryPoint> integrationTestFixture, ITestOutputHelper outputHelper)
     {
         Fixture = integrationTestFixture;
         integrationTestFixture.RegisterServices(services => RegisterTestsServices(services));
         integrationTestFixture.Logger = integrationTestFixture.CreateLogger(outputHelper);
     }
 
-    public IntegrationTestFactory<TEntryPoint> Fixture { get; }
+    public TestFactory<TEntryPoint> Fixture { get; }
 
 
     public async Task InitializeAsync()
@@ -496,31 +487,31 @@ public class IntegrationTestFixtureCore<TEntryPoint> : IAsyncLifetime
     }
 }
 
-public abstract class IntegrationTestBase<TEntryPoint, TWContext> : IntegrationTestFixtureCore<TEntryPoint>
+public abstract class TestBase<TEntryPoint, TWContext> : TestFixtureCore<TEntryPoint>
     //,IClassFixture<IntegrationTestFactory<TEntryPoint, TWContext>>
     where TEntryPoint : class
     where TWContext : DbContext
 {
-    protected IntegrationTestBase(
-        IntegrationTestFactory<TEntryPoint, TWContext> integrationTestFixture, ITestOutputHelper outputHelper = null) : base(integrationTestFixture, outputHelper)
+    protected TestBase(
+        TestFactory<TEntryPoint, TWContext> integrationTestFixture, ITestOutputHelper outputHelper = null) : base(integrationTestFixture, outputHelper)
     {
         Fixture = integrationTestFixture;
     }
 
-    public IntegrationTestFactory<TEntryPoint, TWContext> Fixture { get; }
+    public TestFactory<TEntryPoint, TWContext> Fixture { get; }
 }
 
-public abstract class IntegrationTestBase<TEntryPoint, TWContext, TRContext> : IntegrationTestFixtureCore<TEntryPoint>
+public abstract class TestBase<TEntryPoint, TWContext, TRContext> : TestFixtureCore<TEntryPoint>
     //,IClassFixture<IntegrationTestFactory<TEntryPoint, TWContext, TRContext>>
     where TEntryPoint : class
     where TWContext : DbContext
     where TRContext : MongoDbContext
 {
-    protected IntegrationTestBase(
-        IntegrationTestFactory<TEntryPoint, TWContext, TRContext> integrationTestFixture, ITestOutputHelper outputHelper = null) : base(integrationTestFixture, outputHelper)
+    protected TestBase(
+        TestFactory<TEntryPoint, TWContext, TRContext> integrationTestFixture, ITestOutputHelper outputHelper = null) : base(integrationTestFixture, outputHelper)
     {
         Fixture = integrationTestFixture;
     }
 
-    public IntegrationTestFactory<TEntryPoint, TWContext, TRContext> Fixture { get; }
+    public TestFactory<TEntryPoint, TWContext, TRContext> Fixture { get; }
 }
