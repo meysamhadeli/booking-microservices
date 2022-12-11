@@ -12,7 +12,7 @@ namespace EndToEnd.Test.Flight.Features;
 
 public class CreateFlightTests : FlightEndToEndTestBase
 {
-    public CreateFlightTests(TestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(integrationTestFixture)
+    public CreateFlightTests(TestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(integrationTestFixture)
     {
     }
 

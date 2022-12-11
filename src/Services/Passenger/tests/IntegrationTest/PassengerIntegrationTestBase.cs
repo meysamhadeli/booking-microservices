@@ -6,16 +6,16 @@ using Xunit;
 namespace Integration.Test;
 
 [Collection(IntegrationTestCollection.Name)]
-public class PassengerIntegrationTestBase: TestBase<Program, PassengerDbContext>
+public class PassengerIntegrationTestBase: TestWriteBase<Program, PassengerDbContext>
 {
-    public PassengerIntegrationTestBase(TestFactory<Program, PassengerDbContext> integrationTestFactory)
+    public PassengerIntegrationTestBase(TestWriteFixture<Program, PassengerDbContext> integrationTestFactory)
         : base(integrationTestFactory)
     {
     }
 }
 
 [CollectionDefinition(Name)]
-public class IntegrationTestCollection : ICollectionFixture<TestFactory<Program, PassengerDbContext>>
+public class IntegrationTestCollection : ICollectionFixture<TestWriteFixture<Program, PassengerDbContext>>
 {
     public const string Name = "Passenger Integration Test";
 }

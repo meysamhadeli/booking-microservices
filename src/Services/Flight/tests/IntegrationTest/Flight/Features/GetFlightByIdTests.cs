@@ -14,7 +14,7 @@ namespace Integration.Test.Flight.Features;
 public class GetFlightByIdTests : FlightIntegrationTestBase
 {
     public GetFlightByIdTests(
-        TestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
+        TestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 

@@ -23,7 +23,8 @@ namespace Integration.Test.Booking.Features;
 
 public class CreateBookingTests : BookingIntegrationTestBase
 {
-    public CreateBookingTests(TestFactory<Program, AppDbContextBase, BookingReadDbContext> integrationTestFixture) : base(integrationTestFixture)
+    public CreateBookingTests(TestReadFixture<Program, BookingReadDbContext> integrationTestFixture) : base(
+        integrationTestFixture)
     {
     }
 
@@ -41,21 +42,13 @@ public class CreateBookingTests : BookingIntegrationTestBase
         var command = new FakeCreateBookingCommand().Generate();
 
         // Act
-        try
-        {
-            var response = await Fixture.SendAsync(command);
 
-            // Assert
-            response.Should().BeGreaterOrEqualTo(0);
+        var response = await Fixture.SendAsync(command);
 
-            (await Fixture.WaitForPublishing<BookingCreated>()).Should().Be(true);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        // Assert
+        response.Should().BeGreaterOrEqualTo(0);
 
+        (await Fixture.WaitForPublishing<BookingCreated>()).Should().Be(true);
     }
 
 

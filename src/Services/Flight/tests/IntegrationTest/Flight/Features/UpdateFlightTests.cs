@@ -13,7 +13,7 @@ namespace Integration.Test.Flight.Features;
 public class UpdateFlightTests : FlightIntegrationTestBase
 {
     public UpdateFlightTests(
-        TestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
+        TestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 

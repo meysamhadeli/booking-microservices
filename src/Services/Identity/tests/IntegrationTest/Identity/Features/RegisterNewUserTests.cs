@@ -12,7 +12,7 @@ namespace Integration.Test.Identity.Features;
 public class RegisterNewUserTests : IdentityIntegrationTestBase
 {
     public RegisterNewUserTests(
-        TestFactory<Program, IdentityContext> integrationTestFactory) : base(integrationTestFactory)
+        TestWriteFixture<Program, IdentityContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 

@@ -12,7 +12,7 @@ namespace Integration.Test.Passenger.Features;
 public class CompleteRegisterPassengerTests : PassengerIntegrationTestBase
 {
     public CompleteRegisterPassengerTests(
-        TestFactory<Program, PassengerDbContext> integrationTestFactory) : base(integrationTestFactory)
+        TestWriteFixture<Program, PassengerDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 
