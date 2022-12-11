@@ -32,7 +32,7 @@ using ILogger = Serilog.ILogger;
 
 namespace BuildingBlocks.TestBase;
 
-public class TestFactory<TEntryPoint> : IAsyncLifetime
+public class TestFixture<TEntryPoint> : IAsyncLifetime
     where TEntryPoint : class
 {
     private readonly WebApplicationFactory<TEntryPoint> _factory;
@@ -51,7 +51,7 @@ public class TestFactory<TEntryPoint> : IAsyncLifetime
     public IConfiguration Configuration => _factory?.Services.GetRequiredService<IConfiguration>();
     public ILogger Logger { get; set; }
 
-    public TestFactory()
+    public TestFixture()
     {
         _factory = new WebApplicationFactory<TEntryPoint>()
             .WithWebHostBuilder(builder =>
@@ -258,7 +258,7 @@ public class TestFactory<TEntryPoint> : IAsyncLifetime
     }
 }
 
-public class TestFactory<TEntryPoint, TWContext> : TestFactory<TEntryPoint>
+public class TestWriteFixture<TEntryPoint, TWContext> : TestFixture<TEntryPoint>
     where TEntryPoint : class
     where TWContext : DbContext
 {
@@ -365,7 +365,23 @@ public class TestFactory<TEntryPoint, TWContext> : TestFactory<TEntryPoint>
     }
 }
 
-public class TestFactory<TEntryPoint, TWContext, TRContext> : TestFactory<TEntryPoint, TWContext>
+
+public class TestReadFixture<TEntryPoint, TRContext> : TestFixture<TEntryPoint>
+    where TEntryPoint : class
+    where TRContext : MongoDbContext
+{
+    public Task ExecuteReadContextAsync(Func<TRContext, Task> action)
+    {
+        return ExecuteScopeAsync(sp => action(sp.GetRequiredService<TRContext>()));
+    }
+
+    public Task<T> ExecuteReadContextAsync<T>(Func<TRContext, Task<T>> action)
+    {
+        return ExecuteScopeAsync(sp => action(sp.GetRequiredService<TRContext>()));
+    }
+}
+
+public class TestFixture<TEntryPoint, TWContext, TRContext> : TestWriteFixture<TEntryPoint, TWContext>
     where TEntryPoint : class
     where TWContext : DbContext
     where TRContext : MongoDbContext
@@ -389,14 +405,14 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
     private SqlConnection DefaultDbConnection { get; set; }
     private SqlConnection PersistDbConnection { get; set; }
 
-    public TestFixtureCore(TestFactory<TEntryPoint> integrationTestFixture, ITestOutputHelper outputHelper)
+    public TestFixtureCore(TestFixture<TEntryPoint> integrationTestFixture, ITestOutputHelper outputHelper)
     {
         Fixture = integrationTestFixture;
         integrationTestFixture.RegisterServices(services => RegisterTestsServices(services));
         integrationTestFixture.Logger = integrationTestFixture.CreateLogger(outputHelper);
     }
 
-    public TestFactory<TEntryPoint> Fixture { get; }
+    public TestFixture<TEntryPoint> Fixture { get; }
 
 
     public async Task InitializeAsync()
@@ -487,18 +503,33 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
     }
 }
 
-public abstract class TestBase<TEntryPoint, TWContext> : TestFixtureCore<TEntryPoint>
+public abstract class TestReadBase<TEntryPoint, TRContext> : TestFixtureCore<TEntryPoint>
     //,IClassFixture<IntegrationTestFactory<TEntryPoint, TWContext>>
     where TEntryPoint : class
-    where TWContext : DbContext
+    where TRContext : MongoDbContext
 {
-    protected TestBase(
-        TestFactory<TEntryPoint, TWContext> integrationTestFixture, ITestOutputHelper outputHelper = null) : base(integrationTestFixture, outputHelper)
+    protected TestReadBase(
+        TestReadFixture<TEntryPoint, TRContext> integrationTestFixture, ITestOutputHelper outputHelper = null) : base(integrationTestFixture, outputHelper)
     {
         Fixture = integrationTestFixture;
     }
 
-    public TestFactory<TEntryPoint, TWContext> Fixture { get; }
+    public TestReadFixture<TEntryPoint, TRContext> Fixture { get; }
+}
+
+
+public abstract class TestWriteBase<TEntryPoint, TWContext> : TestFixtureCore<TEntryPoint>
+    //,IClassFixture<IntegrationTestFactory<TEntryPoint, TWContext>>
+    where TEntryPoint : class
+    where TWContext : DbContext
+{
+    protected TestWriteBase(
+        TestWriteFixture<TEntryPoint, TWContext> integrationTestFixture, ITestOutputHelper outputHelper = null) : base(integrationTestFixture, outputHelper)
+    {
+        Fixture = integrationTestFixture;
+    }
+
+    public TestWriteFixture<TEntryPoint, TWContext> Fixture { get; }
 }
 
 public abstract class TestBase<TEntryPoint, TWContext, TRContext> : TestFixtureCore<TEntryPoint>
@@ -508,10 +539,10 @@ public abstract class TestBase<TEntryPoint, TWContext, TRContext> : TestFixtureC
     where TRContext : MongoDbContext
 {
     protected TestBase(
-        TestFactory<TEntryPoint, TWContext, TRContext> integrationTestFixture, ITestOutputHelper outputHelper = null) : base(integrationTestFixture, outputHelper)
+        TestFixture<TEntryPoint, TWContext, TRContext> integrationTestFixture, ITestOutputHelper outputHelper = null) : base(integrationTestFixture, outputHelper)
     {
         Fixture = integrationTestFixture;
     }
 
-    public TestFactory<TEntryPoint, TWContext, TRContext> Fixture { get; }
+    public TestFixture<TEntryPoint, TWContext, TRContext> Fixture { get; }
 }

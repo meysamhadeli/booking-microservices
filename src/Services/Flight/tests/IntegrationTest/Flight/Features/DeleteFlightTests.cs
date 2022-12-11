@@ -15,7 +15,7 @@ namespace Integration.Test.Flight.Features;
 public class DeleteFlightTests : FlightIntegrationTestBase
 {
     public DeleteFlightTests(
-        TestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
+        TestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 

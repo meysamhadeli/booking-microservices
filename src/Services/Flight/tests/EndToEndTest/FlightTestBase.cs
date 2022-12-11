@@ -8,13 +8,13 @@ namespace EndToEnd.Test;
 [Collection(EndToEndTestCollection.Name)]
 public class FlightEndToEndTestBase: TestBase<Program, FlightDbContext, FlightReadDbContext>
 {
-    public FlightEndToEndTestBase(TestFactory<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(integrationTestFixture)
+    public FlightEndToEndTestBase(TestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(integrationTestFixture)
     {
     }
 }
 
 [CollectionDefinition(Name)]
-public class EndToEndTestCollection : ICollectionFixture<TestFactory<Program, FlightDbContext, FlightReadDbContext>>
+public class EndToEndTestCollection : ICollectionFixture<TestFixture<Program, FlightDbContext, FlightReadDbContext>>
 {
     public const string Name = "Flight EndToEnd Test";
 }

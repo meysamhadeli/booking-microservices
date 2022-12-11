@@ -13,7 +13,7 @@ namespace Integration.Test.Passenger.Features;
 public class GetPassengerByIdTests : PassengerIntegrationTestBase
 {
     public GetPassengerByIdTests(
-        TestFactory<Program, PassengerDbContext> integrationTestFactory) : base(integrationTestFactory)
+        TestWriteFixture<Program, PassengerDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
     }
 
