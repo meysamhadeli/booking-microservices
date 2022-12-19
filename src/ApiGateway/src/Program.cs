@@ -10,6 +10,8 @@ var env = builder.Environment;
 var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
 Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
+
+
 builder.AddCustomSerilog(env);
 builder.Services.AddJwt();
 builder.Services.AddControllers();
