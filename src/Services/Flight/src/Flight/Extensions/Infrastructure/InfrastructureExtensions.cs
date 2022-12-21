@@ -101,7 +101,10 @@ public static class InfrastructureExtensions
         var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
         app.UseProblemDetails();
-        app.UseSerilogRequestLogging();
+        app.UseSerilogRequestLogging(options =>
+        {
+            options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest;
+        });
         app.UseCorrelationId();
         app.UseHttpMetrics();
         app.UseMigration<FlightDbContext>(env);

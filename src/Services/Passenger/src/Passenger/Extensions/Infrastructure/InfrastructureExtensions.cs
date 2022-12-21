@@ -92,7 +92,10 @@ public static class InfrastructureExtensions
         var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
         app.UseProblemDetails();
-        app.UseSerilogRequestLogging();
+        app.UseSerilogRequestLogging(options =>
+        {
+            options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest;
+        });
         app.UseMigration<PassengerDbContext>(env);
         app.UseCorrelationId();
         app.UseHttpMetrics();
