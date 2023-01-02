@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Unchase.Swashbuckle.AspNetCore.Extensions.Extensions;
 
 namespace BuildingBlocks.Swagger;
 
@@ -17,7 +18,7 @@ public static class ServiceCollectionExtensions
     // https://github.com/dotnet/aspnet-api-versioning/tree/88323136a97a59fcee24517a514c1a445530c7e2/examples/AspNetCore/WebApi/MinimalOpenApiExample
     public static IServiceCollection AddCustomSwagger(this IServiceCollection services,
         IConfiguration configuration,
-        Assembly assembly)
+        params Assembly[] assemblies)
     {
          // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/openapi
         services.AddEndpointsApiExplorer();
@@ -31,9 +32,14 @@ public static class ServiceCollectionExtensions
             {
                 options.OperationFilter<SwaggerDefaultValues>();
 
-                var xmlFile = XmlCommentsFilePath(assembly);
-                if (File.Exists(xmlFile)) options.IncludeXmlComments(xmlFile);
+                foreach (var assembly in assemblies)
+                {
+                    var xmlFile = XmlCommentsFilePath(assembly);
 
+                    if (File.Exists(xmlFile)) options.IncludeXmlComments(xmlFile);
+                }
+
+                options.AddEnumsWithValuesFixFilters();
 
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {

@@ -1,0 +1,15 @@
+# https://github.com/google-github-actions/release-please-action#how-release-please-works
+# https://www.conventionalcommits.org/en/v1.0.0/
+on:
+  push:
+    branches:
+      - main
+name: release-please
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        with:
+          release-type: go
+          package-name: release-please-action
