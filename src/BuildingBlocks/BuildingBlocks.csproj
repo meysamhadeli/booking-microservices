@@ -66,6 +66,7 @@
     <PackageReference Include="OpenTelemetry.Contrib.Instrumentation.MassTransit" Version="1.0.0-beta2" />
     <PackageReference Include="Scrutor" Version="4.2.0" />
     <PackageReference Include="Scrutor.AspNetCore" Version="3.3.0" />
+    <PackageReference Include="Sentry.Serilog" Version="3.25.0" />
     <PackageReference Include="Serilog" Version="2.12.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
     <PackageReference Include="Serilog.Enrichers.Span" Version="3.0.0" />
@@ -100,6 +101,7 @@
     <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.1" />
     <PackageReference Include="Testcontainers" Version="2.2.0" />
+    <PackageReference Include="Unchase.Swashbuckle.AspNetCore.Extensions" Version="2.7.1" />
     <PackageReference Include="Yarp.ReverseProxy" Version="1.1.1" />
     <PackageReference Include="Microsoft.Identity.Web" Version="2.0.5-preview" />
 

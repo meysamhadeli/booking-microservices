@@ -48,6 +48,25 @@ namespace BuildingBlocks.Logging
                         });
                 }
 
+
+                if (logOptions?.Sentry is {Enable: true})
+                {
+                    var minimumBreadcrumbLevel = Enum.TryParse<LogEventLevel>(logOptions.Level, true, out var minBreadcrumbLevel)
+                        ? minBreadcrumbLevel
+                        : LogEventLevel.Information;
+
+                    var minimumEventLevel = Enum.TryParse<LogEventLevel>(logOptions.Sentry.MinimumEventLevel, true, out var minEventLevel)
+                        ? minEventLevel
+                        : LogEventLevel.Error;
+
+                    loggerConfiguration.WriteTo.Sentry(o =>
+                    {
+                        o.Dsn = logOptions.Sentry.Dsn;
+                        o.MinimumBreadcrumbLevel = minimumBreadcrumbLevel;
+                        o.MinimumEventLevel = minimumEventLevel;
+                    });
+                }
+
                 if (logOptions.File is { Enable: true })
                 {
                     var root = env.ContentRootPath;
