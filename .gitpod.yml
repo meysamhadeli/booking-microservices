@@ -2,6 +2,8 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
+  - name: Start containers
+    run: docker-compose -f "./deployments/docker-compose/infrastracture.yaml" up -d --build
   - name: Restore & Build
     init: |
       dotnet dev-certs https 
