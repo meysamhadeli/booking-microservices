@@ -2,7 +2,7 @@
 
 public class ElasticOptions
 {
-    public bool Enable { get; set; }
+    public bool Enabled { get; set; }
     public string ElasticServiceUrl { get; set; }
     public string ElasticSearchIndex { get; set; }
 }
