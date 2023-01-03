@@ -38,7 +38,7 @@ namespace BuildingBlocks.Logging
                     .Enrich.FromLogContext()
                     .ReadFrom.Configuration(context.Configuration);
 
-                if (logOptions.Elastic is { Enable: true })
+                if (logOptions.Elastic is { Enabled: true })
                 {
                     loggerConfiguration.WriteTo.Elasticsearch(
                         new ElasticsearchSinkOptions(new Uri(logOptions.Elastic.ElasticServiceUrl))
@@ -48,7 +48,26 @@ namespace BuildingBlocks.Logging
                         });
                 }
 
-                if (logOptions.File is { Enable: true })
+
+                if (logOptions?.Sentry is {Enabled: true})
+                {
+                    var minimumBreadcrumbLevel = Enum.TryParse<LogEventLevel>(logOptions.Level, true, out var minBreadcrumbLevel)
+                        ? minBreadcrumbLevel
+                        : LogEventLevel.Information;
+
+                    var minimumEventLevel = Enum.TryParse<LogEventLevel>(logOptions.Sentry.MinimumEventLevel, true, out var minEventLevel)
+                        ? minEventLevel
+                        : LogEventLevel.Error;
+
+                    loggerConfiguration.WriteTo.Sentry(o =>
+                    {
+                        o.Dsn = logOptions.Sentry.Dsn;
+                        o.MinimumBreadcrumbLevel = minimumBreadcrumbLevel;
+                        o.MinimumEventLevel = minimumEventLevel;
+                    });
+                }
+
+                if (logOptions.File is { Enabled: true })
                 {
                     var root = env.ContentRootPath;
                     Directory.CreateDirectory(Path.Combine(root, "logs"));

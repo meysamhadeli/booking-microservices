@@ -16,6 +16,10 @@ public static class Extensions
 {
     public static IServiceCollection AddCustomHealthCheck(this IServiceCollection services)
     {
+        var healthOptions = services.GetOptions<HealthOptions>(nameof(HealthOptions));
+
+        if (!healthOptions.Enabled) return services;
+
         var appOptions = services.GetOptions<AppOptions>(nameof(AppOptions));
         var sqlOptions = services.GetOptions<DatabaseOptions>(nameof(DatabaseOptions));
         var rabbitMqOptions = services.GetOptions<RabbitMqOptions>(nameof(RabbitMqOptions));
@@ -23,7 +27,9 @@ public static class Extensions
         var logOptions = services.GetOptions<LogOptions>(nameof(LogOptions));
 
         var healthChecksBuilder = services.AddHealthChecks()
-            .AddRabbitMQ(rabbitConnectionString: $"amqp://{rabbitMqOptions.UserName}:{rabbitMqOptions.Password}@{rabbitMqOptions.HostName}")
+            .AddRabbitMQ(
+                rabbitConnectionString:
+                $"amqp://{rabbitMqOptions.UserName}:{rabbitMqOptions.Password}@{rabbitMqOptions.HostName}")
             .AddElasticsearch(logOptions.Elastic.ElasticServiceUrl);
 
         if (mongoOptions.ConnectionString is not null)
@@ -43,6 +49,10 @@ public static class Extensions
 
     public static WebApplication UseCustomHealthCheck(this WebApplication app)
     {
+        var healthOptions = app.Configuration.GetOptions<HealthOptions>(nameof(HealthOptions));
+
+        if (!healthOptions.Enabled) return app;
+
         app.UseHealthChecks("/healthz",
                 new HealthCheckOptions
                 {

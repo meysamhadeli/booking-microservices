@@ -5,8 +5,8 @@ services:
     #  Rabbitmq
     #######################################################
   rabbitmq:
-    image: rabbitmq:3-management
     container_name: rabbitmq
+    image: rabbitmq:3-management
     restart: unless-stopped
     ports:
       - 5672:5672
@@ -18,8 +18,8 @@ services:
     #######################################################
     #  SqlServer
     #######################################################
-  db:
-    container_name: sqldb
+  sql:
+    container_name: sql
     image: mcr.microsoft.com/mssql/server:2022-latest
     restart: unless-stopped
     ports:
@@ -50,8 +50,8 @@ services:
     #  Jaeger
     #######################################################
   jaeger:
-    image: jaegertracing/all-in-one
     container_name: jaeger
+    image: jaegertracing/all-in-one
     restart: unless-stopped
     networks:
       - booking
@@ -68,7 +68,8 @@ services:
     #######################################################
     #  EventStoreDB
     #######################################################
-  eventstore.db:
+  eventstore:
+      container_name: eventstore
       image: eventstore/eventstore:21.2.0-buster-slim
       restart: on-failure
       environment:
@@ -91,7 +92,7 @@ services:
     #  Mongo
     #######################################################
   mongo:
-    image: mongo:4
+    image: mongo:5
     container_name: mongo
     restart: unless-stopped
     # environment:
@@ -101,8 +102,6 @@ services:
       - booking
     ports:
       - 27017:27017
-    volumes:
-      - mongo:/data/db
 
 
     #######################################################
@@ -162,8 +161,6 @@ networks:
 volumes:
   db-data:
     external: false
-  mongo:
-    driver: local
   elasticsearch-data:
 
 
