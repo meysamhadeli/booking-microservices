@@ -48,7 +48,7 @@ public static class TestContainers
             Username = Guid.NewGuid().ToString("D"),
             Password = Guid.NewGuid().ToString("D"),
         })
-        .WithImage("mongo:4")
+        .WithImage("mongo:5")
         .WithCleanUp(true)
         .Build();
 

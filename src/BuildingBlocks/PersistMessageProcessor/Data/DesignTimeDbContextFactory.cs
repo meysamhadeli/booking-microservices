@@ -9,8 +9,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<PersistMes
     {
         var builder = new DbContextOptionsBuilder<PersistMessageDbContext>();
 
-        builder.UseSqlServer(
-            "Data Source=.\\sqlexpress;Initial Catalog=PersistMessageDB;Persist Security Info=False;Integrated Security=SSPI;TrustServerCertificate=True");
+        builder.UseSqlServer("Server=localhost;Database=PersistMessageDB;User ID=sa;Password=@Aa123456;TrustServerCertificate=True");
         return new PersistMessageDbContext(builder.Options);
     }
 }
