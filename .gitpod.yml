@@ -3,7 +3,10 @@ image:
 
 tasks:
   - name: Start containers
-    command: docker-compose -f "./deployments/docker-compose/infrastracture.yaml" up -d --build
+    init: |
+      docker-compose pull
+  - command: |
+      docker-compose  -f ./deployments/docker-compose/infrastracture.yaml up -d
   - name: Restore & Build
     init: |
       dotnet dev-certs https 
@@ -15,3 +18,4 @@ tasks:
 vscode:
   extensions:
     - muhammad-sammy.csharp
+    - ms-azuretools.vscode-docker
