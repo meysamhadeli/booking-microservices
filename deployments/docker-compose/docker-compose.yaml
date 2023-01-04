@@ -22,7 +22,7 @@ services:
       - elasticsearch
       - kibana
     volumes:
-      - '${USERPROFILE}\.aspnet\https:/https/'
+      - ~/.aspnet/https:/https:ro
     environment:
       - 'ASPNETCORE_URLS=https://+;http://+'
       - ASPNETCORE_HTTPS_PORT=5001
@@ -54,7 +54,7 @@ services:
       - kibana
       - mongo
     volumes:
-      - '${USERPROFILE}\.aspnet\https:/https/'
+      - ~/.aspnet/https:/https:ro
     environment:
       - 'ASPNETCORE_URLS=https://+;http://+'
       - ASPNETCORE_HTTPS_PORT=5003
@@ -85,7 +85,7 @@ services:
       - elasticsearch
       - kibana
     volumes:
-      - '${USERPROFILE}\.aspnet\https:/https/'
+      - ~/.aspnet/https:/https:ro
     environment:
       - 'ASPNETCORE_URLS=https://+;http://+'
       - ASPNETCORE_HTTPS_PORT=5005
@@ -117,7 +117,7 @@ services:
       - kibana
       - mongo
     volumes:
-      - '${USERPROFILE}\.aspnet\https:/https/'
+      - ~/.aspnet/https:/https:ro
     environment:
       - 'ASPNETCORE_URLS=https://+;http://+'
       - ASPNETCORE_HTTPS_PORT=5012
@@ -150,7 +150,7 @@ services:
       - kibana
       - mongo
     volumes:
-      - '${USERPROFILE}\.aspnet\https:/https/'
+      - ~/.aspnet/https:/https:ro
     environment:
       - 'ASPNETCORE_URLS=https://+;http://+'
       - ASPNETCORE_HTTPS_PORT=5010
