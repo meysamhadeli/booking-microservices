@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS builder
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS builder
 WORKDIR /src
 
 # Setup working directory for the project
@@ -26,7 +26,7 @@ WORKDIR /src/ApiGateway/src
 # and no build, as we did it already
 RUN dotnet publish -c Release --no-build -o out
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
 
 # Setup working directory for the project
 WORKDIR /app
