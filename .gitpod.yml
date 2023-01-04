@@ -1,21 +1,27 @@
+# https://github.com/gitpod-samples/template-dotnet-core-cli-csharp
+# https://www.gitpod.io/docs/introduction/languages/dotnet
+# https://github.com/gitpod-samples/template-docker-compose
+# https://www.gitpod.io/docs/references/gitpod-yml
+# https://www.gitpod.io/docs/configure
+# https://www.gitpod.io/docs/configure/workspaces/ports
+
 image:
   file: .gitpod.Dockerfile
 
+# https://www.gitpod.io/docs/configure/workspaces/tasks#execution-order
+# https://www.gitpod.io/docs/configure/projects/prebuilds
 tasks:
-  - name: Start containers
+  - name: Init Docker-Compose
     init: |
       docker-compose pull
-  - command: |
-      docker-compose  -f ./deployments/docker-compose/infrastracture.yaml up -d
+      docker-compose  -f ./deployments/docker-compose/docker-compose.infrastructure.yaml up -d
   - name: Restore & Build
     init: |
-      dotnet dev-certs https 
+      dotnet dev-certs https
       dotnet restore
       dotnet build
-  - name: Run
-    command: dotnet run
-
+      
 vscode:
   extensions:
-    - muhammad-sammy.csharp
     - ms-azuretools.vscode-docker
+    - muhammad-sammy.csharp
