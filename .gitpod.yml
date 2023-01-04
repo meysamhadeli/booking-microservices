@@ -14,7 +14,7 @@ tasks:
   - name: Init Docker-Compose
     init: |
       docker-compose pull
-      docker-compose  -f ./deployments/docker-compose/docker-compose.infrastructure.yaml up -d
+      docker-compose  -f ./deployments/docker-compose/infrastracture.yaml up -d
   - name: Restore & Build
     init: |
       dotnet dev-certs https
