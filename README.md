@@ -138,13 +138,18 @@ Using the CQRS pattern, we cut each business functionality into vertical slices,
 
 Run the following commands for [Config SSL](https://docs.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-6.0) in your system
 
+#### Windows using Linux containers
 ```bash
 dotnet dev-certs https -ep %USERPROFILE%\.aspnet\https\aspnetapp.pfx -p password
 dotnet dev-certs https --trust
 ```
-
 > Note: for running this command in `powershell` use `$env:USERPROFILE` instead of `%USERPROFILE%`
 
+#### macOS or Linux
+```bash
+dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p $CREDENTIAL_PLACEHOLDER$
+dotnet dev-certs https --trust
+```
 ### Docker Compose
 
 Run this app in docker using the [docker-compose.yaml](./deployments/docker-compose/docker-compose.yaml) file with the below command at the root of the application:
