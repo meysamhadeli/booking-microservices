@@ -68,7 +68,7 @@ public static class InfrastructureExtensions
         builder.Services.AddCustomMapster(typeof(IdentityRoot).Assembly);
         builder.Services.AddCustomHealthCheck();
 
-        builder.Services.AddCustomMassTransit(typeof(IdentityRoot).Assembly, env);
+        builder.Services.AddCustomMassTransit(env, typeof(IdentityRoot).Assembly);
         builder.Services.AddCustomOpenTelemetry();
 
         SnowFlakIdGenerator.Configure(4);

@@ -72,7 +72,7 @@ public static class InfrastructureExtensions
         builder.Services.AddCustomProblemDetails();
         builder.Services.AddCustomMapster(typeof(BookingRoot).Assembly);
         builder.Services.AddCustomHealthCheck();
-        builder.Services.AddCustomMassTransit(typeof(BookingRoot).Assembly, env);
+        builder.Services.AddCustomMassTransit(env, typeof(BookingRoot).Assembly);
         builder.Services.AddCustomOpenTelemetry();
         builder.Services.AddTransient<AuthHeaderHandler>();
 

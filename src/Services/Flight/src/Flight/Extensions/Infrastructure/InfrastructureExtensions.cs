@@ -78,7 +78,7 @@ public static class InfrastructureExtensions
         builder.Services.AddValidatorsFromAssembly(typeof(FlightRoot).Assembly);
         builder.Services.AddCustomMapster(typeof(FlightRoot).Assembly);
         builder.Services.AddHttpContextAccessor();
-        builder.Services.AddCustomMassTransit(typeof(FlightRoot).Assembly, env);
+        builder.Services.AddCustomMassTransit(env, typeof(FlightRoot).Assembly);
         builder.Services.AddCustomOpenTelemetry();
         builder.Services.AddCustomHealthCheck();
 

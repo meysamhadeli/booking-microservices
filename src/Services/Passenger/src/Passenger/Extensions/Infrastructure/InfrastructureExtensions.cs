@@ -73,7 +73,7 @@ public static class InfrastructureExtensions
         builder.Services.AddCustomMapster(typeof(PassengerRoot).Assembly);
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddCustomHealthCheck();
-        builder.Services.AddCustomMassTransit(typeof(PassengerRoot).Assembly, env);
+        builder.Services.AddCustomMassTransit(env, typeof(PassengerRoot).Assembly);
         builder.Services.AddCustomOpenTelemetry();
         builder.Services.AddGrpc(options =>
         {
