@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: nuget
+    directory: '/'
+    schedule:
+      interval: monthly
+    reviewers:
+      - meysamhadeli
+    assignees:
+      - meysamhadeli
+    ignore:
+      - dependency-name: '*'
+        versions:
+          - '>= 0'
