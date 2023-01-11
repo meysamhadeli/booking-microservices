@@ -1,0 +1,20 @@
+ # https://johanneskonings.dev/github/2021/02/28/github_automatic_releases_and-changelog/
+ # https://tiagomichaelsousa.dev/articles/stop-writing-your-changelogs-manually
+ name: Release Drafter
+
+ on:
+   push:
+     branches:
+       - develop
+       - main
+
+ jobs:
+   update_release_draft:
+     name: Release drafter
+     runs-on: ubuntu-latest
+
+     steps:
+       - name: Update Release Draft
+         uses: release-drafter/release-drafter@v5
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
