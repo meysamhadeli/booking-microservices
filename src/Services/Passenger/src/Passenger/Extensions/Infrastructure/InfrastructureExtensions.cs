@@ -99,7 +99,6 @@ public static class InfrastructureExtensions
         app.UseMigration<PassengerDbContext>(env);
         app.UseCorrelationId();
         app.UseHttpMetrics();
-        app.UseHttpsRedirection();
         app.UseCustomHealthCheck();
         app.MapMetrics();
         app.MapGrpcService<PassengerGrpcServices>();

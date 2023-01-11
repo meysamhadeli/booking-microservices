@@ -108,7 +108,6 @@ public static class InfrastructureExtensions
         app.UseCorrelationId();
         app.UseHttpMetrics();
         app.UseMigration<FlightDbContext>(env);
-        app.UseHttpsRedirection();
         app.MapMetrics();
         app.UseCustomHealthCheck();
         app.MapGrpcService<FlightGrpcServices>();

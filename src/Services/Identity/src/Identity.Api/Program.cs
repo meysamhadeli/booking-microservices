@@ -1,4 +1,5 @@
 using BuildingBlocks.Web;
+using Identity;
 using Identity.Extensions.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +12,7 @@ builder.Host.UseDefaultServiceProvider((context, options) =>
     options.ValidateOnBuild = true;
 });
 
-builder.AddMinimalEndpoints();
+builder.AddMinimalEndpoints(assemblies:typeof(IdentityRoot).Assembly);
 builder.AddInfrastructure();
 
 var app = builder.Build();
@@ -19,6 +20,8 @@ var app = builder.Build();
 app.MapMinimalEndpoints();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRouting();
+app.UseHttpsRedirection();
 app.UseInfrastructure();
 
 app.Run();
