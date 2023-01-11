@@ -1,3 +1,4 @@
+using Booking;
 using Booking.Extensions.Infrastructure;
 using BuildingBlocks.Web;
 
@@ -11,7 +12,7 @@ builder.Host.UseDefaultServiceProvider((context, options) =>
     options.ValidateOnBuild = true;
 });
 
-builder.AddMinimalEndpoints();
+builder.AddMinimalEndpoints(assemblies:typeof(BookingRoot).Assembly);
 builder.AddInfrastructure();
 
 var app = builder.Build();
@@ -19,6 +20,8 @@ var app = builder.Build();
 app.MapMinimalEndpoints();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRouting();
+app.UseHttpsRedirection();
 app.UseInfrastructure();
 
 app.Run();

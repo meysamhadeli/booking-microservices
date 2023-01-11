@@ -93,7 +93,6 @@ public static class InfrastructureExtensions
         app.UseCorrelationId();
         app.UseHttpMetrics();
         app.UseProblemDetails();
-        app.UseHttpsRedirection();
         app.UseCustomHealthCheck();
         app.UseIdentityServer();
         app.MapMetrics();

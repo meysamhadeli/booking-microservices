@@ -1,0 +1,99 @@
+# https://johanneskonings.dev/github/2021/02/28/github_automatic_releases_and-changelog/
+# https://tiagomichaelsousa.dev/articles/stop-writing-your-changelogs-manually
+# https://github.com/release-drafter/release-drafter/issues/551
+# https://github.com/release-drafter/release-drafter/pull/1013
+# https://github.com/release-drafter/release-drafter/issues/139
+# https://github.com/atk4/data/blob/develop/.github/release-drafter.yml
+
+# This release drafter follows the conventions from https://keepachangelog.com, https://common-changelog.org/
+# https://www.conventionalcommits.org
+
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+template: |
+  ## What Changed 👀
+
+  $CHANGES
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
+categories:
+  - title: 🚀 Features
+    labels:
+      - feature
+  - title: 🐛 Bug Fixes
+    labels:
+      - fix
+      - bug
+  - title: ♻️ Changes
+    labels:
+      - changed
+      - enhancement
+      - refactor
+  - title: ⛔️ Deprecated
+    labels:
+      - deprecated
+  - title: 🗑 Removed
+    labels:
+      - removed
+  - title: 🔐 Security
+    labels:
+      - security
+  - title: 📄 Documentation
+    labels:
+      - docs
+      - documentation
+  - title: 🧩 Dependency Updates
+    labels:
+      - deps
+      - dependencies
+  - title: 🧰 Maintenance
+    label: 'chore'
+  - title: 🧺 Miscellaneous #Everything except ABAP
+    label: misc
+  - title: 📝 Other changes
+## putting no labels pr to `Other Changes` category with no label - https://github.com/release-drafter/release-drafter/issues/139#issuecomment-480473934
+
+# https://www.trywilco.com/post/wilco-ci-cd-github-heroku
+# https://github.com/release-drafter/release-drafter#autolabeler
+# https://github.com/fuxingloh/multi-labeler
+
+# Using regex for defining rules - https://regexr.com/ - https://regex101.com/
+autolabeler:
+  - label: 'chore'
+    branch:
+      - '/(chore)\/.*/'
+    title:
+      - '/^chore: .*/'
+  - label: 'docs'
+    branch:
+      - '/(docs)\/.*/'
+    title:
+      - '/^docs: .*/'
+  - label: 'bug'
+    branch:
+      - '/(fix)\/.*/'
+    title:
+      - '/^fix: .*/'
+  - label: 'feature'
+    branch:
+      - '/(feat)\/.*/'
+    title:
+      - '/^feat: .*/'
+    body:
+      - '/JIRA-[0-9]{1,4}/'
+
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
+version-resolver:
+  major:
+    labels:
+      - major
+  minor:
+    labels:
+      - minor
+  patch:
+    labels:
+      - patch
+  default: patch
+
+exclude-labels:
+  - skip-changelog

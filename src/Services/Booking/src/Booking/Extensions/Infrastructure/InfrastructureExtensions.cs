@@ -99,10 +99,8 @@ public static class InfrastructureExtensions
             options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest;
         });
         app.UseCorrelationId();
-        app.UseRouting();
         app.UseHttpMetrics();
         app.UseMigration<PersistMessageDbContext>(env);
-        app.UseHttpsRedirection();
         app.UseCustomHealthCheck();
         app.MapMetrics();
         app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
