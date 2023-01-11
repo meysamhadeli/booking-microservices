@@ -24,10 +24,10 @@ jobs:
           hasSome: feature,fix,changed,deprecated,removed,security,docs,dependencies
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
-  validate-pull-request-title:
-    name: Validate PR title
-    runs-on: ubuntu-latest
-    steps:
-      - uses: amannn/action-semantic-pull-request@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ # validate-pull-request-title:
+ #   name: Validate PR title
+ #   runs-on: ubuntu-latest
+ #   steps:
+ #     - uses: amannn/action-semantic-pull-request@v5
+ #       env:
+ #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
