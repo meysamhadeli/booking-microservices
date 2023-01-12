@@ -434,6 +434,20 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
+        await InitSqlAsync();
+    }
+
+    public async Task DisposeAsync()
+    {
+        await ResetSqlAsync();
+        await ResetMongoAsync();
+        await ResetRabbitMqAsync();
+    }
+
+    private async Task InitSqlAsync()
+    {
+        await ResetSqlAsync();
+
         var databaseOptions = Fixture.ServiceProvider.GetRequiredService<IOptions<DatabaseOptions>>()?.Value;
         var persistOptions = Fixture.ServiceProvider.GetRequiredService<IOptions<PersistMessageOptions>>()?.Value;
 
@@ -444,7 +458,6 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
 
             _reSpawnerPersistDb = await Respawner.CreateAsync(PersistDbConnection,
                 new RespawnerOptions { TablesToIgnore = new Table[] { "__EFMigrationsHistory" }, });
-
         }
 
         if (!string.IsNullOrEmpty(databaseOptions?.DefaultConnection))
@@ -457,13 +470,6 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
 
             await SeedDataAsync();
         }
-    }
-
-    public async Task DisposeAsync()
-    {
-        await ResetSqlAsync();
-        await ResetMongoAsync();
-        await ResetRabbitMqAsync();
     }
 
     private async Task ResetSqlAsync()

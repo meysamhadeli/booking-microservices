@@ -1,57 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <ItemGroup>
-
-    <PackageReference
-      Include="StyleCop.Analyzers"
-      Version="1.2.0-beta.354"
-      PrivateAssets="all"
-      Condition="$(MSBuildProjectExtension) == '.csproj'"
-    />
-
-    <PackageReference
-      Include="Roslynator.Analyzers"
-      Version="3.3.0"
-      PrivateAssets="all"
-      Condition="$(MSBuildProjectExtension) == '.csproj'"
-    />
-    <PackageReference
-      Include="Roslynator.CodeAnalysis.Analyzers"
-      Version="3.3.0"
-      PrivateAssets="all"
-      Condition="$(MSBuildProjectExtension) == '.csproj'"
-    />
-    <PackageReference
-      Include="Roslynator.Formatting.Analyzers"
-      Version="3.3.0"
-      PrivateAssets="all"
-      Condition="$(MSBuildProjectExtension) == '.csproj'"
-    />
-    <PackageReference
-      Include="Microsoft.VisualStudio.Threading.Analyzers"
-      Version="17.0.64"
-      PrivateAssets="all"
-      Condition="$(MSBuildProjectExtension) == '.csproj'"
-    />
-    <PackageReference
-      Include="AsyncFixer"
-      Version="1.5.1"
-      PrivateAssets="all"
-      Condition="$(MSBuildProjectExtension) == '.csproj'"
-    />
-    <PackageReference
-      Include="SerilogAnalyzer"
-      Version="0.15.0"
-      PrivateAssets="all"
-      Condition="$(MSBuildProjectExtension) == '.csproj'"
-    />
-
-    <PackageReference
-      Include="Meziantou.Analyzer"
-      Version="1.0.723"
-      PrivateAssets="all"
-      Condition="$(MSBuildProjectExtension) == '.csproj'"
-    />
-
+    <GlobalPackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0" />
+    <GlobalPackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+    <GlobalPackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435" />
   </ItemGroup>
-
 </Project>
