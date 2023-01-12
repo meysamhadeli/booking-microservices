@@ -9,9 +9,7 @@ public static class Extensions
 {
     public static IServiceCollection AddPersistMessageProcessor(this IServiceCollection services)
     {
-        services.AddOptions<PersistMessageOptions>()
-            .BindConfiguration(nameof(PersistMessageOptions))
-            .ValidateDataAnnotations();
+        services.AddValidateOptions<PersistMessageOptions>();
 
         services.AddDbContext<PersistMessageDbContext>(options =>
         {

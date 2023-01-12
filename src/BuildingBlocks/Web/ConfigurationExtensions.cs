@@ -4,6 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.Web;
 
+using MassTransit;
+using Microsoft.Extensions.Options;
+
 public static class ConfigurationExtensions
 {
     public static TModel GetOptions<TModel>(this IConfiguration configuration, string section) where TModel : new()
@@ -26,5 +29,14 @@ public static class ConfigurationExtensions
         var model = new TModel();
         app.Configuration?.GetSection(section).Bind(model);
         return model;
+    }
+
+    public static void AddValidateOptions<TModel>(this IServiceCollection service) where TModel : class, new()
+    {
+        service.AddOptions<TModel>()
+            .BindConfiguration(typeof(TModel).Name)
+            .ValidateDataAnnotations();
+
+        service.AddSingleton(x => x.GetRequiredService<IOptions<TModel>>().Value);
     }
 }

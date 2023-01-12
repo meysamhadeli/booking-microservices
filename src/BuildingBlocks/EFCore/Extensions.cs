@@ -18,9 +18,7 @@ public static class Extensions
         where TContext : DbContext, IDbContext
     {
 
-        services.AddOptions<DatabaseOptions>()
-            .BindConfiguration(nameof(DatabaseOptions))
-            .ValidateDataAnnotations();
+        services.AddValidateOptions<DatabaseOptions>();
 
         services.AddDbContext<TContext>((sp, options) =>
         {
