@@ -5,7 +5,6 @@ using BuildingBlocks.EFCore;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.PersistMessageProcessor;
-using BuildingBlocks.TestBase.Auth;
 using BuildingBlocks.Web;
 using DotNet.Testcontainers.Containers;
 using EasyNetQ.Management.Client;
@@ -32,6 +31,10 @@ using ILogger = Serilog.ILogger;
 
 namespace BuildingBlocks.TestBase;
 
+using System.Net;
+using System.Security.Claims;
+using WebMotions.Fake.Authentication.JwtBearer;
+
 public class TestFixture<TEntryPoint> : IAsyncLifetime
     where TEntryPoint : class
 {
@@ -44,7 +47,18 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
     public MongoDbTestcontainer MongoDbTestContainer;
 
     private ITestHarness TestHarness => ServiceProvider?.GetTestHarness();
-    public HttpClient HttpClient => _factory?.CreateClient();
+
+    public HttpClient HttpClient
+    {
+        get
+        {
+            var claims = new Dictionary<string, object> { { ClaimTypes.Name, "test@sample.com" }, { ClaimTypes.Role, "admin" }, };
+            var httpClient = _factory?.CreateClient();
+            httpClient.SetFakeBearerToken(claims);
+            return httpClient;
+        }
+    }
+
     public GrpcChannel Channel => GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions { HttpClient = HttpClient });
     public Action<IServiceCollection> TestRegistrationServices { get; set; }
     public IServiceProvider ServiceProvider => _factory?.Services;
@@ -63,7 +77,15 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
                 {
                     TestRegistrationServices?.Invoke(services);
                     services.ReplaceSingleton(AddHttpContextAccessorMock);
-                    services.AddTestAuthentication();
+
+                    // add authentication using a fake jwt bearer - we can use SetAdminUser method to set authenticate user to existing HttContextAccessor
+                    // https://github.com/webmotions/fake-authentication-jwtbearer
+                    // https://github.com/webmotions/fake-authentication-jwtbearer/issues/14
+                    services.AddAuthentication(options =>
+                    {
+                        options.DefaultAuthenticateScheme = FakeJwtBearerDefaults.AuthenticationScheme;
+                        options.DefaultChallengeScheme = FakeJwtBearerDefaults.AuthenticationScheme;
+                    }).AddFakeJwtBearer();
                 });
             });
     }
@@ -235,13 +257,9 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
         configuration.AddInMemoryCollection(new KeyValuePair<string, string>[]
         {
             new("DatabaseOptions:DefaultConnection", MsSqlTestContainer.ConnectionString + "TrustServerCertificate=True"),
-            new("PersistMessageOptions:ConnectionString", MsSqlPersistTestContainer.ConnectionString + "TrustServerCertificate=True"),
-            new("RabbitMqOptions:HostName", RabbitMqTestContainer.Hostname),
-            new("RabbitMqOptions:UserName", RabbitMqTestContainer.Username),
-            new("RabbitMqOptions:Password", RabbitMqTestContainer.Password),
-            new("RabbitMqOptions:Port", RabbitMqTestContainer.Port.ToString()),
-            new("MongoOptions:ConnectionString", MongoDbTestContainer.ConnectionString),
-            new("MongoOptions:DatabaseName", MongoDbTestContainer.Database)
+            new("PersistMessageOptions:ConnectionString", MsSqlPersistTestContainer.ConnectionString + "TrustServerCertificate=True"), new("RabbitMqOptions:HostName", RabbitMqTestContainer.Hostname),
+            new("RabbitMqOptions:UserName", RabbitMqTestContainer.Username), new("RabbitMqOptions:Password", RabbitMqTestContainer.Password), new("RabbitMqOptions:Port", RabbitMqTestContainer.Port.ToString()),
+            new("MongoOptions:ConnectionString", MongoDbTestContainer.ConnectionString), new("MongoOptions:DatabaseName", MongoDbTestContainer.Database)
         });
     }
 
@@ -365,7 +383,6 @@ public class TestWriteFixture<TEntryPoint, TWContext> : TestFixture<TEntryPoint>
     }
 }
 
-
 public class TestReadFixture<TEntryPoint, TRContext> : TestFixture<TEntryPoint>
     where TEntryPoint : class
     where TRContext : MongoDbContext
@@ -428,7 +445,6 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
             _reSpawnerPersistDb = await Respawner.CreateAsync(PersistDbConnection,
                 new RespawnerOptions { TablesToIgnore = new Table[] { "__EFMigrationsHistory" }, });
 
-            await _reSpawnerPersistDb.ResetAsync(PersistDbConnection);
         }
 
         if (!string.IsNullOrEmpty(databaseOptions?.DefaultConnection))
@@ -439,16 +455,23 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
             _reSpawnerDefaultDb = await Respawner.CreateAsync(DefaultDbConnection,
                 new RespawnerOptions { TablesToIgnore = new Table[] { "__EFMigrationsHistory" }, });
 
-            await _reSpawnerDefaultDb.ResetAsync(DefaultDbConnection);
-
             await SeedDataAsync();
         }
     }
 
     public async Task DisposeAsync()
     {
+        await ResetSqlAsync();
         await ResetMongoAsync();
         await ResetRabbitMqAsync();
+    }
+
+    private async Task ResetSqlAsync()
+    {
+        if (PersistDbConnection is not null)
+            await _reSpawnerPersistDb.ResetAsync(PersistDbConnection);
+        if (DefaultDbConnection is not null)
+            await _reSpawnerDefaultDb.ResetAsync(DefaultDbConnection);
     }
 
     private async Task ResetMongoAsync(CancellationToken cancellationToken = default)
@@ -516,7 +539,6 @@ public abstract class TestReadBase<TEntryPoint, TRContext> : TestFixtureCore<TEn
 
     public TestReadFixture<TEntryPoint, TRContext> Fixture { get; }
 }
-
 
 public abstract class TestWriteBase<TEntryPoint, TWContext> : TestFixtureCore<TEntryPoint>
     //,IClassFixture<IntegrationTestFactory<TEntryPoint, TWContext>>

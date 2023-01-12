@@ -10,6 +10,8 @@ using Xunit;
 
 namespace EndToEnd.Test.Flight.Features;
 
+using BuildingBlocks.Contracts.EventBus.Messages;
+
 public class GetFlightByIdTests: FlightEndToEndTestBase
 {
     public GetFlightByIdTests(TestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(integrationTestFixture)
@@ -23,6 +25,8 @@ public class GetFlightByIdTests: FlightEndToEndTestBase
         //Arrange
         var command = new FakeCreateFlightCommand().Generate();
         await Fixture.SendAsync(command);
+        (await Fixture.WaitForPublishing<FlightCreated>()).Should().Be(true);
+        (await Fixture.WaitForConsuming<FlightCreated>()).Should().Be(true);
         (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>()).Should().Be(true);
 
         // Act

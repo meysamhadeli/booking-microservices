@@ -20,7 +20,6 @@ var app = builder.Build();
 app.MapMinimalEndpoints();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseRouting();
 app.UseHttpsRedirection();
 app.UseInfrastructure();
 
