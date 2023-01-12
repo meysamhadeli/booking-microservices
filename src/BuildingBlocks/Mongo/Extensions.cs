@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.Mongo
 {
+    using Web;
+
     public static class Extensions
     {
         public static IServiceCollection AddMongoDbContext<TContext>(
@@ -18,14 +20,14 @@ namespace BuildingBlocks.Mongo
             where TContextImplementation : MongoDbContext, TContextService
         {
             services.Configure<MongoOptions>(configuration.GetSection(nameof(MongoOptions)));
+
             if (configurator is { })
             {
                 services.Configure(nameof(MongoOptions), configurator);
             }
             else
             {
-                services.AddOptions<MongoOptions>().Bind(configuration.GetSection(nameof(MongoOptions)))
-                    .ValidateDataAnnotations();
+                services.AddValidateOptions<MongoOptions>();
             }
 
             services.AddScoped(typeof(TContextService), typeof(TContextImplementation));
