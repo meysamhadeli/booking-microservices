@@ -2,7 +2,6 @@
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
-using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Web;
@@ -19,7 +18,6 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using NSubstitute;
 using Respawn;
@@ -28,44 +26,49 @@ using Serilog;
 using Xunit;
 using Xunit.Abstractions;
 using ILogger = Serilog.ILogger;
-
-namespace BuildingBlocks.TestBase;
-
 using System.Net;
 using System.Security.Claims;
 using WebMotions.Fake.Authentication.JwtBearer;
+
+namespace BuildingBlocks.TestBase;
+
+
 
 public class TestFixture<TEntryPoint> : IAsyncLifetime
     where TEntryPoint : class
 {
     private readonly WebApplicationFactory<TEntryPoint> _factory;
     private int Timeout => 120; // Second
-
-    public MsSqlTestcontainer MsSqlTestContainer;
-    public MsSqlTestcontainer MsSqlPersistTestContainer;
+    private ITestHarness TestHarness => ServiceProvider?.GetTestHarness();
+    private Action<IServiceCollection> TestRegistrationServices { get; set; }
+    private MsSqlTestcontainer MsSqlTestContainer;
+    private MsSqlTestcontainer MsSqlPersistTestContainer;
     public RabbitMqTestcontainer RabbitMqTestContainer;
     public MongoDbTestcontainer MongoDbTestContainer;
-
-    private ITestHarness TestHarness => ServiceProvider?.GetTestHarness();
 
     public HttpClient HttpClient
     {
         get
         {
-            var claims = new Dictionary<string, object> { { ClaimTypes.Name, "test@sample.com" }, { ClaimTypes.Role, "admin" }, };
+            var claims =
+                new Dictionary<string, object>
+                {
+                    { ClaimTypes.Name, "test@sample.com" }, { ClaimTypes.Role, "admin" },
+                };
             var httpClient = _factory?.CreateClient();
             httpClient.SetFakeBearerToken(claims);
             return httpClient;
         }
     }
 
-    public GrpcChannel Channel => GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions { HttpClient = HttpClient });
-    public Action<IServiceCollection> TestRegistrationServices { get; set; }
+    public GrpcChannel Channel =>
+        GrpcChannel.ForAddress(HttpClient.BaseAddress!, new GrpcChannelOptions { HttpClient = HttpClient });
+
     public IServiceProvider ServiceProvider => _factory?.Services;
     public IConfiguration Configuration => _factory?.Services.GetRequiredService<IConfiguration>();
     public ILogger Logger { get; set; }
 
-    public TestFixture()
+    protected TestFixture()
     {
         _factory = new WebApplicationFactory<TEntryPoint>()
             .WithWebHostBuilder(builder =>
@@ -98,7 +101,7 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
     public async Task DisposeAsync()
     {
         await StopTestContainerAsync();
-        _factory?.DisposeAsync();
+        await _factory.DisposeAsync();
     }
 
     public virtual void RegisterServices(Action<IServiceCollection> services)
@@ -119,13 +122,13 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
         return null;
     }
 
-    public async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)
+    protected async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)
     {
         using var scope = ServiceProvider.CreateScope();
         await action(scope.ServiceProvider);
     }
 
-    public async Task<T> ExecuteScopeAsync<T>(Func<IServiceProvider, Task<T>> action)
+    protected async Task<T> ExecuteScopeAsync<T>(Func<IServiceProvider, Task<T>> action)
     {
         using var scope = ServiceProvider.CreateScope();
 
@@ -157,7 +160,7 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
     public async Task Publish<TMessage>(TMessage message, CancellationToken cancellationToken = default)
         where TMessage : class, IEvent
     {
-        await TestHarness.Bus.Publish<TMessage>(message, cancellationToken);
+        await TestHarness.Bus.Publish(message, cancellationToken);
     }
 
     public async Task<bool> WaitForPublishing<TMessage>(CancellationToken cancellationToken = default)
@@ -188,7 +191,7 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
     }
 
     // Ref: https://tech.energyhelpline.com/in-memory-testing-with-masstransit/
-    public async Task<bool> WaitUntilConditionMet(Func<Task<bool>> conditionToMet, int? timeoutSecond = null)
+    private async Task<bool> WaitUntilConditionMet(Func<Task<bool>> conditionToMet, int? timeoutSecond = null)
     {
         var time = timeoutSecond ?? Timeout;
 
@@ -197,7 +200,10 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
         var meet = await conditionToMet.Invoke();
         while (!meet)
         {
-            if (timeoutExpired) return false;
+            if (timeoutExpired)
+            {
+                return false;
+            }
 
             await Task.Delay(100);
             meet = await conditionToMet.Invoke();
@@ -257,9 +263,13 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
         configuration.AddInMemoryCollection(new KeyValuePair<string, string>[]
         {
             new("DatabaseOptions:DefaultConnection", MsSqlTestContainer.ConnectionString + "TrustServerCertificate=True"),
-            new("PersistMessageOptions:ConnectionString", MsSqlPersistTestContainer.ConnectionString + "TrustServerCertificate=True"), new("RabbitMqOptions:HostName", RabbitMqTestContainer.Hostname),
-            new("RabbitMqOptions:UserName", RabbitMqTestContainer.Username), new("RabbitMqOptions:Password", RabbitMqTestContainer.Password), new("RabbitMqOptions:Port", RabbitMqTestContainer.Port.ToString()),
-            new("MongoOptions:ConnectionString", MongoDbTestContainer.ConnectionString), new("MongoOptions:DatabaseName", MongoDbTestContainer.Database)
+            new("PersistMessageOptions:ConnectionString", MsSqlPersistTestContainer.ConnectionString + "TrustServerCertificate=True"),
+            new("RabbitMqOptions:HostName", RabbitMqTestContainer.Hostname),
+            new("RabbitMqOptions:UserName", RabbitMqTestContainer.Username),
+            new("RabbitMqOptions:Password", RabbitMqTestContainer.Password),
+            new("RabbitMqOptions:Port", RabbitMqTestContainer.Port.ToString()),
+            new("MongoOptions:ConnectionString", MongoDbTestContainer.ConnectionString),
+            new("MongoOptions:DatabaseName", MongoDbTestContainer.Database)
         });
     }
 
@@ -314,7 +324,10 @@ public class TestWriteFixture<TEntryPoint, TWContext> : TestFixture<TEntryPoint>
     {
         return ExecuteDbContextAsync(db =>
         {
-            foreach (var entity in entities) db.Set<T>().Add(entity);
+            foreach (var entity in entities)
+            {
+                db.Set<T>().Add(entity);
+            }
 
             return db.SaveChangesAsync();
         });
@@ -446,10 +459,8 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
 
     private async Task InitSqlAsync()
     {
-        await ResetSqlAsync();
-
-        var databaseOptions = Fixture.ServiceProvider.GetRequiredService<IOptions<DatabaseOptions>>()?.Value;
-        var persistOptions = Fixture.ServiceProvider.GetRequiredService<IOptions<PersistMessageOptions>>()?.Value;
+        var databaseOptions = Fixture.ServiceProvider.GetRequiredService<DatabaseOptions>();
+        var persistOptions = Fixture.ServiceProvider.GetRequiredService<PersistMessageOptions>();
 
         if (!string.IsNullOrEmpty(persistOptions?.ConnectionString))
         {
@@ -475,15 +486,20 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
     private async Task ResetSqlAsync()
     {
         if (PersistDbConnection is not null)
+        {
             await _reSpawnerPersistDb.ResetAsync(PersistDbConnection);
+        }
+
         if (DefaultDbConnection is not null)
+        {
             await _reSpawnerDefaultDb.ResetAsync(DefaultDbConnection);
+        }
     }
 
     private async Task ResetMongoAsync(CancellationToken cancellationToken = default)
     {
         //https://stackoverflow.com/questions/3366397/delete-everything-in-a-mongodb-database
-        MongoClient dbClient = new MongoClient(Fixture.MongoDbTestContainer?.ConnectionString);
+        var dbClient = new MongoClient(Fixture.MongoDbTestContainer?.ConnectionString);
         var collections = await dbClient.GetDatabase(Fixture.MongoDbTestContainer?.Database)
             .ListCollectionsAsync(cancellationToken: cancellationToken);
 
@@ -498,10 +514,8 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
     {
         var port = Fixture.RabbitMqTestContainer?.GetMappedPublicPort(15672) ?? 15672;
 
-        var rabbitmqOptions = Fixture.ServiceProvider.GetRequiredService<IOptions<RabbitMqOptions>>()?.Value;
-
-        var managementClient = new ManagementClient(rabbitmqOptions?.HostName, rabbitmqOptions?.UserName,
-            rabbitmqOptions?.Password, port);
+        var managementClient = new ManagementClient(Fixture.RabbitMqTestContainer?.Hostname, Fixture.RabbitMqTestContainer?.Username,
+            Fixture.RabbitMqTestContainer?.Password, port);
 
         var bd = await managementClient.GetBindingsAsync(cancellationToken);
         var bindings = bd.Where(x => !string.IsNullOrEmpty(x.Source) && !string.IsNullOrEmpty(x.Destination));
@@ -528,7 +542,10 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
         using var scope = Fixture.ServiceProvider.CreateScope();
 
         var seeders = scope.ServiceProvider.GetServices<IDataSeeder>();
-        foreach (var seeder in seeders) await seeder.SeedAllAsync();
+        foreach (var seeder in seeders)
+        {
+            await seeder.SeedAllAsync();
+        }
     }
 }
 

@@ -1,6 +1,5 @@
 using System.Reflection;
 using BuildingBlocks.Core.Event;
-using BuildingBlocks.Utils;
 using BuildingBlocks.Web;
 using Humanizer;
 using MassTransit;
@@ -21,9 +20,7 @@ public static class Extensions
     public static IServiceCollection AddCustomMassTransit(this IServiceCollection services,
         IWebHostEnvironment env, Assembly assembly)
     {
-        services.AddOptions<RabbitMqOptions>()
-            .BindConfiguration(nameof(RabbitMqOptions))
-            .ValidateDataAnnotations();
+        services.AddValidateOptions<RabbitMqOptions>();
 
         if (env.IsEnvironment("test"))
         {
@@ -34,10 +31,7 @@ public static class Extensions
         }
         else
         {
-            services.AddMassTransit(configure =>
-            {
-                SetupMasstransitConfigurations(services, configure, assembly);
-            });
+            services.AddMassTransit(configure => { SetupMasstransitConfigurations(services, configure, assembly); });
         }
 
         return services;
