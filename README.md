@@ -30,11 +30,11 @@
 - :sparkle: Using `gRPC` for internal communication between our microservices.
 - :sparkle: Using `CQRS` implementation with `MediatR` library.
 - :sparkle: Using `SqlServer` for `write side` of some microservices.
-- :sparkle: Using `MongoDB` for `read side` of all microservices.
+- :sparkle: Using `MongoDB` for `read side` of some microservices.
 - :sparkle: Using `Event Store` for `write side` of Booking-Microservice to store all `historical state` of aggregate.
 - :sparkle: Using `Inbox Pattern` for ensuring message idempotency for receiver and `Exactly once Delivery`. 
 - :sparkle: Using `Outbox Pattern` for ensuring no message is lost and there is at `Least One Delivery`.
-- :sparkle: Using `Unit Testing`, `Integration Testing` for testing level.
+- :sparkle: Using `Unit Testing`, `Integration Testing`, `End To End Testing` for testing level.
 - :sparkle: Using `Fluent Validation` and a `Validation Pipeline Behaviour` on top of `MediatR`.
 - :sparkle: Using `Minimal API` for all endpoints.
 - :sparkle: Using `Health Check` for reporting the health of app infrastructure components.
@@ -85,7 +85,6 @@ High-level plan is represented in the table
 - ✔️ **[`MongoDB.Driver`](https://github.com/mongodb/mongo-csharp-driver)** - .NET Driver for MongoDB.
 - ✔️ **[`xUnit.net`](https://github.com/xunit/xunit)** - A free, open source, community-focused unit testing tool for the .NET Framework.
 - ✔️ **[`Respawn`](https://github.com/jbogard/Respawn)** - Respawn is a small utility to help in resetting test databases to a clean state.
-- ✔️ **[`Mongo2Go`](https://github.com/Mongo2Go/Mongo2Go)** - Providing multiple, temporary and isolated MongoDB databases for unit tests (or to be precise: integration tests).
 - ✔️ **[`Testcontainers`](https://github.com/testcontainers/testcontainers-dotnet)** - Testcontainers for .NET is a library to support tests with throwaway instances of Docker containers.
 
 ## The Domain And Bounded Context - Service Boundary
@@ -139,13 +138,18 @@ Using the CQRS pattern, we cut each business functionality into vertical slices,
 
 Run the following commands for [Config SSL](https://docs.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-6.0) in your system
 
+#### Windows using Linux containers
 ```bash
-dotnet dev-certs https -ep %USERPROFILE%\.aspnet\https\aspnetapp.pfx -p {password here}
+dotnet dev-certs https -ep %USERPROFILE%\.aspnet\https\aspnetapp.pfx -p password
 dotnet dev-certs https --trust
 ```
-
 > Note: for running this command in `powershell` use `$env:USERPROFILE` instead of `%USERPROFILE%`
 
+#### macOS or Linux
+```bash
+dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p $CREDENTIAL_PLACEHOLDER$
+dotnet dev-certs https --trust
+```
 ### Docker Compose
 
 Run this app in docker using the [docker-compose.yaml](./deployments/docker-compose/docker-compose.yaml) file with the below command at the root of the application:
