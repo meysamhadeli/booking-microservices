@@ -17,7 +17,7 @@ public class FakeFlightResponse : AutoFaker<FlightResponse>
         RuleFor(r => r.ArriveDate, _ => DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc).ToTimestamp());
         RuleFor(r => r.DepartureDate, _ => DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc).ToTimestamp());
         RuleFor(r => r.FlightDate, _ => DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc).ToTimestamp());
-        RuleFor(r => r.FlightNumber, _ => "121LP");
+        RuleFor(r => r.FlightNumber, r => r.Random.Number(1000, 2000).ToString());
         RuleFor(r => r.DepartureAirportId, _ => 2);
     }
 }

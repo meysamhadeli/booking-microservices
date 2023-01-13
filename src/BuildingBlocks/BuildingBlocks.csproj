@@ -14,8 +14,8 @@
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="7.0.0" />
     <PackageReference Include="AspNetCore.HealthChecks.Elasticsearch" Version="6.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.EventStore" Version="6.0.3" />
+    <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="6.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="6.0.2" />
-    <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="6.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.SQLite.Storage" Version="6.0.5" />
     <PackageReference Include="Ben.BlockingDetector" Version="0.0.4" />
     <PackageReference Include="EasyCaching.Core" Version="1.8.0" />

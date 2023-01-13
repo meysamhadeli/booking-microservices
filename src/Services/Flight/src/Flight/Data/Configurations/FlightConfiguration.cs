@@ -6,11 +6,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Flight.Data.Configurations;
 
+using System;
+
 public class FlightConfiguration : IEntityTypeConfiguration<Flights.Models.Flight>
 {
     public void Configure(EntityTypeBuilder<Flights.Models.Flight> builder)
     {
-        builder.ToTable("Flight", AppDbContextBase.DefaultSchema);
+        builder.ToTable("flight");
 
         builder.HasKey(r => r.Id);
         builder.Property(r => r.Id).ValueGeneratedNever();
@@ -25,6 +27,13 @@ public class FlightConfiguration : IEntityTypeConfiguration<Flights.Models.Fligh
             .WithMany()
             .HasForeignKey(d => d.DepartureAirportId)
             .HasForeignKey(a => a.ArriveAirportId);
+
+
+        builder.Property(x => x.Status)
+            .HasDefaultValue(Flights.Enums.FlightStatus.Unknown)
+            .HasConversion(
+                x => x.ToString(),
+                x => (Flights.Enums.FlightStatus)Enum.Parse(typeof(Flights.Enums.FlightStatus), x));
 
         // // https://docs.microsoft.com/en-us/ef/core/modeling/shadow-properties
         // // https://docs.microsoft.com/en-us/ef/core/modeling/owned-entities
