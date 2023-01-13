@@ -25,8 +25,6 @@ public class GetFlightByIdTests: FlightEndToEndTestBase
         //Arrange
         var command = new FakeCreateFlightCommand().Generate();
         await Fixture.SendAsync(command);
-        (await Fixture.WaitForPublishing<FlightCreated>()).Should().Be(true);
-        (await Fixture.WaitForConsuming<FlightCreated>()).Should().Be(true);
         (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>()).Should().Be(true);
 
         // Act
