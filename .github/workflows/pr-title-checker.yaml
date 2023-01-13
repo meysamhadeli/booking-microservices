@@ -1,0 +1,23 @@
+name: Check PR title
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  title-checker:
+    name: Check PR title
+    runs-on: [ self-hosted ]
+    
+    steps:
+      - uses: aslafy-z/conventional-pr-title-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
