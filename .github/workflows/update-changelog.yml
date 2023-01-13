@@ -1,28 +1,24 @@
-name: Update Changelog
-
+name: "update changelog"
 on:
   release:
-    types: 
-      - released
+    types: [published]
 
 jobs:
-  update:
-    name: Update Changelog
+  update-changelog:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Update Changelog
-        uses: stefanzweifel/changelog-updater-action@v1
-        with:
-          latest-version: ${{ github.event.release.name }}
-          release-notes: ${{ github.event.release.body }}
-
-      - name: Commit updated Changelog
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          branch: main
-          commit_message: 'docs(changelog): update changelog'
-          file_pattern: CHANGELOG.md
+    - uses: actions/checkout@v2
+    
+    - name: Update changelog
+      run: |
+        npm install github-release-notes
+        export GREN_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+        npm run overrideChangelog
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        commit-message: update changelog
+        title: Update Changelog
+        body: Update changelog to reflect release changes
+        branch: update-changelog
+        base: main
