@@ -14,14 +14,12 @@ using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using NSubstitute;
 using Respawn;
-using Respawn.Graph;
 using Serilog;
 using Xunit;
 using Xunit.Abstractions;
@@ -32,7 +30,8 @@ using WebMotions.Fake.Authentication.JwtBearer;
 
 namespace BuildingBlocks.TestBase;
 
-
+using Npgsql;
+using Exception = System.Exception;
 
 public class TestFixture<TEntryPoint> : IAsyncLifetime
     where TEntryPoint : class
@@ -41,8 +40,8 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
     private int Timeout => 120; // Second
     private ITestHarness TestHarness => ServiceProvider?.GetTestHarness();
     private Action<IServiceCollection> TestRegistrationServices { get; set; }
-    private MsSqlTestcontainer MsSqlTestContainer;
-    private MsSqlTestcontainer MsSqlPersistTestContainer;
+    private PostgreSqlTestcontainer PostgresTestcontainer;
+    private PostgreSqlTestcontainer PostgresPersistTestContainer;
     public RabbitMqTestcontainer RabbitMqTestContainer;
     public MongoDbTestcontainer MongoDbTestContainer;
 
@@ -239,21 +238,21 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
 
     private async Task StartTestContainerAsync()
     {
-        MsSqlTestContainer = TestContainers.MsSqlTestContainer;
-        MsSqlPersistTestContainer = TestContainers.MsSqlPersistTestContainer;
+        PostgresTestcontainer = TestContainers.PostgresTestContainer;
+        PostgresPersistTestContainer = TestContainers.PostgresPersistTestContainer;
         RabbitMqTestContainer = TestContainers.RabbitMqTestContainer;
         MongoDbTestContainer = TestContainers.MongoTestContainer;
 
         await MongoDbTestContainer.StartAsync();
-        await MsSqlTestContainer.StartAsync();
-        await MsSqlPersistTestContainer.StartAsync();
+        await PostgresTestcontainer.StartAsync();
+        await PostgresPersistTestContainer.StartAsync();
         await RabbitMqTestContainer.StartAsync();
     }
 
     private async Task StopTestContainerAsync()
     {
-        await MsSqlTestContainer.StopAsync();
-        await MsSqlPersistTestContainer.StopAsync();
+        await PostgresTestcontainer.StopAsync();
+        await PostgresPersistTestContainer.StopAsync();
         await RabbitMqTestContainer.StopAsync();
         await MongoDbTestContainer.StopAsync();
     }
@@ -262,8 +261,8 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
     {
         configuration.AddInMemoryCollection(new KeyValuePair<string, string>[]
         {
-            new("DatabaseOptions:DefaultConnection", MsSqlTestContainer.ConnectionString + "TrustServerCertificate=True"),
-            new("PersistMessageOptions:ConnectionString", MsSqlPersistTestContainer.ConnectionString + "TrustServerCertificate=True"),
+            new("PostgresOptions:ConnectionString", PostgresTestcontainer.ConnectionString),
+            new("PersistMessageOptions:ConnectionString", PostgresPersistTestContainer.ConnectionString),
             new("RabbitMqOptions:HostName", RabbitMqTestContainer.Hostname),
             new("RabbitMqOptions:UserName", RabbitMqTestContainer.Username),
             new("RabbitMqOptions:Password", RabbitMqTestContainer.Password),
@@ -432,13 +431,13 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
 {
     private Respawner _reSpawnerDefaultDb;
     private Respawner _reSpawnerPersistDb;
-    private SqlConnection DefaultDbConnection { get; set; }
-    private SqlConnection PersistDbConnection { get; set; }
+    private NpgsqlConnection DefaultDbConnection { get; set; }
+    private NpgsqlConnection PersistDbConnection { get; set; }
 
     public TestFixtureCore(TestFixture<TEntryPoint> integrationTestFixture, ITestOutputHelper outputHelper)
     {
         Fixture = integrationTestFixture;
-        integrationTestFixture.RegisterServices(services => RegisterTestsServices(services));
+        integrationTestFixture.RegisterServices(RegisterTestsServices);
         integrationTestFixture.Logger = integrationTestFixture.CreateLogger(outputHelper);
     }
 
@@ -447,43 +446,43 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        await InitSqlAsync();
+        await InitPostgresAsync();
     }
 
     public async Task DisposeAsync()
     {
-        await ResetSqlAsync();
+        await ResetPostgresAsync();
         await ResetMongoAsync();
         await ResetRabbitMqAsync();
     }
 
-    private async Task InitSqlAsync()
+    private async Task InitPostgresAsync()
     {
-        var databaseOptions = Fixture.ServiceProvider.GetRequiredService<DatabaseOptions>();
+        var postgresOptions = Fixture.ServiceProvider.GetRequiredService<PostgresOptions>();
         var persistOptions = Fixture.ServiceProvider.GetRequiredService<PersistMessageOptions>();
 
         if (!string.IsNullOrEmpty(persistOptions?.ConnectionString))
         {
-            PersistDbConnection = new SqlConnection(persistOptions?.ConnectionString);
+            PersistDbConnection = new NpgsqlConnection(persistOptions.ConnectionString);
             await PersistDbConnection.OpenAsync();
 
             _reSpawnerPersistDb = await Respawner.CreateAsync(PersistDbConnection,
-                new RespawnerOptions { TablesToIgnore = new Table[] { "__EFMigrationsHistory" }, });
+                new RespawnerOptions { DbAdapter = DbAdapter.Postgres });
         }
 
-        if (!string.IsNullOrEmpty(databaseOptions?.DefaultConnection))
+        if (!string.IsNullOrEmpty(postgresOptions?.ConnectionString))
         {
-            DefaultDbConnection = new SqlConnection(databaseOptions.DefaultConnection);
+            DefaultDbConnection = new NpgsqlConnection(postgresOptions.ConnectionString);
             await DefaultDbConnection.OpenAsync();
 
             _reSpawnerDefaultDb = await Respawner.CreateAsync(DefaultDbConnection,
-                new RespawnerOptions { TablesToIgnore = new Table[] { "__EFMigrationsHistory" }, });
+                new RespawnerOptions { DbAdapter = DbAdapter.Postgres });
 
             await SeedDataAsync();
         }
     }
 
-    private async Task ResetSqlAsync()
+    private async Task ResetPostgresAsync()
     {
         if (PersistDbConnection is not null)
         {
@@ -514,7 +513,8 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
     {
         var port = Fixture.RabbitMqTestContainer?.GetMappedPublicPort(15672) ?? 15672;
 
-        var managementClient = new ManagementClient(Fixture.RabbitMqTestContainer?.Hostname, Fixture.RabbitMqTestContainer?.Username,
+        var managementClient = new ManagementClient(Fixture.RabbitMqTestContainer?.Hostname,
+            Fixture.RabbitMqTestContainer?.Username,
             Fixture.RabbitMqTestContainer?.Password, port);
 
         var bd = await managementClient.GetBindingsAsync(cancellationToken);
@@ -555,7 +555,8 @@ public abstract class TestReadBase<TEntryPoint, TRContext> : TestFixtureCore<TEn
     where TRContext : MongoDbContext
 {
     protected TestReadBase(
-        TestReadFixture<TEntryPoint, TRContext> integrationTestFixture, ITestOutputHelper outputHelper = null) : base(integrationTestFixture, outputHelper)
+        TestReadFixture<TEntryPoint, TRContext> integrationTestFixture, ITestOutputHelper outputHelper = null) : base(
+        integrationTestFixture, outputHelper)
     {
         Fixture = integrationTestFixture;
     }
@@ -569,7 +570,8 @@ public abstract class TestWriteBase<TEntryPoint, TWContext> : TestFixtureCore<TE
     where TWContext : DbContext
 {
     protected TestWriteBase(
-        TestWriteFixture<TEntryPoint, TWContext> integrationTestFixture, ITestOutputHelper outputHelper = null) : base(integrationTestFixture, outputHelper)
+        TestWriteFixture<TEntryPoint, TWContext> integrationTestFixture, ITestOutputHelper outputHelper = null) : base(
+        integrationTestFixture, outputHelper)
     {
         Fixture = integrationTestFixture;
     }
@@ -584,7 +586,8 @@ public abstract class TestBase<TEntryPoint, TWContext, TRContext> : TestFixtureC
     where TRContext : MongoDbContext
 {
     protected TestBase(
-        TestFixture<TEntryPoint, TWContext, TRContext> integrationTestFixture, ITestOutputHelper outputHelper = null) : base(integrationTestFixture, outputHelper)
+        TestFixture<TEntryPoint, TWContext, TRContext> integrationTestFixture, ITestOutputHelper outputHelper = null) :
+        base(integrationTestFixture, outputHelper)
     {
         Fixture = integrationTestFixture;
     }

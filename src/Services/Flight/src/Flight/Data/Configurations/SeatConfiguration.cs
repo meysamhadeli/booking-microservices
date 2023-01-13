@@ -5,11 +5,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Flight.Data.Configurations;
 
+using System;
+
 public class SeatConfiguration : IEntityTypeConfiguration<Seat>
 {
     public void Configure(EntityTypeBuilder<Seat> builder)
     {
-        builder.ToTable("Seat", AppDbContextBase.DefaultSchema);
+        builder.ToTable("seat");
 
         builder.HasKey(r => r.Id);
         builder.Property(r => r.Id).ValueGeneratedNever();
@@ -18,5 +20,17 @@ public class SeatConfiguration : IEntityTypeConfiguration<Seat>
             .HasOne<Flights.Models.Flight>()
             .WithMany()
             .HasForeignKey(p => p.FlightId);
+
+        builder.Property(x => x.Class)
+            .HasDefaultValue(Seats.Enums.SeatClass.Unknown)
+            .HasConversion(
+                x => x.ToString(),
+                x => (Flight.Seats.Enums.SeatClass)Enum.Parse(typeof(Flight.Seats.Enums.SeatClass), x));
+
+        builder.Property(x => x.Type)
+            .HasDefaultValue(Seats.Enums.SeatType.Unknown)
+            .HasConversion(
+                x => x.ToString(),
+                x => (Flight.Seats.Enums.SeatType)Enum.Parse(typeof(Flight.Seats.Enums.SeatType), x));
     }
 }

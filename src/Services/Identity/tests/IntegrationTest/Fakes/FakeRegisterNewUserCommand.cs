@@ -7,7 +7,7 @@ public class FakeRegisterNewUserCommand : AutoFaker<RegisterNewUserCommand>
 {
     public FakeRegisterNewUserCommand()
     {
-        RuleFor(r => r.Username, x => x.Random.Uuid().ToString());
+        RuleFor(r => r.Username, x => "TestMyUser");
         RuleFor(r => r.Password, _ => "Password@123");
         RuleFor(r => r.ConfirmPassword, _ => "Password@123");
         RuleFor(r => r.Email, _ => "test@test.com");

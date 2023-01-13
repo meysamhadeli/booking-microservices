@@ -9,7 +9,8 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<PersistMes
     {
         var builder = new DbContextOptionsBuilder<PersistMessageDbContext>();
 
-        builder.UseSqlServer("Server=localhost;Database=PersistMessageDB;User ID=sa;Password=@Aa123456;TrustServerCertificate=True");
+        builder.UseNpgsql("Server=localhost;Port=5432;Database=persist_message;User Id=postgres;Password=postgres;Include Error Detail=true")
+            .UseSnakeCaseNamingConvention();
         return new PersistMessageDbContext(builder.Options);
     }
 }

@@ -1,8 +1,6 @@
 using System.Collections.Immutable;
-using System.Data;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
-using BuildingBlocks.Utils;
 using BuildingBlocks.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -11,8 +9,6 @@ namespace BuildingBlocks.EFCore;
 
 public abstract class AppDbContextBase : DbContext, IDbContext
 {
-    public const string DefaultSchema = "dbo";
-
     private readonly ICurrentUserProvider _currentUserProvider;
 
     private IDbContextTransaction _currentTransaction;
@@ -29,9 +25,12 @@ public abstract class AppDbContextBase : DbContext, IDbContext
 
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
-        if (_currentTransaction != null) return;
+        if (_currentTransaction != null)
+        {
+            return;
+        }
 
-        _currentTransaction = await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+        _currentTransaction ??= await Database.BeginTransactionAsync(cancellationToken);
     }
 
     public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
