@@ -1,6 +1,6 @@
 namespace BuildingBlocks.EFCore;
 
-public class DatabaseOptions
+public class PostgresOptions
 {
-    public string DefaultConnection { get; set; }
+    public string ConnectionString { get; set; }
 }

@@ -38,8 +38,26 @@ public sealed class IdentityContext : IdentityDbContext<ApplicationUser, Identit
         // https://andrewlock.net/customising-asp-net-core-identity-ef-core-naming-conventions-for-postgresql/
         foreach (var entity in builder.Model.GetEntityTypes())
         {
-            // Replace schema
-            entity.SetSchema(AppDbContextBase.DefaultSchema);
+            // Replace table names
+            entity.SetTableName(entity.GetTableName()?.Underscore());
+
+            var identityObjectIdentifier = StoreObjectIdentifier.Table(entity.GetTableName()?.Underscore()!, entity.GetSchema());
+
+            // Replace column names
+            foreach (var property in entity.GetProperties())
+            {
+                property.SetColumnName(property.GetColumnName(identityObjectIdentifier)?.Underscore());
+            }
+
+            foreach (var key in entity.GetKeys())
+            {
+                key.SetName(key.GetName()?.Underscore());
+            }
+
+            foreach (var key in entity.GetForeignKeys())
+            {
+                key.SetConstraintName(key.GetConstraintName()?.Underscore());
+            }
         }
 
         builder.FilterSoftDeletedProperties();

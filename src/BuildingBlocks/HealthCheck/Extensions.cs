@@ -21,7 +21,7 @@ public static class Extensions
         if (!healthOptions.Enabled) return services;
 
         var appOptions = services.GetOptions<AppOptions>(nameof(AppOptions));
-        var sqlOptions = services.GetOptions<DatabaseOptions>(nameof(DatabaseOptions));
+        var postgresOptions = services.GetOptions<PostgresOptions>(nameof(PostgresOptions));
         var rabbitMqOptions = services.GetOptions<RabbitMqOptions>(nameof(RabbitMqOptions));
         var mongoOptions = services.GetOptions<MongoOptions>(nameof(MongoOptions));
         var logOptions = services.GetOptions<LogOptions>(nameof(LogOptions));
@@ -35,8 +35,8 @@ public static class Extensions
         if (mongoOptions.ConnectionString is not null)
             healthChecksBuilder.AddMongoDb(mongoOptions.ConnectionString);
 
-        if (sqlOptions.DefaultConnection is not null)
-            healthChecksBuilder.AddSqlServer(sqlOptions.DefaultConnection);
+        if (postgresOptions.ConnectionString is not null)
+            healthChecksBuilder.AddNpgSql(postgresOptions.ConnectionString);
 
         services.AddHealthChecksUI(setup =>
         {

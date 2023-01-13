@@ -9,14 +9,21 @@ public static class Extensions
 {
     public static IServiceCollection AddPersistMessageProcessor(this IServiceCollection services)
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
         services.AddValidateOptions<PersistMessageOptions>();
 
-        services.AddDbContext<PersistMessageDbContext>(options =>
+        services.AddDbContext<PersistMessageDbContext>((sp, options) =>
         {
-            var persistMessageOptions = services.GetOptions<PersistMessageOptions>(nameof(PersistMessageOptions));
+            var persistMessageOptions = sp.GetRequiredService<PersistMessageOptions>();
 
-            options.UseSqlServer(persistMessageOptions.ConnectionString,
-                x => x.MigrationsAssembly(typeof(PersistMessageDbContext).Assembly.GetName().Name));
+            options.UseNpgsql(persistMessageOptions.ConnectionString,
+                dbOptions =>
+                {
+                    dbOptions.MigrationsAssembly(typeof(PersistMessageDbContext).Assembly.GetName().Name);
+                })
+                // https://github.com/efcore/EFCore.NamingConventions
+                .UseSnakeCaseNamingConvention();;
         });
 
         services.AddScoped<IPersistMessageDbContext>(provider => provider.GetService<PersistMessageDbContext>());

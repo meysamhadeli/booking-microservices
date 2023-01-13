@@ -17,18 +17,21 @@ public static class Extensions
         this IServiceCollection services)
         where TContext : DbContext, IDbContext
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-        services.AddValidateOptions<DatabaseOptions>();
+        services.AddValidateOptions<PostgresOptions>();
 
         services.AddDbContext<TContext>((sp, options) =>
         {
-            var databaseOptions = services.GetOptions<DatabaseOptions>(nameof(DatabaseOptions));
+            var postgresOptions = sp.GetRequiredService<PostgresOptions>();
 
-            options.UseSqlServer(databaseOptions?.DefaultConnection,
+            options.UseNpgsql(postgresOptions?.ConnectionString,
                 dbOptions =>
                 {
                     dbOptions.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name);
-                });
+                })
+                // https://github.com/efcore/EFCore.NamingConventions
+                .UseSnakeCaseNamingConvention();
         });
 
         services.AddScoped<IDbContext>(provider => provider.GetService<TContext>());
@@ -42,7 +45,9 @@ public static class Extensions
         MigrateDatabaseAsync<TContext>(app.ApplicationServices).GetAwaiter().GetResult();
 
         if (!env.IsEnvironment("test"))
+        {
             SeedDataAsync(app.ApplicationServices).GetAwaiter().GetResult();
+        }
 
         return app;
     }
