@@ -29,7 +29,7 @@
 - :sparkle: Using `Rabbitmq` on top of `Masstransit` for `Event Driven Architecture` between our microservices.
 - :sparkle: Using `gRPC` for internal communication between our microservices.
 - :sparkle: Using `CQRS` implementation with `MediatR` library.
-- :sparkle: Using `SqlServer` for `write side` of some microservices.
+- :sparkle: Using `Postgres` for `write side` of some microservices.
 - :sparkle: Using `MongoDB` for `read side` of some microservices.
 - :sparkle: Using `Event Store` for `write side` of Booking-Microservice to store all `historical state` of aggregate.
 - :sparkle: Using `Inbox Pattern` for ensuring message idempotency for receiver and `Exactly once Delivery`. 
