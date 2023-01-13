@@ -7,7 +7,7 @@ public class PersistMessageConfiguration : IEntityTypeConfiguration<PersistMessa
 {
     public void Configure(EntityTypeBuilder<PersistMessage> builder)
     {
-        builder.ToTable("persistMessage");
+        builder.ToTable(nameof(PersistMessage));
 
         builder.HasKey(x => x.Id);
 

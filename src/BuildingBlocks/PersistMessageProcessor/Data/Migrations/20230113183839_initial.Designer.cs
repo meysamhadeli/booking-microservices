@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BuildingBlocks.PersistMessageProcessor.Data.Migrations
 {
     [DbContext(typeof(PersistMessageDbContext))]
-    [Migration("20230113134415_initial")]
+    [Migration("20230113183839_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -64,7 +64,7 @@ namespace BuildingBlocks.PersistMessageProcessor.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_persist_message");
 
-                    b.ToTable("persistMessage", (string)null);
+                    b.ToTable("persist_message", (string)null);
                 });
 #pragma warning restore 612, 618
         }

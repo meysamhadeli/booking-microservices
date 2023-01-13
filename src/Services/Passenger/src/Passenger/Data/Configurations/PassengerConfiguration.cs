@@ -8,7 +8,7 @@ public class PassengerConfiguration: IEntityTypeConfiguration<Passengers.Models.
 {
     public void Configure(EntityTypeBuilder<Passengers.Models.Passenger> builder)
     {
-        builder.ToTable("passenger");
+        builder.ToTable(nameof(Passenger));
 
         builder.HasKey(r => r.Id);
         builder.Property(r => r.Id).ValueGeneratedNever();

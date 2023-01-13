@@ -61,7 +61,7 @@ namespace BuildingBlocks.PersistMessageProcessor.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_persist_message");
 
-                    b.ToTable("persistMessage", (string)null);
+                    b.ToTable("persist_message", (string)null);
                 });
 #pragma warning restore 612, 618
         }

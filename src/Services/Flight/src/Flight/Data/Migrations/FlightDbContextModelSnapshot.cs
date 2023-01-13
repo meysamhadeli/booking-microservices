@@ -278,7 +278,7 @@ namespace Flight.Data.Migrations
                         .HasForeignKey("ArriveAirportId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_flight_airport_airport_id");
+                        .HasConstraintName("fk_flight_airport_arrive_airport_id");
                 });
 
             modelBuilder.Entity("Flight.Seats.Models.Seat", b =>

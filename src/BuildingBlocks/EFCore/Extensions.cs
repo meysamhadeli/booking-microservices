@@ -11,6 +11,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace BuildingBlocks.EFCore;
 
+using Humanizer;
+using Microsoft.EntityFrameworkCore.Metadata;
+
 public static class Extensions
 {
     public static IServiceCollection AddCustomDbContext<TContext>(
@@ -68,6 +71,35 @@ public static class Extensions
 
             // set filter
             mutableEntityType.SetQueryFilter(lambdaExpression);
+        }
+    }
+
+
+    //ref: https://andrewlock.net/customising-asp-net-core-identity-ef-core-naming-conventions-for-postgresql/
+    public static void ToSnakeCaseTables(this ModelBuilder modelBuilder)
+    {
+        foreach (var entity in modelBuilder.Model.GetEntityTypes())
+        {
+            // Replace table names
+            entity.SetTableName(entity.GetTableName()?.Underscore());
+
+            var tableObjectIdentifier = StoreObjectIdentifier.Table(entity.GetTableName()?.Underscore()!, entity.GetSchema());
+
+            // Replace column names
+            foreach (var property in entity.GetProperties())
+            {
+                property.SetColumnName(property.GetColumnName(tableObjectIdentifier)?.Underscore());
+            }
+
+            foreach (var key in entity.GetKeys())
+            {
+                key.SetName(key.GetName()?.Underscore());
+            }
+
+            foreach (var key in entity.GetForeignKeys())
+            {
+                key.SetConstraintName(key.GetConstraintName()?.Underscore());
+            }
         }
     }
 

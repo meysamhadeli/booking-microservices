@@ -15,5 +15,6 @@ public class PersistMessageDbContext : AppDbContextBase, IPersistMessageDbContex
     {
         builder.ApplyConfiguration(new PersistMessageConfiguration());
         base.OnModelCreating(builder);
+        builder.ToSnakeCaseTables();
     }
 }
