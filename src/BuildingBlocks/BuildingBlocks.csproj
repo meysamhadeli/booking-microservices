@@ -152,6 +152,7 @@
   <ItemGroup>
     <Folder Include="Contracts" />
     <Folder Include="EventStoreDB\BackgroundWorkers" />
+    <Folder Include="PersistMessageProcessor\Data\Configurations" />
     <Folder Include="PersistMessageProcessor\Data\Migrations" />
   </ItemGroup>
 

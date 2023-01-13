@@ -12,7 +12,7 @@ public class FlightConfiguration : IEntityTypeConfiguration<Flights.Models.Fligh
 {
     public void Configure(EntityTypeBuilder<Flights.Models.Flight> builder)
     {
-        builder.ToTable("flight");
+        builder.ToTable(nameof(Flight));
 
         builder.HasKey(r => r.Id);
         builder.Property(r => r.Id).ValueGeneratedNever();

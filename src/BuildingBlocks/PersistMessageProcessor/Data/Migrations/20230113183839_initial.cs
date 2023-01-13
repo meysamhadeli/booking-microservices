@@ -12,7 +12,7 @@ namespace BuildingBlocks.PersistMessageProcessor.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "persistMessage",
+                name: "persist_message",
                 columns: table => new
                 {
                     id = table.Column<long>(type: "bigint", nullable: false),
@@ -33,7 +33,7 @@ namespace BuildingBlocks.PersistMessageProcessor.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "persistMessage");
+                name: "persist_message");
         }
     }
 }
