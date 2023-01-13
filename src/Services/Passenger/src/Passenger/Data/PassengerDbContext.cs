@@ -17,5 +17,6 @@ public sealed class PassengerDbContext : AppDbContextBase
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(builder);
+        builder.ToSnakeCaseTables();
     }
 }

@@ -11,7 +11,7 @@ public class SeatConfiguration : IEntityTypeConfiguration<Seat>
 {
     public void Configure(EntityTypeBuilder<Seat> builder)
     {
-        builder.ToTable("seat");
+        builder.ToTable(nameof(Seat));
 
         builder.HasKey(r => r.Id);
         builder.Property(r => r.Id).ValueGeneratedNever();

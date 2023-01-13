@@ -83,7 +83,7 @@ namespace Flight.Data.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_flight_airport_airport_id",
+                        name: "fk_flight_airport_arrive_airport_id",
                         column: x => x.arriveairportid,
                         principalTable: "airport",
                         principalColumn: "id",
