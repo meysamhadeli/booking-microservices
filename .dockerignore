@@ -20,6 +20,7 @@
 **/npm-debug.log
 **/obj/
 **/.tye/
+**/CHANGELOG.md
 **/secrets.dev.yaml
 **/values.dev.yaml
 LICENSE
