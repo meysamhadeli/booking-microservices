@@ -81,7 +81,9 @@ autolabeler:
     body:
       - '/JIRA-[0-9]{1,4}/'
 
-change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+change-template: '- $TITLE (#$NUMBER)'
+exclude-contributors:
+  - 'meysamhadeli'
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 version-resolver:
   major:
