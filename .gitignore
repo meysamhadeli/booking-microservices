@@ -433,3 +433,5 @@ fabric.properties
 
 # Tye
 .tye/
+
+/CHANGELOG.md
