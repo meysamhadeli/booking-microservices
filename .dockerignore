@@ -20,8 +20,8 @@
 **/npm-debug.log
 **/obj/
 **/.tye/
-**/CHANGELOG.md
 **/secrets.dev.yaml
 **/values.dev.yaml
 LICENSE
 README.md
+CHANGELOG.md
