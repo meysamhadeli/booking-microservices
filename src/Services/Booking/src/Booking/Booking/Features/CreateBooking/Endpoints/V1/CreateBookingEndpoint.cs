@@ -12,6 +12,8 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Booking.Booking.Features.CreateBooking.Endpoints.V1;
 
+using Hellang.Middleware.ProblemDetails;
+
 public class CreateBookingEndpoint : IMinimalEndpoint
 {
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder endpoints)
@@ -22,9 +24,21 @@ public class CreateBookingEndpoint : IMinimalEndpoint
             .WithName("CreateBooking")
             .WithMetadata(new SwaggerOperationAttribute("Create Booking", "Create Booking"))
             .WithApiVersionSet(endpoints.NewApiVersionSet("Booking").Build())
-            .Produces<ulong>()
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status400BadRequest)
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status200OK,
+                    "Booking Created",
+                    typeof(ulong)))
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status400BadRequest,
+                    "BadRequest",
+                    typeof(StatusCodeProblemDetails)))
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status401Unauthorized,
+                    "UnAuthorized",
+                    typeof(StatusCodeProblemDetails)))
             .HasApiVersion(1.0);
 
         return endpoints;
