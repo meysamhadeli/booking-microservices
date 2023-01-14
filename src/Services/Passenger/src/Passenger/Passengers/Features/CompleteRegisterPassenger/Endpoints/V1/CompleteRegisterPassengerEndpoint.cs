@@ -11,6 +11,8 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Passenger.Passengers.Features.CompleteRegisterPassenger.Endpoints.V1;
 
+using Hellang.Middleware.ProblemDetails;
+
 public class CompleteRegisterPassengerEndpoint : IMinimalEndpoint
 {
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder endpoints)
@@ -21,9 +23,21 @@ public class CompleteRegisterPassengerEndpoint : IMinimalEndpoint
             .WithName("CompleteRegisterPassenger")
             .WithMetadata(new SwaggerOperationAttribute("Complete Register Passenger", "Complete Register Passenger"))
             .WithApiVersionSet(endpoints.NewApiVersionSet("Passenger").Build())
-            .Produces<PassengerResponseDto>()
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status400BadRequest)
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status200OK,
+                    "Register Passenger Completed",
+                    typeof(PassengerResponseDto)))
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status400BadRequest,
+                    "BadRequest",
+                    typeof(StatusCodeProblemDetails)))
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status401Unauthorized,
+                    "UnAuthorized",
+                    typeof(StatusCodeProblemDetails)))
             .HasApiVersion(1.0);
 
         return endpoints;

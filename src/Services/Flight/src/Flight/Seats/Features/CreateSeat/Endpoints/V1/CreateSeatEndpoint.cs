@@ -13,6 +13,8 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Flight.Seats.Features.CreateSeat.Endpoints.V1;
 
+using Hellang.Middleware.ProblemDetails;
+
 public class CreateSeatEndpoint : IMinimalEndpoint
 {
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder endpoints)
@@ -23,9 +25,21 @@ public class CreateSeatEndpoint : IMinimalEndpoint
             .WithName("CreateSeat")
             .WithMetadata(new SwaggerOperationAttribute("Create Seat", "Create Seat"))
             .WithApiVersionSet(endpoints.NewApiVersionSet("Flight").Build())
-            .Produces<SeatResponseDto>()
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status400BadRequest)
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status200OK,
+                    "Seat Created",
+                    typeof(SeatResponseDto)))
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status400BadRequest,
+                    "BadRequest",
+                    typeof(StatusCodeProblemDetails)))
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status401Unauthorized,
+                    "UnAuthorized",
+                    typeof(StatusCodeProblemDetails)))
             .HasApiVersion(1.0);
 
         return endpoints;

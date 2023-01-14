@@ -11,6 +11,8 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Flight.Flights.Features.DeleteFlight.Endpoints.V1;
 
+using Hellang.Middleware.ProblemDetails;
+
 public class DeleteFlightEndpoint : IMinimalEndpoint
 {
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder endpoints)
@@ -21,9 +23,21 @@ public class DeleteFlightEndpoint : IMinimalEndpoint
             .WithName("DeleteFlight")
             .WithMetadata(new SwaggerOperationAttribute("Delete Flight", "Delete Flight"))
             .WithApiVersionSet(endpoints.NewApiVersionSet("Flight").Build())
-            .Produces<FlightResponseDto>()
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status400BadRequest)
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status204NoContent,
+                    "Flight Deleted",
+                    typeof(FlightResponseDto)))
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status400BadRequest,
+                    "BadRequest",
+                    typeof(StatusCodeProblemDetails)))
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status401Unauthorized,
+                    "UnAuthorized",
+                    typeof(StatusCodeProblemDetails)))
             .HasApiVersion(1.0);
 
         return endpoints;

@@ -12,6 +12,8 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Flight.Flights.Features.GetAvailableFlights.Endpoints.V1;
 
+using Hellang.Middleware.ProblemDetails;
+
 public class GetAvailableFlightsEndpoint : IMinimalEndpoint
 {
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder endpoints)
@@ -22,9 +24,21 @@ public class GetAvailableFlightsEndpoint : IMinimalEndpoint
             .WithName("GetAvailableFlights")
             .WithMetadata(new SwaggerOperationAttribute("Get Available Flights", "Get Available Flights"))
             .WithApiVersionSet(endpoints.NewApiVersionSet("Flight").Build())
-            .Produces<IEnumerable<FlightResponseDto>>()
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status400BadRequest)
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status200OK,
+                    "GetAvailableFlights",
+                    typeof(IEnumerable<FlightResponseDto>)))
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status400BadRequest,
+                    "BadRequest",
+                    typeof(StatusCodeProblemDetails)))
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status401Unauthorized,
+                    "UnAuthorized",
+                    typeof(StatusCodeProblemDetails)))
             .HasApiVersion(1.0);
 
         return endpoints;

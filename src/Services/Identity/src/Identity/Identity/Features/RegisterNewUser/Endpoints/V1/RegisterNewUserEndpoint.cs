@@ -13,6 +13,8 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Identity.Identity.Features.RegisterNewUser.Endpoints.V1;
 
+using Hellang.Middleware.ProblemDetails;
+
 public class RegisterNewUserEndpoint : IMinimalEndpoint
 {
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder endpoints)
@@ -22,9 +24,16 @@ public class RegisterNewUserEndpoint : IMinimalEndpoint
             .WithName("RegisterUser")
             .WithMetadata(new SwaggerOperationAttribute("Register User", "Register User"))
             .WithApiVersionSet(endpoints.NewApiVersionSet("Identity").Build())
-            .Produces<RegisterNewUserResponseDto>()
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status400BadRequest)
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status200OK,
+                    "User Registered",
+                    typeof(RegisterNewUserResponseDto)))
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status400BadRequest,
+                    "BadRequest",
+                    typeof(StatusCodeProblemDetails)))
             .HasApiVersion(1.0);
 
         return endpoints;
