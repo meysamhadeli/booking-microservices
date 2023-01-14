@@ -10,6 +10,9 @@ using Passenger.Passengers.Features.GetPassengerById.Queries.V1;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Passenger.Passengers.Features.GetPassengerById.Endpoints.V1;
+
+using Hellang.Middleware.ProblemDetails;
+
 public class GetPassengerByIdEndpoint : IMinimalEndpoint
 {
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder endpoints)
@@ -20,9 +23,21 @@ public class GetPassengerByIdEndpoint : IMinimalEndpoint
             .WithName("GetPassengerById")
             .WithMetadata(new SwaggerOperationAttribute("Get Passenger By Id", "Get Passenger By Id"))
             .WithApiVersionSet(endpoints.NewApiVersionSet("Passenger").Build())
-            .Produces<PassengerResponseDto>()
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status400BadRequest)
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status200OK,
+                    "GetPassengerById",
+                    typeof(PassengerResponseDto)))
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status400BadRequest,
+                    "BadRequest",
+                    typeof(StatusCodeProblemDetails)))
+            .WithMetadata(
+                new SwaggerResponseAttribute(
+                    StatusCodes.Status401Unauthorized,
+                    "UnAuthorized",
+                    typeof(StatusCodeProblemDetails)))
             .HasApiVersion(1.0);
 
         return endpoints;
