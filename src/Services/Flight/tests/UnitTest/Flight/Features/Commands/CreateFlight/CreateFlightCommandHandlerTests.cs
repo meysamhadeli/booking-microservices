@@ -1,17 +1,14 @@
-﻿using System;
+﻿namespace Unit.Test.Flight.Features.Commands.CreateFlight;
+
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Flight.Flights.Dtos;
-using Flight.Flights.Features.CreateFlight;
-using Flight.Flights.Features.CreateFlight.Commands.V1;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using NSubstitute;
+using global::Flight.Flights.Dtos;
+using global::Flight.Flights.Features.CreateFlight.Commands.V1;
 using Unit.Test.Common;
 using Unit.Test.Fakes;
 using Xunit;
-
-namespace Unit.Test.Flight.Features.CreateFlight;
 
 [Collection(nameof(UnitTestFixture))]
 public class CreateFlightCommandHandlerTests
