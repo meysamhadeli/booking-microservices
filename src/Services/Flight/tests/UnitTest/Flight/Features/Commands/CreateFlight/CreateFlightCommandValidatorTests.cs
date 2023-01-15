@@ -1,12 +1,11 @@
-﻿using Flight.Flights.Features.CreateFlight;
-using Flight.Flights.Features.CreateFlight.Commands.V1;
+﻿namespace Unit.Test.Flight.Features.Commands.CreateFlight;
+
 using FluentAssertions;
 using FluentValidation.TestHelper;
+using global::Flight.Flights.Features.CreateFlight.Commands.V1;
 using Unit.Test.Common;
 using Unit.Test.Fakes;
 using Xunit;
-
-namespace Unit.Test.Flight.Features.CreateFlight;
 
 [Collection(nameof(UnitTestFixture))]
 public class CreateFlightCommandValidatorTests
