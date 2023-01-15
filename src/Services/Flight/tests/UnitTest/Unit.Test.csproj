@@ -21,4 +21,8 @@
     <ProjectReference Include="..\..\src\Flight.Api\Flight.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Flight\Features\Commands" />
+  </ItemGroup>
+
 </Project>
