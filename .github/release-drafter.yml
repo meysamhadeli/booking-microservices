@@ -12,7 +12,6 @@ name-template: 'v$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
 template: |
   ## What Changed 👀
-
   $CHANGES
   **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
 categories:
@@ -26,7 +25,7 @@ categories:
   - title: 🧪 Test
     labels:
       - test
-  - title: 🚥 CI
+  - title: 👷 CI
     labels:
       - ci       
   - title: ♻️ Changes
@@ -37,9 +36,6 @@ categories:
   - title: ⛔️ Deprecated
     labels:
       - deprecated
-  - title: 🗑 Removed
-    labels:
-      - removed
   - title: 🔐 Security
     labels:
       - security
@@ -53,8 +49,6 @@ categories:
       - dependencies
   - title: 🧰 Maintenance
     label: 'chore'
-  - title: 🧺 Miscellaneous #Everything except ABAP
-    label: misc
   - title: 📝 Other changes
 ## putting no labels pr to `Other Changes` category with no label - https://github.com/release-drafter/release-drafter/issues/139#issuecomment-480473934
 
@@ -84,13 +78,19 @@ autolabeler:
       - '/(test)\/.*/'    
   - label: 'bug'
     branch:
-      - '/(fix)\/.*/'
+      - '/(fix)\/.*/'  
   - label: 'feature'
     branch:
       - '/(feat)\/.*/'
+  - label: 'minor'
+    branch:
+      - '/(feat)\/.*/'    
+  - label: 'patch'
+    branch:
+      - '/(fix)\/.*/'         
     body:
       - '/JIRA-[0-9]{1,4}/'
-
+      
 change-template: '- $TITLE (#$NUMBER)'
 exclude-contributors:
   - 'meysamhadeli'
