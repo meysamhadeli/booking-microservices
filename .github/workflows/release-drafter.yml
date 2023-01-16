@@ -6,8 +6,6 @@
    push:
      branches:
        - main
-       - develop
-
  jobs:
    update_release_draft:
      name: Release drafter
