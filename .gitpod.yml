@@ -11,7 +11,7 @@ image:
 caches:
   dotnet:
     paths:
-      - /usr/local/bin/docker-compose  
+      - /usr/local/bin/infrastracture  
 tasks:
   - name: Init Docker-Compose
     # https://www.gitpod.io/docs/configure/projects/prebuilds
