@@ -1,4 +1,3 @@
-using BuildingBlocks.EFCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,5 +11,8 @@ public class PassengerConfiguration: IEntityTypeConfiguration<Passengers.Models.
 
         builder.HasKey(r => r.Id);
         builder.Property(r => r.Id).ValueGeneratedNever();
+
+        // // ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=fluent-api
+        builder.Property(r => r.Version).IsConcurrencyToken();
     }
 }

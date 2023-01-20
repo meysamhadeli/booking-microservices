@@ -12,7 +12,7 @@ using Passenger.Data;
 namespace Passenger.Data.Migrations
 {
     [DbContext(typeof(PassengerDbContext))]
-    [Migration("20230113183717_initial")]
+    [Migration("20230120222631_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -68,6 +68,7 @@ namespace Passenger.Data.Migrations
                         .HasColumnName("passport_number");
 
                     b.Property<long>("Version")
+                        .IsConcurrencyToken()
                         .HasColumnType("bigint")
                         .HasColumnName("version");
 

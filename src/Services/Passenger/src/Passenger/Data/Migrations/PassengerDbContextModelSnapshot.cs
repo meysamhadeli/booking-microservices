@@ -65,6 +65,7 @@ namespace Passenger.Data.Migrations
                         .HasColumnName("passport_number");
 
                     b.Property<long>("Version")
+                        .IsConcurrencyToken()
                         .HasColumnType("bigint")
                         .HasColumnName("version");
 

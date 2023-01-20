@@ -7,13 +7,16 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BuildingBlocks.EFCore;
 
+using System.Data;
+
 public abstract class AppDbContextBase : DbContext, IDbContext
 {
     private readonly ICurrentUserProvider _currentUserProvider;
 
     private IDbContextTransaction _currentTransaction;
 
-    protected AppDbContextBase(DbContextOptions options, ICurrentUserProvider currentUserProvider = null) : base(options)
+    protected AppDbContextBase(DbContextOptions options, ICurrentUserProvider currentUserProvider = null) :
+        base(options)
     {
         _currentUserProvider = currentUserProvider;
     }
@@ -30,7 +33,7 @@ public abstract class AppDbContextBase : DbContext, IDbContext
             return;
         }
 
-        _currentTransaction ??= await Database.BeginTransactionAsync(cancellationToken);
+        _currentTransaction ??= await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
     }
 
     public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
@@ -68,7 +71,16 @@ public abstract class AppDbContextBase : DbContext, IDbContext
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         OnBeforeSaving();
-        return base.SaveChangesAsync(cancellationToken);
+        try
+        {
+            return base.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            var data = ex.Entries.Single();
+            data.OriginalValues.SetValues(data.GetDatabaseValues() ?? throw new InvalidOperationException());
+            return base.SaveChangesAsync(cancellationToken);
+        }
     }
 
     public IReadOnlyList<IDomainEvent> GetDomainEvents()
@@ -104,7 +116,6 @@ public abstract class AppDbContextBase : DbContext, IDbContext
                     case EntityState.Added:
                         entry.Entity.CreatedBy = userId;
                         entry.Entity.CreatedAt = DateTime.Now;
-                        entry.Entity.Version++;
                         break;
 
                     case EntityState.Modified:
