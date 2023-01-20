@@ -4,19 +4,12 @@
 # https://www.gitpod.io/docs/references/gitpod-yml
 # https://www.gitpod.io/docs/configure
 # https://www.gitpod.io/docs/configure/workspaces/ports
-
+      
 image:
-  file: gitpod/workspace-dotnet
-
-vscode:
-  extensions:
-    - ms-azuretools.vscode-docker
-    - muhammad-sammy.csharp
-
-# https://www.gitpod.io/docs/configure/workspaces/tasks#execution-order
+  file: .gitpod.Dockerfile
 
 tasks:
-  - name: Init Docker-Compose
+ - name: Init Docker-Compose
     # https://www.gitpod.io/docs/configure/projects/prebuilds
     # We load docker on pre-build for increasing speed
     init: |
@@ -24,6 +17,12 @@ tasks:
       docker-compose  -f ./deployments/docker-compose/infrastracture.yaml up -d
   - name: Restore & Build
     init: |
-      dotnet dev-certs https
+      dotnet dev-certs https 
       dotnet restore
-      dotnet build    
+      dotnet build
+  - name: Run
+    command: dotnet run
+
+vscode:
+  extensions:
+    - muhammad-sammy.csharp      
