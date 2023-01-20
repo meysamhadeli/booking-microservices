@@ -9,12 +9,6 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
- - name: Init Docker-Compose
-    # https://www.gitpod.io/docs/configure/projects/prebuilds
-    # We load docker on pre-build for increasing speed
-    init: |
-      docker-compose pull
-      docker-compose  -f ./deployments/docker-compose/infrastracture.yaml up -d
   - name: Restore & Build
     init: |
       dotnet dev-certs https 
