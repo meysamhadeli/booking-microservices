@@ -25,7 +25,7 @@ namespace BuildingBlocks.Core.Model
             return dequeuedEvents;
         }
 
-        public long Version { get; set; } = -1;
+        public long Version { get; set; }
 
         public TId Id { get; set;  }
     }

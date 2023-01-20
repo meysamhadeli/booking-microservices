@@ -7,7 +7,9 @@
       
 image:
   file: .gitpod.Dockerfile
-  
+
+# https://www.gitpod.io/docs/configure/workspaces/tasks#execution-order
+# https://www.gitpod.io/docs/configure/projects/prebuilds
 tasks:
   - name: Init Docker-Compose
     # https://www.gitpod.io/docs/configure/projects/prebuilds
