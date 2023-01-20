@@ -6,7 +6,7 @@
 # https://www.gitpod.io/docs/configure/workspaces/ports
 
 image:
-  file: .gitpod.Dockerfile
+  file: gitpod/workspace-dotnet
 
 vscode:
   extensions:
