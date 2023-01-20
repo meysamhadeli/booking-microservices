@@ -112,14 +112,11 @@ public class PersistMessageProcessor : IPersistMessageProcessor
 
     public async Task ProcessAllAsync(CancellationToken cancellationToken = default)
     {
-        var messages = await _persistMessageDbContext?.PersistMessages?
+        var messages = await _persistMessageDbContext.PersistMessages
             .Where(x => x.MessageStatus != MessageStatus.Processed)
-            ?.ToListAsync(cancellationToken);
+            .ToListAsync(cancellationToken);
 
-        if (messages != null && messages.Any())
-        {
-            foreach (var message in messages) await ProcessAsync(message.Id, message.DeliveryType, cancellationToken);
-        }
+        foreach (var message in messages) await ProcessAsync(message.Id, message.DeliveryType, cancellationToken);
     }
 
     public async Task ProcessInboxAsync(long messageId, CancellationToken cancellationToken = default)
