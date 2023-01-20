@@ -8,10 +8,6 @@
 image:
   file: .gitpod.Dockerfile
   
-caches:
-  dotnet:
-    paths:
-      - /usr/local/bin/infrastracture  
 tasks:
   - name: Init Docker-Compose
     # https://www.gitpod.io/docs/configure/projects/prebuilds
