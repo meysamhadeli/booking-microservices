@@ -16,8 +16,8 @@ caches:
 # https://www.gitpod.io/docs/configure/workspaces/tasks#execution-order
 # https://www.gitpod.io/docs/configure/projects/prebuilds
 tasks:
- - name: Setup Self-Signed Certificate
-    command: bash $GITPOD_REPO_ROOT/scripts/self_signed_certificate_gitpod.sh
+ - name: Setup Kubectl
+    command: bash $GITPOD_REPO_ROOT/scripts/setup_kubectl_gitpod.sh
   - name: Init Docker-Compose
     init: |
       docker-compose pull
