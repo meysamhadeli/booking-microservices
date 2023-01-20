@@ -10,17 +10,15 @@ image:
 
 # https://www.gitpod.io/docs/configure/workspaces/tasks#execution-order
 # https://www.gitpod.io/docs/configure/projects/prebuilds
-# https://github.com/gitpod-samples/demo-kubectl-with-gitpod
 tasks:
   - name: Setup kubectl
-    command: bash $GITPOD_REPO_ROOT/setup_kubectl_with_gitpod.sh
+    command: bash $GITPOD_REPO_ROOT/scripts/self_signed_certificate_gitpod.sh
   - name: Init Docker-Compose
     init: |
       docker-compose pull
       docker-compose  -f ./deployments/docker-compose/infrastracture.yaml up -d
   - name: Restore & Build
     init: |
-      dotnet dev-certs https
       dotnet restore
       dotnet build
 
