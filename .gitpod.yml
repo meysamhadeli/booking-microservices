@@ -8,11 +8,6 @@
 image:
   file: .gitpod.Dockerfile
 
-caches:
-  dotnet:
-    paths:
-      - /usr/local/bin/docker-compose  
-
 # https://www.gitpod.io/docs/configure/workspaces/tasks#execution-order
 # https://www.gitpod.io/docs/configure/projects/prebuilds
 tasks:
