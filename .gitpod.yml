@@ -4,7 +4,7 @@
 # https://www.gitpod.io/docs/references/gitpod-yml
 # https://www.gitpod.io/docs/configure
 # https://www.gitpod.io/docs/configure/workspaces/ports
-
+      
 image:
   file: .gitpod.Dockerfile
 
@@ -12,15 +12,19 @@ image:
 # https://www.gitpod.io/docs/configure/projects/prebuilds
 tasks:
   - name: Init Docker-Compose
+    # https://www.gitpod.io/docs/configure/projects/prebuilds
+    # We load docker on pre-build for increasing speed
     init: |
       docker-compose pull
       docker-compose  -f ./deployments/docker-compose/infrastracture.yaml up -d
+  - name: Setup kubectl
+    command: bash $GITPOD_REPO_ROOT/scripts/setup_kubectl_gitpod.sh     
   - name: Restore & Build
     init: |
+      dotnet dev-certs https 
       dotnet restore
       dotnet build
-
+      
 vscode:
   extensions:
-    - ms-azuretools.vscode-docker
-    - muhammad-sammy.csharp
+    - muhammad-sammy.csharp      
