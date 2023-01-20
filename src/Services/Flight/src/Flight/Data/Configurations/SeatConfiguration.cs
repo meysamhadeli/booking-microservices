@@ -16,6 +16,9 @@ public class SeatConfiguration : IEntityTypeConfiguration<Seat>
         builder.HasKey(r => r.Id);
         builder.Property(r => r.Id).ValueGeneratedNever();
 
+        // // ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=fluent-api
+         builder.Property(r => r.Version).IsConcurrencyToken();
+
         builder
             .HasOne<Flights.Models.Flight>()
             .WithMany()

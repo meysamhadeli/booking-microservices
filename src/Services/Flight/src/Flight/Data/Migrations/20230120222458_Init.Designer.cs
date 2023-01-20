@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Flight.Data.Migrations
 {
     [DbContext(typeof(FlightDbContext))]
-    [Migration("20230113183335_Init")]
+    [Migration("20230120222458_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -64,6 +64,7 @@ namespace Flight.Data.Migrations
                         .HasColumnName("name");
 
                     b.Property<long>("Version")
+                        .IsConcurrencyToken()
                         .HasColumnType("bigint")
                         .HasColumnName("version");
 
@@ -112,6 +113,7 @@ namespace Flight.Data.Migrations
                         .HasColumnName("name");
 
                     b.Property<long>("Version")
+                        .IsConcurrencyToken()
                         .HasColumnType("bigint")
                         .HasColumnName("version");
 
@@ -191,6 +193,7 @@ namespace Flight.Data.Migrations
                         .HasColumnName("status");
 
                     b.Property<long>("Version")
+                        .IsConcurrencyToken()
                         .HasColumnType("bigint")
                         .HasColumnName("version");
 
@@ -255,6 +258,7 @@ namespace Flight.Data.Migrations
                         .HasColumnName("type");
 
                     b.Property<long>("Version")
+                        .IsConcurrencyToken()
                         .HasColumnType("bigint")
                         .HasColumnName("version");
 

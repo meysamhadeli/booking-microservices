@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Flight.Data;
 
-
 public sealed class FlightDbContext : AppDbContextBase
 {
     public FlightDbContext(DbContextOptions<FlightDbContext> options, ICurrentUserProvider currentUserProvider) : base(
