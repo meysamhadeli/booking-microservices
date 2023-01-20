@@ -10,7 +10,10 @@ image:
 
 # https://www.gitpod.io/docs/configure/workspaces/tasks#execution-order
 # https://www.gitpod.io/docs/configure/projects/prebuilds
+# https://github.com/gitpod-samples/demo-kubectl-with-gitpod
 tasks:
+  - name: Setup kubectl
+    command: bash $GITPOD_REPO_ROOT/setup_kubectl_with_gitpod.sh
   - name: Init Docker-Compose
     init: |
       docker-compose pull
@@ -20,7 +23,7 @@ tasks:
       dotnet dev-certs https
       dotnet restore
       dotnet build
-      
+
 vscode:
   extensions:
     - ms-azuretools.vscode-docker
