@@ -13,6 +13,7 @@ using global::Polly;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Exception = System.Exception;
 
 public abstract class AppDbContextBase : DbContext, IDbContext
 {
@@ -82,6 +83,7 @@ public abstract class AppDbContextBase : DbContext, IDbContext
         //ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=fluent-api#resolving-concurrency-conflicts
         catch (DbUpdateConcurrencyException ex)
         {
+            throw new DbUpdateConcurrencyException("try for get unhandled exception with DbUpdateConcurrencyException", ex);
             var logger = _httpContextAccessor?.HttpContext?.RequestServices
                 .GetRequiredService<ILogger<AppDbContextBase>>();
 
@@ -116,6 +118,10 @@ public abstract class AppDbContextBase : DbContext, IDbContext
 
             return await policy.ExecuteAsync(async () => await base.SaveChangesAsync(cancellationToken));
         }
+        catch (Exception ex)
+        {
+            throw new Exception("try for get unhandled exception bt default", ex);
+        }
     }
 
     public IReadOnlyList<IDomainEvent> GetDomainEvents()
@@ -139,35 +145,42 @@ public abstract class AppDbContextBase : DbContext, IDbContext
     // ref: https://www.meziantou.net/entity-framework-core-soft-delete-using-query-filters.htm
     private void OnBeforeSaving()
     {
-        foreach (var entry in ChangeTracker.Entries<IAggregate>())
+        try
         {
-            var isAuditable = entry.Entity.GetType().IsAssignableTo(typeof(IAggregate));
-            var userId = GetCurrentUserId();
-
-            if (isAuditable)
+            foreach (var entry in ChangeTracker.Entries<IAggregate>())
             {
-                switch (entry.State)
+                var isAuditable = entry.Entity.GetType().IsAssignableTo(typeof(IAggregate));
+                var userId = GetCurrentUserId();
+
+                if (isAuditable)
                 {
-                    case EntityState.Added:
-                        entry.Entity.CreatedBy = userId;
-                        entry.Entity.CreatedAt = DateTime.Now;
-                        break;
+                    switch (entry.State)
+                    {
+                        case EntityState.Added:
+                            entry.Entity.CreatedBy = userId;
+                            entry.Entity.CreatedAt = DateTime.Now;
+                            break;
 
-                    case EntityState.Modified:
-                        entry.Entity.LastModifiedBy = userId;
-                        entry.Entity.LastModified = DateTime.Now;
-                        entry.Entity.Version++;
-                        break;
+                        case EntityState.Modified:
+                            entry.Entity.LastModifiedBy = userId;
+                            entry.Entity.LastModified = DateTime.Now;
+                            entry.Entity.Version++;
+                            break;
 
-                    case EntityState.Deleted:
-                        entry.State = EntityState.Modified;
-                        entry.Entity.LastModifiedBy = userId;
-                        entry.Entity.LastModified = DateTime.Now;
-                        entry.Entity.IsDeleted = true;
-                        entry.Entity.Version++;
-                        break;
+                        case EntityState.Deleted:
+                            entry.State = EntityState.Modified;
+                            entry.Entity.LastModifiedBy = userId;
+                            entry.Entity.LastModified = DateTime.Now;
+                            entry.Entity.IsDeleted = true;
+                            entry.Entity.Version++;
+                            break;
+                    }
                 }
             }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("try for find IAggregate", ex);
         }
     }
 
