@@ -115,7 +115,6 @@ public abstract class AppDbContextBase : DbContext, IDbContext
                                 retryCount);
                         }
                     });
-
             return await policy.ExecuteAsync(async () => await base.SaveChangesAsync(cancellationToken));
         }
         catch (Exception ex)
