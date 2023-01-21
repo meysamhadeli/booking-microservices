@@ -25,7 +25,7 @@ public sealed class IdentityContext : IdentityDbContext<ApplicationUser, Identit
 {
     private IDbContextTransaction _currentTransaction;
 
-    public IdentityContext(DbContextOptions<IdentityContext> options, IHttpContextAccessor httpContextAccessor) :
+    public IdentityContext(DbContextOptions<IdentityContext> options, IHttpContextAccessor httpContextAccessor = default) :
         base(options)
     {
     }

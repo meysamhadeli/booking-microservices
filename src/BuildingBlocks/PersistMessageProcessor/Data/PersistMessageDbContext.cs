@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildingBlocks.PersistMessageProcessor.Data;
 
+using Microsoft.AspNetCore.Http;
+
 public class PersistMessageDbContext : AppDbContextBase, IPersistMessageDbContext
 {
-    public PersistMessageDbContext(DbContextOptions<PersistMessageDbContext> options)
-        : base(options)
+    public PersistMessageDbContext(DbContextOptions<PersistMessageDbContext> options, IHttpContextAccessor httpContextAccessor = default)
+        : base(options, httpContextAccessor)
     {
     }
 

@@ -6,6 +6,8 @@ using Passenger;
 
 namespace Booking.Extensions.Infrastructure;
 
+using BuildingBlocks.Polly;
+
 public static class GrpcClientExtensions
 {
     public static IServiceCollection AddGrpcClients(this IServiceCollection services)
@@ -15,12 +17,16 @@ public static class GrpcClientExtensions
         services.AddGrpcClient<FlightGrpcService.FlightGrpcServiceClient>(o =>
         {
             o.Address = new Uri(grpcOptions.FlightAddress);
-        });
+        })
+            .AddGrpcRetryPolicyHandler()
+            .AddGrpcCircuitBreakerPolicyHandler();
 
         services.AddGrpcClient<PassengerGrpcService.PassengerGrpcServiceClient>(o =>
         {
             o.Address = new Uri(grpcOptions.PassengerAddress);
-        });
+        })
+            .AddGrpcRetryPolicyHandler()
+            .AddGrpcCircuitBreakerPolicyHandler();;
 
         return services;
     }

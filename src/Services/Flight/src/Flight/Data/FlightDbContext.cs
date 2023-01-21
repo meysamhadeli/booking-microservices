@@ -1,5 +1,4 @@
 using BuildingBlocks.EFCore;
-using BuildingBlocks.Web;
 using Flight.Aircrafts.Models;
 using Flight.Airports.Models;
 using Flight.Seats.Models;
@@ -7,10 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Flight.Data;
 
+using Microsoft.AspNetCore.Http;
+
 public sealed class FlightDbContext : AppDbContextBase
 {
-    public FlightDbContext(DbContextOptions<FlightDbContext> options, ICurrentUserProvider currentUserProvider) : base(
-        options, currentUserProvider)
+    public FlightDbContext(DbContextOptions<FlightDbContext> options, IHttpContextAccessor httpContextAccessor = default) : base(
+        options, httpContextAccessor)
     {
     }
 

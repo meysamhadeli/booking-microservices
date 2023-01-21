@@ -43,25 +43,17 @@ public class PersistMessageBackgroundService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            try
+            await using (var scope = _serviceProvider.CreateAsyncScope())
             {
-                await using (var scope = _serviceProvider.CreateAsyncScope())
-                {
-                    var service = scope.ServiceProvider.GetRequiredService<IPersistMessageProcessor>();
-                    await service.ProcessAllAsync(stoppingToken);
-                }
-
-                var delay = _options.Interval is { }
-                    ? TimeSpan.FromSeconds((int)_options.Interval)
-                    : TimeSpan.FromSeconds(30);
-
-                await Task.Delay(delay, stoppingToken);
+                var service = scope.ServiceProvider.GetRequiredService<IPersistMessageProcessor>();
+                await service.ProcessAllAsync(stoppingToken);
             }
-            catch (System.Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+
+            var delay = _options.Interval is { }
+                ? TimeSpan.FromSeconds((int)_options.Interval)
+                : TimeSpan.FromSeconds(30);
+
+            await Task.Delay(delay, stoppingToken);
         }
     }
 }

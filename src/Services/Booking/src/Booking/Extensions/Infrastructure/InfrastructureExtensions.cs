@@ -78,7 +78,7 @@ public static class InfrastructureExtensions
 
         SnowFlakIdGenerator.Configure(3);
 
-// ref: https://github.com/oskardudycz/EventSourcing.NetCore/tree/main/Sample/EventStoreDB/ECommerce
+        // ref: https://github.com/oskardudycz/EventSourcing.NetCore/tree/main/Sample/EventStoreDB/ECommerce
         builder.Services.AddEventStore(configuration, typeof(BookingRoot).Assembly)
             .AddEventStoreDBSubscriptionToAll();
 

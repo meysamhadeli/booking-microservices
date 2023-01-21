@@ -1,24 +1,28 @@
 using System.Collections.Immutable;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
-using BuildingBlocks.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BuildingBlocks.EFCore;
 
 using System.Data;
+using System.Net;
+using System.Security.Claims;
+using global::Polly;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 public abstract class AppDbContextBase : DbContext, IDbContext
 {
-    private readonly ICurrentUserProvider _currentUserProvider;
-
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private IDbContextTransaction _currentTransaction;
 
-    protected AppDbContextBase(DbContextOptions options, ICurrentUserProvider currentUserProvider = null) :
+    protected AppDbContextBase(DbContextOptions options, IHttpContextAccessor httpContextAccessor = default) :
         base(options)
     {
-        _currentUserProvider = currentUserProvider;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -68,44 +72,49 @@ public abstract class AppDbContextBase : DbContext, IDbContext
         }
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         OnBeforeSaving();
         try
         {
-            return base.SaveChangesAsync(cancellationToken);
+            return await base.SaveChangesAsync(cancellationToken);
         }
         //ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=fluent-api#resolving-concurrency-conflicts
         catch (DbUpdateConcurrencyException ex)
         {
-            foreach (var entry in ex.Entries)
+            var logger = _httpContextAccessor?.HttpContext?.RequestServices
+                .GetRequiredService<ILogger<AppDbContextBase>>();
+
+            var entry = ex.Entries.SingleOrDefault();
+
+            if (entry == null)
             {
-                var proposedValues = entry.CurrentValues;
-                var databaseValues = entry.GetDatabaseValues();
-
-                if (databaseValues != null)
-                {
-                    // update the original values with the database values
-                    entry.OriginalValues.SetValues(databaseValues);
-
-                    // check for conflicts
-                    if (!proposedValues.Equals(databaseValues))
-                    {
-                        if (entry.Entity.GetType() == typeof(IAggregate))
-                        {
-                            // merge concurrency conflict for IAggregate
-                        }
-                        else
-                        {
-                            throw new NotSupportedException(
-                                "Don't know how to handle concurrency conflicts for "
-                                + entry.Metadata.Name);
-                        }
-                    }
-                }
+                return 0;
             }
 
-            return base.SaveChangesAsync(cancellationToken);
+            var currentValue = entry.CurrentValues;
+            var databaseValue = await entry.GetDatabaseValuesAsync(cancellationToken);
+
+            logger?.LogInformation("The entity being updated is already use by another Thread!" +
+                                   " database value is: {DatabaseValue} and current value is: {CurrentValue}",
+                databaseValue, currentValue);
+
+            var policy = Policy.Handle<DbUpdateConcurrencyException>()
+                .WaitAndRetryAsync(retryCount: 3,
+                    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(1),
+                    onRetry: (exception, timeSpan, retryCount, context) =>
+                    {
+                        if (exception != null)
+                        {
+                            logger?.LogError(exception,
+                                "Request failed with {StatusCode}. Waiting {TimeSpan} before next retry. Retry attempt {RetryCount}.",
+                                HttpStatusCode.Conflict,
+                                timeSpan,
+                                retryCount);
+                        }
+                    });
+
+            return await policy.ExecuteAsync(async () => await base.SaveChangesAsync(cancellationToken));
         }
     }
 
@@ -133,7 +142,7 @@ public abstract class AppDbContextBase : DbContext, IDbContext
         foreach (var entry in ChangeTracker.Entries<IAggregate>())
         {
             var isAuditable = entry.Entity.GetType().IsAssignableTo(typeof(IAggregate));
-            var userId = _currentUserProvider?.GetCurrentUserId();
+            var userId = GetCurrentUserId();
 
             if (isAuditable)
             {
@@ -160,5 +169,14 @@ public abstract class AppDbContextBase : DbContext, IDbContext
                 }
             }
         }
+    }
+
+    private long? GetCurrentUserId()
+    {
+        var nameIdentifier = _httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        long.TryParse(nameIdentifier, out var userId);
+
+        return userId;
     }
 }
