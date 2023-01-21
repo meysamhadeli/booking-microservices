@@ -75,10 +75,36 @@ public abstract class AppDbContextBase : DbContext, IDbContext
         {
             return base.SaveChangesAsync(cancellationToken);
         }
+        //ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=fluent-api#resolving-concurrency-conflicts
         catch (DbUpdateConcurrencyException ex)
         {
-            var data = ex.Entries.Single();
-            data.OriginalValues.SetValues(data.GetDatabaseValues() ?? throw new InvalidOperationException());
+            foreach (var entry in ex.Entries)
+            {
+                var proposedValues = entry.CurrentValues;
+                var databaseValues = entry.GetDatabaseValues();
+
+                if (databaseValues != null)
+                {
+                    // update the original values with the database values
+                    entry.OriginalValues.SetValues(databaseValues);
+
+                    // check for conflicts
+                    if (!proposedValues.Equals(databaseValues))
+                    {
+                        if (entry.Entity.GetType() == typeof(IAggregate))
+                        {
+                            // merge concurrency conflict for IAggregate
+                        }
+                        else
+                        {
+                            throw new NotSupportedException(
+                                "Don't know how to handle concurrency conflicts for "
+                                + entry.Metadata.Name);
+                        }
+                    }
+                }
+            }
+
             return base.SaveChangesAsync(cancellationToken);
         }
     }
