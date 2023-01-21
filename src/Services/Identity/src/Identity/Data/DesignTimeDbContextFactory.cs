@@ -11,6 +11,6 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<IdentityCo
 
         builder.UseNpgsql("Server=localhost;Port=5432;Database=identity;User Id=postgres;Password=postgres;Include Error Detail=true")
             .UseSnakeCaseNamingConvention();
-        return new IdentityContext(builder.Options, null);
+        return new IdentityContext(builder.Options);
     }
 }

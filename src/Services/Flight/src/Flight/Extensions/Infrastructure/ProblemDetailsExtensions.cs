@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 
 namespace Flight.Extensions.Infrastructure;
 
+using Microsoft.EntityFrameworkCore;
+
 public static class ProblemDetailsExtensions
 {
     public static IServiceCollection AddCustomProblemDetails(this IServiceCollection services)
@@ -63,6 +65,14 @@ public static class ProblemDetailsExtensions
                 Status = StatusCodes.Status400BadRequest,
                 Detail = ex.Message,
                 Type = "https://somedomain/application-error"
+            });
+
+            x.Map<DbUpdateConcurrencyException>(ex => new ProblemDetailsWithCode
+            {
+                Title = ex.GetType().Name,
+                Status = StatusCodes.Status409Conflict,
+                Detail = ex.Message,
+                Type = "https://somedomain/db-update-concurrency-error"
             });
 
             x.MapToStatusCode<ArgumentNullException>(StatusCodes.Status400BadRequest);

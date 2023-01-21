@@ -9,6 +9,8 @@ using Microsoft.Extensions.Hosting;
 
 namespace BuildingBlocks.MassTransit;
 
+using Exception;
+
 public static class Extensions
 {
     private static bool? _isRunningInContainer;
@@ -80,6 +82,10 @@ public static class Extensions
 
                                 foreach (var consumer in consumers)
                                 {
+                                    //ref: https://masstransit-project.com/usage/exceptions.html#retry
+                                    //ref: https://markgossa.com/2022/06/masstransit-exponential-back-off.html
+                                    configurator.UseMessageRetry(r => AddRetryConfiguration(r));
+
                                     configurator.ConfigureEndpoints(context, x => x.Exclude(consumer));
                                     var methodInfo = typeof(DependencyInjectionReceiveEndpointExtensions)
                                         .GetMethods()
@@ -94,5 +100,17 @@ public static class Extensions
                 }
             }
         });
+    }
+
+    private static IRetryConfigurator AddRetryConfiguration(IRetryConfigurator retryConfigurator)
+    {
+        retryConfigurator.Exponential(
+                3,
+                TimeSpan.FromMilliseconds(200),
+                TimeSpan.FromMinutes(120),
+                TimeSpan.FromMilliseconds(200))
+            .Ignore<ValidationException>(); // don't retry if we have invalid data and message goes to _error queue masstransit
+
+        return retryConfigurator;
     }
 }
