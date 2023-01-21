@@ -11,8 +11,6 @@ using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.PersistMessageProcessor;
 
-using Exception = System.Exception;
-
 public class PersistMessageProcessor : IPersistMessageProcessor
 {
     private readonly ILogger<PersistMessageProcessor> _logger;
@@ -56,7 +54,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
     public async Task<IReadOnlyList<PersistMessage>> GetByFilterAsync(Expression<Func<PersistMessage, bool>> predicate,
         CancellationToken cancellationToken = default)
     {
-        return (await _persistMessageDbContext.PersistMessages.Where(predicate).ToListAsync(cancellationToken))
+        return (await _persistMessageDbContext.PersistMessages.AsNoTracking().Where(predicate).ToListAsync(cancellationToken))
             .AsReadOnly();
     }
 
@@ -112,7 +110,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
 
     public async Task ProcessAllAsync(CancellationToken cancellationToken = default)
     {
-        var messages = await _persistMessageDbContext.PersistMessages
+        var messages = await _persistMessageDbContext.PersistMessages.AsNoTracking()
             .Where(x => x.MessageStatus != MessageStatus.Processed)
             .ToListAsync(cancellationToken);
 
