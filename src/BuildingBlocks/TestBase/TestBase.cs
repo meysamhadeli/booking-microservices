@@ -408,6 +408,14 @@ public class TestReadFixture<TEntryPoint, TRContext> : TestFixture<TEntryPoint>
     {
         return ExecuteScopeAsync(sp => action(sp.GetRequiredService<TRContext>()));
     }
+
+    public async Task InsertMongoDbContextAsync<T>(string collectionName, params T[] entities) where T : class
+    {
+        await ExecuteReadContextAsync(async db =>
+        {
+            await db.GetCollection<T>(collectionName).InsertManyAsync(entities.ToList());
+        });
+    }
 }
 
 public class TestFixture<TEntryPoint, TWContext, TRContext> : TestWriteFixture<TEntryPoint, TWContext>
@@ -423,6 +431,14 @@ public class TestFixture<TEntryPoint, TWContext, TRContext> : TestWriteFixture<T
     public Task<T> ExecuteReadContextAsync<T>(Func<TRContext, Task<T>> action)
     {
         return ExecuteScopeAsync(sp => action(sp.GetRequiredService<TRContext>()));
+    }
+
+    public async Task InsertMongoDbContextAsync<T>(string collectionName, params T[] entities) where T : class
+    {
+        await ExecuteReadContextAsync(async db =>
+        {
+            await db.GetCollection<T>(collectionName).InsertManyAsync(entities.ToList());
+        });
     }
 }
 
