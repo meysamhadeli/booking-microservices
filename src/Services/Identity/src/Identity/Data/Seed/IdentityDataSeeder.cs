@@ -11,12 +11,12 @@ namespace Identity.Data.Seed;
 
 public class IdentityDataSeeder : IDataSeeder
 {
-    private readonly RoleManager<IdentityRole<long>> _roleManager;
+    private readonly UserManager<User> _userManager;
+    private readonly RoleManager<Role> _roleManager;
     private readonly IEventDispatcher _eventDispatcher;
-    private readonly UserManager<ApplicationUser> _userManager;
 
-    public IdentityDataSeeder(UserManager<ApplicationUser> userManager,
-        RoleManager<IdentityRole<long>> roleManager,
+    public IdentityDataSeeder(UserManager<User> userManager,
+        RoleManager<Role> roleManager,
         IEventDispatcher eventDispatcher)
     {
         _userManager = userManager;
@@ -33,17 +33,17 @@ public class IdentityDataSeeder : IDataSeeder
     private async Task SeedRoles()
     {
         if (await _roleManager.RoleExistsAsync(Constants.Role.Admin) == false)
-            await _roleManager.CreateAsync(new(Constants.Role.Admin));
+            await _roleManager.CreateAsync(new Role {Name = Constants.Role.Admin});
 
         if (await _roleManager.RoleExistsAsync(Constants.Role.User) == false)
-            await _roleManager.CreateAsync(new(Constants.Role.User));
+            await _roleManager.CreateAsync(new Role {Name = Constants.Role.User});
     }
 
     private async Task SeedUsers()
     {
         if (await _userManager.FindByNameAsync("samh") == null)
         {
-            var user = new ApplicationUser
+            var user = new User
             {
                 FirstName = "Sam",
                 LastName = "H",
@@ -65,7 +65,7 @@ public class IdentityDataSeeder : IDataSeeder
 
         if (await _userManager.FindByNameAsync("meysamh2") == null)
         {
-            var user = new ApplicationUser
+            var user = new User
             {
                 FirstName = "Sam2",
                 LastName = "H2",

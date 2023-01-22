@@ -62,7 +62,7 @@ public class CreateBookingCommandHandler : ICommandHandler<CreateBookingCommand,
 
         await _flightGrpcServiceClient.ReserveSeatAsync(new ReserveSeatRequest
         {
-            FlightId = flight.FlightId, SeatNumber = emptySeat?.SeatNumber
+            FlightId = flight.Id, SeatNumber = emptySeat?.SeatNumber
         });
 
         var result = await _eventStoreDbRepository.Add(

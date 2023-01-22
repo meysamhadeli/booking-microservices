@@ -15,9 +15,9 @@ namespace Identity.Identity.Features.RegisterNewUser.Commands.V1;
 public class RegisterNewUserCommandHandler : ICommandHandler<RegisterNewUserCommand, RegisterNewUserResponseDto>
 {
     private readonly IEventDispatcher _eventDispatcher;
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly UserManager<User> _userManager;
 
-    public RegisterNewUserCommandHandler(UserManager<ApplicationUser> userManager,
+    public RegisterNewUserCommandHandler(UserManager<User> userManager,
         IEventDispatcher eventDispatcher)
     {
         _userManager = userManager;
@@ -29,7 +29,7 @@ public class RegisterNewUserCommandHandler : ICommandHandler<RegisterNewUserComm
     {
         Guard.Against.Null(command, nameof(command));
 
-        var applicationUser = new ApplicationUser()
+        var applicationUser = new User()
         {
             FirstName = command.FirstName,
             LastName = command.LastName,

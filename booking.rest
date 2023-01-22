@@ -247,7 +247,7 @@ Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
-  "passengerId": 7225627535474688,
+  "passengerId": 8765596234940416,
   "flightId": 1,
   "description": "I want to fly to iran"
 }

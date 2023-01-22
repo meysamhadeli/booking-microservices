@@ -1,6 +1,8 @@
 ﻿namespace BuildingBlocks.PersistMessageProcessor;
 
-public class PersistMessage
+using Core.Model;
+
+public class PersistMessage: IVersion
 {
     public PersistMessage(long id, string dataType, string data, MessageDeliveryType deliveryType)
     {
