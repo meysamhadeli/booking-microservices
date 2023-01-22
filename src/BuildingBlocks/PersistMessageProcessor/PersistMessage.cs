@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace BuildingBlocks.PersistMessageProcessor;
+﻿namespace BuildingBlocks.PersistMessageProcessor;
 
 public class PersistMessage
 {
@@ -22,6 +20,7 @@ public class PersistMessage
     public int RetryCount { get; private set; }
     public MessageStatus MessageStatus { get; private set; }
     public MessageDeliveryType DeliveryType { get; private set; }
+    public long Version { get; set; }
 
     public void ChangeState(MessageStatus messageStatus)
     {

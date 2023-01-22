@@ -14,6 +14,9 @@ public class PersistMessageConfiguration : IEntityTypeConfiguration<PersistMessa
         builder.Property(r => r.Id)
             .IsRequired().ValueGeneratedNever();
 
+        // // ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=fluent-api
+        builder.Property(r => r.Version).IsConcurrencyToken();
+
         builder.Property(x => x.DeliveryType)
             .HasDefaultValue(MessageDeliveryType.Outbox)
             .HasConversion(
