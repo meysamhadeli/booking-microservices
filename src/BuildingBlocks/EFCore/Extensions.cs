@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace BuildingBlocks.EFCore;
 
+using Ardalis.GuardClauses;
 using Humanizer;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -27,6 +28,8 @@ public static class Extensions
         services.AddDbContext<TContext>((sp, options) =>
         {
             var postgresOptions = sp.GetRequiredService<PostgresOptions>();
+
+            Guard.Against.Null(options, nameof(postgresOptions));
 
             options.UseNpgsql(postgresOptions?.ConnectionString,
                 dbOptions =>

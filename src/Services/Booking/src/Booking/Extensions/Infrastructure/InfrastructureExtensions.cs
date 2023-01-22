@@ -100,7 +100,7 @@ public static class InfrastructureExtensions
         });
         app.UseCorrelationId();
         app.UseHttpMetrics();
-        app.UseMigration<PersistMessageDbContext>(env);
+        // app.UseMigration<PersistMessageDbContext>(env);
         app.UseCustomHealthCheck();
         app.MapMetrics();
         app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));

@@ -1,9 +1,11 @@
-﻿using BuildingBlocks.EFCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace BuildingBlocks.PersistMessageProcessor;
 
-public interface IPersistMessageDbContext : IDbContext
+using EFCore;
+
+public interface IPersistMessageDbContext
 {
-    DbSet<PersistMessage> PersistMessages => Set<PersistMessage>();
+    DbSet<PersistMessage> PersistMessages { get; set; }
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

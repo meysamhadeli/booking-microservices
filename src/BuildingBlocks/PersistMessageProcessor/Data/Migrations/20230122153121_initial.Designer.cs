@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BuildingBlocks.PersistMessageProcessor.Data.Migrations
 {
     [DbContext(typeof(PersistMessageDbContext))]
-    [Migration("20230120222214_initial")]
+    [Migration("20230122153121_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -60,6 +60,11 @@ namespace BuildingBlocks.PersistMessageProcessor.Data.Migrations
                     b.Property<int>("RetryCount")
                         .HasColumnType("integer")
                         .HasColumnName("retry_count");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint")
+                        .HasColumnName("version");
 
                     b.HasKey("Id")
                         .HasName("pk_persist_message");

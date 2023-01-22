@@ -21,7 +21,8 @@ namespace BuildingBlocks.PersistMessageProcessor.Data.Migrations
                     created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     retrycount = table.Column<int>(name: "retry_count", type: "integer", nullable: false),
                     messagestatus = table.Column<string>(name: "message_status", type: "text", nullable: false, defaultValue: "InProgress"),
-                    deliverytype = table.Column<string>(name: "delivery_type", type: "text", nullable: false, defaultValue: "Outbox")
+                    deliverytype = table.Column<string>(name: "delivery_type", type: "text", nullable: false, defaultValue: "Outbox"),
+                    version = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
