@@ -54,7 +54,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
     public async Task<IReadOnlyList<PersistMessage>> GetByFilterAsync(Expression<Func<PersistMessage, bool>> predicate,
         CancellationToken cancellationToken = default)
     {
-        return (await _persistMessageDbContext.PersistMessages.AsNoTracking().Where(predicate).ToListAsync(cancellationToken))
+        return (await _persistMessageDbContext.PersistMessages.Where(predicate).ToListAsync(cancellationToken))
             .AsReadOnly();
     }
 
@@ -110,7 +110,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
 
     public async Task ProcessAllAsync(CancellationToken cancellationToken = default)
     {
-        var messages = await _persistMessageDbContext.PersistMessages.AsNoTracking()
+        var messages = await _persistMessageDbContext.PersistMessages
             .Where(x => x.MessageStatus != MessageStatus.Processed)
             .ToListAsync(cancellationToken);
 
