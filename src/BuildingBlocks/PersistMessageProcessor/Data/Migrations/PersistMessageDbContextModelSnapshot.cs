@@ -58,6 +58,11 @@ namespace BuildingBlocks.PersistMessageProcessor.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("retry_count");
 
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint")
+                        .HasColumnName("version");
+
                     b.HasKey("Id")
                         .HasName("pk_persist_message");
 

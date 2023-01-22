@@ -1,18 +1,13 @@
+namespace BuildingBlocks.EFCore;
+
 using System.Collections.Immutable;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-
-namespace BuildingBlocks.EFCore;
-
 using System.Data;
-using System.Net;
 using System.Security.Claims;
-using global::Polly;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Exception = System.Exception;
 
 public abstract class AppDbContextBase : DbContext, IDbContext
@@ -76,51 +71,7 @@ public abstract class AppDbContextBase : DbContext, IDbContext
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         OnBeforeSaving();
-        try
-        {
-            return await base.SaveChangesAsync(cancellationToken);
-        }
-        //ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=fluent-api#resolving-concurrency-conflicts
-        catch (DbUpdateConcurrencyException ex)
-        {
-            throw new DbUpdateConcurrencyException("try for get unhandled exception with DbUpdateConcurrencyException", ex);
-            var logger = _httpContextAccessor?.HttpContext?.RequestServices
-                .GetRequiredService<ILogger<AppDbContextBase>>();
-
-            var entry = ex.Entries.SingleOrDefault();
-
-            if (entry == null)
-            {
-                return 0;
-            }
-
-            var currentValue = entry.CurrentValues;
-            var databaseValue = await entry.GetDatabaseValuesAsync(cancellationToken);
-
-            logger?.LogInformation("The entity being updated is already use by another Thread!" +
-                                   " database value is: {DatabaseValue} and current value is: {CurrentValue}",
-                databaseValue, currentValue);
-
-            var policy = Policy.Handle<DbUpdateConcurrencyException>()
-                .WaitAndRetryAsync(retryCount: 3,
-                    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(1),
-                    onRetry: (exception, timeSpan, retryCount, context) =>
-                    {
-                        if (exception != null)
-                        {
-                            logger?.LogError(exception,
-                                "Request failed with {StatusCode}. Waiting {TimeSpan} before next retry. Retry attempt {RetryCount}.",
-                                HttpStatusCode.Conflict,
-                                timeSpan,
-                                retryCount);
-                        }
-                    });
-            return await policy.ExecuteAsync(async () => await base.SaveChangesAsync(cancellationToken));
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("try for get unhandled exception bt default", ex);
-        }
+        return await base.SaveChangesAsync(cancellationToken);
     }
 
     public IReadOnlyList<IDomainEvent> GetDomainEvents()
