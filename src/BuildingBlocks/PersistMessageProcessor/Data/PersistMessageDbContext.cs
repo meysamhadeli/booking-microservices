@@ -5,6 +5,7 @@ namespace BuildingBlocks.PersistMessageProcessor.Data;
 
 using System.Net;
 using Configurations;
+using Core.Model;
 using global::Polly;
 using Microsoft.Extensions.Logging;
 
@@ -57,7 +58,9 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
                 var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
 
                 if (databaseValues != null)
+                {
                     entry.OriginalValues.SetValues(databaseValues);
+                }
             }
 
             return await base.SaveChangesAsync(cancellationToken);
@@ -68,7 +71,7 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
 
     private void OnBeforeSaving()
     {
-        foreach (var entry in ChangeTracker.Entries<PersistMessage>())
+        foreach (var entry in ChangeTracker.Entries<IVersion>())
         {
             switch (entry.State)
             {

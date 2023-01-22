@@ -8,20 +8,16 @@ using System.Threading.Tasks;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
-using Humanizer;
 using Identity.Identity.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Identity.Data;
 
-public sealed class IdentityContext : IdentityDbContext<ApplicationUser, IdentityRole<long>, long,
-    IdentityUserClaim<long>,
-    IdentityUserRole<long>, IdentityUserLogin<long>, IdentityRoleClaim<long>, IdentityUserToken<long>>, IDbContext
+public sealed class IdentityContext : IdentityDbContext<User, Role, long,
+    UserClaim, UserRole, UserLogin, RoleClaim, UserToken>, IDbContext
 {
     private IDbContextTransaction _currentTransaction;
 
@@ -36,6 +32,12 @@ public sealed class IdentityContext : IdentityDbContext<ApplicationUser, Identit
         base.OnModelCreating(builder);
         builder.FilterSoftDeletedProperties();
         builder.ToSnakeCaseTables();
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        OnBeforeSaving();
+        return await base.SaveChangesAsync(cancellationToken);
     }
 
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
@@ -95,5 +97,22 @@ public sealed class IdentityContext : IdentityDbContext<ApplicationUser, Identit
         domainEntities.ForEach(entity => entity.ClearDomainEvents());
 
         return domainEvents.ToImmutableList();
+    }
+
+    private void OnBeforeSaving()
+    {
+        foreach (var entry in ChangeTracker.Entries<IVersion>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Modified:
+                    entry.Entity.Version++;
+                    break;
+
+                case EntityState.Deleted:
+                    entry.Entity.Version++;
+                    break;
+            }
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace Identity.Data.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    version = table.Column<long>(type: "bigint", nullable: false),
                     name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalizedname = table.Column<string>(name: "normalized_name", type: "character varying(256)", maxLength: 256, nullable: true),
                     concurrencystamp = table.Column<string>(name: "concurrency_stamp", type: "text", nullable: true)
@@ -36,6 +37,7 @@ namespace Identity.Data.Migrations
                     firstname = table.Column<string>(name: "first_name", type: "text", nullable: true),
                     lastname = table.Column<string>(name: "last_name", type: "text", nullable: true),
                     passportnumber = table.Column<string>(name: "pass_port_number", type: "text", nullable: true),
+                    version = table.Column<long>(type: "bigint", nullable: false),
                     username = table.Column<string>(name: "user_name", type: "character varying(256)", maxLength: 256, nullable: true),
                     normalizedusername = table.Column<string>(name: "normalized_user_name", type: "character varying(256)", maxLength: 256, nullable: true),
                     email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -62,6 +64,7 @@ namespace Identity.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    version = table.Column<long>(type: "bigint", nullable: false),
                     roleid = table.Column<long>(name: "role_id", type: "bigint", nullable: false),
                     claimtype = table.Column<string>(name: "claim_type", type: "text", nullable: true),
                     claimvalue = table.Column<string>(name: "claim_value", type: "text", nullable: true)
@@ -83,6 +86,7 @@ namespace Identity.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    version = table.Column<long>(type: "bigint", nullable: false),
                     userid = table.Column<long>(name: "user_id", type: "bigint", nullable: false),
                     claimtype = table.Column<string>(name: "claim_type", type: "text", nullable: true),
                     claimvalue = table.Column<string>(name: "claim_value", type: "text", nullable: true)
@@ -104,6 +108,7 @@ namespace Identity.Data.Migrations
                 {
                     loginprovider = table.Column<string>(name: "login_provider", type: "text", nullable: false),
                     providerkey = table.Column<string>(name: "provider_key", type: "text", nullable: false),
+                    version = table.Column<long>(type: "bigint", nullable: false),
                     providerdisplayname = table.Column<string>(name: "provider_display_name", type: "text", nullable: true),
                     userid = table.Column<long>(name: "user_id", type: "bigint", nullable: false)
                 },
@@ -123,7 +128,8 @@ namespace Identity.Data.Migrations
                 columns: table => new
                 {
                     userid = table.Column<long>(name: "user_id", type: "bigint", nullable: false),
-                    roleid = table.Column<long>(name: "role_id", type: "bigint", nullable: false)
+                    roleid = table.Column<long>(name: "role_id", type: "bigint", nullable: false),
+                    version = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -149,6 +155,7 @@ namespace Identity.Data.Migrations
                     userid = table.Column<long>(name: "user_id", type: "bigint", nullable: false),
                     loginprovider = table.Column<string>(name: "login_provider", type: "text", nullable: false),
                     name = table.Column<string>(type: "text", nullable: false),
+                    version = table.Column<long>(type: "bigint", nullable: false),
                     value = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>

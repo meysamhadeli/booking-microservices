@@ -9,11 +9,11 @@ namespace Identity;
 
 public class UserValidator : IResourceOwnerPasswordValidator
 {
-    private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<User> _userManager;
 
-    public UserValidator(SignInManager<ApplicationUser> signInManager,
-        UserManager<ApplicationUser> userManager)
+    public UserValidator(SignInManager<User> signInManager,
+        UserManager<User> userManager)
     {
         _signInManager = signInManager;
         _userManager = userManager;
