@@ -8,6 +8,7 @@ using Configurations;
 using Core.Model;
 using global::Polly;
 using Microsoft.Extensions.Logging;
+using Exception = System.Exception;
 
 public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
 {
@@ -16,7 +17,7 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
     {
     }
 
-    public DbSet<PersistMessage> PersistMessages { get; set; }
+    public DbSet<PersistMessage> PersistMessages => Set<PersistMessage>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -48,13 +49,13 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
                 });
         try
         {
-            await policy.ExecuteAsync(async () => await base.SaveChangesAsync(cancellationToken));
+            return await policy.ExecuteAsync(async () => await base.SaveChangesAsync(cancellationToken));
         }
         catch (DbUpdateConcurrencyException ex)
         {
             foreach (var entry in ex.Entries)
             {
-                var currentEntity = entry.Entity;
+                var currentEntity = entry.Entity; // we can use it for specific merging
                 var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
 
                 if (databaseValues != null)
@@ -65,24 +66,29 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
 
             return await base.SaveChangesAsync(cancellationToken);
         }
-
-        return 0;
     }
 
     private void OnBeforeSaving()
     {
-        foreach (var entry in ChangeTracker.Entries<IVersion>())
+        try
         {
-            switch (entry.State)
+            foreach (var entry in ChangeTracker.Entries<IVersion>())
             {
-                case EntityState.Modified:
-                    entry.Entity.Version++;
-                    break;
+                switch (entry.State)
+                {
+                    case EntityState.Modified:
+                        entry.Entity.Version++;
+                        break;
 
-                case EntityState.Deleted:
-                    entry.Entity.Version++;
-                    break;
+                    case EntityState.Deleted:
+                        entry.Entity.Version++;
+                        break;
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("try for find IVersion", ex);
         }
     }
 }

@@ -1,16 +1,14 @@
 using System.Reflection;
 using BuildingBlocks.EFCore;
 using Microsoft.EntityFrameworkCore;
+using BuildingBlocks.Web;
 
 namespace Passenger.Data;
 
-using Microsoft.AspNetCore.Http;
-
 public sealed class PassengerDbContext : AppDbContextBase
 {
-    public PassengerDbContext(DbContextOptions<PassengerDbContext> options,
-        IHttpContextAccessor httpContextAccessor = default) :
-        base(options, httpContextAccessor)
+    public PassengerDbContext(DbContextOptions<PassengerDbContext> options, ICurrentUserProvider currentUserProvider) :
+        base(options, currentUserProvider)
     {
     }
 
@@ -20,6 +18,7 @@ public sealed class PassengerDbContext : AppDbContextBase
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(builder);
+        builder.FilterSoftDeletedProperties();
         builder.ToSnakeCaseTables();
     }
 }

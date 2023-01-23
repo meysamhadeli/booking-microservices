@@ -42,29 +42,20 @@ public class EfTxBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TRe
             nameof(EfTxBehavior<TRequest, TResponse>),
             typeof(TRequest).FullName);
 
-        await _dbContextBase.BeginTransactionAsync(cancellationToken);
 
-        try
-        {
-            var response = await next();
+        var response = await next();
 
-            _logger.LogInformation(
-                "{Prefix} Executed the {MediatrRequest} request",
-                nameof(EfTxBehavior<TRequest, TResponse>),
-                typeof(TRequest).FullName);
+        _logger.LogInformation(
+            "{Prefix} Executed the {MediatrRequest} request",
+            nameof(EfTxBehavior<TRequest, TResponse>),
+            typeof(TRequest).FullName);
 
-            var domainEvents = _dbContextBase.GetDomainEvents();
+        var domainEvents = _dbContextBase.GetDomainEvents();
 
-            await _eventDispatcher.SendAsync(domainEvents.ToArray(), typeof(TRequest), cancellationToken);
+        await _eventDispatcher.SendAsync(domainEvents.ToArray(), typeof(TRequest), cancellationToken);
 
-            await _dbContextBase.CommitTransactionAsync(cancellationToken);
+        await _dbContextBase.ExecuteTransactionalAsync(cancellationToken);
 
-            return response;
-        }
-        catch (System.Exception ex)
-        {
-            await _dbContextBase.RollbackTransactionAsync(cancellationToken);
-            throw;
-        }
+        return response;
     }
 }

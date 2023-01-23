@@ -2,10 +2,8 @@
 
 namespace BuildingBlocks.PersistMessageProcessor;
 
-using EFCore;
-
 public interface IPersistMessageDbContext
 {
-    DbSet<PersistMessage> PersistMessages { get; set; }
+    DbSet<PersistMessage> PersistMessages { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

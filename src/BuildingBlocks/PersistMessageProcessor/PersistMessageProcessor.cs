@@ -6,10 +6,11 @@ using BuildingBlocks.IdsGenerator;
 using BuildingBlocks.Utils;
 using MassTransit;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.PersistMessageProcessor;
+
+using Microsoft.EntityFrameworkCore;
 
 public class PersistMessageProcessor : IPersistMessageProcessor
 {
