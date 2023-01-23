@@ -8,6 +8,7 @@ using Configurations;
 using Core.Model;
 using global::Polly;
 using Microsoft.Extensions.Logging;
+using Exception = System.Exception;
 
 public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
 {
@@ -69,18 +70,25 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
 
     private void OnBeforeSaving()
     {
-        foreach (var entry in ChangeTracker.Entries<IVersion>())
+        try
         {
-            switch (entry.State)
+            foreach (var entry in ChangeTracker.Entries<IVersion>())
             {
-                case EntityState.Modified:
-                    entry.Entity.Version++;
-                    break;
+                switch (entry.State)
+                {
+                    case EntityState.Modified:
+                        entry.Entity.Version++;
+                        break;
 
-                case EntityState.Deleted:
-                    entry.Entity.Version++;
-                    break;
+                    case EntityState.Deleted:
+                        entry.Entity.Version++;
+                        break;
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("try for find IVersion", ex);
         }
     }
 }

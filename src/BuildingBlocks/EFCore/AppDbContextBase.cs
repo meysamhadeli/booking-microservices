@@ -4,7 +4,6 @@ using System.Collections.Immutable;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
 using Web;
 using Exception = System.Exception;
@@ -75,7 +74,7 @@ public abstract class AppDbContextBase : DbContext, IDbContext
             foreach (var entry in ChangeTracker.Entries<IAggregate>())
             {
                 var isAuditable = entry.Entity.GetType().IsAssignableTo(typeof(IAggregate));
-                var userId = _currentUserProvider.GetCurrentUserId();
+                var userId = _currentUserProvider?.GetCurrentUserId() ?? 0;
 
                 if (isAuditable)
                 {

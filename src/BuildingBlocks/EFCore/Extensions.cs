@@ -32,12 +32,12 @@ public static class Extensions
             Guard.Against.Null(options, nameof(postgresOptions));
 
             options.UseNpgsql(postgresOptions?.ConnectionString,
-                dbOptions =>
-                {
-                    dbOptions.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name);
-                    //ref: https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency
-                    dbOptions.EnableRetryOnFailure(3, TimeSpan.FromSeconds(1), null);
-                })
+                    dbOptions =>
+                    {
+                        dbOptions.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name);
+                        //ref: https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency
+                        dbOptions.EnableRetryOnFailure(3, TimeSpan.FromSeconds(1), null);
+                    })
                 // https://github.com/efcore/EFCore.NamingConventions
                 .UseSnakeCaseNamingConvention();
         });
@@ -88,7 +88,8 @@ public static class Extensions
             // Replace table names
             entity.SetTableName(entity.GetTableName()?.Underscore());
 
-            var tableObjectIdentifier = StoreObjectIdentifier.Table(entity.GetTableName()?.Underscore()!, entity.GetSchema());
+            var tableObjectIdentifier =
+                StoreObjectIdentifier.Table(entity.GetTableName()?.Underscore()!, entity.GetSchema());
 
             // Replace column names
             foreach (var property in entity.GetProperties())

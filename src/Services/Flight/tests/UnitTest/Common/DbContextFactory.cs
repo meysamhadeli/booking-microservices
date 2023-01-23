@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Flight.Aircrafts.Models;
-using Flight.Airports.Models;
 using Flight.Data;
 using Flight.Flights.Enums;
-using Flight.Flights.Models;
 using Flight.Seats.Enums;
-using Flight.Seats.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Unit.Test.Common
@@ -18,7 +14,7 @@ namespace Unit.Test.Common
             var options = new DbContextOptionsBuilder<FlightDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
 
-            var context = new FlightDbContext(options);
+            var context = new FlightDbContext(options, currentUserProvider: null);
 
             // Seed our data
             FlightDataSeeder(context);

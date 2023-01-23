@@ -10,7 +10,7 @@ using BuildingBlocks.Web;
 
 public sealed class FlightDbContext : AppDbContextBase
 {
-    public FlightDbContext(DbContextOptions<FlightDbContext> options, ICurrentUserProvider currentUserProvider = default) : base(
+    public FlightDbContext(DbContextOptions<FlightDbContext> options, ICurrentUserProvider currentUserProvider) : base(
         options, currentUserProvider)
     {
     }

@@ -7,8 +7,7 @@ namespace Passenger.Data;
 
 public sealed class PassengerDbContext : AppDbContextBase
 {
-    public PassengerDbContext(DbContextOptions<PassengerDbContext> options,
-        ICurrentUserProvider currentUserProvider = default) :
+    public PassengerDbContext(DbContextOptions<PassengerDbContext> options, ICurrentUserProvider currentUserProvider) :
         base(options, currentUserProvider)
     {
     }

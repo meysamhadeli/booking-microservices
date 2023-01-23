@@ -16,13 +16,12 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Identity.Data;
 
+using System;
+
 public sealed class IdentityContext : IdentityDbContext<User, Role, long,
     UserClaim, UserRole, UserLogin, RoleClaim, UserToken>, IDbContext
 {
-    private IDbContextTransaction _currentTransaction;
-
-    public IdentityContext(DbContextOptions<IdentityContext> options, IHttpContextAccessor httpContextAccessor = default) :
-        base(options)
+    public IdentityContext(DbContextOptions<IdentityContext> options) : base(options)
     {
     }
 
@@ -40,7 +39,8 @@ public sealed class IdentityContext : IdentityDbContext<User, Role, long,
         var strategy = Database.CreateExecutionStrategy();
         return strategy.ExecuteAsync(async () =>
         {
-            await using var transaction = await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+            await using var transaction =
+                await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
             try
             {
                 await SaveChangesAsync(cancellationToken);
@@ -79,18 +79,25 @@ public sealed class IdentityContext : IdentityDbContext<User, Role, long,
 
     private void OnBeforeSaving()
     {
-        foreach (var entry in ChangeTracker.Entries<IVersion>())
+        try
         {
-            switch (entry.State)
+            foreach (var entry in ChangeTracker.Entries<IVersion>())
             {
-                case EntityState.Modified:
-                    entry.Entity.Version++;
-                    break;
+                switch (entry.State)
+                {
+                    case EntityState.Modified:
+                        entry.Entity.Version++;
+                        break;
 
-                case EntityState.Deleted:
-                    entry.Entity.Version++;
-                    break;
+                    case EntityState.Deleted:
+                        entry.Entity.Version++;
+                        break;
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("try for find IVersion", ex);
         }
     }
 }
