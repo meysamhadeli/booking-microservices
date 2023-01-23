@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Flight.Data;
 
-using Microsoft.AspNetCore.Http;
+using BuildingBlocks.Web;
 
 public sealed class FlightDbContext : AppDbContextBase
 {
-    public FlightDbContext(DbContextOptions<FlightDbContext> options, IHttpContextAccessor httpContextAccessor = default) : base(
-        options, httpContextAccessor)
+    public FlightDbContext(DbContextOptions<FlightDbContext> options, ICurrentUserProvider currentUserProvider = default) : base(
+        options, currentUserProvider)
     {
     }
 
@@ -23,8 +23,8 @@ public sealed class FlightDbContext : AppDbContextBase
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        builder.FilterSoftDeletedProperties();
         builder.ApplyConfigurationsFromAssembly(typeof(FlightRoot).Assembly);
+        builder.FilterSoftDeletedProperties();
         builder.ToSnakeCaseTables();
     }
 }

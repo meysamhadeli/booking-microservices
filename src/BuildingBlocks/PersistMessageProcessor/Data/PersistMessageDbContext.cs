@@ -16,7 +16,7 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
     {
     }
 
-    public DbSet<PersistMessage> PersistMessages { get; set; }
+    public DbSet<PersistMessage> PersistMessages => Set<PersistMessage>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -48,13 +48,13 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
                 });
         try
         {
-            await policy.ExecuteAsync(async () => await base.SaveChangesAsync(cancellationToken));
+            return await policy.ExecuteAsync(async () => await base.SaveChangesAsync(cancellationToken));
         }
         catch (DbUpdateConcurrencyException ex)
         {
             foreach (var entry in ex.Entries)
             {
-                var currentEntity = entry.Entity;
+                var currentEntity = entry.Entity; // we can use it for specific merging
                 var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
 
                 if (databaseValues != null)
@@ -65,8 +65,6 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
 
             return await base.SaveChangesAsync(cancellationToken);
         }
-
-        return 0;
     }
 
     private void OnBeforeSaving()
