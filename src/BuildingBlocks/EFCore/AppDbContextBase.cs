@@ -4,68 +4,42 @@ using System.Collections.Immutable;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
+using Web;
 using Exception = System.Exception;
 
 public abstract class AppDbContextBase : DbContext, IDbContext
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private IDbContextTransaction _currentTransaction;
+    private readonly ICurrentUserProvider _currentUserProvider;
 
-    protected AppDbContextBase(DbContextOptions options, IHttpContextAccessor httpContextAccessor = default) :
+    protected AppDbContextBase(DbContextOptions options, ICurrentUserProvider currentUserProvider) :
         base(options)
     {
-        _httpContextAccessor = httpContextAccessor;
+        _currentUserProvider = currentUserProvider;
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        // ref: https://github.com/pdevito3/MessageBusTestingInMemHarness/blob/main/RecipeManagement/src/RecipeManagement/Databases/RecipesDbContext.cs
     }
 
-    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+    //ref: https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency#execution-strategies-and-transactions
+    public Task ExecuteTransactionalAsync(CancellationToken cancellationToken = default)
     {
-        if (_currentTransaction != null)
+        var strategy = Database.CreateExecutionStrategy();
+        return strategy.ExecuteAsync(async () =>
         {
-            return;
-        }
-
-        _currentTransaction ??= await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
-    }
-
-    public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            await SaveChangesAsync(cancellationToken);
-            await _currentTransaction?.CommitAsync(cancellationToken)!;
-        }
-        catch
-        {
-            await RollbackTransactionAsync(cancellationToken);
-            throw;
-        }
-        finally
-        {
-            _currentTransaction?.Dispose();
-            _currentTransaction = null;
-        }
-    }
-
-    public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            await _currentTransaction?.RollbackAsync(cancellationToken)!;
-        }
-        finally
-        {
-            _currentTransaction?.Dispose();
-            _currentTransaction = null;
-        }
+            await using var transaction = await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+            try
+            {
+                await SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
+        });
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -100,7 +74,7 @@ public abstract class AppDbContextBase : DbContext, IDbContext
             foreach (var entry in ChangeTracker.Entries<IAggregate>())
             {
                 var isAuditable = entry.Entity.GetType().IsAssignableTo(typeof(IAggregate));
-                var userId = GetCurrentUserId();
+                var userId = _currentUserProvider?.GetCurrentUserId() ?? 0;
 
                 if (isAuditable)
                 {
@@ -132,14 +106,5 @@ public abstract class AppDbContextBase : DbContext, IDbContext
         {
             throw new Exception("try for find IAggregate", ex);
         }
-    }
-
-    private long? GetCurrentUserId()
-    {
-        var nameIdentifier = _httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        long.TryParse(nameIdentifier, out var userId);
-
-        return userId;
     }
 }
