@@ -28,8 +28,8 @@ jobs:
       - name: Cache NuGet Packages
         uses: actions/cache@v3
         with:
-        key: ${{ runner.os }}-dotnet-nuget
-        path: ~/.nuget/packages
+          key: ${{ runner.os }}-dotnet-nuget
+          path: ~/.nuget/packages
 
       - name: Restore dependencies
         run: dotnet restore
