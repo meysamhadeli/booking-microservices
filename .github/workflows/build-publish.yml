@@ -32,16 +32,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-
       - name: Build image
-        run: |
+        run: docker build . -t  ghcr.io/meysamhadeli/booking-microservices/flight:latest  -f ./src/Services/Catalogs/Flight/Dockerfile .
 #          docker build -t meysamh66/booking-microservices/flight:latest -f ./src/Services/Flight/Dockerfile .
-          docker build . -t  ghcr.io/meysamhadeli/booking-microservices/flight:latest  -f ./src/Services/Catalogs/Flight/Dockerfile .
-
 
       - name: Publish image
-        run: |
-          docker push   ghcr.io/meysamhadeli/booking-microservices/flight:latest
+        run: docker push  ghcr.io/meysamhadeli/booking-microservices/flight:latest
 #          docker push meysamh66/booking-microservices/flight:latest
 
 
