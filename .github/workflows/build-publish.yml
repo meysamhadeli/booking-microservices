@@ -41,7 +41,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           # relative path to the place where source code with Dockerfile is located
-          context: ./src/Services/Flight/Dockerfile
+          context: ./src/Services/Flight
           # Note: tags has to be all lower-case
           tags: |
             meysamh66/booking-microservices-flight:latest
