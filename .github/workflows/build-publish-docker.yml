@@ -21,10 +21,20 @@ jobs:
           node-version: 'lts/*'
 
       ## With the above semantic-release configuration, will create a release and push the dist/index.js file as well as all the tags required
-      - name: Semantic Release
+      - name: Semantic Release Version
+        id: semantic-version
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Semantic Release  Versions Outputs
+        run: |
+          echo ${{ steps.semantic-version.outputs.semantic_nextRelease_version }}
+          echo ${{ steps.semantic-version.outputs.semantic_nextRelease_channel }}
+          echo ${{ steps.semantic-version.outputs.semantic_nextRelease_gitTag }}
+          echo ${{ steps.semantic-version.outputs.semantic_lastRelease_version }}
+          echo ${{ steps.semantic-version.outputs.semantic_lastRelease_channel }}
+          echo ${{ steps.semantic-version.outputs.semantic_lastRelease_gitTag }}
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
