@@ -15,12 +15,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Prepare Release
-        id: prepare-release
-        uses: semantic-release/git
-        with:
-          args: --dry-run
-
+      - name: Get Latest Tag
+        run: |
+          export VERSION=$(git describe --abbrev=0 --tags)
+          echo "Latest Tag: $VERSION"
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -30,17 +28,15 @@ jobs:
 
       - name: Build image
         run: |
-          export VERSION=${{ steps.determine-version.outputs.next_version }}
-          docker build -t meysamh66/booking-microservices-flight:$VERSION -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-identity:$VERSION -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-passenger:$VERSION -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-booking:$VERSION -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-flight:latest -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-identity:latest -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-passenger:latest -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-booking:latest -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
 
       - name: Publish image
         run: |
-          export VERSION=${{ steps.determine-version.outputs.next_version }}
-          docker push meysamh66/booking-microservices-flight:$VERSION
-          docker push meysamh66/booking-microservices-identity:$VERSION
-          docker push meysamh66/booking-microservices-passenger:$VERSION
-          docker push meysamh66/booking-microservices-booking:$VERSION
+          docker push meysamh66/booking-microservices-flight:latest
+          docker push meysamh66/booking-microservices-identity:latest
+          docker push meysamh66/booking-microservices-passenger:latest
+          docker push meysamh66/booking-microservices-booking:latest
 
