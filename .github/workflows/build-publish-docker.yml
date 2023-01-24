@@ -15,35 +15,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 'lts/*'
-
-      - name: Semantic Release Version
-        id: semantic-version
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx -p @semantic-release/git -p @semantic-release/changelog -p @semantic-release/exec  semantic-release  --dry-run
-
-      - name: Semantic Release  Versions Outputs
-        run: |
-          echo ${{ steps.semantic-version.outputs.semantic_nextRelease_version }}
-          echo ${{ steps.semantic-version.outputs.semantic_nextRelease_channel }}
-          echo ${{ steps.semantic-version.outputs.semantic_nextRelease_gitTag }}
-          echo ${{ steps.semantic-version.outputs.semantic_lastRelease_version }}
-          echo ${{ steps.semantic-version.outputs.semantic_lastRelease_channel }}
-          echo ${{ steps.semantic-version.outputs.semantic_lastRelease_gitTag }}
-
-      - name: Update Application Version
-        run: ./update-version.sh ${{ steps.semantic-version.outputs.semantic_nextRelease_version }}
-
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: '🔧 chore(release): ${{ steps.semantic-version.outputs.semantic_nextRelease_version }} [skip ci]'
-          file_pattern: '**/Directory.Packages.props'
-          disable_globbing: true
-
+      - id: version
+        uses: battila7/get-version-action@v2
+      - name: Add Semantic Version tag to Docker Image
+        uses: shrink/actions-docker-registry-tag@v3
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
@@ -52,15 +27,15 @@ jobs:
 
       - name: Build image
         run: |
-          docker build -t meysamh66/booking-microservices-flight:${{ steps.semantic-version.outputs.semantic_nextRelease_version }} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-identity:${{ steps.semantic-version.outputs.semantic_nextRelease_version }} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-passenger:${{ steps.semantic-version.outputs.semantic_nextRelease_version }} -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-booking:${{ steps.semantic-version.outputs.semantic_nextRelease_version }} -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-flight:${{ steps.version.outputs.version }} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-identity:${{ steps.version.outputs.version }} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-passenger:${{ steps.version.outputs.version }} -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-booking:${{ steps.version.outputs.version }} -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
 
       - name: Publish image
         run: |
-          docker push meysamh66/booking-microservices-flight:${{ steps.semantic-version.outputs.semantic_nextRelease_version }}
-          docker push meysamh66/booking-microservices-identity:${{ steps.semantic-version.outputs.semantic_nextRelease_version }}
-          docker push meysamh66/booking-microservices-passenger:${{ steps.semantic-version.outputs.semantic_nextRelease_version }}
-          docker push meysamh66/booking-microservices-booking:${{ steps.semantic-version.outputs.semantic_nextRelease_version }}
+          docker push meysamh66/booking-microservices-flight:${{ steps.version.outputs.version }}
+          docker push meysamh66/booking-microservices-identity:${{ steps.version.outputs.version }}
+          docker push meysamh66/booking-microservices-passenger:${{ steps.version.outputs.version }}
+          docker push meysamh66/booking-microservices-booking:${{ steps.version.outputs.version }}
 
