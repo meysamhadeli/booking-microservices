@@ -28,7 +28,7 @@ jobs:
       - name: Login to Github Packages
         uses: docker/login-action@v2
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -41,7 +41,7 @@ jobs:
 
       - name: Publish image
         run: |
-          docker push   "${{ env.REGISTRY }}/${{ github.repository }}/flight:latest}}"
+          docker push   "$ghcr.io/${{ github.repository }}/flight:latest}}"
 #          docker push meysamh66/booking-microservices/flight:latest
 
 
