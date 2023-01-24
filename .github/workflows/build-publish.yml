@@ -19,6 +19,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # setup Docker buld action
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
@@ -32,10 +37,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-
-      - name: Build image
-        run: docker build -t meysamh66/booking-microservices-flight:latest -f ./src/Services/Flight/Dockerfile .
-
-      - name: Publish image
-        run: docker push meysamh66/booking-microservices-flight:latest
+      - name: Build image and push to Docker Hub and GitHub Container Registry
+        uses: docker/build-push-action@v2
+        with:
+          # relative path to the place where source code with Dockerfile is located
+          context: ./src/Services/Flight/Dockerfile
+          # Note: tags has to be all lower-case
+          tags: |
+            meysamh66/booking-microservices-flight:latest
+            ghcr.io/meysamhadeli/booking-microservices/flight:latest
+          # build on feature branches, push only on develop branch
+          push: ${{ github.ref == 'refs/heads/develop' }}
 
