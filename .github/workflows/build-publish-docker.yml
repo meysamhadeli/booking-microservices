@@ -26,7 +26,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # because of using none default (conventionalcommits) `preset` for `semantic-release`, we should add dependency `conventional-changelog-conventionalcommits`
           # using dry-run here for preventing publish release note and just calculate version
-        run: npx  -p conventional-changelog-conventionalcommits -p @semantic-release/git -p @semantic-release/changelog -p @semantic-release/exec  semantic-release  --dry-run
+        run: npx -p @semantic-release/git -p @semantic-release/changelog -p @semantic-release/exec  semantic-release  --dry-run
 
       - name: Semantic Release  Versions Outputs
         run: |
@@ -45,15 +45,15 @@ jobs:
 
       - name: Build image
         run: |
-          docker build -t meysamh66/booking-microservices-flight:${{ env.TAG_NAME }} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-identity:${{ env.TAG_NAME }} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-passenger:${{ env.TAG_NAME }} -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-booking:${{ env.TAG_NAME }} -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-flight:latest -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-identity:latest -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-passenger:latest -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-booking:latest -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
 
       - name: Publish image
         run: |
-          docker push meysamh66/booking-microservices-flight:${{ env.TAG_NAME }}
-          docker push meysamh66/booking-microservices-identity:${{ env.TAG_NAME }}
-          docker push meysamh66/booking-microservices-passenger:${{ env.TAG_NAME }}
-          docker push meysamh66/booking-microservices-booking:${{ env.TAG_NAME }}
+          docker push meysamh66/booking-microservices-flight:latest
+          docker push meysamh66/booking-microservices-identity:latest
+          docker push meysamh66/booking-microservices-passenger:latest
+          docker push meysamh66/booking-microservices-booking:latest
 
