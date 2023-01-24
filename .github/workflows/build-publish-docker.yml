@@ -17,7 +17,7 @@ jobs:
 
       - name: Prepare Release
         id: prepare-release
-        uses: semantic-release/git@v7
+        uses: semantic-release/git
         with:
           args: --dry-run
 
