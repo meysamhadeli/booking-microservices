@@ -15,8 +15,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Print GITHUB_REF value
-        run: echo "GITHUB_REF value is $GITHUB_REF"
+      - name: Print release tag
+        run: echo "The release tag is $(echo $GITHUB_REF | sed 's/refs\/tags\///')"
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
