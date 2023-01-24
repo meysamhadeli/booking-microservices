@@ -22,7 +22,7 @@ jobs:
 
       ## With the above semantic-release configuration, will create a release and push the dist/index.js file as well as all the tags required
       - name: Semantic Release
-        run: npx semantic-release
+        run: npx -p node@v18-lts -c "npx semantic-release"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
