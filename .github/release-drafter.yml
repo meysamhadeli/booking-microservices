@@ -8,8 +8,8 @@
 # This release drafter follows the conventions from https://keepachangelog.com, https://common-changelog.org/
 # https://www.conventionalcommits.org
 
-name-template: $(echo $GITHUB_REF | sed 's/refs\/tags\///')
-tag-template: $(echo $GITHUB_REF | sed 's/refs\/tags\///')
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
 template: |
   ## What Changed 👀
   $CHANGES
