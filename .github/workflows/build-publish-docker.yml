@@ -7,6 +7,15 @@ on:
 
 jobs:
 
+  update-semver:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: haya14busa/action-update-semver@v1
+        id: version
+        with:
+          major_version_tag_only: true  # (optional, default is "false")
+
   build-and-push-docker-image:
     name: Build and Publish Docker image to DockerHub
     runs-on: ubuntu-latest
@@ -14,27 +23,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 'lts/*'
-
-      ## With the above semantic-release configuration, will create a release and push the dist/index.js file as well as all the tags required
-      - name: Semantic Release Version
-        id: semantic-version
-        run: npx semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Semantic Release  Versions Outputs
-        run: |
-          echo ${{ steps.semantic-version.outputs.semantic_nextRelease_version }}
-          echo ${{ steps.semantic-version.outputs.semantic_nextRelease_channel }}
-          echo ${{ steps.semantic-version.outputs.semantic_nextRelease_gitTag }}
-          echo ${{ steps.semantic-version.outputs.semantic_lastRelease_version }}
-          echo ${{ steps.semantic-version.outputs.semantic_lastRelease_channel }}
-          echo ${{ steps.semantic-version.outputs.semantic_lastRelease_gitTag }}
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -44,15 +32,19 @@ jobs:
 
       - name: Build image
         run: |
-          docker build -t meysamh66/booking-microservices-flight:latest -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-identity:latest -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-passenger:latest -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-booking:latest -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
+          tag_v=$(git describe --tags $(git rev-list --tags --max-count=1))
+          tag=$(echo $tag_v | sed 's/v//')
+          docker build -t meysamh66/booking-microservices-flight:${tag} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-identity:${tag} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-passenger:${tag} -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-booking:${tag} -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
 
       - name: Publish image
         run: |
-          docker push meysamh66/booking-microservices-flight:latest
-          docker push meysamh66/booking-microservices-identity:latest
-          docker push meysamh66/booking-microservices-passenger:latest
-          docker push meysamh66/booking-microservices-booking:latest
+          tag_v=$(git describe --tags $(git rev-list --tags --max-count=1))
+          tag=$(echo $tag_v | sed 's/v//')
+          docker push meysamh66/booking-microservices-flight:${tag}
+          docker push meysamh66/booking-microservices-identity:${tag}
+          docker push meysamh66/booking-microservices-passenger:${tag}
+          docker push meysamh66/booking-microservices-booking:${tag}
 
