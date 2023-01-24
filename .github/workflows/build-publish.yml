@@ -3,7 +3,7 @@ name: build-publish
 on:
   # run it on push to the default repository branch
   push:
-    branches: [develop]
+    branches: [ develop ]
   # run it during pull request
   pull_request:
 
@@ -33,14 +33,11 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build image
-        run:  |
-           docker build -t ghcr.io/${{ github.repository }}/flight:latest  -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
-#          docker build -t meysamh66/booking-microservices/flight:latest -f ./src/Services/Flight/Dockerfile .
+        run: |
+          docker build -t meysamh66/${{ github.repository }}/flight:latest -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
 
       - name: Publish image
         run: |
-          docker push ghcr.io/${{ github.repository }}/flight:latest
-
-#          docker push meysamh66/booking-microservices/flight:latest
+          docker push meysamh66/${{ github.repository }}/flight:latest
 
 
