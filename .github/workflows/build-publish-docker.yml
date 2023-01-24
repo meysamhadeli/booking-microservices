@@ -7,15 +7,6 @@ on:
 
 jobs:
 
-  update-semver:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: haya14busa/action-update-semver@v1
-        id: version
-        with:
-          major_version_tag_only: true  # (optional, default is "false")
-
   build-and-push-docker-image:
     name: Build and Publish Docker image to DockerHub
     runs-on: ubuntu-latest
@@ -23,6 +14,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Get Tag
+        id: vars
+        run: echo ::set-output name=tag::${git describe --abbrev=0}
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -32,19 +27,15 @@ jobs:
 
       - name: Build image
         run: |
-          tag_v=$(git describe --tags $(git rev-list --tags --max-count=1))
-          tag=$(echo $tag_v | sed 's/v//')
-          docker build -t meysamh66/booking-microservices-flight:${tag} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-identity:${tag} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-passenger:${tag} -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-booking:${tag} -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-flight:${{ steps.vars.outputs.tag }} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-identity:${{ steps.vars.outputs.tag }} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-passenger:${{ steps.vars.outputs.tag }} -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-booking:${{ steps.vars.outputs.tag }} -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
 
       - name: Publish image
         run: |
-          tag_v=$(git describe --tags $(git rev-list --tags --max-count=1))
-          tag=$(echo $tag_v | sed 's/v//')
-          docker push meysamh66/booking-microservices-flight:${tag}
-          docker push meysamh66/booking-microservices-identity:${tag}
-          docker push meysamh66/booking-microservices-passenger:${tag}
-          docker push meysamh66/booking-microservices-booking:${tag}
+          docker push meysamh66/booking-microservices-flight:${{ steps.vars.outputs.tag }}
+          docker push meysamh66/booking-microservices-identity:${{ steps.vars.outputs.tag }}
+          docker push meysamh66/booking-microservices-passenger:${{ steps.vars.outputs.tag }}
+          docker push meysamh66/booking-microservices-booking:${{ steps.vars.outputs.tag }}
 
