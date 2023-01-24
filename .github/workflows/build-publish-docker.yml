@@ -15,8 +15,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Print release tag
-        run: echo "The release tag is 'v$RESOLVED_VERSION'
+      - name: Extract version numbers
+        run: |
+          version=$(echo $GITHUB_REF | sed 's/refs\/tags\///')
+          major=$(echo $version | cut -d'.' -f1 | sed 's/v//')
+          minor=$(echo $version | cut -d'.' -f2)
+          patch=$(echo $version | cut -d'.' -f3)
+          echo "The major version number is $major"
+          echo "The minor version number is $minor"
+          echo "The patch version number is $patch"
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
