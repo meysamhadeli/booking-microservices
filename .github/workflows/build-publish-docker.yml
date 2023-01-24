@@ -18,10 +18,10 @@ jobs:
       - name: Process version of the tag
         id: version
         uses: ncipollo/semantic-version-action@v1
-          - name: Dump steps context
-            env:
-              STEPS_CONTEXT: ${{ toJson(steps.version.outputs) }}
-            run: echo "$STEPS_CONTEXT"
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps.version.outputs) }}
+        run: echo "$STEPS_CONTEXT"
       #
       #      - name: Get release tag
       #        run: echo "::set-output name=tag::$(echo $GITHUB_REF)"
