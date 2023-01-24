@@ -15,19 +15,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Process version of the tag
-        id: version
-        uses: ncipollo/semantic-version-action@v1
-      - name: Dump steps context
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Release Version
         env:
-          STEPS_CONTEXT: ${{ toJson(steps.version.outputs) }}
-        run: echo "$STEPS_CONTEXT"
-      #
-      #      - name: Get release tag
-      #        run: echo "::set-output name=tag::$(echo $GITHUB_REF)"
-      #
-      #      - name: Print release tag
-      #        run: echo "The release tag is ${{ steps.get_tag.outputs.tag }}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: semantic-release-bot/action@v1.1.1
+        with:
+          commit-message-format: '${conventionalCommit.type}(${conventionalCommit.scope}): ${conventionalCommit.subject}'
+          conventions: '@semantic-release-bot/conventional-commits'
+          dry-run: true
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
