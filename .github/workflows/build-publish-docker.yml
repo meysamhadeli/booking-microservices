@@ -15,14 +15,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Use Node.js 16.x
+      - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18'
+          node-version: 'lts/*'
 
       ## With the above semantic-release configuration, will create a release and push the dist/index.js file as well as all the tags required
       - name: Semantic Release
-        run: npx -p node@v18-lts -c "npx semantic-release"
+        run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
