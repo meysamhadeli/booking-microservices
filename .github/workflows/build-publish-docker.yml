@@ -15,10 +15,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Get Latest Tag
-        run: |
-          export VERSION=$(git describe --abbrev=0 --tags)
-          echo "Latest Tag: $VERSION"
+      - name: Semantic Release
+        uses: semantic-release/git-semantic-release-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          version_variable: 'TAG_NAME'
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -28,15 +30,15 @@ jobs:
 
       - name: Build image
         run: |
-          docker build -t meysamh66/booking-microservices-flight:latest -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-identity:latest -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-passenger:latest -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-booking:latest -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-flight:${{ env.TAG_NAME }} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-identity:${{ env.TAG_NAME }} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-passenger:${{ env.TAG_NAME }} -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-booking:${{ env.TAG_NAME }} -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
 
       - name: Publish image
         run: |
-          docker push meysamh66/booking-microservices-flight:latest
-          docker push meysamh66/booking-microservices-identity:latest
-          docker push meysamh66/booking-microservices-passenger:latest
-          docker push meysamh66/booking-microservices-booking:latest
+          docker push meysamh66/booking-microservices-flight:${{ env.TAG_NAME }}
+          docker push meysamh66/booking-microservices-identity:${{ env.TAG_NAME }}
+          docker push meysamh66/booking-microservices-passenger:${{ env.TAG_NAME }}
+          docker push meysamh66/booking-microservices-booking:${{ env.TAG_NAME }}
 
