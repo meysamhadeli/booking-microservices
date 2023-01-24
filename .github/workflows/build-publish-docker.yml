@@ -15,11 +15,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Determine next semantic version
-        id: determine-version
-        uses: actions/determine-next-semver@v2
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Prepare Release
+        id: prepare-release
+        uses: semantic-release/github-action@v7
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -29,16 +27,17 @@ jobs:
 
       - name: Build image
         run: |
-          echo "ENV VERSION={{ steps.determine-version.outputs.next-version }}"
-          docker build -t meysamh66/booking-microservices-flight:${{ steps.determine-version.outputs.next-version }} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-identity:${{ steps.determine-version.outputs.next-version }} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-passenger:${{ steps.determine-version.outputs.next-version }} -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-booking:${{ steps.determine-version.outputs.next-version }} -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
+          export VERSION=${GITHUB_REF#refs/tags/}
+          docker build -t meysamh66/booking-microservices-flight:$VERSION -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-identity:$VERSION -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-passenger:$VERSION -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-booking:$VERSION -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
 
       - name: Publish image
         run: |
-          docker push meysamh66/booking-microservices-flight:${{ steps.determine-version.outputs.next-version }}
-          docker push meysamh66/booking-microservices-identity:${{ steps.determine-version.outputs.next-version }}
-          docker push meysamh66/booking-microservices-passenger:${{ steps.determine-version.outputs.next-version }}
-          docker push meysamh66/booking-microservices-booking:${{ steps.determine-version.outputs.next-version }}
+          export VERSION=${GITHUB_REF#refs/tags/}
+          docker push meysamh66/booking-microservices-flight:$VERSION
+          docker push meysamh66/booking-microservices-identity:$VERSION
+          docker push meysamh66/booking-microservices-passenger:$VERSION
+          docker push meysamh66/booking-microservices-booking:$VERSION
 
