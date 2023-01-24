@@ -34,7 +34,7 @@ jobs:
 
       - name: Build image
         run:  |
-           docker build . --tag  ghcr.io/${{ github.repository }}/flight:latest  -f "${{ github.workspace }}/src/Services/Flight/Dockerfile"
+           docker build -t ghcr.io/${{ github.repository }}/flight:latest  -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
 #          docker build -t meysamh66/booking-microservices/flight:latest -f ./src/Services/Flight/Dockerfile .
 
       - name: Publish image
