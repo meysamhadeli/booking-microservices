@@ -8,12 +8,18 @@ on:
 jobs:
 
   build-and-push-docker-image:
-    name: Build and Publish Docker image to Docker Hub
+    name: Build and Publish Docker image to DockerHub
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Get release tag
+        run: echo "::set-output name=tag::$(echo $GITHUB_REF | sed 's/refs\/tags\///')"
+
+      - name: Print release tag
+        run: echo "The release tag is ${{ steps.get_tag.outputs.tag }}"
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -23,15 +29,15 @@ jobs:
 
       - name: Build image
         run: |
-          docker build -t meysamh66/booking-microservices-flight:$(echo $GITHUB_REF | sed 's/refs\/tags\///') -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-identity:$(echo $GITHUB_REF | sed 's/refs\/tags\///') -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-passenger:$(echo $GITHUB_REF | sed 's/refs\/tags\///') -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-booking:$(echo $GITHUB_REF | sed 's/refs\/tags\///') -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-flight:latest -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-identity:latest -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-passenger:latest -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-booking:latest -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
 
       - name: Publish image
         run: |
-          docker push meysamh66/booking-microservices-flight:$(echo $GITHUB_REF | sed 's/refs\/tags\///')
-          docker push meysamh66/booking-microservices-identity:$(echo $GITHUB_REF | sed 's/refs\/tags\///')
-          docker push meysamh66/booking-microservices-passenger:$(echo $GITHUB_REF | sed 's/refs\/tags\///')
-          docker push meysamh66/booking-microservices-booking:$(echo $GITHUB_REF | sed 's/refs\/tags\///')
+          docker push meysamh66/booking-microservices-flight:latest
+          docker push meysamh66/booking-microservices-identity:latest
+          docker push meysamh66/booking-microservices-passenger:latest
+          docker push meysamh66/booking-microservices-booking:latest
 
