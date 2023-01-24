@@ -36,12 +36,12 @@ jobs:
       - name: Build image
         run: |
 #          docker build -t meysamh66/booking-microservices/flight:latest -f ./src/Services/Flight/Dockerfile .
-          docker build . -t  ${{ env.REGISTRY }}/${{ github.repository }}/flight:latest  -f "${{ github.workspace }}/src/Services/Catalogs/Flight/Dockerfile ."
+          docker build . -t  ghcr.io/${{ github.repository }}/flight:latest  -f ./src/Services/Catalogs/Flight/Dockerfile .
 
 
       - name: Publish image
         run: |
-          docker push   "$ghcr.io/${{ github.repository }}/flight:latest}}"
+          docker push   ghcr.io/${{ github.repository }}/flight:latest
 #          docker push meysamh66/booking-microservices/flight:latest
 
 
