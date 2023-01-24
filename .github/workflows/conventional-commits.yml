@@ -1,0 +1,41 @@
+﻿name: Conventional Commits
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled
+      - edited
+      - ready_for_review
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  conventional-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check-pull-request-conventional-commits
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: fuxingloh/multi-labeler@v1
+        name: conventional-commits-pull-request-labeler
+        if: success()
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}} # optional, default to '${{ github.token }}'
+          config-path: .github/multi-labeler.yml # optional, default to '.github/labeler.yml'
+
+        # https://docs.github.com/en/actions/using-workflows/about-workflows#creating-dependent-jobs
+        # https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow
+      - name: check-conventional-commits-labels
+        uses: docker://agilepathway/pull-request-label-checker:latest
+        if: success()
+        with:
+          any_of : feature,bug,enhancement,deprecated,security,documentation,build,ci/cd,chore,performance,formatting,dependencies
+          repo_token: ${{ secrets.GITHUB_TOKEN }}

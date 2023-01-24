@@ -15,12 +15,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Semantic Release
-        uses: semantic-release/git-semantic-release-action@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 'lts/*'
+
+      - name: Semantic Release Version
+        id: semantic-version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          version_variable: 'TAG_NAME'
+          # because of using none default (conventionalcommits) `preset` for `semantic-release`, we should add dependency `conventional-changelog-conventionalcommits`
+          # using dry-run here for preventing publish release note and just calculate version
+        run: npx  -p conventional-changelog-conventionalcommits -p @semantic-release/git -p @semantic-release/changelog -p @semantic-release/exec  semantic-release  --dry-run
+
+      - name: Semantic Release  Versions Outputs
+        run: |
+          echo ${{ steps.semantic-version.outputs.semantic_nextRelease_version }}
+          echo ${{ steps.semantic-version.outputs.semantic_nextRelease_channel }}
+          echo ${{ steps.semantic-version.outputs.semantic_nextRelease_gitTag }}
+          echo ${{ steps.semantic-version.outputs.semantic_lastRelease_version }}
+          echo ${{ steps.semantic-version.outputs.semantic_lastRelease_channel }}
+          echo ${{ steps.semantic-version.outputs.semantic_lastRelease_gitTag }}
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
