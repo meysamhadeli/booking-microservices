@@ -41,11 +41,11 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           # relative path to the place where source code with Dockerfile is located
-          context: ./src/samples/simple
+          context: ./src/Services/Flight
           # Note: tags has to be all lower-case
           tags: |
-            meysamhadeli/booking-microservices:latest
-            ghcr.io/meysamhadeli/booking-microservices:latest
+            meysamhadeli/booking-microservices/flight:latest
+            ghcr.io/meysamhadeli/booking-microservices/flight:latest
           # build on feature branches, push only on develop branch
           push: ${{ github.ref == 'refs/heads/develop' }}
 
