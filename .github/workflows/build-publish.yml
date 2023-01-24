@@ -33,10 +33,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
 
-      - name: Build Docker Image
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: meysamhadeli/booking-microservices/flight:latest
-          context: ./src/Services/Flight
+      - name: Build image
+        run: docker build -t meysamhadeli/booking-microservices/flight:latest -f ./src/Services/Flight/Dockerfile .
+
+      - name: Publish image
+        run: docker push meysamhadeli/booking-microservices/flight:latest
 
