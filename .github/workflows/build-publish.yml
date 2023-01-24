@@ -38,5 +38,5 @@ jobs:
         with:
           push: true
           tags: meysamhadeli/booking-microservices/flight:latest
-          context: src/Services/Flight/Dockerfile
+          context: ./src/Services/Flight
 
