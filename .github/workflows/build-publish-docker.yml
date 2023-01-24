@@ -37,6 +37,15 @@ jobs:
           echo ${{ steps.semantic-version.outputs.semantic_lastRelease_channel }}
           echo ${{ steps.semantic-version.outputs.semantic_lastRelease_gitTag }}
 
+      - name: Update Application Version
+        run: ./update-version.sh ${{ steps.semantic-version.outputs.semantic_nextRelease_version }}
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: '🔧 chore(release): ${{ steps.semantic-version.outputs.semantic_nextRelease_version }} [skip ci]'
+          file_pattern: '**/Directory.Packages.props'
+          disable_globbing: true
+
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
@@ -45,15 +54,15 @@ jobs:
 
       - name: Build image
         run: |
-          docker build -t meysamh66/booking-microservices-flight:latest -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-identity:latest -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-passenger:latest -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-booking:latest -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-flight:${{ steps.semantic-version.outputs.semantic_nextRelease_version }} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-identity:${{ steps.semantic-version.outputs.semantic_nextRelease_version }} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-passenger:${{ steps.semantic-version.outputs.semantic_nextRelease_version }} -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-booking:${{ steps.semantic-version.outputs.semantic_nextRelease_version }} -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
 
       - name: Publish image
         run: |
-          docker push meysamh66/booking-microservices-flight:latest
-          docker push meysamh66/booking-microservices-identity:latest
-          docker push meysamh66/booking-microservices-passenger:latest
-          docker push meysamh66/booking-microservices-booking:latest
+          docker push meysamh66/booking-microservices-flight:${{ steps.semantic-version.outputs.semantic_nextRelease_version }}
+          docker push meysamh66/booking-microservices-identity:${{ steps.semantic-version.outputs.semantic_nextRelease_version }}
+          docker push meysamh66/booking-microservices-passenger:${{ steps.semantic-version.outputs.semantic_nextRelease_version }}
+          docker push meysamh66/booking-microservices-booking:${{ steps.semantic-version.outputs.semantic_nextRelease_version }}
 
