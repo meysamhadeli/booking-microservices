@@ -22,7 +22,6 @@
 **/.tye/
 **/secrets.dev.yaml
 **/values.dev.yaml
-!dist/
 LICENSE
 README.md
 CHANGELOG.md
