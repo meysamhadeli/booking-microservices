@@ -17,8 +17,7 @@ jobs:
 
       - id: version
         uses: battila7/get-version-action@v2
-      - name: Add Semantic Version tag to Docker Image
-        uses: shrink/actions-docker-registry-tag@v3
+
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
