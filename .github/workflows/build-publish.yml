@@ -32,6 +32,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build image and push to Docker Hub and GitHub Container Registry
-        run: docker build -t meysamhadeli/booking-microservices/flight:latest -f ./src/Services/Flight/Dockerfile .
+
+      - name: Build Docker Image
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: meysamhadeli/booking-microservices/flight:latest
+          context: ./src/Services/Flight/Dockerfile
 
