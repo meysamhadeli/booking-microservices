@@ -8,8 +8,8 @@
 # This release drafter follows the conventions from https://keepachangelog.com, https://common-changelog.org/
 # https://www.conventionalcommits.org
 
-name-template: 'v$RESOLVED_VERSION'
-tag-template: 'v$RESOLVED_VERSION'
+name-template: $(echo $GITHUB_REF | sed 's/refs\/tags\///')
+tag-template: $(echo $GITHUB_REF | sed 's/refs\/tags\///')
 template: |
   ## What Changed 👀
   $CHANGES
@@ -27,7 +27,7 @@ categories:
       - test
   - title: 👷 CI
     labels:
-      - ci       
+      - ci
   - title: ♻️ Changes
     labels:
       - changed
@@ -66,31 +66,31 @@ autolabeler:
       - '/(security)\/.*/'
   - label: 'refactor'
     branch:
-      - '/(refactor)\/.*/'    
+      - '/(refactor)\/.*/'
   - label: 'docs'
     branch:
       - '/(docs)\/.*/'
   - label: 'ci'
     branch:
-      - '/(ci)\/.*/'  
+      - '/(ci)\/.*/'
   - label: 'test'
     branch:
-      - '/(test)\/.*/'    
+      - '/(test)\/.*/'
   - label: 'bug'
     branch:
-      - '/(fix)\/.*/'  
+      - '/(fix)\/.*/'
   - label: 'feature'
     branch:
       - '/(feat)\/.*/'
   - label: 'minor'
     branch:
-      - '/(feat)\/.*/'    
+      - '/(feat)\/.*/'
   - label: 'patch'
     branch:
-      - '/(fix)\/.*/'         
+      - '/(fix)\/.*/'
     body:
       - '/JIRA-[0-9]{1,4}/'
-      
+
 change-template: '- $TITLE (#$NUMBER)'
 exclude-contributors:
   - 'meysamhadeli'
