@@ -13,6 +13,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+            -
+      - uses: salsify/action-detect-and-tag-new-version@v2
+        with:
+          version-command: |
+            cat current-version.txt
+
+      - name: Versions Outputs
+        run: |
+          echo v{VERSION}
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -23,14 +34,14 @@ jobs:
       - name: Build image
         run: |
           docker build -t meysamh66/booking-microservices-flight:latest -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-identity:latest -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-passenger:latest -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
-          docker build -t meysamh66/booking-microservices-booking:latest -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
+#          docker build -t meysamh66/booking-microservices-identity:latest -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
+#          docker build -t meysamh66/booking-microservices-passenger:latest -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
+#          docker build -t meysamh66/booking-microservices-booking:latest -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
 
       - name: Publish image
         run: |
           docker push meysamh66/booking-microservices-flight:latest
-          docker push meysamh66/booking-microservices-identity:latest
-          docker push meysamh66/booking-microservices-passenger:latest
-          docker push meysamh66/booking-microservices-booking:latest
+#          docker push meysamh66/booking-microservices-identity:latest
+#          docker push meysamh66/booking-microservices-passenger:latest
+#          docker push meysamh66/booking-microservices-booking:latest
 
