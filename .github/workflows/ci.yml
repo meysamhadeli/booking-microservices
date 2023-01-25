@@ -34,18 +34,23 @@ jobs:
         run: dotnet build -c Release --no-restore
 
       - name: Test
-        if: ${{ success() }}
+        if: success()
         run: dotnet test -c Release --no-restore
 
       - name: Update Release Drafter
-        if: ${{ success() }} and github.ref == 'refs/heads/main'
+        if:  and(github.ref == 'refs/heads/main', success())
         id: last_release
         uses: release-drafter/release-drafter@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Print result"
+        run: |
+          echo "tag_name: ${{ steps.last_release.outputs.tag_name }}"
+          echo "name: ${{ steps.last_release.outputs.name }}"
+          echo "id: ${{ steps.last_release.outputs.id }}"
 
       - name: Login to DockerHub
-        if: ${{ success() }} and github.ref == 'refs/heads/main'
+        if:  and(github.ref == 'refs/heads/main', success())
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -54,7 +59,7 @@ jobs:
        ##ref: https://docs.docker.com/language/golang/configure-ci-cd/
        ##ref: https://event-driven.io/en/how_to_buid_and_push_docker_image_with_github_actions
       - name: Build Docker Image
-        if: ${{ success() }} and github.ref == 'refs/heads/main'
+        if:  and(github.ref == 'refs/heads/main', success())
         run: |
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-flight:${{ steps.last_release.outputs.tag_name }} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-identity:${{ steps.last_release.outputs.tag_name }} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
@@ -62,7 +67,7 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-booking:${{ steps.last_release.outputs.tag_name }} -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
 
       - name: Publish Docker Image
-        if: ${{ success() }} and github.ref == 'refs/heads/main'
+        if:  and(github.ref == 'refs/heads/main', success())
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-flight:${{ steps.last_release.outputs.tag_name }}
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-identity:${{ steps.last_release.outputs.tag_name }}
