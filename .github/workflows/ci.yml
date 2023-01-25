@@ -28,9 +28,7 @@ jobs:
           path: ~/.nuget/packages
 
       - name: Update Release Drafter
-        if: |
-          ${{github.ref == 'refs/heads/main'}} &&
-          ${{success()}}
+        if: github.ref == 'refs/heads/main'
         id: last_release
         uses: release-drafter/release-drafter@v5
         env:
@@ -39,8 +37,11 @@ jobs:
       - name: "Print result"
         run: |
           echo "tag_name: ${{ steps.last_release.outputs.tag_name }}"
+          echo "name: ${{ steps.last_release.outputs.name }}"
+          echo "id: ${{ steps.last_release.outputs.id }}"
           echo "branch: ${{ github.ref }}"
           echo "branch: ${{ github.ref }}"
+
 
       - name: Login to DockerHub
         if: |
