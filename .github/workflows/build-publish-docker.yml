@@ -17,9 +17,6 @@ jobs:
           fetch-depth: 2
             -
       - uses: salsify/action-detect-and-tag-new-version@v2
-        with:
-          version-command: |
-            cat current-version.txt
 
       - name: Versions Outputs
         run: |
