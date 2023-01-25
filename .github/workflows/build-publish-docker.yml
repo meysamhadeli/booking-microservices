@@ -38,8 +38,8 @@ jobs:
         with:
           context: .
           file: ./src/Services/Flight/Dockerfile
-          push: ${{ github.ref_type == 'tag' }}
-          tags: ${{ steps.meta.outputs.tags }}
+          push: true
+          tags: meysamh66/booking-microservices-flight:${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
 
