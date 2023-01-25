@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" , "develop" ]
+    paths-ignore:
+      - "README.md"
+  pull_request:
+    branches: [ "main" , "develop" ]
+    paths-ignore:
+      - "README.md"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 7.0.x
+
+      - name: Cache NuGet Packages
+        uses: actions/cache@v3
+        with:
+          key: ${{ runner.os }}-dotnet-nuget
+          path: ~/.nuget/packages
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build -c Release --no-restore
+
+      - name: Test
+        run: dotnet test -c Release --no-restore
+
+      - name: Update Release Drafter
+        if: github.ref == 'refs/heads/main'
+        id: last_release
+        uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to DockerHub
+        if: github.ref == 'refs/heads/main'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+       ##ref: https://docs.docker.com/language/golang/configure-ci-cd/
+       ##ref: https://event-driven.io/en/how_to_buid_and_push_docker_image_with_github_actions
+      - name: Build Docker Image
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-flight:${{ steps.last_release.outputs.tag_name }} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-identity:${{ steps.last_release.outputs.tag_name }} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-passenger:${{ steps.last_release.outputs.tag_name }} -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-booking:${{ steps.last_release.outputs.tag_name }} -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
+
+      - name: Publish Docker Image
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-flight:${{ steps.last_release.outputs.tag_name }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-identity:${{ steps.last_release.outputs.tag_name }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-passenger:${{ steps.last_release.outputs.tag_name }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-booking:${{ steps.last_release.outputs.tag_name }}
+
