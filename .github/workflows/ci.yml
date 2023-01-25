@@ -17,29 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Update Release Drafter
-        id: last_release
-        uses: release-drafter/release-drafter@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: "Print result"
-        run: |
-          echo "tag_name: ${{ steps.last_release.outputs.tag_name }}"
-          echo "name: ${{ steps.last_release.outputs.name }}"
-          echo "id: ${{ steps.last_release.outputs.id }}"
-          echo "body: ${{ steps.last_release.outputs.body }}"
-          echo "body: ${{ steps.last_release.outputs.html_url }}"
-          echo "body: ${{ steps.last_release.inputs.version }}"
-          echo "branch: ${{ github.ref }}"
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
-        if: ${{ github.ref == 'refs/heads/main' && success() && steps.last_release.outputs.tag_name != '' }}
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
         with:
@@ -61,11 +38,25 @@ jobs:
       - name: Test
         run: dotnet test -c Release --no-restore
 
+      - name: Update Release Drafter
+        if: github.ref == 'refs/heads/main'
+        id: last_release
+        uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        if: ${{ github.ref == 'refs/heads/main' && success() }}
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       ##ref: https://docs.docker.com/language/golang/configure-ci-cd/
       ##ref: https://event-driven.io/en/how_to_buid_and_push_docker_image_with_github_actions
       - name: Build Docker Image
-        if: ${{ github.ref == 'refs/heads/main' && success() && steps.last_release.outputs.tag_name != '' }}
+        if: ${{ github.ref == 'refs/heads/main' && success() }}
         run: |
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-flight:${{ steps.last_release.outputs.tag_name }} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-identity:${{ steps.last_release.outputs.tag_name }} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
@@ -73,7 +64,7 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-booking:${{ steps.last_release.outputs.tag_name }} -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
 
       - name: Publish Docker Image
-        if: ${{ github.ref == 'refs/heads/main' && success() && steps.last_release.outputs.tag_name != '' }}
+        if: ${{ github.ref == 'refs/heads/main' && success() }}
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-flight:${{ steps.last_release.outputs.tag_name }}
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-identity:${{ steps.last_release.outputs.tag_name }}
