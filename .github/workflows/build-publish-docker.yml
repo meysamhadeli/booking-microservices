@@ -3,8 +3,6 @@ name: build-publish-docker
 on:
   push:
     branches: [ develop ]
-    tags:
-      - 'v*'
   pull_request:
 
 jobs:
@@ -15,16 +13,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          flavor: latest=true
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -39,23 +27,15 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./src/Services/Flight/Dockerfile
+          file: |
+            ./src/Services/Flight/Dockerfile
+            ./src/Services/Identity/Dockerfile
+            ./src/Services/Passenger/Dockerfile
+            ./src/Services/Booking/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-flight:${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-
-#      - name: Build image
-#        run: |
-#          docker build -t meysamh66/booking-microservices-flight:${{ steps.version.outputs.version }} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
-#          docker build -t meysamh66/booking-microservices-identity:${{ steps.version.outputs.version }} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
-#          docker build -t meysamh66/booking-microservices-passenger:${{ steps.version.outputs.version }} -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
-#          docker build -t meysamh66/booking-microservices-booking:${{ steps.version.outputs.version }} -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
-#
-#      - name: Publish image
-#        run: |
-#          docker push meysamh66/booking-microservices-flight:${{ steps.version.outputs.version }}
-#          docker push meysamh66/booking-microservices-identity:${{ steps.version.outputs.version }}
-#          docker push meysamh66/booking-microservices-passenger:${{ steps.version.outputs.version }}
-#          docker push meysamh66/booking-microservices-booking:${{ steps.version.outputs.version }}
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-flight:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-identity:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-passenger:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-booking:latest
 
