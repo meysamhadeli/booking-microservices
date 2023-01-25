@@ -20,22 +20,17 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      - name: Build image
+        run: |
+          docker build -t meysamh66/booking-microservices-flight:latest -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-identity:latest -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-passenger:latest -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
+          docker build -t meysamh66/booking-microservices-booking:latest -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
 
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: |
-            ./src/Services/Flight/Dockerfile
-            ./src/Services/Identity/Dockerfile
-            ./src/Services/Passenger/Dockerfile
-            ./src/Services/Booking/Dockerfile
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-flight:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-identity:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-passenger:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-booking:latest
+      - name: Publish image
+        run: |
+          docker push meysamh66/booking-microservices-flight:latest
+          docker push meysamh66/booking-microservices-identity:latest
+          docker push meysamh66/booking-microservices-passenger:latest
+          docker push meysamh66/booking-microservices-booking:latest
 
