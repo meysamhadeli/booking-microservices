@@ -29,6 +29,8 @@ jobs:
           echo "name: ${{ steps.last_release.outputs.name }}"
           echo "id: ${{ steps.last_release.outputs.id }}"
           echo "body: ${{ steps.last_release.outputs.body }}"
+          echo "body: ${{ steps.last_release.outputs.html_url }}"
+          echo "body: ${{ steps.last_release.inputs.version }}"
           echo "branch: ${{ github.ref }}"
 
       - name: Login to DockerHub
