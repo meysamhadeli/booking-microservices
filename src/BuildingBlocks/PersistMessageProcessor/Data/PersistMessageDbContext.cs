@@ -12,9 +12,13 @@ using Exception = System.Exception;
 
 public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
 {
-    public PersistMessageDbContext(DbContextOptions<PersistMessageDbContext> options)
+    private readonly ILogger<PersistMessageDbContext> _logger;
+
+    public PersistMessageDbContext(DbContextOptions<PersistMessageDbContext> options,
+        ILogger<PersistMessageDbContext> logger)
         : base(options)
     {
+        _logger = logger;
     }
 
     public DbSet<PersistMessage> PersistMessages => Set<PersistMessage>();
@@ -37,10 +41,7 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
                 {
                     if (exception != null)
                     {
-                        var factory = LoggerFactory.Create(b => b.AddConsole());
-                        var logger = factory.CreateLogger<PersistMessageDbContext>();
-
-                        logger.LogError(exception,
+                        _logger.LogError(exception,
                             "Request failed with {StatusCode}. Waiting {TimeSpan} before next retry. Retry attempt {RetryCount}.",
                             HttpStatusCode.Conflict,
                             timeSpan,
@@ -55,12 +56,22 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
         {
             foreach (var entry in ex.Entries)
             {
-                var currentEntity = entry.Entity; // we can use it for specific merging
-                var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
+                var currentValue = entry.Entity; // we can use it for specific merging
+                var databaseValue = await entry.GetDatabaseValuesAsync(cancellationToken);
 
-                if (databaseValues != null)
+                _logger.LogInformation(
+                    "Entry to entity with type: {Type}, database-value: {DatabaseValue} and current-value: {CurrentValue}",
+                    entry.GetType().Name,
+                    databaseValue,
+                    currentValue);
+
+                if (databaseValue != null)
                 {
-                    entry.OriginalValues.SetValues(databaseValues);
+                    entry.OriginalValues.SetValues(databaseValue);
+                }
+                else
+                {
+                    entry.OriginalValues.SetValues(currentValue);
                 }
             }
 
