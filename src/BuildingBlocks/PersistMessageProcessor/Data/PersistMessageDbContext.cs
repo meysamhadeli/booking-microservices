@@ -8,6 +8,7 @@ using Configurations;
 using Core.Model;
 using global::Polly;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Exception = System.Exception;
 
 public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
@@ -52,27 +53,23 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
         {
             return await policy.ExecuteAsync(async () => await base.SaveChangesAsync(cancellationToken));
         }
+        //ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=data-annotations#resolving-concurrency-conflicts
         catch (DbUpdateConcurrencyException ex)
         {
             foreach (var entry in ex.Entries)
             {
-                var currentValue = entry.Entity; // we can use it for specific merging
-                var databaseValue = await entry.GetDatabaseValuesAsync(cancellationToken);
+                var currentValues = entry.CurrentValues;
+                var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
 
                 _logger.LogInformation(
-                    "Entry to entity with type: {Type}, database-value: {DatabaseValue} and current-value: {CurrentValue}",
-                    entry.GetType().Name,
-                    databaseValue,
-                    currentValue);
+                    "Entry to entity with database-value: {DatabaseValues} and current-value: {CurrentValues}",
+                    JsonConvert.SerializeObject(databaseValues,
+                        new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }),
+                    JsonConvert.SerializeObject(currentValues,
+                        new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
 
-                if (databaseValue != null)
-                {
-                    entry.OriginalValues.SetValues(databaseValue);
-                }
-                else
-                {
-                    entry.OriginalValues.SetValues(currentValue);
-                }
+                // Refresh the original values with current values
+                entry.OriginalValues.SetValues(currentValues);
             }
 
             return await base.SaveChangesAsync(cancellationToken);
