@@ -62,11 +62,9 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
                 var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
 
                 _logger.LogInformation(
-                    "Entry to entity with database-value: {DatabaseValues} and current-value: {CurrentValues}",
-                    JsonConvert.SerializeObject(databaseValues,
-                        new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }),
-                    JsonConvert.SerializeObject(currentValues,
-                        new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                    "Entry to entity with database-value: {@databaseValues} and current-value: {@currentValues}",
+                    databaseValues,
+                    currentValues);
 
                 // Refresh the original values with current values
                 entry.OriginalValues.SetValues(currentValues);
