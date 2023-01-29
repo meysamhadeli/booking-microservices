@@ -41,7 +41,7 @@ jobs:
 
       - name: Call Update Release Drafter
         if: ${{ github.ref == 'refs/heads/main' && success() }}
-        uses: ./.github/workflows/reusable-release-drafter.yml
+        uses: meysamhadeli/booking-microservices/.github/workflows/reusable-release-drafter.yml@main
 
       ##ref: https://docs.docker.com/language/golang/configure-ci-cd/
       ##ref: https://event-driven.io/en/how_to_buid_and_push_docker_image_with_github_actions
