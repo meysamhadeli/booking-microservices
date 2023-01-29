@@ -18,7 +18,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
     private readonly IMediator _mediator;
     private readonly IPersistMessageDbContext _persistMessageDbContext;
     private readonly IPublishEndpoint _publishEndpoint;
-    private static SemaphoreSlim Semaphore => new SemaphoreSlim(initialCount: 0, maxCount: 1);
+    private SemaphoreSlim Semaphore => new SemaphoreSlim(1);
 
     public PersistMessageProcessor(
         ILogger<PersistMessageProcessor> logger,
