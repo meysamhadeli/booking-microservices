@@ -18,6 +18,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
     private readonly IMediator _mediator;
     private readonly IPersistMessageDbContext _persistMessageDbContext;
     private readonly IPublishEndpoint _publishEndpoint;
+    private SemaphoreSlim Semaphore => new SemaphoreSlim(1);
 
     public PersistMessageProcessor(
         ILogger<PersistMessageProcessor> logger,
@@ -115,7 +116,19 @@ public class PersistMessageProcessor : IPersistMessageProcessor
             .Where(x => x.MessageStatus != MessageStatus.Processed)
             .ToListAsync(cancellationToken);
 
-        foreach (var message in messages) await ProcessAsync(message.Id, message.DeliveryType, cancellationToken);
+        foreach (var message in messages)
+        {
+            await Semaphore.WaitAsync(cancellationToken);
+
+            try
+            {
+                await ProcessAsync(message.Id, message.DeliveryType, cancellationToken);
+            }
+            finally
+            {
+                Semaphore.Release();
+            }
+        }
     }
 
     public async Task ProcessInboxAsync(long messageId, CancellationToken cancellationToken = default)
