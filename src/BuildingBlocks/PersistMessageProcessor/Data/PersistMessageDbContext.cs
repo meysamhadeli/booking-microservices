@@ -58,16 +58,16 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
         {
             foreach (var entry in ex.Entries)
             {
-                var currentValues = entry.CurrentValues;
                 var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
 
-                _logger.LogInformation(
-                    "Entry to entity with database-value: {@databaseValues} and current-value: {@currentValues}",
-                    databaseValues,
-                    currentValues);
+                if (databaseValues == null)
+                {
+                    _logger.LogError("The record no longer exists in the database, The record has been deleted by another user.");
+                    throw;
+                }
 
-                // Refresh the original values with current values
-                entry.OriginalValues.SetValues(currentValues);
+                // Refresh the original values to bypass next concurrency check
+                entry.OriginalValues.SetValues(databaseValues);
             }
 
             return await base.SaveChangesAsync(cancellationToken);
