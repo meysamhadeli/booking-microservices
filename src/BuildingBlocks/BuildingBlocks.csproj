@@ -140,7 +140,7 @@
     <PackageReference Include="Grpc.Net.Client" Version="2.51.0" />
     <PackageReference Include="Grpc.Net.ClientFactory" Version="2.51.0" />
     <PackageReference Update="AsyncFixer" Version="1.6.0" />
-    <PackageReference Update="Meziantou.Analyzer" Version="1.0.758" />
+    <PackageReference Update="Meziantou.Analyzer" Version="2.0.14" />
     <PackageReference Remove="Microsoft.VisualStudio.Threading.Analyzers" />
     <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.4.27" />
     <PackageReference Update="Roslynator.Analyzers" Version="4.2.0" />
