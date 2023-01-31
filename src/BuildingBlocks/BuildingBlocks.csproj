@@ -116,7 +116,7 @@
     <PackageReference Include="OpenTelemetry.Exporter.Jaeger" Version="1.4.0-beta.1" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.0.0-rc9.7" />
     <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc9.7" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.0.0-rc9.7" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.0.0-rc9.11" />
 
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.0.64">
       <PrivateAssets>all</PrivateAssets>
