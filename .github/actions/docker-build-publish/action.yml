@@ -1,0 +1,46 @@
+﻿name: "Publish and Build Docker"
+description: "Publish and Build Docker "
+
+# Input parameters allow you to specify data that the action expects to use during runtime. GitHub stores input parameters as environment variables.(so they are just string)
+# https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#inputs
+inputs:
+  tag-name:
+    description: "Tag Name"
+    required: true
+  registry-username:
+    description: "Registry username"
+    required: true
+  registry-password:
+    description: "Registry password"
+    required: true
+
+# https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#runs-for-composite-actions
+runs:
+  using: "composite"
+  steps:
+
+    ##ref: https://docs.docker.com/language/golang/configure-ci-cd/
+    ##ref: https://event-driven.io/en/how_to_buid_and_push_docker_image_with_github_actions
+    - name: Login to DockerHub
+      uses: docker/login-action@v2
+      if: ${{ github.ref == 'refs/heads/main' && success() }}
+      with:
+        username: ${{ inputs.registry-username }}
+        password: ${{ inputs.registry-password }}
+
+    - name: Build Docker Image
+      if: ${{ github.ref == 'refs/heads/main' && success() }}
+      run: |
+        docker build -t ${{ inputs.registry-username }}/booking-microservices-flight:${{ inputs.tag-name }} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
+        docker build -t ${{ inputs.registry-username }}/booking-microservices-identity:${{ inputs.tag-name }} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
+        docker build -t ${{ inputs.registry-username }}/booking-microservices-passenger:${{ inputs.tag-name }} -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
+        docker build -t ${{ inputs.registry-username }}/booking-microservices-booking:${{ inputs.tag-name }} -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
+
+    - name: Publish Docker Image
+      if: ${{ github.ref == 'refs/heads/main' && success() }}
+      run: |
+        docker push ${{ inputs.registry-username }}/booking-microservices-flight:${{ inputs.tag-name }}
+        docker push ${{ inputs.registry-username }}/booking-microservices-identity:${{ inputs.tag-name }}
+        docker push ${{ inputs.registry-username }}/booking-microservices-passenger:${{ inputs.tag-name }}
+        docker push ${{ inputs.registry-username }}/booking-microservices-booking:${{ inputs.tag-name }}
+
