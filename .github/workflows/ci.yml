@@ -45,28 +45,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      ##ref: https://docs.docker.com/language/golang/configure-ci-cd/
-      ##ref: https://event-driven.io/en/how_to_buid_and_push_docker_image_with_github_actions
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
+
+      - name: Call Composite Action docker-build-publish
+        uses: ./.github/actions/docker-build-publish
         if: ${{ github.ref == 'refs/heads/main' && success() }}
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-      - name: Build Docker Image
-        if: ${{ github.ref == 'refs/heads/main' && success() }}
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-flight:${{ steps.last_release.outputs.tag_name }} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-identity:${{ steps.last_release.outputs.tag_name }} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-passenger:${{ steps.last_release.outputs.tag_name }} -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-booking:${{ steps.last_release.outputs.tag_name }} -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
-
-      - name: Publish Docker Image
-        if: ${{ github.ref == 'refs/heads/main' && success() }}
-        run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-flight:${{ steps.last_release.outputs.tag_name }}
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-identity:${{ steps.last_release.outputs.tag_name }}
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-passenger:${{ steps.last_release.outputs.tag_name }}
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/booking-microservices-booking:${{ steps.last_release.outputs.tag_name }}
-
+          tag-name: ${{ steps.last_release.outputs.tag_name }}
+          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
