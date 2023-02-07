@@ -45,11 +45,42 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-
-      - name: Call Composite Action docker-build-publish
-        uses: ./.github/actions/docker-build-publish
+      - name: Build and Publish Identity to Docker
         if: ${{ github.ref == 'refs/heads/main' && success() }}
+        uses: ./.github/actions/docker-build-publish
         with:
           tag-name: ${{ steps.last_release.outputs.tag_name }}
           registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
           registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          dockerfile-path: 'src/Services/Identity/Dockerfile'
+          image-name: 'booking-microservices-identity'
+
+      - name: Build and Publish Flight to Docker
+        if: ${{ github.ref == 'refs/heads/main' && success() }}
+        uses: ./.github/actions/docker-build-publish
+        with:
+          tag-name: ${{ steps.last_release.outputs.tag_name }}
+          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          dockerfile-path: 'src/Services/Flight/Dockerfile'
+          image-name: 'booking-microservices-flight'
+
+      - name: Build and Publish Passenger to Docker
+        if: ${{ github.ref == 'refs/heads/main' && success() }}
+        uses: ./.github/actions/docker-build-publish
+        with:
+          tag-name: ${{ steps.last_release.outputs.tag_name }}
+          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          dockerfile-path: 'src/Services/Passenger/Dockerfile'
+          image-name: 'booking-microservices-passenger'
+
+      - name: Build and Publish Booking to Docker
+        if: ${{ github.ref == 'refs/heads/main' && success() }}
+        uses: ./.github/actions/docker-build-publish
+        with:
+          tag-name: ${{ steps.last_release.outputs.tag_name }}
+          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          dockerfile-path: 'src/Services/Booking/Dockerfile'
+          image-name: 'booking-microservices-booking'

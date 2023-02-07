@@ -7,11 +7,17 @@ inputs:
   tag-name:
     description: "Tag Name"
     required: true
+  image-name:
+    description: "Image Name"
+    required: true
   registry-username:
     description: "Registry username"
     required: true
   registry-password:
     description: "Registry password"
+    required: true
+  dockerfile-path:
+    description: "Dockerfile path"
     required: true
 
 # https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#runs-for-composite-actions
@@ -32,17 +38,11 @@ runs:
       if: ${{ github.ref == 'refs/heads/main' && success() }}
       shell: bash
       run: |
-        docker build -t ${{ inputs.registry-username }}/booking-microservices-flight:${{ inputs.tag-name }} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
-        docker build -t ${{ inputs.registry-username }}/booking-microservices-identity:${{ inputs.tag-name }} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
-        docker build -t ${{ inputs.registry-username }}/booking-microservices-passenger:${{ inputs.tag-name }} -f "${{ github.workspace }}/src/Services/Passenger/Dockerfile" .
-        docker build -t ${{ inputs.registry-username }}/booking-microservices-booking:${{ inputs.tag-name }} -f "${{ github.workspace }}/src/Services/Booking/Dockerfile" .
+        docker build -t ${{ inputs.registry-username }}/${{ inputs.image-name }}:${{ inputs.tag-name }} -f "${{ github.workspace }}/${{ inputs.dockerfile-path }}" .
 
     - name: Publish Docker Image
       if: ${{ github.ref == 'refs/heads/main' && success() }}
       shell: bash
       run: |
-        docker push ${{ inputs.registry-username }}/booking-microservices-flight:${{ inputs.tag-name }}
-        docker push ${{ inputs.registry-username }}/booking-microservices-identity:${{ inputs.tag-name }}
-        docker push ${{ inputs.registry-username }}/booking-microservices-passenger:${{ inputs.tag-name }}
-        docker push ${{ inputs.registry-username }}/booking-microservices-booking:${{ inputs.tag-name }}
+        docker push ${{ inputs.registry-username }}/${{ inputs.image-name }}:${{ inputs.tag-name }}
 
