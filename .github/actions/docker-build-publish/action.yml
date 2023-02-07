@@ -30,6 +30,7 @@ runs:
 
     - name: Build Docker Image
       if: ${{ github.ref == 'refs/heads/main' && success() }}
+      shell: bash
       run: |
         docker build -t ${{ inputs.registry-username }}/booking-microservices-flight:${{ inputs.tag-name }} -f "${{ github.workspace }}/src/Services/Flight/Dockerfile" .
         docker build -t ${{ inputs.registry-username }}/booking-microservices-identity:${{ inputs.tag-name }} -f "${{ github.workspace }}/src/Services/Identity/Dockerfile" .
@@ -38,6 +39,7 @@ runs:
 
     - name: Publish Docker Image
       if: ${{ github.ref == 'refs/heads/main' && success() }}
+      shell: bash
       run: |
         docker push ${{ inputs.registry-username }}/booking-microservices-flight:${{ inputs.tag-name }}
         docker push ${{ inputs.registry-username }}/booking-microservices-identity:${{ inputs.tag-name }}
