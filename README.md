@@ -97,7 +97,7 @@ High-level plan is represented in the table
 
 - `Booking Service`: The Booking Service is a bounded context for managing all operation related to booking ticket.
 
-![](./assets/booking-microservices.svg)
+![](./assets/booking-microservices.png)
 
 ## Structure of Project
 
