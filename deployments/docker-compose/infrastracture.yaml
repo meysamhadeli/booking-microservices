@@ -1,9 +1,9 @@
 version: "3.3"
 services:
 
-    #######################################################
-    #  Rabbitmq
-    #######################################################
+  #   #######################################################
+  #   #  Rabbitmq
+  #   #######################################################
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3-management
@@ -95,7 +95,7 @@ services:
     #######################################################
   elasticsearch:
    container_name: elasticsearch
-   image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+   image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
    restart: unless-stopped
    ports:
     - 9200:9200
@@ -114,7 +114,7 @@ services:
     #######################################################
   kibana:
    container_name: kibana
-   image: docker.elastic.co/kibana/kibana:7.9.2
+   image: docker.elastic.co/kibana/kibana:7.17.9
    restart: unless-stopped
    ports:
     - 5601:5601
@@ -145,8 +145,6 @@ networks:
 
 
 volumes:
-  db-data:
-    external: false
   elasticsearch-data:
 
 
