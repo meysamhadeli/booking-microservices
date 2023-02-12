@@ -1,4 +1,3 @@
-using BuildingBlocks.Utils;
 using BuildingBlocks.Web;
 using Duende.IdentityServer.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,6 +16,7 @@ public static class JwtExtensions
             {
                 options.Authority = jwtOptions.Authority;
                 options.TokenValidationParameters.ValidateAudience = false;
+                options.RequireHttpsMetadata = jwtOptions.RequireHttpsMetadata;
             });
 
         if (!string.IsNullOrEmpty(jwtOptions.Audience))

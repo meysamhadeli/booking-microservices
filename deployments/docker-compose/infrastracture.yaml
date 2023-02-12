@@ -52,6 +52,8 @@ services:
     #######################################################
     #  EventStoreDB
     #######################################################
+    #https://stackoverflow.com/questions/65272764/ports-are-not-available-listen-tcp-0-0-0-0-50070-bind-an-attempt-was-made-to
+
   eventstore:
       container_name: eventstore
       image: eventstore/eventstore:21.2.0-buster-slim
