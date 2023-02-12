@@ -16,7 +16,7 @@ public static class JwtExtensions
             {
                 options.Authority = jwtOptions.Authority;
                 options.TokenValidationParameters.ValidateAudience = false;
-                options.RequireHttpsMetadata = jwtOptions.RequireHttpsMetadata;
+                options.RequireHttpsMetadata = false;
             });
 
         if (!string.IsNullOrEmpty(jwtOptions.Audience))
