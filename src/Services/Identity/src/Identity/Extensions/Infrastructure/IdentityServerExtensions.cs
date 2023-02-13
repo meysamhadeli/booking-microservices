@@ -3,14 +3,19 @@ using Identity.Identity.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace Identity.Extensions.Infrastructure;
 
+using System.Net;
+using Microsoft.IdentityModel.Logging;
+
 public static class IdentityServerExtensions
 {
-    public static IServiceCollection AddIdentityServer(this IServiceCollection services, IWebHostEnvironment env)
+    public static IServiceCollection AddCustomIdentityServer(this IServiceCollection services, IWebHostEnvironment env)
     {
+        IdentityModelEventSource.ShowPII = true;
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
         services.AddIdentity<User, Role>(config =>
             {
                 config.Password.RequiredLength = 6;
