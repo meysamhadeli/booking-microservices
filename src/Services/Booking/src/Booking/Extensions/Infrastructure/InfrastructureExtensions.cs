@@ -12,7 +12,6 @@ using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.OpenTelemetry;
 using BuildingBlocks.PersistMessageProcessor;
-using BuildingBlocks.PersistMessageProcessor.Data;
 using BuildingBlocks.Swagger;
 using BuildingBlocks.Web;
 using Figgle;
