@@ -13,9 +13,6 @@ public static class IdentityServerExtensions
 {
     public static IServiceCollection AddCustomIdentityServer(this IServiceCollection services, IWebHostEnvironment env)
     {
-        IdentityModelEventSource.ShowPII = true;
-        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
         services.AddIdentity<User, Role>(config =>
             {
                 config.Password.RequiredLength = 6;
@@ -28,6 +25,7 @@ public static class IdentityServerExtensions
 
         var identityServerBuilder = services.AddIdentityServer(options =>
             {
+                options.IssuerUri = "http://myidentityserver.com";
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
@@ -42,8 +40,6 @@ public static class IdentityServerExtensions
 
         //ref: https://documentation.openiddict.com/configuration/encryption-and-signing-credentials.html
         identityServerBuilder.AddDeveloperSigningCredential();
-
-        services.AddAuthentication();
 
         return services;
     }
