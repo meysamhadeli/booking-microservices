@@ -37,9 +37,7 @@ COPY --from=builder /app/Services/Identity/src/Identity.Api/out  .
 ENV ASPNETCORE_URLS https://*:5005, http://*:6005
 ENV ASPNETCORE_ENVIRONMENT docker  
 
-COPY ["./certs/is4-container-cert.pfx", "./is4-container-cert.pfx"]
 COPY ./src/Services/Identity/certs/  ./Services/Identity/certs/
-
 
 ENTRYPOINT ["dotnet", "Identity.Api.dll"]
 
