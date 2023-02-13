@@ -25,7 +25,6 @@ public static class IdentityServerExtensions
 
         var identityServerBuilder = services.AddIdentityServer(options =>
             {
-                options.IssuerUri = "http://myidentityserver.com";
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
@@ -39,7 +38,7 @@ public static class IdentityServerExtensions
             .AddResourceOwnerValidator<UserValidator>();
 
         //ref: https://documentation.openiddict.com/configuration/encryption-and-signing-credentials.html
-        identityServerBuilder.AddDeveloperSigningCredential();
+        // identityServerBuilder.AddDeveloperSigningCredential();
 
         return services;
     }
