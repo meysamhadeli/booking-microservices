@@ -95,7 +95,7 @@ services:
     #######################################################
   elasticsearch:
    container_name: elasticsearch
-   image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
+   image: elasticsearch:7.17.9
    restart: unless-stopped
    ports:
     - 9200:9200
@@ -114,7 +114,7 @@ services:
     #######################################################
   kibana:
    container_name: kibana
-   image: docker.elastic.co/kibana/kibana:7.17.9
+   image: kibana:7.17.9
    restart: unless-stopped
    ports:
     - 5601:5601
@@ -141,8 +141,6 @@ services:
 
 networks:
   booking:
-    name: booking
-
 
 volumes:
   elasticsearch-data:

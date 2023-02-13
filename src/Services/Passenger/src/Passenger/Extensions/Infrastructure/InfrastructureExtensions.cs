@@ -12,7 +12,6 @@ using BuildingBlocks.Mongo;
 using BuildingBlocks.OpenTelemetry;
 using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Swagger;
-using BuildingBlocks.Utils;
 using BuildingBlocks.Web;
 using Figgle;
 using FluentValidation;

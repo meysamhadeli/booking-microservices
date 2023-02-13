@@ -35,10 +35,8 @@ public static class IdentityServerExtensions
             .AddAspNetIdentity<User>()
             .AddResourceOwnerValidator<UserValidator>();
 
-        if (env.IsDevelopment())
-        {
-            identityServerBuilder.AddDeveloperSigningCredential();
-        }
+        //ref: https://documentation.openiddict.com/configuration/encryption-and-signing-credentials.html
+        identityServerBuilder.AddDeveloperSigningCredential();
 
         return services;
     }
