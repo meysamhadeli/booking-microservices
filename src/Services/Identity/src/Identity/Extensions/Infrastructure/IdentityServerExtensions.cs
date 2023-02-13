@@ -43,6 +43,8 @@ public static class IdentityServerExtensions
         //ref: https://documentation.openiddict.com/configuration/encryption-and-signing-credentials.html
         identityServerBuilder.AddDeveloperSigningCredential();
 
+        services.AddAuthentication();
+
         return services;
     }
 }
