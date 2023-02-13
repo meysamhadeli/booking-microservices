@@ -77,7 +77,7 @@ public static class InfrastructureExtensions
 
         SnowFlakIdGenerator.Configure(4);
 
-        builder.Services.AddIdentityServer(env);
+        builder.Services.AddCustomIdentityServer(env);
 
         //ref: https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-7.0&viewFallbackFrom=aspnetcore-2.2
         //ref: https://medium.com/@christopherlenard/identity-server-and-nginx-ingress-controller-in-kubernetes-7146c22a2466
@@ -119,16 +119,6 @@ public static class InfrastructureExtensions
         {
             httpContext.Request.Scheme = "https";
             return next();
-        });
-
-        app.Use(async (ctx, next) =>
-        {
-            if (ctx.Request.Headers.ContainsKey("from-ingress"))
-            {
-                ctx.SetIdentityServerOrigin("https://myidentityserver.com");
-            }
-
-            await next();
         });
 
         if (env.IsDevelopment())
