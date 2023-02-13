@@ -45,6 +45,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Release Version Info
+        run:
+          echo "Release version is:" ${{ steps.last_release.outputs.tag_name }}
+
       - name: Build and Publish Identity to Docker
         if: ${{ github.ref == 'refs/heads/main' && success() }}
         uses: ./.github/actions/docker-build-publish
