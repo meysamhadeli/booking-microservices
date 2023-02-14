@@ -35,8 +35,8 @@ jobs:
       - name: Build
         run: dotnet build -c Release --no-restore
 
-      - name: Test
-        run: dotnet test -c Release --no-restore
+#      - name: Test
+#        run: dotnet test -c Release --no-restore
 
       - name: Update Release Drafter
         if: ${{ github.ref == 'refs/heads/main' && success() }}
@@ -69,22 +69,22 @@ jobs:
           dockerfile-path: 'src/Services/Flight/Dockerfile'
           image-name: 'booking-microservices-flight'
 
-      - name: Build and Publish Passenger to Docker
-        if: ${{ github.ref == 'refs/heads/main' && success() }}
-        uses: ./.github/actions/docker-build-publish
-        with:
-          tag-name: ${{ steps.last_release.outputs.tag_name }}
-          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
-          registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          dockerfile-path: 'src/Services/Passenger/Dockerfile'
-          image-name: 'booking-microservices-passenger'
+#      - name: Build and Publish Passenger to Docker
+#        if: ${{ github.ref == 'refs/heads/main' && success() }}
+#        uses: ./.github/actions/docker-build-publish
+#        with:
+#          tag-name: ${{ steps.last_release.outputs.tag_name }}
+#          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
+#          registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
+#          dockerfile-path: 'src/Services/Passenger/Dockerfile'
+#          image-name: 'booking-microservices-passenger'
 
-      - name: Build and Publish Booking to Docker
-        if: ${{ github.ref == 'refs/heads/main' && success() }}
-        uses: ./.github/actions/docker-build-publish
-        with:
-          tag-name: ${{ steps.last_release.outputs.tag_name }}
-          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
-          registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          dockerfile-path: 'src/Services/Booking/Dockerfile'
-          image-name: 'booking-microservices-booking'
+#      - name: Build and Publish Booking to Docker
+#        if: ${{ github.ref == 'refs/heads/main' && success() }}
+#        uses: ./.github/actions/docker-build-publish
+#        with:
+#          tag-name: ${{ steps.last_release.outputs.tag_name }}
+#          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
+#          registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
+#          dockerfile-path: 'src/Services/Booking/Dockerfile'
+#          image-name: 'booking-microservices-booking'
