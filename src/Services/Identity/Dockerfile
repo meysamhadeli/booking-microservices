@@ -2,10 +2,10 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS builder
 
 # Setup working directory for the project
 WORKDIR /
-COPY ./src/Services/Identity/cert/localhost.pfx ./localhost.pfx
 COPY ./src/BuildingBlocks/BuildingBlocks.csproj ./BuildingBlocks/
 COPY ./src/Services/Identity/src/Identity/Identity.csproj ./Services/Identity/src/Identity/
 COPY ./src/Services/Identity/src/Identity.Api/Identity.Api.csproj ./Services/Identity/src/Identity.Api/
+COPY ./src/Services/Identity/cert/localhost.pfx ./localhost.pfx/
 
 
 # Restore nuget packages
