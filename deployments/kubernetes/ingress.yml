@@ -1,0 +1,56 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: booking-microservices
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-buffers: "4 256k"
+    nginx.ingress.kubernetes.io/proxy-busy-buffers-size: "256k"
+    nginx.ingress.kubernetes.io/client-header-buffer-size: "64k"
+    nginx.ingress.kubernetes.io/http2-max-field-size: "16k"
+    nginx.ingress.kubernetes.io/http2-max-header-size: "128k"
+    nginx.ingress.kubernetes.io/large-client-header-buffers: "8 64k"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+      - myidentityserver.com
+      - booking-microservices.com
+    secretName: nginx-tls-secret  
+  rules:
+  - host: booking-microservices.com
+    http:
+      paths:
+      - path: /flight
+        pathType: Exact
+        backend:
+          service:
+            name: flight-service
+            port:
+              name: http
+      - path: /passenger
+        pathType: Exact
+        backend:
+          service:
+            name: passenger-service
+            port:
+              name: http
+      - path: /booking
+        pathType: Exact
+        backend:
+          service:
+            name: booking-service
+            port:
+              name: http
+  - host: myidentityserver.com
+    http:
+      paths:                                      
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: identity-service
+            port:
+              name: http    
+              
