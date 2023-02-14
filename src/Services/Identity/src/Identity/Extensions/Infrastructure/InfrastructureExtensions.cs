@@ -115,11 +115,11 @@ public static class InfrastructureExtensions
 
         app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
 
-        // app.Use((httpContext, next) =>
-        // {
-        //     httpContext.Request.Scheme = "https";
-        //     return next();
-        // });
+        app.Use((httpContext, next) =>
+        {
+            httpContext.Request.Scheme = "https";
+            return next();
+        });
 
         if (env.IsDevelopment())
         {

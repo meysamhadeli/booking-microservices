@@ -38,7 +38,7 @@ public static class IdentityServerExtensions
             .AddResourceOwnerValidator<UserValidator>();
 
         //ref: https://documentation.openiddict.com/configuration/encryption-and-signing-credentials.html
-        // identityServerBuilder.AddDeveloperSigningCredential();
+        identityServerBuilder.AddDeveloperSigningCredential();
 
         return services;
     }
