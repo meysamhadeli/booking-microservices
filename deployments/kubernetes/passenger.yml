@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: passenger-deployment
+  labels:
+    app: passenger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: passenger
+  template:
+    metadata:
+      labels:
+        app: passenger
+    spec:
+      containers:
+        - image: meysamh66/booking-microservices-passenger:v1.5.2
+          name: passenger
+          ports:
+            - containerPort: 80
+          env:
+          - name: "ASPNETCORE_ENVIRONMENT"
+            value: "docker"
+          - name: ASPNETCORE_URLS
+            value: "http://+"                 
+          volumeMounts:
+          - name: appsettings-volume
+            mountPath: /app/Settings
+      volumes:
+      - name: appsettings-volume
+        configMap:
+          name: appsettings
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: passenger-service
+spec:
+  selector:
+    app: passenger
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  type: ClusterIP
