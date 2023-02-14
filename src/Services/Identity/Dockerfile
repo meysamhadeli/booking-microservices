@@ -5,8 +5,6 @@ WORKDIR /
 COPY ./src/BuildingBlocks/BuildingBlocks.csproj ./BuildingBlocks/
 COPY ./src/Services/Identity/src/Identity/Identity.csproj ./Services/Identity/src/Identity/
 COPY ./src/Services/Identity/src/Identity.Api/Identity.Api.csproj ./Services/Identity/src/Identity.Api/
-COPY ./src/Services/Identity/cert/localhost.pfx ./localhost.pfx/
-
 
 # Restore nuget packages
 RUN dotnet restore ./Services/Identity/src/Identity.Api/Identity.Api.csproj
