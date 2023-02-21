@@ -4,14 +4,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.Jwt;
 
+using Duende.IdentityServer.EntityFramework.Entities;
 
 public static class JwtExtensions
 {
     public static IServiceCollection AddJwt(this IServiceCollection services)
     {
         var jwtOptions = services.GetOptions<JwtBearerOptions>("Jwt");
-
-        services.AddAuthorization();
 
         services.AddAuthentication(o => {
                 o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -21,26 +20,21 @@ public static class JwtExtensions
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                 options.Authority = jwtOptions.Authority;
-                options.Audience = jwtOptions.Audience;
                 options.TokenValidationParameters.ValidateAudience = false;
-                options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
                 options.RequireHttpsMetadata = jwtOptions.RequireHttpsMetadata;
-                options.BackchannelHttpHandler = new HttpClientHandler()
-                {
-                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
-                };
+                options.MetadataAddress= jwtOptions.MetadataAddress;
             });
 
-        // if (!string.IsNullOrEmpty(jwtOptions.Audience))
-        // {
-        //     services.AddAuthorization(options =>
-        //         options.AddPolicy(nameof(ApiScope), policy =>
-        //         {
-        //             policy.RequireAuthenticatedUser();
-        //             policy.RequireClaim("scope", jwtOptions.Audience);
-        //         })
-        //     );
-        // }
+        if (!string.IsNullOrEmpty(jwtOptions.Audience))
+        {
+            services.AddAuthorization(options =>
+                options.AddPolicy(nameof(ApiScope), policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", jwtOptions.Audience);
+                })
+            );
+        }
 
         return services;
     }
