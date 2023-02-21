@@ -15,37 +15,37 @@ spec:
         app: flight
     spec:
       containers:
-        - image: meysamh66/booking-microservices-flight:v1.5.9
+        - image: meysamh66/booking-microservices-flight:v1.6.1
           name: flight
           ports:
             - containerPort: 80
           env:
           - name: "ASPNETCORE_ENVIRONMENT"
-            value: "docker"                
+            value: "docker"
           - name: ASPNETCORE_URLS
             value: "http://+"
           - name: "RabbitMqOptions__HostName"
-            value: "rabbitmq"     
+            value: "rabbitmq"
           - name: "RabbitMqOptions__ExchangeName"
-            value: "flight" 
+            value: "flight"
           - name: "RabbitMqOptions__UserName"
-            value: "guest" 
+            value: "guest"
           - name: "RabbitMqOptions__Password"
-            value: "guest"  
+            value: "guest"
           - name: "RabbitMqOptions__Port"
             value: "5672"
           - name: "MongoOptions__ConnectionString"
-            value: "mongodb://mongo:27017"      
+            value: "mongodb://mongo:27017"
           - name: "MongoOptions__DatabaseName"
             value: "flight-db"
           - name: "Jwt__Authority"
-            value: "http://127.0.0.1:13872"
+            value: "http://127.0.0.1:2521"
           - name: "Jwt__Audience"
             value: "flight-api"
           - name: "Jwt__RequireHttpsMetadata"
-            value: "false"                                    
+            value: "false"
           # - name: "HealthOptions__Enabled"
-          #   value: "true"                                                                    
+          #   value: "true"
           volumeMounts:
           - name: appsettings-volume
             mountPath: /app/Settings
