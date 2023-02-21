@@ -15,7 +15,7 @@ spec:
         app: flight
     spec:
       containers:
-        - image: meysamh66/booking-microservices-flight:v1.6.1
+        - image: meysamh66/booking-microservices-flight:v1.6.3
           name: flight
           ports:
             - containerPort: 80
@@ -39,7 +39,7 @@ spec:
           - name: "MongoOptions__DatabaseName"
             value: "flight-db"
           - name: "Jwt__Authority"
-            value: "http://127.0.0.1:10679"
+            value: "http://10.0.75.1:13926/"
           - name: "Jwt__Audience"
             value: "flight-api"
           - name: "Jwt__RequireHttpsMetadata"
