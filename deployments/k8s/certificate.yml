@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: booking-microservices-cert
+  namespace: default
+spec:
+    secretName: booking-tls-secret
+    issuerRef:
+      name: booking-microservices-issuer
+      kind: Issuer
+    dnsNames:
+     - booking-microservices.com

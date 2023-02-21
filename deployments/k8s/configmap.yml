@@ -7,3 +7,4 @@ data:
     {
       .Files.Get "settings/appsettings.docker.json"
     }
+#ref: https://www.mrjamiebowman.com/software-development/dotnet/kubernetes-configmaps-with-net-core/    

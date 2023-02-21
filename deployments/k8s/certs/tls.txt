@@ -1,0 +1,6 @@
+openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout tls.key -out tls.crt -subj "/CN=booking-microservices.com" -days 365
+kubectl create secret tls booking-tls --key tls.key --cert tls.crt
+
+openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout tls.key -out tls.crt -subj "/CN=myidentityserver.com" -days 365
+kubectl create secret tls identity-tls --key tls.key --cert tls.crt
+
