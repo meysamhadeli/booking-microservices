@@ -39,7 +39,7 @@ spec:
           - name: "MongoOptions__DatabaseName"
             value: "flight-db"
           - name: "Jwt__Authority"
-            value: "http://127.0.0.1:2521"
+            value: "http://127.0.0.1:10679"
           - name: "Jwt__Audience"
             value: "flight-api"
           - name: "Jwt__RequireHttpsMetadata"
