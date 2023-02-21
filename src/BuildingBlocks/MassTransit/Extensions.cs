@@ -13,12 +13,6 @@ using Exception;
 
 public static class Extensions
 {
-    private static bool? _isRunningInContainer;
-
-    private static bool IsRunningInContainer => _isRunningInContainer ??=
-        bool.TryParse(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"), out var inContainer) &&
-        inContainer;
-
     public static IServiceCollection AddCustomMassTransit(this IServiceCollection services,
         IWebHostEnvironment env, Assembly assembly)
     {
@@ -48,9 +42,8 @@ public static class Extensions
         {
             var rabbitMqOptions = services.GetOptions<RabbitMqOptions>(nameof(RabbitMqOptions));
 
-            var host = IsRunningInContainer ? "rabbitmq" : rabbitMqOptions.HostName;
 
-            configurator.Host(host, rabbitMqOptions?.Port ?? 5672, "/", h =>
+            configurator.Host(rabbitMqOptions?.HostName, rabbitMqOptions?.Port ?? 5672, "/", h =>
             {
                 h.Username(rabbitMqOptions?.UserName);
                 h.Password(rabbitMqOptions?.Password);

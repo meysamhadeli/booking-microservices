@@ -1,29 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: identity-deployment
+  name: passenger-deployment
   labels:
-    app: identity
+    app: passenger
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: identity
+      app: passenger
   template:
     metadata:
       labels:
-        app: identity
+        app: passenger
     spec:
       containers:
-        - image: meysamh66/booking-microservices-identity:v1.5.8
-          name: identity
+        - image: meysamh66/booking-microservices-passenger:v1.5.7
+          name: passenger
           ports:
             - containerPort: 80
           env:
           - name: "ASPNETCORE_ENVIRONMENT"
             value: "docker"
           - name: ASPNETCORE_URLS
-            value: http://+:80           
+            value: "http://+"                 
           volumeMounts:
           - name: appsettings-volume
             mountPath: /app/Settings
@@ -35,12 +35,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: identity-service
+  name: passenger-service
 spec:
   selector:
-    app: identity
+    app: passenger
   ports:
   - name: http
+    protocol: TCP
     port: 80
     targetPort: 80
-  type: ClusterIP
+  type: ClusterIP  

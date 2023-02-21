@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
 using System.Threading.RateLimiting;
-using BuildingBlocks.Caching;
 using BuildingBlocks.Core;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.Exception;
@@ -89,6 +86,8 @@ public static class InfrastructureExtensions
         SnowFlakIdGenerator.Configure(1);
 
         builder.Services.AddEasyCaching(options => { options.UseInMemory(configuration, "mem"); });
+
+        Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
 
         return builder;
     }

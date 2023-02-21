@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flight-deployment
+  labels:
+    app: flight
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flight
+  template:
+    metadata:
+      labels:
+        app: flight
+    spec:
+      containers:
+        - image: meysamh66/booking-microservices-flight:v1.5.9
+          name: flight
+          ports:
+            - containerPort: 80
+          env:
+          - name: "ASPNETCORE_ENVIRONMENT"
+            value: "docker"                
+          - name: ASPNETCORE_URLS
+            value: "http://+"
+          - name: "RabbitMqOptions__HostName"
+            value: "rabbitmq"     
+          - name: "RabbitMqOptions__ExchangeName"
+            value: "flight" 
+          - name: "RabbitMqOptions__UserName"
+            value: "guest" 
+          - name: "RabbitMqOptions__Password"
+            value: "guest"  
+          - name: "RabbitMqOptions__Port"
+            value: "5672"
+          - name: "MongoOptions__ConnectionString"
+            value: "mongodb://mongo:27017"      
+          - name: "MongoOptions__DatabaseName"
+            value: "flight-db"
+          - name: "Jwt__Authority"
+            value: "http://127.0.0.1:13872"
+          - name: "Jwt__Audience"
+            value: "flight-api"
+          - name: "Jwt__RequireHttpsMetadata"
+            value: "false"                                    
+          # - name: "HealthOptions__Enabled"
+          #   value: "true"                                                                    
+          volumeMounts:
+          - name: appsettings-volume
+            mountPath: /app/Settings
+      volumes:
+      - name: appsettings-volume
+        configMap:
+          name: appsettings
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flight-service
+spec:
+  selector:
+    app: flight
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    # targetPort: 80
+    nodePort: 30444
+  type: NodePort
