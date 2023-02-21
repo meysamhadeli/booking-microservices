@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.Jwt;
 
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+
 public static class JwtExtensions
 {
     public static IServiceCollection AddJwt(this IServiceCollection services)
@@ -17,6 +19,7 @@ public static class JwtExtensions
                 options.Authority = jwtOptions.Authority;
                 options.TokenValidationParameters.ValidateAudience = false;
                 options.RequireHttpsMetadata = jwtOptions.RequireHttpsMetadata;
+                options.Configuration = new OpenIdConnectConfiguration();
             });
 
         if (!string.IsNullOrEmpty(jwtOptions.Audience))

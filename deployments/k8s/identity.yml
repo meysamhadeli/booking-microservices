@@ -15,7 +15,7 @@ spec:
         app: identity
     spec:
       containers:
-        - image: meysamh66/booking-microservices-identity:v1.5.9
+        - image: meysamh66/booking-microservices-identity:v1.6.1
           name: identity
           ports:
             - containerPort: 80
@@ -23,7 +23,7 @@ spec:
           - name: "ASPNETCORE_ENVIRONMENT"
             value: "docker"
           - name: ASPNETCORE_URLS
-            value: http://+:80           
+            value: http://+:80
           volumeMounts:
           - name: appsettings-volume
             mountPath: /app/Settings
@@ -45,4 +45,4 @@ spec:
     port: 80
     targetPort: 80
     nodePort: 30443
-  type: NodePort  
+  type: NodePort
