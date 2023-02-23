@@ -8,7 +8,8 @@ COPY ./src/ApiGateway/src/ApiGateway.csproj ./ApiGateway/src/
 
 
 # Restore nuget packages
-RUN dotnet restore ./ApiGateway/src/ApiGateway.csproj
+RUN --mount=type=cache,id=gateway_nuget,target=/root/.nuget/packages \
+    dotnet restore ./ApiGateway/src/ApiGateway.csproj
 
 # Copy project files
 COPY ./src/BuildingBlocks ./BuildingBlocks/
@@ -18,13 +19,15 @@ COPY ./src/ApiGateway/src  ./ApiGateway/src/
 # and no restore, as we did it already
 
 RUN ls
-RUN dotnet build  -c Release --no-restore ./ApiGateway/src/ApiGateway.csproj
+RUN --mount=type=cache,id=gateway_nuget,target=/root/.nuget/packages \
+    dotnet build  -c Release --no-restore ./ApiGateway/src/ApiGateway.csproj
 
 WORKDIR /src/ApiGateway/src
 
 # Publish project to output folder
 # and no build, as we did it already
-RUN dotnet publish -c Release --no-build -o out
+RUN --mount=type=cache,id=gateway_nuget,target=/root/.nuget/packages \
+    dotnet publish -c Release --no-build -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 
