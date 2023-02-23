@@ -8,7 +8,8 @@ COPY ./src/Services/Passenger/src/Passenger.Api/Passenger.Api.csproj ./Services/
 
 
 # Restore nuget packages
-RUN dotnet restore ./Services/Passenger/src/Passenger.Api/Passenger.Api.csproj
+RUN --mount=type=cache,id=passenger_nuget,target=/root/.nuget/packages \
+    dotnet restore ./Services/Passenger/src/Passenger.Api/Passenger.Api.csproj
 
 # Copy project files
 COPY ./src/BuildingBlocks ./BuildingBlocks/
@@ -19,13 +20,15 @@ COPY ./src/Services/Passenger/src/Passenger.Api/  ./Services/Passenger/src/Passe
 # and no restore, as we did it already
 
 RUN ls
-RUN dotnet build  -c Release --no-restore ./Services/Passenger/src/Passenger.Api/Passenger.Api.csproj
+RUN --mount=type=cache,id=passenger_nuget,target=/root/.nuget/packages \
+    dotnet build  -c Release --no-restore ./Services/Passenger/src/Passenger.Api/Passenger.Api.csproj
 
 WORKDIR /Services/Passenger/src/Passenger.Api
 
 # Publish project to output folder
 # and no build, as we did it already
-RUN dotnet publish -c Release --no-build -o out
+RUN --mount=type=cache,id=passenger_nuget,target=/root/.nuget/packages \
+    dotnet publish -c Release --no-build -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 
@@ -33,8 +36,11 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /
 COPY --from=builder /Services/Passenger/src/Passenger.Api/out  .
 
-ENV ASPNETCORE_URLS https://*:5012, http://*:6012
+ENV ASPNETCORE_URLS https://*:443, http://*:80
 ENV ASPNETCORE_ENVIRONMENT docker
+
+EXPOSE 80
+EXPOSE 443
 
 ENTRYPOINT ["dotnet", "Passenger.Api.dll"]
 

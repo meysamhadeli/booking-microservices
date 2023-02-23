@@ -1,5 +1,5 @@
 using BuildingBlocks.Web;
-using Identity;
+using Identity.Configurations;
 using Identity.Extensions.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,9 +1,9 @@
+namespace Identity.Configurations;
+
 using System.Collections.Generic;
 using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
-using Identity.Identity.Constants;
-
-namespace Identity;
+using Identity.Constants;
 
 public static class Config
 {

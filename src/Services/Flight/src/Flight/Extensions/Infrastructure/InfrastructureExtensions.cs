@@ -30,6 +30,8 @@ using Serilog;
 
 namespace Flight.Extensions.Infrastructure;
 
+using Microsoft.AspNetCore.HttpOverrides;
+
 public static class InfrastructureExtensions
 {
     public static WebApplicationBuilder AddInfrastructure(this WebApplicationBuilder builder)

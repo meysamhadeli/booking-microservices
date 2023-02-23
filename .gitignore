@@ -432,3 +432,7 @@ fabric.properties
 
 # Tye
 .tye/
+
+*.jwk
+
+**/keys

@@ -22,6 +22,9 @@
 **/.tye/
 **/secrets.dev.yaml
 **/values.dev.yaml
+**/*.jwk
+**/keys
 LICENSE
 README.md
 CHANGELOG.md
+

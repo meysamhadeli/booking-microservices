@@ -1,7 +1,7 @@
 version: "3.3"
 services:
 
- ######################################################
+    ######################################################
     #  Postgres
     ######################################################
   postgres:
@@ -17,9 +17,9 @@ services:
       - booking
 
 
-      #######################################################
-      #  Rabbitmq
-      #######################################################
+    #######################################################
+    #  Rabbitmq
+    #######################################################
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3-management
@@ -119,41 +119,36 @@ services:
     depends_on:
       - elasticsearch
     environment:
-      - ELASTICSEARCH_URL=http://localhost:9200
+      - ELASTICSEARCH_URL=elasticsearch:9200
     networks:
       - booking
 
 
-  #######################################################
+  ######################################################
   #  Gateway
-  #######################################################
-  # gateway:
-  #   image: gateway
-  #   build:
-  #     args:
-  #       Version: "1"
-  #     context: ../../
-  #     dockerfile: src/ApiGateway/Dockerfile
-  #   container_name: booking-gateway
-  #   ports:
-  #     - "5001:80"
-  #     - "5000:443"
-  #   depends_on:
-  #     - postgres
-  #     - rabbitmq
-  #     - jaeger
-  #     - elasticsearch
-  #     - kibana
-  #   volumes:
-  #     - ~/.aspnet/https:/https:ro
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=docker
-  #     - ASPNETCORE_URLS=https://+;http://+
-  #     - ASPNETCORE_HTTPS_PORT=5001
-  #     - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-  #     - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-  #   networks:
-  #     - booking
+  ######################################################
+  gateway:
+    image: gateway
+    build:
+      args:
+        Version: "1"
+      context: ../../
+      dockerfile: src/ApiGateway/Dockerfile
+    container_name: gateway
+    ports:
+      - "5001:80"
+      - "5000:443"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    environment:
+      - ASPNETCORE_ENVIRONMENT=docker
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_HTTPS_PORT=5000
+      - ASPNETCORE_HTTP_PORT=5001
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    networks:
+      - booking
 
 
     #######################################################
@@ -170,14 +165,6 @@ services:
     ports:
       - 5004:80
       - 5003:443
-    depends_on:
-      - postgres
-      - rabbitmq
-      - jaeger
-      - elasticsearch
-      - kibana
-      - mongo
-      - identity
     volumes:
       - ~/.aspnet/https:/https:ro
     environment:
@@ -185,10 +172,6 @@ services:
       - ASPNETCORE_URLS=https://+;http://+
       - ASPNETCORE_HTTPS_PORT=5003
       - ASPNETCORE_HTTP_PORT=5004
-      - Jwt__Authority=http://host.docker.internal:6005
-      - Jwt__Audience=flight-api
-      - Jwt__RequireHttpsMetadata=false
-      - Jwt__MetadataAddress=http://host.docker.internal:6005/.well-known/openid-configuration
       - ASPNETCORE_Kestrel__Certificates__Default__Password=password
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     networks:
@@ -208,12 +191,6 @@ services:
     ports:
       - 6005:80
       - 5005:443
-    depends_on:
-      - postgres
-      - rabbitmq
-      - jaeger
-      - elasticsearch
-      - kibana
     volumes:
       - ~/.aspnet/https:/https:ro
     environment:
@@ -230,68 +207,55 @@ services:
     #######################################################
     #  Passenger
     #######################################################
-  # passenger:
-  #   image: passenger
-  #   build:
-  #     args:
-  #       Version: "1"
-  #     context: ../../
-  #     dockerfile: src/Services/Passenger/Dockerfile
-  #   container_name: passenger
-  #   ports:
-  #     - 6012:80
-  #     - 5012:443
-  #   depends_on:
-  #     - postgres
-  #     - rabbitmq
-  #     - jaeger
-  #     - elasticsearch
-  #     - kibana
-  #     - mongo
-  #   volumes:
-  #     - ~/.aspnet/https:/https:ro
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=docker
-  #     - ASPNETCORE_URLS=https://+;http://+
-  #     - ASPNETCORE_HTTPS_PORT=5012
-  #     - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-  #     - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-  #   networks:
-  #     - booking
+  passenger:
+    image: passenger
+    build:
+      args:
+        Version: "1"
+      context: ../../
+      dockerfile: src/Services/Passenger/Dockerfile
+    container_name: passenger
+    ports:
+      - 6012:80
+      - 5012:443
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    environment:
+      - ASPNETCORE_ENVIRONMENT=docker
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_HTTPS_PORT=5012
+      - ASPNETCORE_HTTP_PORT=6012
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    networks:
+      - booking
 
 
     #######################################################
     #  Booking
     #######################################################
-  # booking:
-  #   image: booking
-  #   build:
-  #     args:
-  #       Version: "1"
-  #     context: ../../
-  #     dockerfile: src/Services/Booking/Dockerfile
-  #   container_name: booking
-  #   ports:
-  #     - 6010:80
-  #     - 5010:443
-  #   depends_on:
-  #     - postgres
-  #     - rabbitmq
-  #     - jaeger
-  #     - eventstore
-  #     - elasticsearch
-  #     - kibana
-  #     - mongo
-  #   volumes:
-  #     - ~/.aspnet/https:/https:ro
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=docker
-  #     - ASPNETCORE_URLS=https://+;http://+
-  #     - ASPNETCORE_HTTPS_PORT=5010
-  #     - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-  #     - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-  #   networks:
-  #     - booking
+  booking:
+    image: booking
+    build:
+      args:
+        Version: "1"
+      context: ../../
+      dockerfile: src/Services/Booking/Dockerfile
+    container_name: booking
+    ports:
+      - 6010:80
+      - 5010:443
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    environment:
+      - ASPNETCORE_ENVIRONMENT=docker
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_HTTPS_PORT=5010
+      - ASPNETCORE_HTTP_PORT=6010
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    networks:
+      - booking
 
 
 networks:

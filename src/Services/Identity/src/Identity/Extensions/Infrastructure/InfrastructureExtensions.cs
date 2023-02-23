@@ -26,6 +26,8 @@ using Serilog;
 
 namespace Identity.Extensions.Infrastructure;
 
+using Configurations;
+
 public static class InfrastructureExtensions
 {
     public static WebApplicationBuilder AddInfrastructure(this WebApplicationBuilder builder)
@@ -74,15 +76,7 @@ public static class InfrastructureExtensions
 
         SnowFlakIdGenerator.Configure(4);
 
-        builder.Services.AddCustomIdentityServer(env);
-
-        //ref: https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-7.0&viewFallbackFrom=aspnetcore-2.2
-        //ref: https://medium.com/@christopherlenard/identity-server-and-nginx-ingress-controller-in-kubernetes-7146c22a2466
-        // builder.Services.Configure<ForwardedHeadersOptions>(options =>
-        // {
-        //     options.ForwardedHeaders =
-        //         ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-        // });
+        builder.AddCustomIdentityServer();
 
         Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
 
@@ -94,10 +88,6 @@ public static class InfrastructureExtensions
     {
         var env = app.Environment;
         var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
-
-        //ref: https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-7.0&viewFallbackFrom=aspnetcore-2.2
-        //ref: https://medium.com/@christopherlenard/identity-server-and-nginx-ingress-controller-in-kubernetes-7146c22a2466
-        // app.UseForwardedHeaders();
 
         app.UseProblemDetails();
         app.UseSerilogRequestLogging(options =>
@@ -113,12 +103,6 @@ public static class InfrastructureExtensions
         app.MapMetrics();
 
         app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
-        //
-        // app.Use((httpContext, next) =>
-        // {
-        //     httpContext.Request.Scheme = "https";
-        //     return next();
-        // });
 
         if (env.IsDevelopment())
         {
