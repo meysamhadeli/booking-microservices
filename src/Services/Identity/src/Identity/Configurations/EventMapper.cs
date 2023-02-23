@@ -1,7 +1,7 @@
+namespace Identity.Configurations;
+
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.Event;
-
-namespace Identity;
 
 public sealed class EventMapper : IEventMapper
 {

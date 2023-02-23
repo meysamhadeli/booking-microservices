@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Identity.Extensions.Infrastructure;
 
+using Configurations;
+
 public static class MediatRExtensions
 {
     public static IServiceCollection AddCustomMediatR(this IServiceCollection services)
