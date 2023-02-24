@@ -89,8 +89,6 @@ public static class InfrastructureExtensions
 
         builder.Services.AddEasyCaching(options => { options.UseInMemory(configuration, "mem"); });
 
-        Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
-
         return builder;
     }
 

@@ -79,7 +79,11 @@ public static class InfrastructureExtensions
 
         builder.AddCustomIdentityServer();
 
-        Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders =
+                ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+        });
 
         return builder;
     }
@@ -90,14 +94,13 @@ public static class InfrastructureExtensions
         var env = app.Environment;
         var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
-        var forwardHeaderOptions = new ForwardedHeadersOptions
-        {
-            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-        };
-        forwardHeaderOptions.KnownNetworks.Clear();
-        forwardHeaderOptions.KnownProxies.Clear();
+        app.UseForwardedHeaders();
 
-        app.UseForwardedHeaders(forwardHeaderOptions);
+        app.Use((context, next) =>
+        {
+            context.Request.Scheme = "https";
+            return next();
+        });
 
         app.UseProblemDetails();
         app.UseSerilogRequestLogging(options =>
@@ -111,6 +114,7 @@ public static class InfrastructureExtensions
         app.UseCustomHealthCheck();
         app.UseIdentityServer();
         app.MapMetrics();
+
 
         app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
 

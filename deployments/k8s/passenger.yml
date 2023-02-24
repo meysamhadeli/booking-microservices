@@ -15,15 +15,15 @@ spec:
         app: passenger
     spec:
       containers:
-        - image: meysamh66/booking-microservices-passenger:v1.5.7
+        - image: meysamh66/booking-microservices-passenger:v1.6.5
           name: passenger
           ports:
             - containerPort: 80
           env:
-          - name: "ASPNETCORE_ENVIRONMENT"
-            value: "docker"
+          - name: ASPNETCORE_ENVIRONMENT
+            value: docker
           - name: ASPNETCORE_URLS
-            value: "http://+"                 
+            value: http://+                 
           volumeMounts:
           - name: appsettings-volume
             mountPath: /app/Settings
@@ -35,7 +35,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: passenger-service
+  name: passenger
 spec:
   selector:
     app: passenger

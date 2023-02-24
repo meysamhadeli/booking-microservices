@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: booking-microservies
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/proxy-buffer-size: "128k"
     nginx.ingress.kubernetes.io/proxy-buffers: "4 256k"
     nginx.ingress.kubernetes.io/proxy-busy-buffers-size: "256k"
@@ -13,24 +13,33 @@ metadata:
     nginx.ingress.kubernetes.io/large-client-header-buffers: "8 64k"    
 spec:
   ingressClassName: nginx
-  # tls:
-  # - hosts:
-  #     - myidentityserver.com
-  #   secretName: identity-tls
-  # - hosts:
-  #     - booking-microservices.com
-  #   secretName: booking-tls        
+  tls:
+  - hosts:
+      - myidentityserver.com
+    secretName: identity-tls
+  - hosts:
+      - booking-microservices.com
+    secretName: booking-tls        
   rules:
-    # - host: myidentityserver.com
-    #   http:
-    #     paths:
-    #       - path: /
-    #         pathType: Prefix
-    #         backend:
-    #           service:
-    #             name: identity-service
-    #             port:
-    #               number: 80
+    - host: myidentityserver.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: identity
+                port:
+                  number: 80        
+          - path: /(.+)
+            pathType: Prefix
+            backend:
+              service:
+                name: identity
+                port:
+                  number: 80
+                  
+
     - host: booking-microservices.com
       http:
         paths:
@@ -38,20 +47,45 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: flight-service
+                name: flight
                 port:
                   number: 80
+          - path: /flight/(.+)
+            pathType: Prefix
+            backend:
+              service:
+                name: flight
+                port:
+                  number: 80
+
+
           - path: /passenger
             pathType: Prefix
             backend:
               service:
-                name: passenger-service
+                name: passenger
+                port:
+                  number: 80                  
+          - path: /passenger/(.+)
+            pathType: Prefix
+            backend:
+              service:
+                name: passenger
                 port:
                   number: 80
+
+
           - path: /booking
             pathType: Prefix
             backend:
               service:
-                name: booking-service
+                name: booking
+                port:
+                  number: 80                    
+          - path: /booking/(.+)
+            pathType: Prefix
+            backend:
+              service:
+                name: booking
                 port:
                   number: 80                                                                
