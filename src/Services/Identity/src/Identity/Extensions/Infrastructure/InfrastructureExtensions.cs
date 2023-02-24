@@ -27,6 +27,7 @@ using Serilog;
 namespace Identity.Extensions.Infrastructure;
 
 using Configurations;
+using Microsoft.AspNetCore.HttpOverrides;
 
 public static class InfrastructureExtensions
 {
@@ -88,6 +89,15 @@ public static class InfrastructureExtensions
     {
         var env = app.Environment;
         var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
+
+        var forwardHeaderOptions = new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+        };
+        forwardHeaderOptions.KnownNetworks.Clear();
+        forwardHeaderOptions.KnownProxies.Clear();
+
+        app.UseForwardedHeaders(forwardHeaderOptions);
 
         app.UseProblemDetails();
         app.UseSerilogRequestLogging(options =>
