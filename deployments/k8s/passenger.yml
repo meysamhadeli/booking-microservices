@@ -15,7 +15,7 @@ spec:
         app: passenger
     spec:
       containers:
-        - image: meysamh66/booking-microservices-passenger:v1.6.5
+        - image: meysamh66/booking-microservices-passenger:v1.6.6
           name: passenger
           ports:
             - containerPort: 80
