@@ -15,27 +15,15 @@ spec:
         app: booking
     spec:
       containers:
-        - image: meysamh66/booking-microservices-booking:v1.5.7
+        - image: meysamh66/booking-microservices-booking:v1.6.5
           name: booking
           ports:
             - containerPort: 80
           env:
-          - name: "ASPNETCORE_ENVIRONMENT"
-            value: "docker"
+          - name: ASPNETCORE_ENVIRONMENT
+            value: docker
           - name: ASPNETCORE_URLS
-            value: "http://+"
-          # - name: "RabbitMqOptions__HostName"
-          #   value: "localhost"     
-          # - name: "RabbitMqOptions__ExchangeName"
-          #   value: "booking" 
-          # - name: "RabbitMqOptions__UserName"
-          #   value: "guest" 
-          # - name: "RabbitMqOptions__Password"
-          #   value: "guest"  
-          # - name: "RabbitMqOptions__Port"
-          #   value: "5672"
-          - name: "EventStore__ConnectionString"
-            value: "esdb://eventstore:2113?tls=false"                                       
+            value: http://+                                      
           volumeMounts:
           - name: appsettings-volume
             mountPath: /app/Settings
@@ -47,7 +35,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: booking-service
+  name: booking
 spec:
   selector:
     app: booking
