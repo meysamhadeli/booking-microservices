@@ -15,34 +15,28 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-      - myidentityserver.com
-    secretName: identity-tls
-  - hosts:
       - booking-microservices.com
     secretName: booking-tls        
-  rules:
-    - host: myidentityserver.com
+  rules:                  
+    - host: booking-microservices.com
       http:
         paths:
-          - path: /
+          - path: /identity
             pathType: Prefix
             backend:
               service:
-                name: identity
+                name: flight
                 port:
-                  number: 80        
-          - path: /(.+)
+                  number: 80
+          - path: /identity/(.+)
             pathType: Prefix
             backend:
               service:
                 name: identity
                 port:
                   number: 80
-                  
 
-    - host: booking-microservices.com
-      http:
-        paths:
+
           - path: /flight
             pathType: Prefix
             backend:

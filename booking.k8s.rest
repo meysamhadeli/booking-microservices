@@ -1,10 +1,10 @@
 # https://github.com/Huachao/vscode-restclient
 
-@api-gateway=https://localhost:5000  
-@identity-api=http://localhost:6005
-@flight-api=https://localhost:5003
-@passenger-api=https://localhost:5012
-@booking-api=https://localhost:5010
+@api-gateway=https://booking-microservices.com  
+@identity-api=https://booking-microservices.com/identity
+@flight-api=https://booking-microservices.com/flight
+@passenger-api=https://booking-microservices.com/passenger
+@booking-api=https://booking-microservices.com/booking
 
 @contentType = application/json
 @flightid = 1
@@ -20,7 +20,7 @@ GET {{identity-api}}
 
 ###
 # @name Authenticate
-POST {{api-gateway}}/connect/token
+POST {{api-gateway}}/identity/connect/token
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=password
@@ -35,7 +35,7 @@ grant_type=password
 
 ###
 # @name Register_New_User
-POST {{api-gateway}}/api/v1/identity/register-user
+POST {{api-gateway}}/identity/api/v1/identity/register-user
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -60,7 +60,7 @@ GET {{flight-api}}
 
 ###
 # @name Create_Seat
-Post {{api-gateway}}/api/v1/flight/seat
+Post {{api-gateway}}/flight/api/v1/flight/seat
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -76,7 +76,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Reserve_Seat
-Post {{api-gateway}}/api/v1/flight/reserve-seat
+Post {{api-gateway}}/flight/api/v1/flight/reserve-seat
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -90,7 +90,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Get_Available_Seats
-GET {{api-gateway}}/api/v1/flight/get-available-seats/{{flightid}}
+GET {{api-gateway}}/flight/api/v1/flight/get-available-seats/{{flightid}}
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -99,7 +99,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Get_Flight_By_Id
-GET {{api-gateway}}/api/v1/flight/{{flightid}}
+GET {{api-gateway}}/flight/api/v1/flight/{{flightid}}
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -108,7 +108,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Get_Available_Flights
-GET {{api-gateway}}/api/v1/flight/get-available-flights
+GET {{api-gateway}}/flight/api/v1/flight/get-available-flights
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -117,7 +117,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Create_Flights
-POST {{api-gateway}}/api/v1/flight
+POST {{api-gateway}}/flight/api/v1/flight
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -139,7 +139,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Update_Flights
-PUT  {{api-gateway}}/api/v1/flight
+PUT  {{api-gateway}}/flight/api/v1/flight
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -163,7 +163,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Delete_Flights
-DELETE   {{api-gateway}}/api/v1/flight/{{flightid}}
+DELETE   {{api-gateway}}/flight/api/v1/flight/{{flightid}}
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -172,7 +172,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Create_Airport
-POST {{api-gateway}}/api/v1/flight/airport
+POST {{api-gateway}}/flight/api/v1/flight/airport
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -188,7 +188,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Create_Aircraft
-POST {{api-gateway}}/api/v1/flight/aircraft
+POST {{api-gateway}}/flight/api/v1/flight/aircraft
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -211,7 +211,7 @@ GET {{passenger-api}}
 
 ###
 # @name Complete_Registration_Passenger
-POST {{api-gateway}}/api/v1/passenger/complete-registration
+POST {{api-gateway}}/passenger/api/v1/passenger/complete-registration
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -226,7 +226,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Get_Passenger_By_Id
-GET  {{api-gateway}}/api/v1/passenger/{{passengerId}}
+GET  {{api-gateway}}/passenger/api/v1/passenger/{{passengerId}}
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -243,7 +243,7 @@ GET {{booking-api}}
 
 ###
 # @name Create_Booking
-POST {{api-gateway}}/api/v1/booking
+POST {{api-gateway}}/booking/api/v1/booking
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}

@@ -15,7 +15,7 @@ spec:
         app: identity
     spec:
       containers:
-        - image: meysamh66/booking-microservices-identity:v1.6.6
+        - image: meysamh66/booking-microservices-identity:v1.6.7
           name: identity
           ports:
             - containerPort: 80

@@ -5,4 +5,4 @@ metadata:
   namespace: default
 spec:
   ca:
-    secretName: booking-microservices-secret
+    secretName: booking-tls
