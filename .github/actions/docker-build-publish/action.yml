@@ -43,11 +43,11 @@ runs:
       if: ${{ github.ref == 'refs/heads/main' && success() }}
       shell: bash
       run: |
-        docker build -t ${{ inputs.registry-username }}/${{ inputs.image-name }}:v1.6.6 -f "${{ github.workspace }}/${{ inputs.dockerfile-path }}" .
+        docker build -t ${{ inputs.registry-username }}/${{ inputs.image-name }}:v1.6.7 -f "${{ github.workspace }}/${{ inputs.dockerfile-path }}" .
 
     - name: Publish Docker Image
       if: ${{ github.ref == 'refs/heads/main' && success() }}
       shell: bash
       run: |
-        docker push ${{ inputs.registry-username }}/${{ inputs.image-name }}:v1.6.6
+        docker push ${{ inputs.registry-username }}/${{ inputs.image-name }}:v1.6.7
 

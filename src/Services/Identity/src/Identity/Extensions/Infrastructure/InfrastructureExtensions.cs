@@ -96,12 +96,6 @@ public static class InfrastructureExtensions
 
         app.UseForwardedHeaders();
 
-        app.Use((context, next) =>
-        {
-            context.Request.Scheme = "https";
-            return next();
-        });
-
         app.UseProblemDetails();
         app.UseSerilogRequestLogging(options =>
         {

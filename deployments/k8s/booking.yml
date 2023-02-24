@@ -15,7 +15,7 @@ spec:
         app: booking
     spec:
       containers:
-        - image: meysamh66/booking-microservices-booking:v1.6.5
+        - image: meysamh66/booking-microservices-booking:v1.6.6
           name: booking
           ports:
             - containerPort: 80

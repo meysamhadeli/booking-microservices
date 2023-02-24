@@ -1,5 +1,9 @@
 # https://github.com/Huachao/vscode-restclient
-@api-gateway=https://localhost:5000
+
+// for using kubernetes revers proxy uncomment this gateway 
+# @api-gateway=https://booking-microservices.com  
+
+@api-gateway=https://localhost:5000  
 @identity-api=http://localhost:6005
 @flight-api=https://localhost:5003
 @passenger-api=https://localhost:5012

@@ -15,7 +15,7 @@ spec:
         app: flight
     spec:
       containers:
-        - image: meysamh66/booking-microservices-flight:v1.6.5
+        - image: meysamh66/booking-microservices-flight:v1.6.6
           name: flight
           ports:
             - containerPort: 80
