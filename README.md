@@ -134,7 +134,9 @@ Using the CQRS pattern, we cut each business functionality into vertical slices,
 
 ## How to Run
 
-### Config Certificate
+> ### Docker
+
+#### Config Certificate
 
 Run the following commands for [Config SSL](https://docs.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-6.0) in your system
 
@@ -150,20 +152,37 @@ dotnet dev-certs https --trust
 dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p $CREDENTIAL_PLACEHOLDER$
 dotnet dev-certs https --trust
 ```
-### Docker Compose
+#### Docker Compose
 
 Run this app in docker using the [docker-compose.yaml](./deployments/docker-compose/docker-compose.yaml) file with the below command at the root of the application:
 
 ```bash
 docker-compose -f ./deployments/docker-compose/docker-compose.yaml up -d
 ```
-Also we have a seprate docker file for up and running [infrastracture.yaml](./deployments/docker-compose/infrastracture.yaml) independently:
+
+> ### Kubernetes
+1- Run the following command for apply TLS in kubernetes cluster
 
 ```bash
-docker-compose -f ./deployments/docker-compose/infrastracture.yaml up -d
+kubectl apply -f ./deployments/kubernetes/booking-secret.yml
+```
+#### Note: 
+Also we can run this commands for create new tls.key and tls.crt and replace them with old one in `booking-secret.yml`
+```bash
+openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout tls.key -out tls.crt -subj "/CN=booking-microservices.com" -days 365
+
+kubectl create secret tls booking-tls --key tls.key --cert tls.crt
 ```
 
-### Kubernetes - TODO
+2- Run the following command for apply all services and deployments and configmap that we need
+```bash
+kubectl apply -f ./deployments/kubernetes/booking-microservices.yml
+```
+
+3- Run the following command for apply ingress-controller for revers proxy
+```bash
+kubectl apply -f ./deployments/kubernetes/ingress.yml
+```
 
 ### Documentation Apis
 
