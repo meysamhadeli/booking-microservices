@@ -138,7 +138,7 @@ Using the CQRS pattern, we cut each business functionality into vertical slices,
 
 #### Config Certificate
 
-Run the following commands for [Config SSL](https://docs.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-6.0) in your system
+Run the following commands to [Config SSL](https://docs.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-6.0) in your system
 
 #### Windows using Linux containers
 ```bash
@@ -161,20 +161,20 @@ docker-compose -f ./deployments/docker-compose/docker-compose.yaml up -d
 ```
 
 > ### Kubernetes
-1- Run the following command for apply TLS in kubernetes cluster
+1- Run the following command for applying TLS in Kubernetes cluster
 
 ```bash
 kubectl apply -f ./deployments/kubernetes/booking-secret.yml
 ```
 #### Note: 
-Also we can run this commands for create new tls.key and tls.crt and replace them with old one in `booking-secret.yml`
+Also, we can run this commands for creating new `tls.key` and `tls.crt` and replace them with old one in `booking-secret.yml`
 ```bash
 openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout tls.key -out tls.crt -subj "/CN=booking-microservices.com" -days 365
 
 kubectl create secret tls booking-tls --key tls.key --cert tls.crt
 ```
 
-2- Run the following command for apply all services and deployments and configmap that we need
+2- Run the following command to apply all services and deployments and configmap that we need
 ```bash
 kubectl apply -f ./deployments/kubernetes/booking-microservices.yml
 ```
@@ -187,7 +187,7 @@ kubectl apply -f ./deployments/kubernetes/ingress.yml
 ### Documentation Apis
 
 Each microservice uses swagger open api, navigate to /swagger for a list of every endpoint.
-For testing apis I used the [REST Client](https://github.com/Huachao/vscode-restclient) plugin for VSCode running this file [booking.rest](./booking.rest).
+For testing apis I used the [REST Client](https://github.com/Huachao/vscode-restclient) plugin for VS Code running this file [booking.rest](./booking.rest).
 
 # Support
 
@@ -199,7 +199,7 @@ Thanks a bunch for supporting me!
 
 ## Contribution
 
-Thanks to all [contributors](https://github.com/meysamhadeli/booking-microservices/graphs/contributors), you're awesome and this wouldn't be possible without you! The goal is to build a categorized community-driven collection of very well-known resources.
+Thanks to all [contributors](https://github.com/meysamhadeli/booking-microservices/graphs/contributors), you're awesome and this wouldn't be possible without you! The goal is to build a categorized, community-driven collection of very well-known resources.
 
 ## Project References & Credits
 
