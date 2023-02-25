@@ -174,7 +174,7 @@ openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout tls.key -out tls.crt -
 kubectl create secret tls booking-tls --key tls.key --cert tls.crt
 ```
 
-2- Run the following command to apply all services and deployments and configmap that we need
+2- Run the following command to apply all deployments and services and configmaps that we need
 ```bash
 kubectl apply -f ./deployments/kubernetes/booking-microservices.yml
 ```
