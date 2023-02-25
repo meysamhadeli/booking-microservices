@@ -165,8 +165,7 @@ docker-compose -f ./deployments/docker-compose/docker-compose.yaml up -d
 ```bash
 kubectl apply -f ./deployments/kubernetes/booking-secret.yml
 ```
-#### Note: 
-Also, we can run this commands for creating new `tls.key` and `tls.crt` and replace them with old one in `booking-secret.yml`
+> Note: Also, we can run this commands for creating new `tls.key` and `tls.crt` and replace them with old one in `booking-secret.yml`
 ```bash
 openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout tls.key -out tls.crt -subj "/CN=booking-microservices.com" -days 365
 
