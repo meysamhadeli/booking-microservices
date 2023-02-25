@@ -534,3 +534,221 @@ spec:
     io.kompose.service: redis
 status:
   loadBalancer: {}
+---
+# #######################################################
+#   ConfigMap AppSettings
+# #######################################################
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: appsettings
+data:
+  appsettings.json: |-
+    {
+      .Files.Get "settings/appsettings.docker.json"
+    }
+#ref: https://www.mrjamiebowman.com/software-development/dotnet/kubernetes-configmaps-with-net-core/    
+---
+# #######################################################
+#   Flight
+# #######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flight-deployment
+  labels:
+    app: flight
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flight
+  template:
+    metadata:
+      labels:
+        app: flight
+    spec:
+      containers:
+        - image: meysamh66/booking-microservices-flight:v1.6.7
+          name: flight
+          ports:
+            - containerPort: 80
+          env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: docker
+          - name: ASPNETCORE_URLS
+            value: http://+
+          volumeMounts:
+          - name: appsettings-volume
+            mountPath: /app/Settings
+      volumes:
+      - name: appsettings-volume
+        configMap:
+          name: appsettings
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flight
+spec:
+  selector:
+    app: flight
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+---
+# #######################################################
+#   Identity
+# #######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity-deployment
+  labels:
+    app: identity
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: identity
+  template:
+    metadata:
+      labels:
+        app: identity
+    spec:
+      containers:
+        - image: meysamh66/booking-microservices-identity:v1.6.7
+          name: identity
+          ports:
+            - containerPort: 80
+          env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: docker
+          - name: ASPNETCORE_URLS
+            value: http://+
+          volumeMounts:
+          - name: appsettings-volume
+            mountPath: /app/Settings
+      volumes:
+      - name: appsettings-volume
+        configMap:
+          name: appsettings
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: identity
+spec:
+  selector:
+    app: identity
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+---
+# #######################################################
+#   Booking
+# #######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-deployment
+  labels:
+    app: booking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: booking
+  template:
+    metadata:
+      labels:
+        app: booking
+    spec:
+      containers:
+        - image: meysamh66/booking-microservices-booking:v1.6.7
+          name: booking
+          ports:
+            - containerPort: 80
+          env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: docker
+          - name: ASPNETCORE_URLS
+            value: http://+                                      
+          volumeMounts:
+          - name: appsettings-volume
+            mountPath: /app/Settings
+      volumes:
+      - name: appsettings-volume
+        configMap:
+          name: appsettings
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking
+spec:
+  selector:
+    app: booking
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP  
+---
+# #######################################################
+#   Passenger
+# #######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: passenger-deployment
+  labels:
+    app: passenger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: passenger
+  template:
+    metadata:
+      labels:
+        app: passenger
+    spec:
+      containers:
+        - image: meysamh66/booking-microservices-passenger:v1.6.7
+          name: passenger
+          ports:
+            - containerPort: 80
+          env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: docker
+          - name: ASPNETCORE_URLS
+            value: http://+                 
+          volumeMounts:
+          - name: appsettings-volume
+            mountPath: /app/Settings
+      volumes:
+      - name: appsettings-volume
+        configMap:
+          name: appsettings
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: passenger
+spec:
+  selector:
+    app: passenger
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP  
