@@ -137,7 +137,6 @@ Using the CQRS pattern, we cut each business functionality into vertical slices,
 > ### Docker
 
 #### Config Certificate
-
 Run the following commands to [Config SSL](https://docs.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-6.0) in your system
 
 #### Windows using Linux containers
