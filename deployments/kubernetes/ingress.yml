@@ -4,6 +4,7 @@ metadata:
   name: booking-microservies
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/proxy-buffer-size: "128k"
     nginx.ingress.kubernetes.io/proxy-buffers: "4 256k"
     nginx.ingress.kubernetes.io/proxy-busy-buffers-size: "256k"
@@ -28,7 +29,7 @@ spec:
                 name: flight
                 port:
                   number: 80
-          - path: /identity/(.+)
+          - path: /identity/(.*)
             pathType: Prefix
             backend:
               service:
@@ -44,7 +45,7 @@ spec:
                 name: flight
                 port:
                   number: 80
-          - path: /flight/(.+)
+          - path: /flight/(.*)
             pathType: Prefix
             backend:
               service:
@@ -60,7 +61,7 @@ spec:
                 name: passenger
                 port:
                   number: 80                  
-          - path: /passenger/(.+)
+          - path: /passenger/(.*)
             pathType: Prefix
             backend:
               service:
@@ -76,7 +77,7 @@ spec:
                 name: booking
                 port:
                   number: 80                    
-          - path: /booking/(.+)
+          - path: /booking/(.*)
             pathType: Prefix
             backend:
               service:
