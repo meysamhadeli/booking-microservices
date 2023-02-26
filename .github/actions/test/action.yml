@@ -1,0 +1,85 @@
+﻿# https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
+# https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
+# https://doug.sh/posts/using-composite-actions-with-github-actions/
+# https://wallis.dev/blog/composite-github-actions
+
+name: "Test"
+description: "Test service"
+
+# Input parameters allow you to specify data that the action expects to use during runtime. GitHub stores input parameters as environment variables.(so they are just string)
+# https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#inputs
+inputs:
+  tests-path:
+    description: Test path
+    required: true
+  reports-path:
+    description: Test report path
+    required: true
+  reports-output-path:
+    description: Test report output path
+    required: true
+  service-name:
+    description: Service name
+    required: true
+  # https://stackoverflow.com/questions/70098241/using-secrets-in-composite-actions-github
+  token:
+    description: A Github PAT
+    required: true
+  no-restore:
+    description: No restore nuget packages, but building tests because they don't build in the build composition action
+    default: 'true'
+
+# https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#runs-for-composite-actions
+runs:
+  using: "composite"
+  steps:
+
+    # see here https://samlearnsazure.blog/2021/01/05/code-coverage-in-github-with-net-core/
+    # https://www.jamescroft.co.uk/combining-multiple-code-coverage-results-in-azure-devops/
+    # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test#filter-option-details
+    # https://josef.codes/dotnet-core-filter-out-specific-test-projects-when-running-dotnet-test/
+    # https://learn.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests?pivots=xunit
+    # https://stackoverflow.com/questions/53255065/dotnet-unit-test-with-coverlet-how-to-get-coverage-for-entire-solution-and-not
+    # https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md
+    # https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md#filters
+    - name: Tests
+      shell: bash
+      id: tests-step
+      working-directory: ${{ inputs.tests-path }}
+      # https://stackoverflow.com/questions/3779701/msbuild-error-msb1008-only-one-project-can-be-specified
+      # https://octopus.com/blog/githubactions-running-unit-tests
+      # we should not do 'no-build' here, because our tests not build in build phase (build composite action) and should build here
+      run: |
+        for file in $(find . -name "*.csproj" -type f); do
+          echo "Testing $file"
+          if [ ${{ inputs.no-restore }} == 'true' ]; then
+             echo "run tests in no-restore mode"
+             dotnet test "$file" -c Release --no-restore --logger "trx;LogFileName=test-results.trx" || true
+          else
+             echo "run tests in restore nuget mode"
+             dotnet test "$file" -c Release --logger "trx;LogFileName=test-results.trx" || true
+          fi
+        done
+
+    # GitHub Api call permissions problem here
+    # https://github.com/dorny/test-reporter/issues/168
+    # https://octopus.com/blog/githubactions-running-unit-tests
+    # https://github.com/dorny/test-reporter/issues/67
+    # https://github.com/phoenix-actions/test-reporting/pull/21
+    - name: Test Results
+      uses: phoenix-actions/test-reporting@v10
+      id: test-report
+      if: always()
+      with:
+        name: ${{ inputs.service-name }} Test Reports
+        reporter: dotnet-trx
+        token: ${{ inputs.token }}
+        # only-summary: 'true'
+        output-to: "step-summary"
+        path: "**/test-results.trx"
+        # Set action as failed if test report contains any failed test
+        fail-on-error: true
+        ## https://github.com/dorny/test-reporter#recommended-setup-for-public-repositories
+        ## https://github.com/dorny/test-reporter/blob/0d9714ddc7ff86918ec725a527a3a069419d301a/src/utils/github-utils.ts#L44
+        ## artifact name to download trx test result if it is in seperated workflow with github rest call, if it is not in another workflow skip this
+        # artifact: "'
