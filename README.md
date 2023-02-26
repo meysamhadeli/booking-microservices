@@ -2,11 +2,12 @@
   <img src="assets/logo.png" alt="booking-microservices" />
     <div align="center">
            <a href="https://github.com/meysamhadeli/booking-microservices/actions/workflows/ci.yml"><img alt="ci-status" src="https://github.com/meysamhadeli/booking-microservices/actions/workflows/ci.yml/badge.svg?branch=main&style=flat-square"/></a>
-         <a href="https://gitpod.io/#https://github.com/meysamhadeli/booking-microservices"><img src="https://img.shields.io/badge/Gitpod-live--code-blue?logo=gitpod&style=flat-square&color=ff69b4"/></a>
                  <a href="https://github.com/meysamhadeli/booking-microservices/blob/main/LICENSE"><img alt="build-status"          src="https://img.shields.io/github/license/meysamhadeli/booking-microservices?color=%234275f5&style=flat-square"/></a>
     </div>
 </div>
 
+<a href="https://gitpod.io/#https://github.com/meysamhadeli/booking-microservices"><img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg"/></a>
+           
 > **The main idea of creating this project is implementing an infrastructure for up and running distributed system with the latest technology and architecture like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq, Masstransit in .Net, and we will not deal mainly with business.** 🚀
 
 # Table of Contents
@@ -60,7 +61,7 @@ High-level plan is represented in the table
 | Booking Service   | Completed ✔️   |
 | Building Blocks   | Completed ✔️   |
 
-## :heart: Technologies - Libraries
+## Technologies - Libraries
 
 - ✔️ **[`.NET 7`](https://dotnet.microsoft.com/download)** - .NET Framework and .NET Core, including ASP.NET and ASP.NET Core
 - ✔️ **[`MVC Versioning API`](https://github.com/microsoft/aspnet-api-versioning)** - Set of libraries which add service API versioning to ASP.NET Web API, OData with ASP.NET Web API, and ASP.NET Core
