@@ -1,0 +1,59 @@
+﻿# https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
+# https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
+# https://doug.sh/posts/using-composite-actions-with-github-actions/
+# https://wallis.dev/blog/composite-github-actions
+
+name: "Build-Test"
+description: "Build and test service"
+
+# Input parameters allow you to specify data that the action expects to use during runtime. GitHub stores input parameters as environment variables.(so they are just string)
+# https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#inputs
+inputs:
+  project-path:
+    description: Project path
+    required: true
+  tests-path:
+    description: Test path
+    required: false
+    default: ''
+  reports-path:
+    description: Test report path
+    required: true
+  reports-output-path:
+    description: Test report output path
+    required: true
+  service-name:
+    description: Service name
+    required: true
+  # https://stackoverflow.com/questions/70098241/using-secrets-in-composite-actions-github
+  token:
+    description: A Github PAT
+    required: true
+
+# https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#runs-for-composite-actions
+runs:
+  using: "composite"
+  steps:
+
+    - name: Call Composite Action build
+      uses: ./.github/actions/build
+      if: success()
+      id: build-step
+      with:
+        project-path: ${{ inputs.project-path }}
+        service-name: ${{ inputs.service-name }}
+
+    - name: Call Composite Action test
+      uses: ./.github/actions/test
+      if: ${{ success() && inputs.tests-path != ''}}
+      id: test-step
+      with:
+        tests-path: ${{ inputs.tests-path }}
+        # wildcard search for files with the ".cobertura.xml" extension in all subdirectories of the current directory
+        # https://www.jamescroft.co.uk/combining-multiple-code-coverage-results-in-azure-devops/
+        # https://stackoverflow.com/questions/53255065/dotnet-unit-test-with-coverlet-how-to-get-coverage-for-entire-solution-and-not
+        reports-path: ${{ github.workspace }}/**/*.cobertura.xml
+        reports-output-path: ${{ github.workspace }}/output/test-results
+        service-name: ${{ inputs.service-name }}
+        token: ${{ inputs.token }}
+        no-restore: true
