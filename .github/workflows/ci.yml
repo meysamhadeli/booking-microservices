@@ -20,7 +20,7 @@ jobs:
       - name: Build and Test Flight
         uses: ./.github/actions/build-test
         if: success()
-        id: build-test-step
+        id: build-test-flight-step
         with:
           project-path: 'src/Services/Flight/src/Flight.Api'
           tests-path: 'src/Services/Flight/tests/'
@@ -35,7 +35,7 @@ jobs:
       - name: Build and Test Identity
         uses: ./.github/actions/build-test
         if: success()
-        id: build-test-step
+        id: build-test-identity-step
         with:
           project-path: 'src/Services/Identity/src/Identity.Api'
           tests-path: 'src/Services/Identity/tests/'
@@ -50,7 +50,7 @@ jobs:
       - name: Build and Test Passenger
         uses: ./.github/actions/build-test
         if: success()
-        id: build-test-step
+        id: build-test-passenger-step
         with:
           project-path: 'src/Services/Passenger/src/Passenger.Api'
           tests-path: 'src/Services/Passenger/tests/'
@@ -65,7 +65,7 @@ jobs:
       - name: Build and Test Booking
         uses: ./.github/actions/build-test
         if: success()
-        id: build-test-step
+        id: build-test-booking-step
         with:
           project-path: 'src/Services/Booking/src/Booking.Api'
           tests-path: 'src/Services/Booking/tests/'
