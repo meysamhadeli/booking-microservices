@@ -1,0 +1,55 @@
+﻿# https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
+# https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
+# https://doug.sh/posts/using-composite-actions-with-github-actions/
+# https://wallis.dev/blog/composite-github-actions
+
+name: "Build"
+description: "Build service"
+
+# Input parameters allow you to specify data that the action expects to use during runtime. GitHub stores input parameters as environment variables.(so they are just string)
+# https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#inputs
+inputs:
+  project-path:
+    description: Project path
+    required: true
+  service-name:
+    description: Service name
+    required: true
+
+# https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#runs-for-composite-actions
+runs:
+  using: "composite"
+  steps:
+
+    # https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
+    # https://devblogs.microsoft.com/dotnet/dotnet-loves-github-actions/
+    # https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net#caching-dependencies
+    - name: Cache NuGet Packages
+      uses: actions/cache@v3
+      if: success()
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-dotnet-nuget
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+
+      # https://learn.microsoft.com/en-us/dotnet/core/tools/global-tools
+    - name: Restore .NET Tools
+      shell: bash
+      run: dotnet tool restore
+
+      # Note: `Ubuntu` file and folder names are case sensitive, be aware about naming them in solution references. because `Windows` file and folder names as case-insensitive.
+      # prevent windows case-insensitive for our project with: git config core.ignorecase false; - https://stackoverflow.com/a/27139487/581476
+    - name: Restore NuGet packages
+      shell: bash
+      if: success()
+      # restore root solution
+      run: dotnet restore
+
+    - name: Build Service
+      shell: bash
+      if: ${{ success()}}
+      working-directory: ${{ inputs.project-path }}
+      run: |
+        dotnet build -c Release --no-restore
