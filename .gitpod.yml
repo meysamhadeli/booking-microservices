@@ -8,6 +8,17 @@
 image:
   file: .gitpod.Dockerfile
 
+vscode:
+  extensions:
+    - muhammad-sammy.csharp
+    - editorconfig.editorconfig
+    - vivaxy.vscode-conventional-commits
+    - humao.rest-client
+    - ms-azuretools.vscode-docker
+    - donjayamanne.githistory
+    - pkief.material-icon-theme
+    - emmanuelbeziat.vscode-great-icons
+
 # https://www.gitpod.io/docs/configure/workspaces/tasks#execution-order
 # https://www.gitpod.io/docs/configure/projects/prebuilds
 tasks:
@@ -23,8 +34,4 @@ tasks:
     init: |
       dotnet dev-certs https 
       dotnet restore
-      dotnet build
-      
-vscode:
-  extensions:
-    - muhammad-sammy.csharp      
+      dotnet build  
