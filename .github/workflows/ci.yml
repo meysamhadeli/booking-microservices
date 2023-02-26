@@ -9,7 +9,10 @@ on:
     branches: [ "main" , "develop" ]
     paths-ignore:
       - "README.md"
-
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
+  cancel-in-progress: true
+  
 jobs:
   build:
     runs-on: ubuntu-latest
