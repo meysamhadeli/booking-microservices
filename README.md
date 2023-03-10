@@ -164,15 +164,10 @@ docker-compose -f ./deployments/docker-compose/docker-compose.yaml up -d
 
 > ### Kubernetes
 For Configure TLS in kubernetes cluster we need install `cert-manager` base on [docs](https://cert-manager.io/docs/installation) and run the following commands for apply TLS in our application
+Here we use [LetsEncrypt](https://letsencrypt.org/) for encrypt our certificate.
 
 ```bash
 kubectl apply -f ./deployments/kubernetes/booking-cert-manager.yml
-```
-> Note: Also, we can run this commands for creating new `tls.key` and `tls.crt` and replace them with old one in `booking-cert-manager.yml` section `secret`
-```bash
-openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout tls.key -out tls.crt -subj "/CN=booking-microservices.com" -days 365
-
-kubectl create secret tls booking-tls --key tls.key --cert tls.crt
 ```
 
 Run the following command to apply all deployments, pods, services, ingress and configmaps that we need
