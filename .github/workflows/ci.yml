@@ -12,58 +12,58 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
-  
+
 jobs:
   ci:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Build and Test Flight
-        uses: ./.github/actions/build-test
-        if: success()
-        id: build-test-flight-step
-        with:
-          project-path: 'src/Services/Flight/src/Flight.Api'
-          tests-path: 'src/Services/Flight/tests/'
-          # wildcard search for files with the ".cobertura.xml" extension in all subdirectories of the current directory
-          # https://www.jamescroft.co.uk/combining-multiple-code-coverage-results-in-azure-devops/
-          # https://stackoverflow.com/questions/53255065/dotnet-unit-test-with-coverlet-how-to-get-coverage-for-entire-solution-and-not
-          reports-path: ${{ github.workspace }}/**/*.cobertura.xml
-          reports-output-path: ${{ github.workspace }}/output/test-results
-          service-name: 'Flight'
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and Test Identity
-        uses: ./.github/actions/build-test
-        if: success()
-        id: build-test-identity-step
-        with:
-          project-path: 'src/Services/Identity/src/Identity.Api'
-          tests-path: 'src/Services/Identity/tests/'
-          # wildcard search for files with the ".cobertura.xml" extension in all subdirectories of the current directory
-          # https://www.jamescroft.co.uk/combining-multiple-code-coverage-results-in-azure-devops/
-          # https://stackoverflow.com/questions/53255065/dotnet-unit-test-with-coverlet-how-to-get-coverage-for-entire-solution-and-not
-          reports-path: ${{ github.workspace }}/**/*.cobertura.xml
-          reports-output-path: ${{ github.workspace }}/output/test-results
-          service-name: 'Identity'
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and Test Passenger
-        uses: ./.github/actions/build-test
-        if: success()
-        id: build-test-passenger-step
-        with:
-          project-path: 'src/Services/Passenger/src/Passenger.Api'
-          tests-path: 'src/Services/Passenger/tests/'
-          # wildcard search for files with the ".cobertura.xml" extension in all subdirectories of the current directory
-          # https://www.jamescroft.co.uk/combining-multiple-code-coverage-results-in-azure-devops/
-          # https://stackoverflow.com/questions/53255065/dotnet-unit-test-with-coverlet-how-to-get-coverage-for-entire-solution-and-not
-          reports-path: ${{ github.workspace }}/**/*.cobertura.xml
-          reports-output-path: ${{ github.workspace }}/output/test-results
-          service-name: 'Passenger'
-          token: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Build and Test Flight
+#        uses: ./.github/actions/build-test
+#        if: success()
+#        id: build-test-flight-step
+#        with:
+#          project-path: 'src/Services/Flight/src/Flight.Api'
+#          tests-path: 'src/Services/Flight/tests/'
+#          # wildcard search for files with the ".cobertura.xml" extension in all subdirectories of the current directory
+#          # https://www.jamescroft.co.uk/combining-multiple-code-coverage-results-in-azure-devops/
+#          # https://stackoverflow.com/questions/53255065/dotnet-unit-test-with-coverlet-how-to-get-coverage-for-entire-solution-and-not
+#          reports-path: ${{ github.workspace }}/**/*.cobertura.xml
+#          reports-output-path: ${{ github.workspace }}/output/test-results
+#          service-name: 'Flight'
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Build and Test Identity
+#        uses: ./.github/actions/build-test
+#        if: success()
+#        id: build-test-identity-step
+#        with:
+#          project-path: 'src/Services/Identity/src/Identity.Api'
+#          tests-path: 'src/Services/Identity/tests/'
+#          # wildcard search for files with the ".cobertura.xml" extension in all subdirectories of the current directory
+#          # https://www.jamescroft.co.uk/combining-multiple-code-coverage-results-in-azure-devops/
+#          # https://stackoverflow.com/questions/53255065/dotnet-unit-test-with-coverlet-how-to-get-coverage-for-entire-solution-and-not
+#          reports-path: ${{ github.workspace }}/**/*.cobertura.xml
+#          reports-output-path: ${{ github.workspace }}/output/test-results
+#          service-name: 'Identity'
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Build and Test Passenger
+#        uses: ./.github/actions/build-test
+#        if: success()
+#        id: build-test-passenger-step
+#        with:
+#          project-path: 'src/Services/Passenger/src/Passenger.Api'
+#          tests-path: 'src/Services/Passenger/tests/'
+#          # wildcard search for files with the ".cobertura.xml" extension in all subdirectories of the current directory
+#          # https://www.jamescroft.co.uk/combining-multiple-code-coverage-results-in-azure-devops/
+#          # https://stackoverflow.com/questions/53255065/dotnet-unit-test-with-coverlet-how-to-get-coverage-for-entire-solution-and-not
+#          reports-path: ${{ github.workspace }}/**/*.cobertura.xml
+#          reports-output-path: ${{ github.workspace }}/output/test-results
+#          service-name: 'Passenger'
+#          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Test Booking
         uses: ./.github/actions/build-test
@@ -80,53 +80,53 @@ jobs:
           service-name: 'Booking'
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update Release Drafter
-        if: ${{ github.ref == 'refs/heads/main' && success() }}
-        id: last_release
-        uses: release-drafter/release-drafter@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Release Version Info
-        run:
-          echo "Release version is:" ${{ steps.last_release.outputs.tag_name }}
-
-      - name: Build and Publish Identity to Docker
-        if: ${{ github.ref == 'refs/heads/main' && success() }}
-        uses: ./.github/actions/docker-build-publish
-        with:
-          tag-name: ${{ steps.last_release.outputs.tag_name }}
-          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
-          registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          dockerfile-path: 'src/Services/Identity/Dockerfile'
-          image-name: 'booking-microservices-identity'
-
-      - name: Build and Publish Flight to Docker
-        if: ${{ github.ref == 'refs/heads/main' && success() }}
-        uses: ./.github/actions/docker-build-publish
-        with:
-          tag-name: ${{ steps.last_release.outputs.tag_name }}
-          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
-          registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          dockerfile-path: 'src/Services/Flight/Dockerfile'
-          image-name: 'booking-microservices-flight'
-
-      - name: Build and Publish Passenger to Docker
-        if: ${{ github.ref == 'refs/heads/main' && success() }}
-        uses: ./.github/actions/docker-build-publish
-        with:
-          tag-name: ${{ steps.last_release.outputs.tag_name }}
-          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
-          registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          dockerfile-path: 'src/Services/Passenger/Dockerfile'
-          image-name: 'booking-microservices-passenger'
-
-      - name: Build and Publish Booking to Docker
-        if: ${{ github.ref == 'refs/heads/main' && success() }}
-        uses: ./.github/actions/docker-build-publish
-        with:
-          tag-name: ${{ steps.last_release.outputs.tag_name }}
-          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
-          registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          dockerfile-path: 'src/Services/Booking/Dockerfile'
-          image-name: 'booking-microservices-booking'
+#      - name: Update Release Drafter
+#        if: ${{ github.ref == 'refs/heads/main' && success() }}
+#        id: last_release
+#        uses: release-drafter/release-drafter@v5
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Release Version Info
+#        run:
+#          echo "Release version is:" ${{ steps.last_release.outputs.tag_name }}
+#
+#      - name: Build and Publish Identity to Docker
+#        if: ${{ github.ref == 'refs/heads/main' && success() }}
+#        uses: ./.github/actions/docker-build-publish
+#        with:
+#          tag-name: ${{ steps.last_release.outputs.tag_name }}
+#          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
+#          registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
+#          dockerfile-path: 'src/Services/Identity/Dockerfile'
+#          image-name: 'booking-microservices-identity'
+#
+#      - name: Build and Publish Flight to Docker
+#        if: ${{ github.ref == 'refs/heads/main' && success() }}
+#        uses: ./.github/actions/docker-build-publish
+#        with:
+#          tag-name: ${{ steps.last_release.outputs.tag_name }}
+#          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
+#          registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
+#          dockerfile-path: 'src/Services/Flight/Dockerfile'
+#          image-name: 'booking-microservices-flight'
+#
+#      - name: Build and Publish Passenger to Docker
+#        if: ${{ github.ref == 'refs/heads/main' && success() }}
+#        uses: ./.github/actions/docker-build-publish
+#        with:
+#          tag-name: ${{ steps.last_release.outputs.tag_name }}
+#          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
+#          registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
+#          dockerfile-path: 'src/Services/Passenger/Dockerfile'
+#          image-name: 'booking-microservices-passenger'
+#
+#      - name: Build and Publish Booking to Docker
+#        if: ${{ github.ref == 'refs/heads/main' && success() }}
+#        uses: ./.github/actions/docker-build-publish
+#        with:
+#          tag-name: ${{ steps.last_release.outputs.tag_name }}
+#          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
+#          registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
+#          dockerfile-path: 'src/Services/Booking/Dockerfile'
+#          image-name: 'booking-microservices-booking'
