@@ -1,7 +1,6 @@
 ﻿using System.Threading.RateLimiting;
 using Booking.Data;
 using BuildingBlocks.Core;
-using BuildingBlocks.EFCore;
 using BuildingBlocks.EventStoreDB;
 using BuildingBlocks.HealthCheck;
 using BuildingBlocks.IdsGenerator;
@@ -26,6 +25,8 @@ using Prometheus;
 using Serilog;
 
 namespace Booking.Extensions.Infrastructure;
+
+using BuildingBlocks.PersistMessageProcessor.Data;
 
 public static class InfrastructureExtensions
 {
@@ -99,6 +100,7 @@ public static class InfrastructureExtensions
         });
         app.UseCorrelationId();
         app.UseHttpMetrics();
+        app.UseMigration<PersistMessageDbContext>(env);
         app.UseCustomHealthCheck();
         app.MapMetrics();
         app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
