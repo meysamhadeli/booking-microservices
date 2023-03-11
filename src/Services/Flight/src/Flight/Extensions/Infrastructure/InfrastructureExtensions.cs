@@ -30,6 +30,7 @@ using Serilog;
 
 namespace Flight.Extensions.Infrastructure;
 
+using BuildingBlocks.PersistMessageProcessor.Data;
 using Microsoft.AspNetCore.HttpOverrides;
 
 public static class InfrastructureExtensions
@@ -105,6 +106,7 @@ public static class InfrastructureExtensions
         });
         app.UseCorrelationId();
         app.UseHttpMetrics();
+        app.UseMigrationPersistMessage<PersistMessageDbContext>(env);
         app.UseMigration<FlightDbContext>(env);
         app.MapMetrics();
         app.UseCustomHealthCheck();

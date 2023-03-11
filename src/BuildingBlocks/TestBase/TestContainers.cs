@@ -97,7 +97,6 @@ public static class TestContainers
         var builder = baseBuilder
             .WithImage(EventStoreContainerConfiguration.ImageName)
             .WithName(EventStoreContainerConfiguration.Name)
-            .WithPortBinding(EventStoreContainerConfiguration.Port, true)
             .Build();
 
         return builder;
