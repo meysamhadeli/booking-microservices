@@ -5,6 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.PersistMessageProcessor;
 
+using EFCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+
 public static class Extensions
 {
     public static IServiceCollection AddPersistMessageProcessor(this IServiceCollection services)
@@ -32,5 +37,40 @@ public static class Extensions
         services.AddHostedService<PersistMessageBackgroundService>();
 
         return services;
+    }
+
+    public static IApplicationBuilder UseMigration<TContext>(this IApplicationBuilder app, IWebHostEnvironment env)
+        where TContext : DbContext, IPersistMessageDbContext
+    {
+        MigrateDatabaseAsync<TContext>(app.ApplicationServices).GetAwaiter().GetResult();
+
+        if (!env.IsEnvironment("test"))
+        {
+            SeedDataAsync(app.ApplicationServices).GetAwaiter().GetResult();
+        }
+
+        return app;
+    }
+
+    private static async Task MigrateDatabaseAsync<TContext>(IServiceProvider serviceProvider)
+        where TContext : DbContext, IPersistMessageDbContext
+    {
+        using var scope = serviceProvider.CreateScope();
+
+        var persistMessageContext = scope.ServiceProvider.GetRequiredService<PersistMessageDbContext>();
+        await persistMessageContext.Database.MigrateAsync();
+
+        var context = scope.ServiceProvider.GetRequiredService<TContext>();
+        await context.Database.MigrateAsync();
+    }
+
+    private static async Task SeedDataAsync(IServiceProvider serviceProvider)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var seeders = scope.ServiceProvider.GetServices<IDataSeeder>();
+        foreach (var seeder in seeders)
+        {
+            await seeder.SeedAllAsync();
+        }
     }
 }

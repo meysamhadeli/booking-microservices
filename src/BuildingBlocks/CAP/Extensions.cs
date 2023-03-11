@@ -15,7 +15,7 @@ public static class Extensions
     public static IServiceCollection AddCustomCap<TDbContext>(this IServiceCollection services)
         where TDbContext : DbContext
     {
-        var rabbitMqOptions = services.GetOptions<RabbitMQOptions>("RabbitMq");
+        var rabbitMqOptions = services.GetOptions<RabbitMQOptions>(nameof(RabbitMQOptions));
 
         services.AddCap(x =>
         {

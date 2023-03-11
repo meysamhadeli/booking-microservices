@@ -101,7 +101,11 @@
     <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="6.2.2" />
     <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.2" />
-    <PackageReference Include="Testcontainers" Version="2.3.0" />
+    <PackageReference Include="Testcontainers" Version="3.0.0" />
+    <PackageReference Include="Testcontainers.EventStoreDb" Version="3.0.0" />
+    <PackageReference Include="Testcontainers.MongoDb" Version="3.0.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="3.0.0" />
+    <PackageReference Include="Testcontainers.RabbitMq" Version="3.0.0" />
     <PackageReference Include="Unchase.Swashbuckle.AspNetCore.Extensions" Version="2.7.1" />
     <PackageReference Include="WebMotions.Fake.Authentication.JwtBearer" Version="7.0.0" />
     <PackageReference Include="Yarp.ReverseProxy" Version="1.1.1" />

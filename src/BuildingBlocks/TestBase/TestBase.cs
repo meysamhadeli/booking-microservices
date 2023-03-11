@@ -30,8 +30,12 @@ using WebMotions.Fake.Authentication.JwtBearer;
 
 namespace BuildingBlocks.TestBase;
 
+using System.Globalization;
 using Npgsql;
-using Exception = System.Exception;
+using Testcontainers.EventStoreDb;
+using Testcontainers.MongoDb;
+using Testcontainers.PostgreSql;
+using Testcontainers.RabbitMq;
 
 public class TestFixture<TEntryPoint> : IAsyncLifetime
     where TEntryPoint : class
@@ -40,10 +44,11 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
     private int Timeout => 120; // Second
     private ITestHarness TestHarness => ServiceProvider?.GetTestHarness();
     private Action<IServiceCollection> TestRegistrationServices { get; set; }
-    private PostgreSqlTestcontainer PostgresTestcontainer;
-    private PostgreSqlTestcontainer PostgresPersistTestContainer;
-    public RabbitMqTestcontainer RabbitMqTestContainer;
-    public MongoDbTestcontainer MongoDbTestContainer;
+    private PostgreSqlContainer PostgresTestcontainer;
+    private PostgreSqlContainer PostgresPersistTestContainer;
+    public RabbitMqContainer RabbitMqTestContainer;
+    public MongoDbContainer MongoDbTestContainer;
+    public EventStoreDbContainer EventStoreDbTestContainer;
 
     public HttpClient HttpClient
     {
@@ -151,7 +156,6 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
         return ExecuteScopeAsync(sp =>
         {
             var mediator = sp.GetRequiredService<IMediator>();
-
             return mediator.Send(request);
         });
     }
@@ -238,15 +242,17 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
 
     private async Task StartTestContainerAsync()
     {
-        PostgresTestcontainer = TestContainers.PostgresTestContainer;
-        PostgresPersistTestContainer = TestContainers.PostgresPersistTestContainer;
-        RabbitMqTestContainer = TestContainers.RabbitMqTestContainer;
-        MongoDbTestContainer = TestContainers.MongoTestContainer;
+        PostgresTestcontainer = TestContainers.PostgresTestContainer();
+        PostgresPersistTestContainer = TestContainers.PostgresPersistTestContainer();
+        RabbitMqTestContainer = TestContainers.RabbitMqTestContainer();
+        MongoDbTestContainer = TestContainers.MongoTestContainer();
+        EventStoreDbTestContainer = TestContainers.EventStoreTestContainer();
 
         await MongoDbTestContainer.StartAsync();
         await PostgresTestcontainer.StartAsync();
         await PostgresPersistTestContainer.StartAsync();
         await RabbitMqTestContainer.StartAsync();
+        await EventStoreDbTestContainer.StartAsync();
     }
 
     private async Task StopTestContainerAsync()
@@ -255,20 +261,24 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
         await PostgresPersistTestContainer.StopAsync();
         await RabbitMqTestContainer.StopAsync();
         await MongoDbTestContainer.StopAsync();
+        await EventStoreDbTestContainer.StopAsync();
     }
 
     private void AddCustomAppSettings(IConfigurationBuilder configuration)
     {
         configuration.AddInMemoryCollection(new KeyValuePair<string, string>[]
         {
-            new("PostgresOptions:ConnectionString", PostgresTestcontainer.ConnectionString),
-            new("PersistMessageOptions:ConnectionString", PostgresPersistTestContainer.ConnectionString),
+            new("PostgresOptions:ConnectionString", PostgresTestcontainer.GetConnectionString()),
+            new("PersistMessageOptions:ConnectionString", PostgresPersistTestContainer.GetConnectionString()),
             new("RabbitMqOptions:HostName", RabbitMqTestContainer.Hostname),
-            new("RabbitMqOptions:UserName", RabbitMqTestContainer.Username),
-            new("RabbitMqOptions:Password", RabbitMqTestContainer.Password),
-            new("RabbitMqOptions:Port", RabbitMqTestContainer.Port.ToString()),
-            new("MongoOptions:ConnectionString", MongoDbTestContainer.ConnectionString),
-            new("MongoOptions:DatabaseName", MongoDbTestContainer.Database)
+            new("RabbitMqOptions:UserName", TestContainers.RabbitMqContainerConfiguration.UserName),
+            new("RabbitMqOptions:Password", TestContainers.RabbitMqContainerConfiguration.Password), new(
+                "RabbitMqOptions:Port",
+                RabbitMqTestContainer.GetMappedPublicPort(TestContainers.RabbitMqContainerConfiguration.Port)
+                    .ToString(NumberFormatInfo.InvariantInfo)),
+            new("MongoOptions:ConnectionString", MongoDbTestContainer.GetConnectionString()),
+            new("MongoOptions:DatabaseName", TestContainers.MongoContainerConfiguration.Name),
+            new("EventStore:ConnectionString", EventStoreDbTestContainer.GetConnectionString())
         });
     }
 
@@ -450,6 +460,7 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
     private NpgsqlConnection DefaultDbConnection { get; set; }
     private NpgsqlConnection PersistDbConnection { get; set; }
 
+
     public TestFixtureCore(TestFixture<TEntryPoint> integrationTestFixture, ITestOutputHelper outputHelper)
     {
         Fixture = integrationTestFixture;
@@ -474,8 +485,8 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
 
     private async Task InitPostgresAsync()
     {
-        var postgresOptions = Fixture.ServiceProvider.GetRequiredService<PostgresOptions>();
-        var persistOptions = Fixture.ServiceProvider.GetRequiredService<PersistMessageOptions>();
+        var postgresOptions = Fixture.ServiceProvider.GetService<PostgresOptions>();
+        var persistOptions = Fixture.ServiceProvider.GetService<PersistMessageOptions>();
 
         if (!string.IsNullOrEmpty(persistOptions?.ConnectionString))
         {
@@ -514,24 +525,26 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
     private async Task ResetMongoAsync(CancellationToken cancellationToken = default)
     {
         //https://stackoverflow.com/questions/3366397/delete-everything-in-a-mongodb-database
-        var dbClient = new MongoClient(Fixture.MongoDbTestContainer?.ConnectionString);
-        var collections = await dbClient.GetDatabase(Fixture.MongoDbTestContainer?.Database)
+        var dbClient = new MongoClient(Fixture.MongoDbTestContainer?.GetConnectionString());
+        var collections = await dbClient.GetDatabase(TestContainers.MongoContainerConfiguration.Name)
             .ListCollectionsAsync(cancellationToken: cancellationToken);
 
         foreach (var collection in collections.ToList())
         {
-            await dbClient.GetDatabase(Fixture.MongoDbTestContainer?.Database)
+            await dbClient.GetDatabase(TestContainers.MongoContainerConfiguration.Name)
                 .DropCollectionAsync(collection["name"].AsString, cancellationToken);
         }
     }
 
     private async Task ResetRabbitMqAsync(CancellationToken cancellationToken = default)
     {
-        var port = Fixture.RabbitMqTestContainer?.GetMappedPublicPort(15672) ?? 15672;
+        var port = Fixture.RabbitMqTestContainer?.GetMappedPublicPort(TestContainers.RabbitMqContainerConfiguration
+                       .ApiPort)
+                   ?? TestContainers.RabbitMqContainerConfiguration.ApiPort;
 
         var managementClient = new ManagementClient(Fixture.RabbitMqTestContainer?.Hostname,
-            Fixture.RabbitMqTestContainer?.Username,
-            Fixture.RabbitMqTestContainer?.Password, port);
+            TestContainers.RabbitMqContainerConfiguration?.UserName,
+            TestContainers.RabbitMqContainerConfiguration?.Password, port);
 
         var bd = await managementClient.GetBindingsAsync(cancellationToken);
         var bindings = bd.Where(x => !string.IsNullOrEmpty(x.Source) && !string.IsNullOrEmpty(x.Destination));
