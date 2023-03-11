@@ -28,6 +28,8 @@ using Serilog;
 
 namespace Passenger.Extensions.Infrastructure;
 
+using BuildingBlocks.PersistMessageProcessor.Data;
+
 public static class InfrastructureExtensions
 {
     public static WebApplicationBuilder AddInfrastructure(this WebApplicationBuilder builder)
@@ -95,6 +97,7 @@ public static class InfrastructureExtensions
         {
             options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest;
         });
+        app.UseMigrationPersistMessage<PersistMessageDbContext>(env);
         app.UseMigration<PassengerDbContext>(env);
         app.UseCorrelationId();
         app.UseHttpMetrics();

@@ -26,6 +26,7 @@ using Serilog;
 
 namespace Identity.Extensions.Infrastructure;
 
+using BuildingBlocks.PersistMessageProcessor.Data;
 using Configurations;
 using Microsoft.AspNetCore.HttpOverrides;
 
@@ -101,6 +102,7 @@ public static class InfrastructureExtensions
         {
             options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest;
         });
+        app.UseMigrationPersistMessage<PersistMessageDbContext>(env);
         app.UseMigration<IdentityContext>(env);
         app.UseCorrelationId();
         app.UseHttpMetrics();
