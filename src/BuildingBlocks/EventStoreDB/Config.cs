@@ -1,6 +1,5 @@
 using System.Reflection;
 using BuildingBlocks.EventStoreDB.BackgroundWorkers;
-using BuildingBlocks.EventStoreDB.Events;
 using BuildingBlocks.EventStoreDB.Projections;
 using BuildingBlocks.EventStoreDB.Repository;
 using BuildingBlocks.EventStoreDB.Subscriptions;
@@ -11,10 +10,13 @@ using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.EventStoreDB;
 
-public class EventStoreDBConfig
+using Web;
+
+public class EventStoreOptions
 {
     public string ConnectionString { get; set; } = default!;
 }
+
 
 public record EventStoreDBOptions(
     bool UseInternalCheckpointing = true
@@ -22,15 +24,16 @@ public record EventStoreDBOptions(
 
 public static class EventStoreDBConfigExtensions
 {
-    private const string DefaultConfigKey = "EventStore";
-
     public static IServiceCollection AddEventStoreDB(this IServiceCollection services, IConfiguration config,
         EventStoreDBOptions? options = null)
     {
-        var eventStoreDBConfig = config.GetSection(DefaultConfigKey).Get<EventStoreDBConfig>();
 
         services
-            .AddSingleton(new EventStoreClient(EventStoreClientSettings.Create(eventStoreDBConfig.ConnectionString)))
+            .AddSingleton(x=>
+            {
+                var eventStoreOptions = services.GetOptions<EventStoreOptions>(nameof(EventStoreOptions));
+                return new EventStoreClient(EventStoreClientSettings.Create(eventStoreOptions.ConnectionString));
+            })
             .AddScoped(typeof(IEventStoreDBRepository<>), typeof(EventStoreDBRepository<>))
             .AddTransient<EventStoreDBSubscriptionToAll, EventStoreDBSubscriptionToAll>();
 
