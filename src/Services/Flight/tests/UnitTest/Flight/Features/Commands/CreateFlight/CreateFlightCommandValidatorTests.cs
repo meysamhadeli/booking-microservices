@@ -2,7 +2,7 @@
 
 using FluentAssertions;
 using FluentValidation.TestHelper;
-using global::Flight.Flights.Features.CreateFlight.Commands.V1;
+using global::Flight.Flights.Features.CreatingFlight.V1;
 using Unit.Test.Common;
 using Unit.Test.Fakes;
 using Xunit;
@@ -15,7 +15,7 @@ public class CreateFlightCommandValidatorTests
     {
         // Arrange
         var command = new FakeValidateCreateFlightCommand().Generate();
-        var validator = new CreateFlightCommandValidator();
+        var validator = new CreateFlightValidator();
 
         // Act
         var result = validator.TestValidate(command);

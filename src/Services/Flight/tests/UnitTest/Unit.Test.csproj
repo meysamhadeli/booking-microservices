@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Flight\Features\Commands" />
+    <InternalsVisibleTo Include="Flight" />
   </ItemGroup>
 
 </Project>

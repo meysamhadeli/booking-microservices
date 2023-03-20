@@ -1,11 +1,11 @@
 ﻿using AutoBogus;
 using BuildingBlocks.IdsGenerator;
-using Flight.Aircrafts.Features.CreateAircraft;
-using Flight.Aircrafts.Features.CreateAircraft.Commands.V1;
 
 namespace Unit.Test.Fakes;
 
-public class FakeCreateAircraftCommand : AutoFaker<CreateAircraftCommand>
+using global::Flight.Aircrafts.Features.CreatingAircraft.V1;
+
+public class FakeCreateAircraftCommand : AutoFaker<CreateAircraft>
 {
     public FakeCreateAircraftCommand()
     {

@@ -3,13 +3,14 @@ using BuildingBlocks.TestBase;
 using Flight;
 using Flight.Api;
 using Flight.Data;
-using Flight.Flights.Features.CreateFlight.Commands.V1.Reads;
-using Flight.Flights.Features.GetFlightById.Queries.V1;
 using FluentAssertions;
 using Integration.Test.Fakes;
 using Xunit;
 
 namespace Integration.Test.Flight.Features;
+
+using global::Flight.Flights.Features.CreatingFlight.V1;
+using global::Flight.Flights.Features.GettingFlightById.V1;
 
 public class GetFlightByIdTests : FlightIntegrationTestBase
 {
@@ -25,9 +26,9 @@ public class GetFlightByIdTests : FlightIntegrationTestBase
         var command = new FakeCreateFlightCommand().Generate();
         await Fixture.SendAsync(command);
 
-        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>()).Should().Be(true);
+        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongo>()).Should().Be(true);
 
-        var query = new GetFlightByIdQuery(command.Id);
+        var query = new GetFlightById(command.Id);
 
         // Act
         var response = await Fixture.SendAsync(query);
@@ -44,7 +45,7 @@ public class GetFlightByIdTests : FlightIntegrationTestBase
         var command = new FakeCreateFlightCommand().Generate();
         await Fixture.SendAsync(command);
 
-        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>()).Should().Be(true);
+        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongo>()).Should().Be(true);
 
         var flightGrpcClient = new FlightGrpcService.FlightGrpcServiceClient(Fixture.Channel);
 

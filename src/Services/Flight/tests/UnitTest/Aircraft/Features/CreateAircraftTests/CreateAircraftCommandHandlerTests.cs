@@ -1,30 +1,29 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Flight.Aircrafts.Dtos;
-using Flight.Aircrafts.Features.CreateAircraft;
-using Flight.Aircrafts.Features.CreateAircraft.Commands.V1;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Unit.Test.Common;
 using Unit.Test.Fakes;
 using Xunit;
 
 namespace Unit.Test.Aircraft.Features.CreateAircraftTests;
 
+using global::Flight.Aircrafts.Dtos;
+using global::Flight.Aircrafts.Features.CreatingAircraft.V1;
+
 [Collection(nameof(UnitTestFixture))]
 public class CreateAircraftCommandHandlerTests
 {
     private readonly UnitTestFixture _fixture;
-    private readonly CreateAircraftCommandHandler _handler;
+    private readonly CreateAircraftHandler _handler;
 
-    public Task<AircraftResponseDto> Act(CreateAircraftCommand command, CancellationToken cancellationToken) =>
+    public Task<AircraftDto> Act(CreateAircraft command, CancellationToken cancellationToken) =>
     _handler.Handle(command, cancellationToken);
 
     public CreateAircraftCommandHandlerTests(UnitTestFixture fixture)
     {
         _fixture = fixture;
-        _handler = new CreateAircraftCommandHandler(_fixture.Mapper, _fixture.DbContext);
+        _handler = new CreateAircraftHandler(_fixture.Mapper, _fixture.DbContext);
     }
 
     [Fact]
@@ -47,7 +46,7 @@ public class CreateAircraftCommandHandlerTests
     public async Task handler_with_null_command_should_throw_argument_exception()
     {
         // Arrange
-        CreateAircraftCommand command = null;
+        CreateAircraft command = null;
 
         // Act
         Func<Task> act = async () => { await Act(command, CancellationToken.None); };

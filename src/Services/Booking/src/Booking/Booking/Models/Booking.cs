@@ -1,8 +1,9 @@
-using Booking.Booking.Features.CreateBooking.Events.Domain.V1;
 using Booking.Booking.Models.ValueObjects;
 using BuildingBlocks.EventStoreDB.Events;
 
 namespace Booking.Booking.Models;
+
+using Features.CreatingBook.Commands.V1;
 
 public record Booking : AggregateEventSourcing<long>
 {

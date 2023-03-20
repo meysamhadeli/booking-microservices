@@ -25,7 +25,7 @@ public class SeatMappingTests
             yield return new object[]
             {
                 // these types will instantiate with reflection in the future
-                typeof(global::Flight.Seats.Models.Seat), typeof(SeatResponseDto)
+                typeof(global::Flight.Seats.Models.Seat), typeof(SeatDto)
             };
         }
     }

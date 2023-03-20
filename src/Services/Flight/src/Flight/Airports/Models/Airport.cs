@@ -1,8 +1,9 @@
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.IdsGenerator;
-using Flight.Airports.Features.CreateAirport.Events.Domain.V1;
 
 namespace Flight.Airports.Models;
+
+using Features.CreatingAirport.V1;
 
 public record Airport : Aggregate<long>
 {

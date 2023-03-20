@@ -4,13 +4,12 @@ using EndToEnd.Test.Fakes;
 using EndToEnd.Test.Routes;
 using Flight.Api;
 using Flight.Data;
-using Flight.Flights.Features.CreateFlight.Commands.V1.Reads;
 using FluentAssertions;
 using Xunit;
 
 namespace EndToEnd.Test.Flight.Features;
 
-using BuildingBlocks.Contracts.EventBus.Messages;
+using global::Flight.Flights.Features.CreatingFlight.V1;
 
 public class GetFlightByIdTests: FlightEndToEndTestBase
 {
@@ -25,7 +24,7 @@ public class GetFlightByIdTests: FlightEndToEndTestBase
         //Arrange
         var command = new FakeCreateFlightCommand().Generate();
         await Fixture.SendAsync(command);
-        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>()).Should().Be(true);
+        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongo>()).Should().Be(true);
 
         // Act
         var route = ApiRoutes.Flight.GetFlightById.Replace(ApiRoutes.Flight.Id, command.Id.ToString());

@@ -1,9 +1,10 @@
-using Booking.Booking.Features.CreateBooking.Events.Domain.V1;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.Event;
 
 namespace Booking;
+
+using Booking.Features.CreatingBook.Commands.V1;
 
 public sealed class EventMapper : IEventMapper
 {

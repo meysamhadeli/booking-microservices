@@ -1,13 +1,12 @@
 ﻿using System;
 using AutoBogus;
 using Flight.Flights.Enums;
-using Flight.Flights.Features.CreateFlight;
-using Flight.Flights.Features.CreateFlight.Commands.V1;
-using Flight.Flights.Models;
 
 namespace Unit.Test.Fakes;
 
-public class FakeValidateCreateFlightCommand : AutoFaker<CreateFlightCommand>
+using global::Flight.Flights.Features.CreatingFlight.V1;
+
+public class FakeValidateCreateFlightCommand : AutoFaker<CreateFlight>
 {
     public FakeValidateCreateFlightCommand()
     {

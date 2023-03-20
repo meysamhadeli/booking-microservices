@@ -1,13 +1,14 @@
 using BuildingBlocks.Mongo;
-using Flight.Aircrafts.Models.Reads;
-using Flight.Airports.Models.Reads;
-using Flight.Flights.Models.Reads;
-using Flight.Seats.Models.Reads;
 using Humanizer;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace Flight.Data;
+
+using Aircrafts.Models;
+using Airports.Models;
+using Flights.Models;
+using Seats.Models;
 
 public class FlightReadDbContext : MongoDbContext
 {
