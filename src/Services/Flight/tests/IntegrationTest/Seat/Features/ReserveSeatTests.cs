@@ -3,13 +3,14 @@ using BuildingBlocks.TestBase;
 using Flight;
 using Flight.Api;
 using Flight.Data;
-using Flight.Flights.Features.CreateFlight.Commands.V1.Reads;
-using Flight.Seats.Features.CreateSeat.Commands.V1.Reads;
 using FluentAssertions;
 using Integration.Test.Fakes;
 using Xunit;
 
 namespace Integration.Test.Seat.Features;
+
+using global::Flight.Flights.Features.CreatingFlight.V1;
+using global::Flight.Seats.Features.CreatingSeat.V1;
 
 public class ReserveSeatTests : FlightIntegrationTestBase
 {
@@ -26,13 +27,13 @@ public class ReserveSeatTests : FlightIntegrationTestBase
 
         await Fixture.SendAsync(flightCommand);
 
-        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>()).Should().Be(true);
+        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongo>()).Should().Be(true);
 
         var seatCommand = new FakeCreateSeatCommand(flightCommand.Id).Generate();
 
         await Fixture.SendAsync(seatCommand);
 
-        (await Fixture.ShouldProcessedPersistInternalCommand<CreateSeatMongoCommand>()).Should().Be(true);
+        (await Fixture.ShouldProcessedPersistInternalCommand<CreateSeatMongo>()).Should().Be(true);
 
         var flightGrpcClient = new FlightGrpcService.FlightGrpcServiceClient(Fixture.Channel);
 

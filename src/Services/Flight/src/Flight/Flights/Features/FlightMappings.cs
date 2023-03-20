@@ -1,27 +1,23 @@
-using AutoMapper;
 using BuildingBlocks.IdsGenerator;
 using Flight.Flights.Dtos;
-using Flight.Flights.Features.CreateFlight.Commands.V1;
-using Flight.Flights.Features.CreateFlight.Commands.V1.Reads;
-using Flight.Flights.Features.CreateFlight.Dtos.V1;
-using Flight.Flights.Features.DeleteFlight.Commands.V1.Reads;
-using Flight.Flights.Features.UpdateFlight.Commands.V1;
-using Flight.Flights.Features.UpdateFlight.Commands.V1.Reads;
-using Flight.Flights.Features.UpdateFlight.Dtos;
-using Flight.Flights.Models.Reads;
 using Mapster;
 
 namespace Flight.Flights.Features;
+
+using CreatingFlight.V1;
+using DeletingFlight.V1;
+using Models;
+using UpdatingFlight.V1;
 
 public class FlightMappings : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<Models.Flight, FlightResponseDto>()
-            .ConstructUsing(x => new FlightResponseDto(x.Id, x.FlightNumber, x.AircraftId, x.DepartureAirportId, x.DepartureDate,
+        config.NewConfig<Models.Flight, FlightDto>()
+            .ConstructUsing(x => new FlightDto(x.Id, x.FlightNumber, x.AircraftId, x.DepartureAirportId, x.DepartureDate,
                 x.ArriveDate, x.ArriveAirportId, x.DurationMinutes, x.FlightDate, x.Status, x.Price));
 
-        config.NewConfig<CreateFlightMongoCommand, FlightReadModel>()
+        config.NewConfig<CreateFlightMongo, FlightReadModel>()
             .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
             .Map(d => d.FlightId, s => s.Id);
 
@@ -29,21 +25,21 @@ public class FlightMappings : IRegister
             .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
             .Map(d => d.FlightId, s => s.Id);
 
-        config.NewConfig<FlightReadModel, FlightResponseDto>()
+        config.NewConfig<FlightReadModel, FlightDto>()
             .Map(d => d.Id, s => s.FlightId);
 
-        config.NewConfig<UpdateFlightMongoCommand, FlightReadModel>()
+        config.NewConfig<UpdateFlightMongo, FlightReadModel>()
             .Map(d => d.FlightId, s => s.Id);
 
-        config.NewConfig<DeleteFlightMongoCommand, FlightReadModel>()
+        config.NewConfig<DeleteFlightMongo, FlightReadModel>()
             .Map(d => d.FlightId, s => s.Id);
 
-        config.NewConfig<CreateFlightRequestDto, CreateFlightCommand>()
-            .ConstructUsing(x => new CreateFlightCommand(x.FlightNumber, x.AircraftId, x.DepartureAirportId,
+        config.NewConfig<CreateFlightRequestDto, CreateFlight>()
+            .ConstructUsing(x => new CreateFlight(x.FlightNumber, x.AircraftId, x.DepartureAirportId,
                 x.DepartureDate, x.ArriveDate, x.ArriveAirportId, x.DurationMinutes, x.FlightDate, x.Status, x.Price));
 
-        config.NewConfig<UpdateFlightRequestDto, UpdateFlightCommand>()
-            .ConstructUsing(x => new UpdateFlightCommand(x.Id, x.FlightNumber, x.AircraftId, x.DepartureAirportId, x.DepartureDate,
+        config.NewConfig<UpdateFlightRequestDto, UpdateFlight>()
+            .ConstructUsing(x => new UpdateFlight(x.Id, x.FlightNumber, x.AircraftId, x.DepartureAirportId, x.DepartureDate,
                 x.ArriveDate, x.ArriveAirportId, x.DurationMinutes, x.FlightDate, x.Status, x.IsDeleted, x.Price));
 
     }

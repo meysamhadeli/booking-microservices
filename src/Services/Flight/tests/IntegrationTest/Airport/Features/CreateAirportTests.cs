@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.TestBase;
-using Flight.Airports.Features.CreateAirport.Commands.V1.Reads;
 using Flight.Api;
 using Flight.Data;
 using FluentAssertions;
@@ -9,6 +8,8 @@ using Integration.Test.Fakes;
 using Xunit;
 
 namespace Integration.Test.Airport.Features;
+
+using global::Flight.Airports.Features.CreatingAirport.V1;
 
 public class CreateAirportTests : FlightIntegrationTestBase
 {
@@ -32,6 +33,6 @@ public class CreateAirportTests : FlightIntegrationTestBase
 
         (await Fixture.WaitForPublishing<AirportCreated>()).Should().Be(true);
 
-        (await Fixture.ShouldProcessedPersistInternalCommand<CreateAirportMongoCommand>()).Should().Be(true);
+        (await Fixture.ShouldProcessedPersistInternalCommand<CreateAirportMongo>()).Should().Be(true);
     }
 }

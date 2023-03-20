@@ -1,7 +1,8 @@
 using BuildingBlocks.Core.Model;
-using Flight.Aircrafts.Features.CreateAircraft.Events.Domain.V1;
 
 namespace Flight.Aircrafts.Models;
+
+using Features.CreatingAircraft.V1;
 
 public record Aircraft : Aggregate<long>
 {

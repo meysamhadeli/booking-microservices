@@ -1,11 +1,11 @@
 ﻿using AutoBogus;
-using Booking.Booking.Features.CreateBooking;
-using Booking.Booking.Features.CreateBooking.Commands.V1;
 using BuildingBlocks.IdsGenerator;
 
 namespace Integration.Test.Fakes;
 
-public sealed class FakeCreateBookingCommand : AutoFaker<CreateBookingCommand>
+using global::Booking.Booking.Features.CreatingBook.Commands.V1;
+
+public sealed class FakeCreateBookingCommand : AutoFaker<CreateBooking>
 {
     public FakeCreateBookingCommand()
     {

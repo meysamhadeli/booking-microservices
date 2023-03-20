@@ -1,4 +1,3 @@
-using Booking.Booking.Features.CreateBooking.Events.Domain.V1;
 using Booking.Booking.Models.Reads;
 using Booking.Data;
 using BuildingBlocks.EventStoreDB.Events;
@@ -9,6 +8,8 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
 namespace Booking;
+
+using Booking.Features.CreatingBook.Commands.V1;
 
 public class BookingProjection : IProjectionProcessor
 {

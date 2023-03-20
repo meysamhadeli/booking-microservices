@@ -1,10 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using BuildingBlocks.Core.Model;
-using Flight.Seats.Features.CreateSeat.Events.Domain.V1;
-using Flight.Seats.Features.ReserveSeat.Events.Domain.V1;
 
 namespace Flight.Seats.Models;
+
+using Features.CreatingSeat.V1;
+using Features.ReservingSeat.Commands.V1;
 
 public record Seat : Aggregate<long>
 {

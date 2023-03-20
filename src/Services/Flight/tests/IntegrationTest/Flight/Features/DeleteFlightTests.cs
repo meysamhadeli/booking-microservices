@@ -4,13 +4,13 @@ using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.TestBase;
 using Flight.Api;
 using Flight.Data;
-using Flight.Flights.Features.DeleteFlight.Commands.V1;
-using Flight.Flights.Features.DeleteFlight.Commands.V1.Reads;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace Integration.Test.Flight.Features;
+
+using global::Flight.Flights.Features.DeletingFlight.V1;
 
 public class DeleteFlightTests : FlightIntegrationTestBase
 {
@@ -24,7 +24,7 @@ public class DeleteFlightTests : FlightIntegrationTestBase
     {
         // Arrange
         var flightEntity = await Fixture.FindAsync<global::Flight.Flights.Models.Flight>(1);
-        var command = new DeleteFlightCommand(flightEntity.Id);
+        var command = new DeleteFlight(flightEntity.Id);
 
         // Act
         await Fixture.SendAsync(command);
@@ -39,6 +39,6 @@ public class DeleteFlightTests : FlightIntegrationTestBase
 
         (await Fixture.WaitForPublishing<FlightDeleted>()).Should().Be(true);
 
-        (await Fixture.ShouldProcessedPersistInternalCommand<DeleteFlightMongoCommand>()).Should().Be(true);
+        (await Fixture.ShouldProcessedPersistInternalCommand<DeleteFlightMongo>()).Should().Be(true);
     }
 }

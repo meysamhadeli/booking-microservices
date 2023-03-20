@@ -1,11 +1,11 @@
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.Event;
-using Passenger.Identity.Consumers.RegisterNewUser.Events.Domain.V1;
-using Passenger.Passengers.Features.CompleteRegisterPassenger.Commands.V1.Reads;
-using Passenger.Passengers.Features.CompleteRegisterPassenger.Events.Domain.V1;
 
 namespace Passenger;
+
+using Identity.Consumers.RegisteringNewUser.V1;
+using Passengers.Features.CompletingRegisterPassenger.V1;
 
 public sealed class EventMapper : IEventMapper
 {

@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.TestBase;
-using Flight.Aircrafts.Features.CreateAircraft.Commands.V1.Reads;
 using Flight.Api;
 using Flight.Data;
 using FluentAssertions;
@@ -9,6 +8,8 @@ using Integration.Test.Fakes;
 using Xunit;
 
 namespace Integration.Test.Aircraft.Features;
+
+using global::Flight.Aircrafts.Features.CreatingAircraft.V1;
 
 public class CreateAircraftTests : FlightIntegrationTestBase
 {
@@ -32,6 +33,6 @@ public class CreateAircraftTests : FlightIntegrationTestBase
 
         (await Fixture.WaitForPublishing<AircraftCreated>()).Should().Be(true);
 
-        (await Fixture.ShouldProcessedPersistInternalCommand<CreateAircraftMongoCommand>()).Should().Be(true);
+        (await Fixture.ShouldProcessedPersistInternalCommand<CreateAircraftMongo>()).Should().Be(true);
     }
 }

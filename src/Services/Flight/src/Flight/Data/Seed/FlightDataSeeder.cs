@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BuildingBlocks.EFCore;
 using Flight.Aircrafts.Models;
-using Flight.Aircrafts.Models.Reads;
 using Flight.Airports.Models;
-using Flight.Airports.Models.Reads;
-using Flight.Flights.Models.Reads;
 using Flight.Seats.Models;
-using Flight.Seats.Models.Reads;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
 namespace Flight.Data.Seed;
+
+using Flights.Models;
 
 public class FlightDataSeeder : IDataSeeder
 {

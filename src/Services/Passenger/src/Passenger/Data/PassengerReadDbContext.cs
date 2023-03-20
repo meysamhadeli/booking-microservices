@@ -2,9 +2,10 @@
 using Humanizer;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using Passenger.Passengers.Models.Reads;
 
 namespace Passenger.Data;
+
+using Passengers.Models;
 
 public class PassengerReadDbContext : MongoDbContext
 {

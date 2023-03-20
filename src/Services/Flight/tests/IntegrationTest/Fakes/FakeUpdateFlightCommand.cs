@@ -1,10 +1,10 @@
 ﻿using AutoBogus;
-using Flight.Flights.Features.UpdateFlight;
-using Flight.Flights.Features.UpdateFlight.Commands.V1;
 
 namespace Integration.Test.Fakes;
 
-public class FakeUpdateFlightCommand : AutoFaker<UpdateFlightCommand>
+using global::Flight.Flights.Features.UpdatingFlight.V1;
+
+public class FakeUpdateFlightCommand : AutoFaker<UpdateFlight>
 {
     public FakeUpdateFlightCommand(global::Flight.Flights.Models.Flight flight)
     {

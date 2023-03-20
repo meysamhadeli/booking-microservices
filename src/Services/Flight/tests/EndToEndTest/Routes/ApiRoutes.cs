@@ -1,8 +1,8 @@
 ﻿namespace EndToEnd.Test.Routes;
 
-public class ApiRoutes
+public static class ApiRoutes
 {
-    public const string BaseApiPath = "api/v1.0";
+    private const string BaseApiPath = "api/v1.0";
 
     public static class Flight
     {

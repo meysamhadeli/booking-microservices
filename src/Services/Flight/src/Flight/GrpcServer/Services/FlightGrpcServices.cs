@@ -1,15 +1,13 @@
 ﻿using System.Threading.Tasks;
-using Flight.Flights.Features.GetFlightById;
-using Flight.Flights.Features.GetFlightById.Queries.V1;
-using Flight.Seats.Features.GetAvailableSeats;
-using Flight.Seats.Features.GetAvailableSeats.Queries.V1;
-using Flight.Seats.Features.ReserveSeat;
-using Flight.Seats.Features.ReserveSeat.Commands.V1;
 using Grpc.Core;
 using Mapster;
 using MediatR;
 
 namespace Flight.GrpcServer.Services;
+
+using Flights.Features.GettingFlightById.V1;
+using Seats.Features.GettingAvailableSeats.V1;
+using Seats.Features.ReservingSeat.Commands.V1;
 
 public class FlightGrpcServices : FlightGrpcService.FlightGrpcServiceBase
 {
@@ -22,13 +20,13 @@ public class FlightGrpcServices : FlightGrpcService.FlightGrpcServiceBase
 
     public override async Task<FlightResponse> GetById(GetByIdRequest request, ServerCallContext context)
     {
-        var result = await _mediator.Send(new GetFlightByIdQuery(request.Id));
+        var result = await _mediator.Send(new GetFlightById(request.Id));
         return result.Adapt<FlightResponse>();
     }
 
     public override async Task<SeatsResponse> ReserveSeat(ReserveSeatRequest request, ServerCallContext context)
     {
-        var result = await _mediator.Send(new ReserveSeatCommand(request.FlightId, request.SeatNumber));
+        var result = await _mediator.Send(new ReserveSeat(request.FlightId, request.SeatNumber));
         return result.Adapt<SeatsResponse>();
     }
 
@@ -36,7 +34,7 @@ public class FlightGrpcServices : FlightGrpcService.FlightGrpcServiceBase
     {
         var result = new ListSeatsResponse();
 
-        var availableSeats = await _mediator.Send(new GetAvailableSeatsQuery(request.FlightId));
+        var availableSeats = await _mediator.Send(new GetAvailableSeats(request.FlightId));
 
         foreach (var availableSeat in availableSeats)
         {

@@ -1,8 +1,9 @@
 using BuildingBlocks.Core.Model;
-using Passenger.Identity.Consumers.RegisterNewUser.Events.Domain.V1;
-using Passenger.Passengers.Features.CompleteRegisterPassenger.Events.Domain.V1;
 
 namespace Passenger.Passengers.Models;
+
+using Features.CompletingRegisterPassenger.V1;
+using Identity.Consumers.RegisteringNewUser.V1;
 
 public record Passenger : Aggregate<long>
 {

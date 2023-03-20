@@ -25,7 +25,7 @@ public class FlightMappingTests
             yield return new object[]
             {
                 // these types will instantiate with reflection in the future
-                typeof(global::Flight.Flights.Models.Flight), typeof(FlightResponseDto)
+                typeof(global::Flight.Flights.Models.Flight), typeof(FlightDto)
             };
         }
     }

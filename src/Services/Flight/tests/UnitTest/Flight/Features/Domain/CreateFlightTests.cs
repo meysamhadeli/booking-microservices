@@ -2,7 +2,7 @@
 {
     using System.Linq;
     using FluentAssertions;
-    using global::Flight.Flights.Features.CreateFlight.Events.Domain.V1;
+    using global::Flight.Flights.Features.CreatingFlight.V1;
     using Unit.Test.Common;
     using Unit.Test.Fakes;
     using Xunit;
