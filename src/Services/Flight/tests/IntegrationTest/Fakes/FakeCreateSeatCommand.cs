@@ -1,11 +1,12 @@
 ﻿using AutoBogus;
 using BuildingBlocks.IdsGenerator;
 using Flight.Seats.Enums;
-using Flight.Seats.Features.CreateSeat.Commands.V1;
 
 namespace Integration.Test.Fakes;
 
-public class FakeCreateSeatCommand : AutoFaker<CreateSeatCommand>
+using global::Flight.Seats.Features.CreatingSeat.V1;
+
+public class FakeCreateSeatCommand : AutoFaker<CreateSeat>
 {
     public FakeCreateSeatCommand(long flightId)
     {

@@ -5,24 +5,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using global::Flight.Flights.Dtos;
-using global::Flight.Flights.Features.CreateFlight.Commands.V1;
-using Unit.Test.Common;
-using Unit.Test.Fakes;
+using global::Flight.Flights.Features.CreatingFlight.V1;
+using Common;
+using Fakes;
 using Xunit;
 
 [Collection(nameof(UnitTestFixture))]
 public class CreateFlightCommandHandlerTests
 {
     private readonly UnitTestFixture _fixture;
-    private readonly CreateFlightCommandHandler _handler;
+    private readonly CreateFlightHandler _handler;
 
-    public Task<FlightResponseDto> Act(CreateFlightCommand command, CancellationToken cancellationToken) =>
+    public Task<FlightDto> Act(CreateFlight command, CancellationToken cancellationToken) =>
         _handler.Handle(command, cancellationToken);
 
     public CreateFlightCommandHandlerTests(UnitTestFixture fixture)
     {
         _fixture = fixture;
-        _handler = new CreateFlightCommandHandler(fixture.Mapper, fixture.DbContext);
+        _handler = new CreateFlightHandler(fixture.Mapper, fixture.DbContext);
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class CreateFlightCommandHandlerTests
     public async Task handler_with_null_command_should_throw_argument_exception()
     {
         // Arrange
-        CreateFlightCommand command = null;
+        CreateFlight command = null;
 
         // Act
         Func<Task> act = async () => { await Act(command, CancellationToken.None); };

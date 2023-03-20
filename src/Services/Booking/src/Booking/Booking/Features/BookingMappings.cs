@@ -1,9 +1,9 @@
 using Booking.Booking.Dtos;
-using Booking.Booking.Features.CreateBooking.Commands.V1;
-using Booking.Booking.Features.CreateBooking.Dtos.V1;
 using Mapster;
 
 namespace Booking.Booking.Features;
+
+using CreatingBook.Commands.V1;
 
 public class BookingMappings : IRegister
 {
@@ -17,7 +17,7 @@ public class BookingMappings : IRegister
                 x.Trip.Description));
 
 
-        config.NewConfig<CreateBookingRequestDto, CreateBookingCommand>()
-            .ConstructUsing(x => new CreateBookingCommand(x.PassengerId, x.FlightId, x.Description));
+        config.NewConfig<CreateBookingRequestDto, CreateBooking>()
+            .ConstructUsing(x => new CreateBooking(x.PassengerId, x.FlightId, x.Description));
     }
 }

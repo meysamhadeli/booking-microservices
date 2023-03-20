@@ -2,15 +2,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Flight.Seats.Dtos;
-using Flight.Seats.Features.CreateSeat;
-using Flight.Seats.Features.CreateSeat.Commands.V1;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Unit.Test.Common;
 using Unit.Test.Fakes;
 using Xunit;
 
 namespace Unit.Test.Seat.Features;
+
+using global::Flight.Seats.Features.CreatingSeat.V1;
 
 [Collection(nameof(UnitTestFixture))]
 public class CreateSeatCommandHandlerTests
@@ -25,7 +24,7 @@ public class CreateSeatCommandHandlerTests
         _handler = new CreateSeatCommandHandler(_fixture.Mapper, _fixture.DbContext);
     }
 
-    public Task<SeatResponseDto> Act(CreateSeatCommand command, CancellationToken cancellationToken)
+    public Task<SeatDto> Act(CreateSeat command, CancellationToken cancellationToken)
     {
         return _handler.Handle(command, cancellationToken);
     }
@@ -50,7 +49,7 @@ public class CreateSeatCommandHandlerTests
     public async Task handler_with_null_command_should_throw_argument_exception()
     {
         // Arrange
-        CreateSeatCommand command = null;
+        CreateSeat command = null;
 
         // Act
         var act = async () => { await Act(command, CancellationToken.None); };

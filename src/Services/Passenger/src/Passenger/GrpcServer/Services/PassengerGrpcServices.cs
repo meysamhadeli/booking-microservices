@@ -1,10 +1,10 @@
 ﻿using Grpc.Core;
 using Mapster;
 using MediatR;
-using Passenger.Passengers.Features.GetPassengerById;
-using Passenger.Passengers.Features.GetPassengerById.Queries.V1;
 
 namespace Passenger.GrpcServer.Services;
+
+using Passengers.Features.GettingPassengerById.Queries.V1;
 
 public class PassengerGrpcServices : PassengerGrpcService.PassengerGrpcServiceBase
 {
@@ -17,7 +17,7 @@ public class PassengerGrpcServices : PassengerGrpcService.PassengerGrpcServiceBa
 
     public override async Task<PassengerResponse> GetById(GetByIdRequest request, ServerCallContext context)
     {
-        var result = await _mediator.Send(new GetPassengerQueryById(request.Id));
+        var result = await _mediator.Send(new GetPassengerById(request.Id));
         return result.Adapt<PassengerResponse>();
     }
 }

@@ -1,10 +1,11 @@
 ﻿using AutoBogus;
 using BuildingBlocks.IdsGenerator;
-using Flight.Airports.Features.CreateAirport.Commands.V1;
 
 namespace Integration.Test.Fakes;
 
-public class FakeCreateAirportCommand : AutoFaker<CreateAirportCommand>
+using global::Flight.Airports.Features.CreatingAirport.V1;
+
+public class FakeCreateAirportCommand : AutoFaker<CreateAirport>
 {
     public FakeCreateAirportCommand()
     {

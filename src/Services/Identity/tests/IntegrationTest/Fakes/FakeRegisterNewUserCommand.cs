@@ -1,9 +1,10 @@
 ﻿using AutoBogus;
-using Identity.Identity.Features.RegisterNewUser.Commands.V1;
 
 namespace Integration.Test.Fakes;
 
-public class FakeRegisterNewUserCommand : AutoFaker<RegisterNewUserCommand>
+using global::Identity.Identity.Features.RegisteringNewUser.V1;
+
+public class FakeRegisterNewUserCommand : AutoFaker<RegisterNewUser>
 {
     public FakeRegisterNewUserCommand()
     {

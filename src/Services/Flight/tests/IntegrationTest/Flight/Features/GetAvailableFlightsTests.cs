@@ -3,13 +3,14 @@ using System.Threading.Tasks;
 using BuildingBlocks.TestBase;
 using Flight.Api;
 using Flight.Data;
-using Flight.Flights.Features.CreateFlight.Commands.V1.Reads;
-using Flight.Flights.Features.GetAvailableFlights.Queries.V1;
 using FluentAssertions;
 using Integration.Test.Fakes;
 using Xunit;
 
 namespace Integration.Test.Flight.Features;
+
+using global::Flight.Flights.Features.CreatingFlight.V1;
+using global::Flight.Flights.Features.GettingAvailableFlights.V1;
 
 public class GetAvailableFlightsTests : FlightIntegrationTestBase
 {
@@ -26,9 +27,9 @@ public class GetAvailableFlightsTests : FlightIntegrationTestBase
 
         await Fixture.SendAsync(flightCommand);
 
-        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongoCommand>()).Should().Be(true);
+        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongo>()).Should().Be(true);
 
-        var query = new GetAvailableFlightsQuery();
+        var query = new GetAvailableFlights();
 
         // Act
         var response = (await Fixture.SendAsync(query))?.ToList();

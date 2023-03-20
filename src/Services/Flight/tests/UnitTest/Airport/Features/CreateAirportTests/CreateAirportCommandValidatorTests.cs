@@ -1,12 +1,12 @@
-﻿using Flight.Airports.Features.CreateAirport;
-using Flight.Airports.Features.CreateAirport.Commands.V1;
-using FluentAssertions;
+﻿using FluentAssertions;
 using FluentValidation.TestHelper;
 using Unit.Test.Common;
 using Unit.Test.Fakes;
 using Xunit;
 
 namespace Unit.Test.Airport.Features.CreateAirportTests;
+
+using global::Flight.Airports.Features.CreatingAirport.V1;
 
 [Collection(nameof(UnitTestFixture))]
 public class CreateAirportCommandValidatorTests
@@ -16,7 +16,7 @@ public class CreateAirportCommandValidatorTests
     {
         // Arrange
         var command = new FakeValidateCreateAirportCommand().Generate();
-        var validator = new CreateAirportCommandValidator();
+        var validator = new CreateAirportValidator();
 
         // Act
         var result = validator.TestValidate(command);

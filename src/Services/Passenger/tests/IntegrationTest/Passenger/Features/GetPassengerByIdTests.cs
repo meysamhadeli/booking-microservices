@@ -5,10 +5,11 @@ using Integration.Test.Fakes;
 using Passenger;
 using Passenger.Api;
 using Passenger.Data;
-using Passenger.Passengers.Features.GetPassengerById.Queries.V1;
 using Xunit;
 
 namespace Integration.Test.Passenger.Features;
+
+using global::Passenger.Passengers.Features.GettingPassengerById.Queries.V1;
 
 public class GetPassengerByIdTests : PassengerIntegrationTestBase
 {
@@ -26,7 +27,7 @@ public class GetPassengerByIdTests : PassengerIntegrationTestBase
         var passengerEntity = FakePassengerCreated.Generate(userCreated);
         await Fixture.InsertAsync(passengerEntity);
 
-        var query = new GetPassengerQueryById(passengerEntity.Id);
+        var query = new GetPassengerById(passengerEntity.Id);
 
         // Act
         var response = await Fixture.SendAsync(query);

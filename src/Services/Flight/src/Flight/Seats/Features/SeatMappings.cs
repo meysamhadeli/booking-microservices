@@ -1,25 +1,21 @@
 using BuildingBlocks.IdsGenerator;
 using Flight.Seats.Dtos;
-using Flight.Seats.Features.CreateSeat.Commands.V1;
-using Flight.Seats.Features.CreateSeat.Commands.V1.Reads;
-using Flight.Seats.Features.CreateSeat.Dtos.V1;
-using Flight.Seats.Features.ReserveSeat.Commands.V1;
-using Flight.Seats.Features.ReserveSeat.Commands.V1.Reads;
-using Flight.Seats.Features.ReserveSeat.Dtos.V1;
 using Flight.Seats.Models;
-using Flight.Seats.Models.Reads;
 using Mapster;
 
 namespace Flight.Seats.Features;
+
+using CreatingSeat.V1;
+using ReservingSeat.Commands.V1;
 
 public class SeatMappings : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<Seat, SeatResponseDto>()
-            .ConstructUsing(x => new SeatResponseDto(x.Id, x.SeatNumber, x.Type, x.Class, x.FlightId));
+        config.NewConfig<Seat, SeatDto>()
+            .ConstructUsing(x => new SeatDto(x.Id, x.SeatNumber, x.Type, x.Class, x.FlightId));
 
-        config.NewConfig<CreateSeatMongoCommand, SeatReadModel>()
+        config.NewConfig<CreateSeatMongo, SeatReadModel>()
             .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
             .Map(d => d.SeatId, s => s.Id);
 
@@ -27,13 +23,13 @@ public class SeatMappings : IRegister
             .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
             .Map(d => d.SeatId, s => s.Id);
 
-        config.NewConfig<ReserveSeatMongoCommand, SeatReadModel>()
+        config.NewConfig<ReserveSeatMongo, SeatReadModel>()
             .Map(d => d.SeatId, s => s.Id);
 
-        config.NewConfig<CreateSeatRequestDto, CreateSeatCommand>()
-            .ConstructUsing(x => new CreateSeatCommand(x.SeatNumber, x.Type, x.Class, x.FlightId));
+        config.NewConfig<CreateSeatRequestDto, CreateSeat>()
+            .ConstructUsing(x => new CreateSeat(x.SeatNumber, x.Type, x.Class, x.FlightId));
 
-        config.NewConfig<ReserveSeatRequestDto, ReserveSeatCommand>()
-            .ConstructUsing(x => new ReserveSeatCommand(x.FlightId, x.SeatNumber));
+        config.NewConfig<ReserveSeatRequestDto, ReserveSeat>()
+            .ConstructUsing(x => new ReserveSeat(x.FlightId, x.SeatNumber));
     }
 }
