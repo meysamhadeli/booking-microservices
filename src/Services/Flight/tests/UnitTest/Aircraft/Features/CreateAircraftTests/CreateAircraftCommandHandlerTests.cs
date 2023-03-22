@@ -17,13 +17,13 @@ public class CreateAircraftCommandHandlerTests
     private readonly UnitTestFixture _fixture;
     private readonly CreateAircraftHandler _handler;
 
-    public Task<AircraftDto> Act(CreateAircraft command, CancellationToken cancellationToken) =>
+    public Task<CreateAircraftResult> Act(CreateAircraft command, CancellationToken cancellationToken) =>
     _handler.Handle(command, cancellationToken);
 
     public CreateAircraftCommandHandlerTests(UnitTestFixture fixture)
     {
         _fixture = fixture;
-        _handler = new CreateAircraftHandler(_fixture.Mapper, _fixture.DbContext);
+        _handler = new CreateAircraftHandler(_fixture.DbContext);
     }
 
     [Fact]

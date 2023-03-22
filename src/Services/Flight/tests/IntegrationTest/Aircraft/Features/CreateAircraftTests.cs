@@ -28,8 +28,7 @@ public class CreateAircraftTests : FlightIntegrationTestBase
         var response = await Fixture.SendAsync(command);
 
         // Assert
-        response?.Should().NotBeNull();
-        response?.Name.Should().Be(command.Name);
+        response?.Id.Should().Be(command.Id);
 
         (await Fixture.WaitForPublishing<AircraftCreated>()).Should().Be(true);
 

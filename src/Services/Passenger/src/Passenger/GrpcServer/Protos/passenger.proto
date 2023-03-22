@@ -4,7 +4,7 @@ package passenger;
 
 service PassengerGrpcService {
 
-  rpc GetById (GetByIdRequest) returns (PassengerResponse);
+  rpc GetById (GetByIdRequest) returns (GetPassengerByIdResult);
 }
 
 message GetByIdRequest {
@@ -18,6 +18,10 @@ message PassengerResponse {
   PassengerType PassengerType = 4;
   int32 Age = 5;
   string Email = 6;
+}
+
+message GetPassengerByIdResult {
+  PassengerResponse PassengerDto = 1;
 }
 
 

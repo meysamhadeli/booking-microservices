@@ -12,9 +12,11 @@ using MapsterMapper;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-public record GetFlightById(long Id) : IQuery<FlightDto>;
+public record GetFlightById(long Id) : IQuery<GetFlightByIdResult>;
 
-internal class GetFlightByIdValidator : AbstractValidator<GetFlightById>
+public record GetFlightByIdResult(FlightDto FlightDto);
+
+public class GetFlightByIdValidator : AbstractValidator<GetFlightById>
 {
     public GetFlightByIdValidator()
     {
@@ -22,7 +24,7 @@ internal class GetFlightByIdValidator : AbstractValidator<GetFlightById>
     }
 }
 
-internal class GetFlightByIdHandler : IQueryHandler<GetFlightById, FlightDto>
+public class GetFlightByIdHandler : IQueryHandler<GetFlightById, GetFlightByIdResult>
 {
     private readonly IMapper _mapper;
     private readonly FlightReadDbContext _flightReadDbContext;
@@ -33,7 +35,7 @@ internal class GetFlightByIdHandler : IQueryHandler<GetFlightById, FlightDto>
         _flightReadDbContext = flightReadDbContext;
     }
 
-    public async Task<FlightDto> Handle(GetFlightById request, CancellationToken cancellationToken)
+    public async Task<GetFlightByIdResult> Handle(GetFlightById request, CancellationToken cancellationToken)
     {
         Guard.Against.Null(request, nameof(request));
 
@@ -46,6 +48,8 @@ internal class GetFlightByIdHandler : IQueryHandler<GetFlightById, FlightDto>
             throw new FlightNotFountException();
         }
 
-        return _mapper.Map<FlightDto>(flight);
+        var flightDto = _mapper.Map<FlightDto>(flight);
+
+        return new GetFlightByIdResult(flightDto);
     }
 }

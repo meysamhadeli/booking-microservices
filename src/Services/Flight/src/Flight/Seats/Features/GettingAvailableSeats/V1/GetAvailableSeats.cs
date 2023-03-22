@@ -6,15 +6,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
-using Flight.Data;
-using Flight.Seats.Dtos;
-using Flight.Seats.Exceptions;
+using Data;
+using Dtos;
+using Exceptions;
 using FluentValidation;
 using MapsterMapper;
 using MediatR;
 using MongoDB.Driver;
 
-public record GetAvailableSeats(long FlightId) : IQuery<IEnumerable<SeatDto>>;
+public record GetAvailableSeats(long FlightId) : IQuery<GetAvailableSeatsResult>;
+
+public record GetAvailableSeatsResult(IEnumerable<SeatDto> SeatDtos);
 
 internal class GetAvailableSeatsValidator : AbstractValidator<GetAvailableSeats>
 {
@@ -24,7 +26,7 @@ internal class GetAvailableSeatsValidator : AbstractValidator<GetAvailableSeats>
     }
 }
 
-internal class GetAvailableSeatsQueryHandler : IRequestHandler<GetAvailableSeats, IEnumerable<SeatDto>>
+internal class GetAvailableSeatsQueryHandler : IRequestHandler<GetAvailableSeats, GetAvailableSeatsResult>
 {
     private readonly IMapper _mapper;
     private readonly FlightReadDbContext _flightReadDbContext;
@@ -36,7 +38,7 @@ internal class GetAvailableSeatsQueryHandler : IRequestHandler<GetAvailableSeats
     }
 
 
-    public async Task<IEnumerable<SeatDto>> Handle(GetAvailableSeats query, CancellationToken cancellationToken)
+    public async Task<GetAvailableSeatsResult> Handle(GetAvailableSeats query, CancellationToken cancellationToken)
     {
         Guard.Against.Null(query, nameof(query));
 
@@ -48,6 +50,8 @@ internal class GetAvailableSeatsQueryHandler : IRequestHandler<GetAvailableSeats
             throw new AllSeatsFullException();
         }
 
-        return _mapper.Map<IEnumerable<SeatDto>>(seats);
+        var seatDtos = _mapper.Map<IEnumerable<SeatDto>>(seats);
+
+        return new GetAvailableSeatsResult(seatDtos);
     }
 }

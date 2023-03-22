@@ -9,7 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Ardalis.GuardClauses;
 using Exceptions;
 
-public record GetPassengerById(long Id) : IQuery<PassengerDto>;
+public record GetPassengerById(long Id) : IQuery<GetPassengerByIdResult>;
+
+public record GetPassengerByIdResult(PassengerDto PassengerDto);
 
 internal class GetPassengerByIdValidator: AbstractValidator<GetPassengerById>
 {
@@ -19,7 +21,7 @@ internal class GetPassengerByIdValidator: AbstractValidator<GetPassengerById>
     }
 }
 
-internal class GetPassengerByIdHandler : IQueryHandler<GetPassengerById, PassengerDto>
+internal class GetPassengerByIdHandler : IQueryHandler<GetPassengerById, GetPassengerByIdResult>
 {
     private readonly PassengerDbContext _passengerDbContext;
     private readonly IMapper _mapper;
@@ -30,7 +32,7 @@ internal class GetPassengerByIdHandler : IQueryHandler<GetPassengerById, Passeng
         _passengerDbContext = passengerDbContext;
     }
 
-    public async Task<PassengerDto> Handle(GetPassengerById query, CancellationToken cancellationToken)
+    public async Task<GetPassengerByIdResult> Handle(GetPassengerById query, CancellationToken cancellationToken)
     {
         Guard.Against.Null(query, nameof(query));
 
@@ -42,6 +44,8 @@ internal class GetPassengerByIdHandler : IQueryHandler<GetPassengerById, Passeng
             throw new PassengerNotFoundException();
         }
 
-        return _mapper.Map<PassengerDto>(passenger!);
+        var passengerDto = _mapper.Map<PassengerDto>(passenger);
+
+        return new GetPassengerByIdResult(passengerDto);
     }
 }

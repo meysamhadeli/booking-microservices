@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
+public record GetAvailableSeatsResponseDto(IEnumerable<SeatDto> SeatDtos);
+
 public class GetAvailableSeatsEndpoint : IMinimalEndpoint
 {
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
@@ -26,7 +28,7 @@ public class GetAvailableSeatsEndpoint : IMinimalEndpoint
                 new SwaggerResponseAttribute(
                     StatusCodes.Status200OK,
                     "GetAvailableSeats",
-                    typeof(IEnumerable<SeatDto>)))
+                    typeof(GetAvailableSeatsResponseDto)))
             .WithMetadata(
                 new SwaggerResponseAttribute(
                     StatusCodes.Status400BadRequest,
@@ -46,6 +48,8 @@ public class GetAvailableSeatsEndpoint : IMinimalEndpoint
     {
         var result = await mediator.Send(new GetAvailableSeats(id), cancellationToken);
 
-        return Results.Ok(result);
+        var response = new GetAvailableSeatsResponseDto(result?.SeatDtos);
+
+        return Results.Ok(response);
     }
 }

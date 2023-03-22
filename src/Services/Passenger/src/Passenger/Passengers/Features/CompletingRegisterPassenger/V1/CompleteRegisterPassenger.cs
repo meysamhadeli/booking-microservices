@@ -8,14 +8,15 @@ using Exceptions;
 using FluentValidation;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
-using Passenger.Data;
-using Passenger.Passengers.Dtos;
+using Data;
+using Dtos;
 
-public record CompleteRegisterPassenger
-    (string PassportNumber, Enums.PassengerType PassengerType, int Age) : ICommand<PassengerDto>, IInternalCommand
+public record CompleteRegisterPassenger(string PassportNumber, Enums.PassengerType PassengerType, int Age) : ICommand<CompleteRegisterPassengerResult>, IInternalCommand
 {
     public long Id { get; init; } = SnowFlakIdGenerator.NewId();
 }
+
+public record CompleteRegisterPassengerResult(PassengerDto PassengerDto);
 
 internal class CompleteRegisterPassengerValidator : AbstractValidator<CompleteRegisterPassenger>
 {
@@ -32,7 +33,7 @@ internal class CompleteRegisterPassengerValidator : AbstractValidator<CompleteRe
     }
 }
 
-internal class CompleteRegisterPassengerCommandHandler : ICommandHandler<CompleteRegisterPassenger, PassengerDto>
+internal class CompleteRegisterPassengerCommandHandler : ICommandHandler<CompleteRegisterPassenger, CompleteRegisterPassengerResult>
 {
     private readonly IMapper _mapper;
     private readonly PassengerDbContext _passengerDbContext;
@@ -43,7 +44,7 @@ internal class CompleteRegisterPassengerCommandHandler : ICommandHandler<Complet
         _passengerDbContext = passengerDbContext;
     }
 
-    public async Task<PassengerDto> Handle(CompleteRegisterPassenger request, CancellationToken cancellationToken)
+    public async Task<CompleteRegisterPassengerResult> Handle(CompleteRegisterPassenger request, CancellationToken cancellationToken)
     {
         Guard.Against.Null(request, nameof(request));
 
@@ -60,6 +61,8 @@ internal class CompleteRegisterPassengerCommandHandler : ICommandHandler<Complet
 
         var updatePassenger = _passengerDbContext.Passengers.Update(passengerEntity);
 
-        return _mapper.Map<PassengerDto>(updatePassenger.Entity);
+        var passengerDto = _mapper.Map<PassengerDto>(updatePassenger.Entity);
+
+        return new CompleteRegisterPassengerResult(passengerDto);
     }
 }

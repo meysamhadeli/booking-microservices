@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Routing;
 using Passenger.Passengers.Dtos;
 using Swashbuckle.AspNetCore.Annotations;
 
+public record GetPassengerByIdResponseDto(PassengerDto PassengerDto);
+
 public class GetPassengerByIdEndpoint : IMinimalEndpoint
 {
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
@@ -23,7 +25,7 @@ public class GetPassengerByIdEndpoint : IMinimalEndpoint
                 new SwaggerResponseAttribute(
                     StatusCodes.Status200OK,
                     "GetPassengerById",
-                    typeof(PassengerDto)))
+                    typeof(GetPassengerByIdResponseDto)))
             .WithMetadata(
                 new SwaggerResponseAttribute(
                     StatusCodes.Status400BadRequest,
@@ -43,6 +45,8 @@ public class GetPassengerByIdEndpoint : IMinimalEndpoint
     {
         var result = await mediator.Send(new GetPassengerById(id), cancellationToken);
 
-        return Results.Ok(result);
+        var response = new GetPassengerByIdResponseDto(result?.PassengerDto);
+
+        return Results.Ok(response);
     }
 }

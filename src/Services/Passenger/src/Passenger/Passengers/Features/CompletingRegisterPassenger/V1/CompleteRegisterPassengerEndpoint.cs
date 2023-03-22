@@ -7,10 +7,11 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Passenger.Passengers.Dtos;
+using Dtos;
 using Swashbuckle.AspNetCore.Annotations;
 
 public record CompleteRegisterPassengerRequestDto(string PassportNumber, Enums.PassengerType PassengerType, int Age);
+public record CompleteRegisterPassengerResponseDto(PassengerDto PassengerDto);
 
 public class CompleteRegisterPassengerEndpoint : IMinimalEndpoint
 {
@@ -26,7 +27,7 @@ public class CompleteRegisterPassengerEndpoint : IMinimalEndpoint
                 new SwaggerResponseAttribute(
                     StatusCodes.Status200OK,
                     "Register Passenger Completed",
-                    typeof(PassengerDto)))
+                    typeof(CompleteRegisterPassengerResponseDto)))
             .WithMetadata(
                 new SwaggerResponseAttribute(
                     StatusCodes.Status400BadRequest,
@@ -49,6 +50,8 @@ public class CompleteRegisterPassengerEndpoint : IMinimalEndpoint
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return Results.Ok(result);
+        var response = new CompleteRegisterPassengerResponseDto(result?.PassengerDto);
+
+        return Results.Ok(response);
     }
 }

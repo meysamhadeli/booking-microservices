@@ -32,10 +32,10 @@ public class GetAvailableFlightsTests : FlightIntegrationTestBase
         var query = new GetAvailableFlights();
 
         // Act
-        var response = (await Fixture.SendAsync(query))?.ToList();
+        var response = (await Fixture.SendAsync(query))?.FlightDtos?.ToList();
 
         // Assert
         response?.Should().NotBeNull();
-        response?.Count().Should().BeGreaterOrEqualTo(2);
+        response?.Count.Should().BeGreaterOrEqualTo(2);
     }
 }

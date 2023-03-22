@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
 public record ReserveSeatRequestDto(long FlightId, string SeatNumber);
+public record ReserveSeatResponseDto(long Id);
 
 public class ReserveSeatEndpoint : IMinimalEndpoint
 {
@@ -28,7 +29,7 @@ public class ReserveSeatEndpoint : IMinimalEndpoint
                 new SwaggerResponseAttribute(
                     StatusCodes.Status200OK,
                     "ReserveSeat",
-                    typeof(SeatDto)))
+                    typeof(ReserveSeatResponseDto)))
             .WithMetadata(
                 new SwaggerResponseAttribute(
                     StatusCodes.Status400BadRequest,
@@ -50,6 +51,8 @@ public class ReserveSeatEndpoint : IMinimalEndpoint
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return Results.Ok(result);
+        var response = new ReserveSeatResponseDto(result.Id);
+
+        return Results.Ok(response);
     }
 }
