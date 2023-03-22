@@ -32,8 +32,7 @@ public class UpdateFlightEndpoint : IMinimalEndpoint
             .WithMetadata(
                 new SwaggerResponseAttribute(
                     StatusCodes.Status204NoContent,
-                    "Flight Updated",
-                    typeof(FlightDto)))
+                    "Flight Updated"))
             .WithMetadata(
                 new SwaggerResponseAttribute(
                     StatusCodes.Status400BadRequest,
@@ -53,7 +52,7 @@ public class UpdateFlightEndpoint : IMinimalEndpoint
     {
         var command = mapper.Map<UpdateFlight>(request);
 
-        var result = await mediator.Send(command, cancellationToken);
+        await mediator.Send(command, cancellationToken);
 
         return Results.NoContent();
     }

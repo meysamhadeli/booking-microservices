@@ -17,10 +17,13 @@ using Microsoft.EntityFrameworkCore;
 
 public record UpdateFlight(long Id, string FlightNumber, long AircraftId, long DepartureAirportId,
     DateTime DepartureDate, DateTime ArriveDate, long ArriveAirportId, decimal DurationMinutes, DateTime FlightDate,
-    Enums.FlightStatus Status, bool IsDeleted, decimal Price) : ICommand<FlightDto>, IInternalCommand, IInvalidateCacheRequest
+    Enums.FlightStatus Status, bool IsDeleted, decimal Price) : ICommand<UpdateFlightResult>, IInternalCommand,
+    IInvalidateCacheRequest
 {
     public string CacheKey => "GetAvailableFlights";
 }
+
+public record UpdateFlightResult(long Id);
 
 internal class UpdateFlightValidator : AbstractValidator<CreateFlight>
 {
@@ -43,18 +46,16 @@ internal class UpdateFlightValidator : AbstractValidator<CreateFlight>
     }
 }
 
-internal class UpdateFlightHandler : ICommandHandler<UpdateFlight, FlightDto>
+internal class UpdateFlightHandler : ICommandHandler<UpdateFlight, UpdateFlightResult>
 {
     private readonly FlightDbContext _flightDbContext;
-    private readonly IMapper _mapper;
 
-    public UpdateFlightHandler(IMapper mapper, FlightDbContext flightDbContext)
+    public UpdateFlightHandler(FlightDbContext flightDbContext)
     {
-        _mapper = mapper;
         _flightDbContext = flightDbContext;
     }
 
-    public async Task<FlightDto> Handle(UpdateFlight request, CancellationToken cancellationToken)
+    public async Task<UpdateFlightResult> Handle(UpdateFlight request, CancellationToken cancellationToken)
     {
         Guard.Against.Null(request, nameof(request));
 
@@ -67,11 +68,13 @@ internal class UpdateFlightHandler : ICommandHandler<UpdateFlight, FlightDto>
         }
 
 
-        flight.Update(request.Id, request.FlightNumber, request.AircraftId, request.DepartureAirportId, request.DepartureDate,
-            request.ArriveDate, request.ArriveAirportId, request.DurationMinutes, request.FlightDate, request.Status, request.Price, request.IsDeleted);
+        flight.Update(request.Id, request.FlightNumber, request.AircraftId, request.DepartureAirportId,
+            request.DepartureDate,
+            request.ArriveDate, request.ArriveAirportId, request.DurationMinutes, request.FlightDate, request.Status,
+            request.Price, request.IsDeleted);
 
-        var updateFlight = _flightDbContext.Flights.Update(flight);
+        var updateFlight = (_flightDbContext.Flights.Update(flight))?.Entity;
 
-        return _mapper.Map<FlightDto>(updateFlight.Entity);
+        return new UpdateFlightResult(updateFlight.Id);
     }
 }

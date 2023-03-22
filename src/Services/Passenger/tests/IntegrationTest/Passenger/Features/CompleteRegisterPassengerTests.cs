@@ -33,9 +33,9 @@ public class CompleteRegisterPassengerTests : PassengerIntegrationTestBase
 
         // Assert
         response.Should().NotBeNull();
-        response?.Name.Should().Be(userCreated.Name);
-        response?.PassportNumber.Should().Be(command.PassportNumber);
-        response?.PassengerType.ToString().Should().Be(command.PassengerType.ToString());
-        response?.Age.Should().Be(command.Age);
+        response?.PassengerDto?.Name.Should().Be(userCreated.Name);
+        response?.PassengerDto?.PassportNumber.Should().Be(command.PassportNumber);
+        response?.PassengerDto?.PassengerType.ToString().Should().Be(command.PassengerType.ToString());
+        response?.PassengerDto?.Age.Should().Be(command.Age);
     }
 }

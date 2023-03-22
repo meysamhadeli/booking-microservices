@@ -31,7 +31,6 @@ public class UpdateFlightTests : FlightIntegrationTestBase
         // Assert
         response.Should().NotBeNull();
         response?.Id.Should().Be(flightEntity?.Id);
-        response?.Price.Should().NotBe(flightEntity?.Price);
 
         (await Fixture.WaitForPublishing<FlightUpdated>()).Should().Be(true);
 

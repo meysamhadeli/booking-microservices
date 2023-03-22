@@ -7,14 +7,15 @@ using Ardalis.GuardClauses;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.CQRS;
-using Dtos;
 using Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Models;
 
 public record RegisterNewUser(string FirstName, string LastName, string Username, string Email,
-    string Password, string ConfirmPassword, string PassportNumber) : ICommand<RegisterNewUserResponseDto>;
+    string Password, string ConfirmPassword, string PassportNumber) : ICommand<RegisterNewUserResult>;
+
+public record RegisterNewUserResult(long Id, string FirstName, string LastName, string Username, string PassportNumber);
 
 internal class RegisterNewUserValidator : AbstractValidator<RegisterNewUser>
 {
@@ -39,7 +40,7 @@ internal class RegisterNewUserValidator : AbstractValidator<RegisterNewUser>
     }
 }
 
-internal class RegisterNewUserHandler : ICommandHandler<RegisterNewUser, RegisterNewUserResponseDto>
+internal class RegisterNewUserHandler : ICommandHandler<RegisterNewUser, RegisterNewUserResult>
 {
     private readonly IEventDispatcher _eventDispatcher;
     private readonly UserManager<User> _userManager;
@@ -51,7 +52,7 @@ internal class RegisterNewUserHandler : ICommandHandler<RegisterNewUser, Registe
         _eventDispatcher = eventDispatcher;
     }
 
-    public async Task<RegisterNewUserResponseDto> Handle(RegisterNewUser request,
+    public async Task<RegisterNewUserResult> Handle(RegisterNewUser request,
         CancellationToken cancellationToken)
     {
         Guard.Against.Null(request, nameof(request));
@@ -82,7 +83,7 @@ internal class RegisterNewUserHandler : ICommandHandler<RegisterNewUser, Registe
         await _eventDispatcher.SendAsync(new UserCreated(applicationUser.Id, applicationUser.FirstName + " " + applicationUser.LastName,
             applicationUser.PassPortNumber),cancellationToken: cancellationToken);
 
-        return new RegisterNewUserResponseDto(applicationUser.Id, applicationUser.FirstName, applicationUser.LastName,
+        return new RegisterNewUserResult(applicationUser.Id, applicationUser.FirstName, applicationUser.LastName,
             applicationUser.UserName, applicationUser.PassPortNumber);
     }
 }

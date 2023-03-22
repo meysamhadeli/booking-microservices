@@ -24,8 +24,7 @@ public class DeleteFlightEndpoint : IMinimalEndpoint
             .WithMetadata(
                 new SwaggerResponseAttribute(
                     StatusCodes.Status204NoContent,
-                    "Flight Deleted",
-                    typeof(FlightDto)))
+                    "Flight Deleted"))
             .WithMetadata(
                 new SwaggerResponseAttribute(
                     StatusCodes.Status400BadRequest,

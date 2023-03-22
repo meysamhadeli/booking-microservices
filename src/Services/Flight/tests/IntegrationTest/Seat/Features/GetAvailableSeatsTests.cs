@@ -42,6 +42,6 @@ public class GetAvailableSeatsTests : FlightIntegrationTestBase
 
         // Assert
         response?.Should().NotBeNull();
-        response?.Items?.Count.Should().BeGreaterOrEqualTo(1);
+        response?.SeatDtos?.Count.Should().BeGreaterOrEqualTo(1);
     }
 }

@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
+public record GetFlightByIdResponseDto(FlightDto FlightDto);
+
 public class GetFlightByIdEndpoint : IMinimalEndpoint
 {
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
@@ -28,7 +30,7 @@ public class GetFlightByIdEndpoint : IMinimalEndpoint
                 new SwaggerResponseAttribute(
                     StatusCodes.Status200OK,
                     "GetFlightById",
-                    typeof(FlightDto)))
+                    typeof(GetFlightByIdResponseDto)))
             .WithMetadata(
                 new SwaggerResponseAttribute(
                     StatusCodes.Status400BadRequest,
@@ -48,6 +50,8 @@ public class GetFlightByIdEndpoint : IMinimalEndpoint
     {
         var result = await mediator.Send(new GetFlightById(id), cancellationToken);
 
-        return Results.Ok(result);
+        var response = new GetFlightByIdResponseDto(result?.FlightDto);
+
+        return Results.Ok(response);
     }
 }

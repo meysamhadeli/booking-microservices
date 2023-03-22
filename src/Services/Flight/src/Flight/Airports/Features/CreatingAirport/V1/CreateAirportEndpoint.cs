@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
 public record CreateAirportRequestDto(string Name, string Address, string Code);
+public record CreateAirportResponseDto(long Id);
 
 public class CreateAirportEndpoint : IMinimalEndpoint
 {
@@ -28,7 +29,7 @@ public class CreateAirportEndpoint : IMinimalEndpoint
                 new SwaggerResponseAttribute(
                     StatusCodes.Status200OK,
                     "Airport Created",
-                    typeof(AirportDto)))
+                    typeof(CreateAirportResponseDto)))
             .WithMetadata(
                 new SwaggerResponseAttribute(
                     StatusCodes.Status400BadRequest,
@@ -51,6 +52,8 @@ public class CreateAirportEndpoint : IMinimalEndpoint
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return Results.Ok(result);
+        var response = new CreateAirportResponseDto(result.Id);
+
+        return Results.Ok(response);
     }
 }

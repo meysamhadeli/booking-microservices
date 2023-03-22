@@ -11,21 +11,18 @@ using BuildingBlocks.Core.CQRS;
 using Data;
 using Dtos;
 using Exceptions;
-using FluentValidation;
 using MapsterMapper;
 using MongoDB.Driver;
 
-public record GetAvailableFlights : IQuery<IEnumerable<FlightDto>>, ICacheRequest
+public record GetAvailableFlights : IQuery<GetAvailableFlightsResult>, ICacheRequest
 {
     public string CacheKey => "GetAvailableFlights";
     public DateTime? AbsoluteExpirationRelativeToNow => DateTime.Now.AddHours(1);
 }
 
-internal class GetAvailableFlightsValidator : AbstractValidator<GetAvailableFlights>
-{
-}
+public record GetAvailableFlightsResult(IEnumerable<FlightDto> FlightDtos);
 
-internal class GetAvailableFlightsHandler : IQueryHandler<GetAvailableFlights, IEnumerable<FlightDto>>
+internal class GetAvailableFlightsHandler : IQueryHandler<GetAvailableFlights, GetAvailableFlightsResult>
 {
     private readonly IMapper _mapper;
     private readonly FlightReadDbContext _flightReadDbContext;
@@ -36,7 +33,7 @@ internal class GetAvailableFlightsHandler : IQueryHandler<GetAvailableFlights, I
         _flightReadDbContext = flightReadDbContext;
     }
 
-    public async Task<IEnumerable<FlightDto>> Handle(GetAvailableFlights request,
+    public async Task<GetAvailableFlightsResult> Handle(GetAvailableFlights request,
         CancellationToken cancellationToken)
     {
         Guard.Against.Null(request, nameof(request));
@@ -49,6 +46,8 @@ internal class GetAvailableFlightsHandler : IQueryHandler<GetAvailableFlights, I
             throw new FlightNotFountException();
         }
 
-        return _mapper.Map<IEnumerable<FlightDto>>(flight);
+        var flightDtos = _mapper.Map<IEnumerable<FlightDto>>(flight);
+
+        return new GetAvailableFlightsResult(flightDtos);
     }
 }

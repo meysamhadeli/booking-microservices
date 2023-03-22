@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
-using Flight.Data;
-using Flight.Seats.Dtos;
-using Flight.Seats.Exceptions;
+using Data;
+using Exceptions;
 using FluentValidation;
-using MapsterMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public record ReserveSeat(long FlightId, string SeatNumber) : ICommand<SeatDto>, IInternalCommand;
+public record ReserveSeat(long FlightId, string SeatNumber) : ICommand<ReserveSeatResult>, IInternalCommand;
+
+public record ReserveSeatResult(long Id);
 
 internal class ReserveSeatValidator : AbstractValidator<ReserveSeat>
 {
@@ -24,18 +24,16 @@ internal class ReserveSeatValidator : AbstractValidator<ReserveSeat>
     }
 }
 
-internal class ReserveSeatCommandHandler : IRequestHandler<ReserveSeat, SeatDto>
+internal class ReserveSeatCommandHandler : IRequestHandler<ReserveSeat, ReserveSeatResult>
 {
     private readonly FlightDbContext _flightDbContext;
-    private readonly IMapper _mapper;
 
-    public ReserveSeatCommandHandler(IMapper mapper, FlightDbContext flightDbContext)
+    public ReserveSeatCommandHandler(FlightDbContext flightDbContext)
     {
-        _mapper = mapper;
         _flightDbContext = flightDbContext;
     }
 
-    public async Task<SeatDto> Handle(ReserveSeat command, CancellationToken cancellationToken)
+    public async Task<ReserveSeatResult> Handle(ReserveSeat command, CancellationToken cancellationToken)
     {
         Guard.Against.Null(command, nameof(command));
 
@@ -48,8 +46,8 @@ internal class ReserveSeatCommandHandler : IRequestHandler<ReserveSeat, SeatDto>
 
         var reserveSeat = await seat.ReserveSeat(seat);
 
-        var updatedSeat = _flightDbContext.Seats.Update(reserveSeat);
+        var updatedSeat = (_flightDbContext.Seats.Update(reserveSeat))?.Entity;
 
-        return _mapper.Map<SeatDto>(updatedSeat.Entity);
+        return new ReserveSeatResult(updatedSeat.Id);
     }
 }

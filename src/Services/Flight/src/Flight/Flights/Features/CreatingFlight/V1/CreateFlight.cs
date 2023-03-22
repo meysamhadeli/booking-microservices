@@ -16,10 +16,13 @@ using Microsoft.EntityFrameworkCore;
 
 public record CreateFlight(string FlightNumber, long AircraftId, long DepartureAirportId,
     DateTime DepartureDate, DateTime ArriveDate, long ArriveAirportId,
-    decimal DurationMinutes, DateTime FlightDate, Enums.FlightStatus Status, decimal Price) : ICommand<FlightDto>, IInternalCommand
+    decimal DurationMinutes, DateTime FlightDate, Enums.FlightStatus Status,
+    decimal Price) : ICommand<CreateFlightResult>, IInternalCommand
 {
     public long Id { get; init; } = SnowFlakIdGenerator.NewId();
 }
+
+public record CreateFlightResult(long Id);
 
 internal class CreateFlightValidator : AbstractValidator<CreateFlight>
 {
@@ -42,19 +45,16 @@ internal class CreateFlightValidator : AbstractValidator<CreateFlight>
     }
 }
 
-internal class CreateFlightHandler : ICommandHandler<CreateFlight, FlightDto>
+internal class CreateFlightHandler : ICommandHandler<CreateFlight, CreateFlightResult>
 {
     private readonly FlightDbContext _flightDbContext;
-    private readonly IMapper _mapper;
 
-    public CreateFlightHandler(IMapper mapper,
-        FlightDbContext flightDbContext)
+    public CreateFlightHandler(FlightDbContext flightDbContext)
     {
-        _mapper = mapper;
         _flightDbContext = flightDbContext;
     }
 
-    public async Task<FlightDto> Handle(CreateFlight request, CancellationToken cancellationToken)
+    public async Task<CreateFlightResult> Handle(CreateFlight request, CancellationToken cancellationToken)
     {
         Guard.Against.Null(request, nameof(request));
 
@@ -71,8 +71,8 @@ internal class CreateFlightHandler : ICommandHandler<CreateFlight, FlightDto>
             request.ArriveDate, request.ArriveAirportId, request.DurationMinutes, request.FlightDate, request.Status,
             request.Price);
 
-        var newFlight = await _flightDbContext.Flights.AddAsync(flightEntity, cancellationToken);
+        var newFlight = (await _flightDbContext.Flights.AddAsync(flightEntity, cancellationToken))?.Entity;
 
-        return _mapper.Map<FlightDto>(newFlight.Entity);
+        return new CreateFlightResult(newFlight.Id);
     }
 }

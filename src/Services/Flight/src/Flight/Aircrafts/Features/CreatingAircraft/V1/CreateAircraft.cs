@@ -15,10 +15,12 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public record CreateAircraft(string Name, string Model, int ManufacturingYear) : ICommand<AircraftDto>, IInternalCommand
+public record CreateAircraft(string Name, string Model, int ManufacturingYear) : ICommand<CreateAircraftResult>, IInternalCommand
 {
     public long Id { get; init; } = SnowFlakIdGenerator.NewId();
 }
+
+public record CreateAircraftResult(long Id);
 
 internal class CreateAircraftValidator : AbstractValidator<CreateAircraft>
 {
@@ -30,18 +32,16 @@ internal class CreateAircraftValidator : AbstractValidator<CreateAircraft>
     }
 }
 
-internal class CreateAircraftHandler : IRequestHandler<CreateAircraft, AircraftDto>
+internal class CreateAircraftHandler : IRequestHandler<CreateAircraft, CreateAircraftResult>
 {
     private readonly FlightDbContext _flightDbContext;
-    private readonly IMapper _mapper;
 
-    public CreateAircraftHandler(IMapper mapper, FlightDbContext flightDbContext)
+    public CreateAircraftHandler(FlightDbContext flightDbContext)
     {
-        _mapper = mapper;
         _flightDbContext = flightDbContext;
     }
 
-    public async Task<AircraftDto> Handle(CreateAircraft request, CancellationToken cancellationToken)
+    public async Task<CreateAircraftResult> Handle(CreateAircraft request, CancellationToken cancellationToken)
     {
         Guard.Against.Null(request, nameof(request));
 
@@ -54,10 +54,8 @@ internal class CreateAircraftHandler : IRequestHandler<CreateAircraft, AircraftD
 
         var aircraftEntity = Aircraft.Create(request.Id, request.Name, request.Model, request.ManufacturingYear);
 
-        var newAircraft = await _flightDbContext.Aircraft.AddAsync(aircraftEntity, cancellationToken);
+        var newAircraft = (await _flightDbContext.Aircraft.AddAsync(aircraftEntity, cancellationToken))?.Entity;
 
-        await _flightDbContext.SaveChangesAsync(cancellationToken);
-
-        return _mapper.Map<AircraftDto>(newAircraft.Entity);
+        return new CreateAircraftResult(newAircraft.Id);
     }
 }

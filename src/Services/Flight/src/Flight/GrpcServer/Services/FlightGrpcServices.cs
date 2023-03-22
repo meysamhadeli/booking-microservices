@@ -8,6 +8,9 @@ namespace Flight.GrpcServer.Services;
 using Flights.Features.GettingFlightById.V1;
 using Seats.Features.GettingAvailableSeats.V1;
 using Seats.Features.ReservingSeat.Commands.V1;
+using GetAvailableSeatsResult = GetAvailableSeatsResult;
+using GetFlightByIdResult = GetFlightByIdResult;
+using ReserveSeatResult = ReserveSeatResult;
 
 public class FlightGrpcServices : FlightGrpcService.FlightGrpcServiceBase
 {
@@ -18,29 +21,34 @@ public class FlightGrpcServices : FlightGrpcService.FlightGrpcServiceBase
         _mediator = mediator;
     }
 
-    public override async Task<FlightResponse> GetById(GetByIdRequest request, ServerCallContext context)
+    public override async Task<GetFlightByIdResult> GetById(GetByIdRequest request, ServerCallContext context)
     {
         var result = await _mediator.Send(new GetFlightById(request.Id));
-        return result.Adapt<FlightResponse>();
+        return result.Adapt<GetFlightByIdResult>();
     }
 
-    public override async Task<SeatsResponse> ReserveSeat(ReserveSeatRequest request, ServerCallContext context)
+    public override async Task<GetAvailableSeatsResult> GetAvailableSeats(GetAvailableSeatsRequest request, ServerCallContext context)
     {
-        var result = await _mediator.Send(new ReserveSeat(request.FlightId, request.SeatNumber));
-        return result.Adapt<SeatsResponse>();
-    }
-
-    public override async Task<ListSeatsResponse> GetAvailableSeats(GetAvailableSeatsRequest request, ServerCallContext context)
-    {
-        var result = new ListSeatsResponse();
+        var result = new GetAvailableSeatsResult();
 
         var availableSeats = await _mediator.Send(new GetAvailableSeats(request.FlightId));
 
-        foreach (var availableSeat in availableSeats)
+        if (availableSeats?.SeatDtos == null)
         {
-            result.Items.Add(availableSeat.Adapt<SeatsResponse>());
+            return result;
+        }
+
+        foreach (var availableSeat in availableSeats.SeatDtos)
+        {
+            result.SeatDtos.Add(availableSeat.Adapt<SeatDtoResponse>());
         }
 
         return result;
+    }
+
+    public override async Task<ReserveSeatResult> ReserveSeat(ReserveSeatRequest request, ServerCallContext context)
+    {
+        var result = await _mediator.Send(new ReserveSeat(request.FlightId, request.SeatNumber));
+        return result.Adapt<ReserveSeatResult>();
     }
 }

@@ -21,10 +21,10 @@ public class CreateSeatCommandHandlerTests
     public CreateSeatCommandHandlerTests(UnitTestFixture fixture)
     {
         _fixture = fixture;
-        _handler = new CreateSeatCommandHandler(_fixture.Mapper, _fixture.DbContext);
+        _handler = new CreateSeatCommandHandler(_fixture.DbContext);
     }
 
-    public Task<SeatDto> Act(CreateSeat command, CancellationToken cancellationToken)
+    public Task<CreateSeatResult> Act(CreateSeat command, CancellationToken cancellationToken)
     {
         return _handler.Handle(command, cancellationToken);
     }

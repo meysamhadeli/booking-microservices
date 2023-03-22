@@ -1,5 +1,4 @@
 using System;
-using Flight.Flights.Models;
 
 namespace Flight.Flights.Dtos;
 

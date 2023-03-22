@@ -45,7 +45,6 @@ public class ReserveSeatTests : FlightIntegrationTestBase
 
         // Assert
         response?.Should().NotBeNull();
-        response?.SeatNumber.Should().Be(seatCommand.SeatNumber);
-        response?.FlightId.Should().Be(seatCommand.FlightId);
+        response?.Id.Should().Be(seatCommand.Id);
     }
 }

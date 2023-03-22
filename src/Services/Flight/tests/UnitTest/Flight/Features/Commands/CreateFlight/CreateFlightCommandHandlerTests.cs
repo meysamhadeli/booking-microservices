@@ -16,13 +16,13 @@ public class CreateFlightCommandHandlerTests
     private readonly UnitTestFixture _fixture;
     private readonly CreateFlightHandler _handler;
 
-    public Task<FlightDto> Act(CreateFlight command, CancellationToken cancellationToken) =>
+    public Task<CreateFlightResult> Act(CreateFlight command, CancellationToken cancellationToken) =>
         _handler.Handle(command, cancellationToken);
 
     public CreateFlightCommandHandlerTests(UnitTestFixture fixture)
     {
         _fixture = fixture;
-        _handler = new CreateFlightHandler(fixture.Mapper, fixture.DbContext);
+        _handler = new CreateFlightHandler(fixture.DbContext);
     }
 
     [Fact]
@@ -39,7 +39,6 @@ public class CreateFlightCommandHandlerTests
 
         entity?.Should().NotBeNull();
         response?.Id.Should().Be(entity?.Id);
-        response?.FlightNumber.Should().Be(entity?.FlightNumber);
     }
 
     [Fact]

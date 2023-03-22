@@ -4,7 +4,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
-using Flight.Flights.Dtos;
 using Hellang.Middleware.ProblemDetails;
 using MapsterMapper;
 using MediatR;
@@ -16,6 +15,8 @@ using Swashbuckle.AspNetCore.Annotations;
 public record CreateFlightRequestDto(string FlightNumber, long AircraftId, long DepartureAirportId,
     DateTime DepartureDate, DateTime ArriveDate, long ArriveAirportId,
     decimal DurationMinutes, DateTime FlightDate, Enums.FlightStatus Status, decimal Price);
+
+public record CreateFlightResponseDto(long Id);
 
 public class CreateFlightEndpoint : IMinimalEndpoint
 {
@@ -31,7 +32,7 @@ public class CreateFlightEndpoint : IMinimalEndpoint
                 new SwaggerResponseAttribute(
                     StatusCodes.Status201Created,
                     "Flight Created",
-                    typeof(FlightDto)))
+                    typeof(CreateFlightResponseDto)))
             .WithMetadata(
                 new SwaggerResponseAttribute(
                     StatusCodes.Status400BadRequest,
@@ -54,6 +55,8 @@ public class CreateFlightEndpoint : IMinimalEndpoint
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return Results.CreatedAtRoute("GetFlightById", new {id = result.Id}, result);
+        var response = new CreateFlightResponseDto(result.Id);
+
+        return Results.CreatedAtRoute("GetFlightById", new {id = result.Id}, response);
     }
 }

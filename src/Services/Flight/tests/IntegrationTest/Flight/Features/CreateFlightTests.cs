@@ -29,7 +29,7 @@ public class CreateFlightTests : FlightIntegrationTestBase
 
         // Assert
         response.Should().NotBeNull();
-        response?.FlightNumber.Should().Be(command.FlightNumber);
+        response?.Id.Should().Be(command.Id);
 
         (await Fixture.WaitForPublishing<FlightCreated>()).Should().Be(true);
         (await Fixture.WaitForConsuming<FlightCreated>()).Should().Be(true);

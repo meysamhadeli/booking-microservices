@@ -3,7 +3,6 @@ namespace Identity.Identity.Features.RegisteringNewUser.V1;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
-using Dtos;
 using Hellang.Middleware.ProblemDetails;
 using MapsterMapper;
 using MediatR;
@@ -14,6 +13,8 @@ using Swashbuckle.AspNetCore.Annotations;
 
 public record RegisterNewUserRequestDto(string FirstName, string LastName, string Username, string Email,
     string Password, string ConfirmPassword, string PassportNumber);
+
+public record RegisterNewUserResponseDto(long Id, string FirstName, string LastName, string Username, string PassportNumber);
 
 public class RegisterNewUserEndpoint : IMinimalEndpoint
 {
@@ -42,10 +43,12 @@ public class RegisterNewUserEndpoint : IMinimalEndpoint
     private async Task<IResult> RegisterNewUser(RegisterNewUserRequestDto request, IMediator mediator, IMapper mapper,
         CancellationToken cancellationToken)
     {
-        var command = mapper.Map<V1.RegisterNewUser>(request);
+        var command = mapper.Map<RegisterNewUser>(request);
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return Results.Ok(result);
+        var response = mapper.Map<RegisterNewUserResponseDto>(result);
+
+        return Results.Ok(response);
     }
 }

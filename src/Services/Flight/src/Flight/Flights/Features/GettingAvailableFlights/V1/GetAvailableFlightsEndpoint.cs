@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
-using Flight.Flights.Dtos;
+using Dtos;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
+
+public record GetAvailableFlightsResponseDto(IEnumerable<FlightDto> FlightDtos);
 
 public class GetAvailableFlightsEndpoint : IMinimalEndpoint
 {
@@ -26,7 +28,7 @@ public class GetAvailableFlightsEndpoint : IMinimalEndpoint
                 new SwaggerResponseAttribute(
                     StatusCodes.Status200OK,
                     "GetAvailableFlights",
-                    typeof(IEnumerable<FlightDto>)))
+                    typeof(GetAvailableFlightsResult)))
             .WithMetadata(
                 new SwaggerResponseAttribute(
                     StatusCodes.Status400BadRequest,
@@ -46,6 +48,8 @@ public class GetAvailableFlightsEndpoint : IMinimalEndpoint
     {
         var result = await mediator.Send(new GetAvailableFlights(), cancellationToken);
 
-        return Results.Ok(result);
+        var response = new GetAvailableFlightsResponseDto(result?.FlightDtos);
+
+        return Results.Ok(response);
     }
 }

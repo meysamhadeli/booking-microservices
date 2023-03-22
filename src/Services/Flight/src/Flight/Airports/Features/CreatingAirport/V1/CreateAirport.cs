@@ -14,10 +14,12 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public record CreateAirport(string Name, string Address, string Code) : ICommand<AirportDto>, IInternalCommand
+public record CreateAirport(string Name, string Address, string Code) : ICommand<CreateAirportResult>, IInternalCommand
 {
     public long Id { get; init; } = SnowFlakIdGenerator.NewId();
 }
+
+public record CreateAirportResult(long Id);
 
 internal class CreateAirportValidator : AbstractValidator<CreateAirport>
 {
@@ -30,18 +32,16 @@ internal class CreateAirportValidator : AbstractValidator<CreateAirport>
 }
 
 
-internal class CreateAirportHandler : IRequestHandler<CreateAirport, AirportDto>
+internal class CreateAirportHandler : IRequestHandler<CreateAirport, CreateAirportResult>
 {
     private readonly FlightDbContext _flightDbContext;
-    private readonly IMapper _mapper;
 
-    public CreateAirportHandler(IMapper mapper, FlightDbContext flightDbContext)
+    public CreateAirportHandler(FlightDbContext flightDbContext)
     {
-        _mapper = mapper;
         _flightDbContext = flightDbContext;
     }
 
-    public async Task<AirportDto> Handle(CreateAirport request, CancellationToken cancellationToken)
+    public async Task<CreateAirportResult> Handle(CreateAirport request, CancellationToken cancellationToken)
     {
         Guard.Against.Null(request, nameof(request));
 
@@ -54,10 +54,8 @@ internal class CreateAirportHandler : IRequestHandler<CreateAirport, AirportDto>
 
         var airportEntity = Models.Airport.Create(request.Id, request.Name, request.Code, request.Address);
 
-        var newAirport = await _flightDbContext.Airports.AddAsync(airportEntity, cancellationToken);
+        var newAirport = (await _flightDbContext.Airports.AddAsync(airportEntity, cancellationToken))?.Entity;
 
-        await _flightDbContext.SaveChangesAsync(cancellationToken);
-
-        return _mapper.Map<AirportDto>(newAirport.Entity);
+        return new CreateAirportResult(newAirport.Id);
     }
 }

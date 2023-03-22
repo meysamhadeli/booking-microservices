@@ -12,7 +12,9 @@ using FluentValidation;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 
-public record DeleteFlight(long Id) : ICommand<FlightDto>, IInternalCommand;
+public record DeleteFlight(long Id) : ICommand<DeleteFlightResult>, IInternalCommand;
+
+public record DeleteFlightResult(long Id);
 
 internal class DeleteFlightValidator : AbstractValidator<DeleteFlight>
 {
@@ -22,18 +24,16 @@ internal class DeleteFlightValidator : AbstractValidator<DeleteFlight>
     }
 }
 
-internal class DeleteFlightHandler : ICommandHandler<DeleteFlight, FlightDto>
+internal class DeleteFlightHandler : ICommandHandler<DeleteFlight, DeleteFlightResult>
 {
     private readonly FlightDbContext _flightDbContext;
-    private readonly IMapper _mapper;
 
-    public DeleteFlightHandler(IMapper mapper, FlightDbContext flightDbContext)
+    public DeleteFlightHandler(FlightDbContext flightDbContext)
     {
-        _mapper = mapper;
         _flightDbContext = flightDbContext;
     }
 
-    public async Task<FlightDto> Handle(DeleteFlight request, CancellationToken cancellationToken)
+    public async Task<DeleteFlightResult> Handle(DeleteFlight request, CancellationToken cancellationToken)
     {
         Guard.Against.Null(request, nameof(request));
 
@@ -44,12 +44,12 @@ internal class DeleteFlightHandler : ICommandHandler<DeleteFlight, FlightDto>
             throw new FlightNotFountException();
         }
 
-        var deleteFlight = _flightDbContext.Flights.Remove(flight).Entity;
+        flight.Delete(flight.Id, flight.FlightNumber, flight.AircraftId, flight.DepartureAirportId,
+            flight.DepartureDate, flight.ArriveDate, flight.ArriveAirportId, flight.DurationMinutes,
+            flight.FlightDate, flight.Status, flight.Price);
 
-        flight.Delete(deleteFlight.Id, deleteFlight.FlightNumber, deleteFlight.AircraftId, deleteFlight.DepartureAirportId,
-            deleteFlight.DepartureDate, deleteFlight.ArriveDate, deleteFlight.ArriveAirportId, deleteFlight.DurationMinutes,
-            deleteFlight.FlightDate, deleteFlight.Status, deleteFlight.Price);
+        var deleteFlight = (_flightDbContext.Flights.Remove(flight))?.Entity;
 
-        return _mapper.Map<FlightDto>(deleteFlight);
+        return new DeleteFlightResult(deleteFlight.Id);
     }
 }
