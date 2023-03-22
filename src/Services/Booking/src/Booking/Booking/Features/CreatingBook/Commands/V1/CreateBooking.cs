@@ -13,10 +13,12 @@ using FluentValidation;
 using Models.ValueObjects;
 using Passenger;
 
-public record CreateBooking(long PassengerId, long FlightId, string Description) : ICommand<ulong>, IInternalCommand
+public record CreateBooking(long PassengerId, long FlightId, string Description) : ICommand<CreateBookingResult>, IInternalCommand
 {
     public long Id { get; init; } = SnowFlakIdGenerator.NewId();
 }
+
+public record CreateBookingResult(ulong Id);
 
 internal class CreateBookingValidator : AbstractValidator<CreateBooking>
 {
@@ -27,7 +29,7 @@ internal class CreateBookingValidator : AbstractValidator<CreateBooking>
     }
 }
 
-internal class CreateBookingCommandHandler : ICommandHandler<CreateBooking, ulong>
+internal class CreateBookingCommandHandler : ICommandHandler<CreateBooking, CreateBookingResult>
 {
     private readonly IEventStoreDBRepository<Models.Booking> _eventStoreDbRepository;
     private readonly ICurrentUserProvider _currentUserProvider;
@@ -48,7 +50,7 @@ internal class CreateBookingCommandHandler : ICommandHandler<CreateBooking, ulon
         _passengerGrpcServiceClient = passengerGrpcServiceClient;
     }
 
-    public async Task<ulong> Handle(CreateBooking command, CancellationToken cancellationToken)
+    public async Task<CreateBookingResult> Handle(CreateBooking command, CancellationToken cancellationToken)
     {
         Guard.Against.Null(command, nameof(command));
 
@@ -90,6 +92,6 @@ internal class CreateBookingCommandHandler : ICommandHandler<CreateBooking, ulon
             aggrigate,
             cancellationToken);
 
-        return result;
+        return new CreateBookingResult(result);
     }
 }

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
 public record CreateBookingRequestDto(long PassengerId, long FlightId, string Description);
+public record CreateBookingResponseDto(ulong Id);
 
 public class CreateBookingEndpoint : IMinimalEndpoint
 {
@@ -25,7 +26,7 @@ public class CreateBookingEndpoint : IMinimalEndpoint
                 new SwaggerResponseAttribute(
                     StatusCodes.Status200OK,
                     "Booking Created",
-                    typeof(ulong)))
+                    typeof(CreateBookingResponseDto)))
             .WithMetadata(
                 new SwaggerResponseAttribute(
                     StatusCodes.Status400BadRequest,
@@ -48,6 +49,8 @@ public class CreateBookingEndpoint : IMinimalEndpoint
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return Results.Ok(result);
+        var response = new CreateBookingResponseDto(result.Id);
+
+        return Results.Ok(response);
     }
 }

@@ -21,10 +21,10 @@ public class CreateAirportCommandHandlerTests
     public CreateAirportCommandHandlerTests(UnitTestFixture fixture)
     {
         _fixture = fixture;
-        _handler = new CreateAirportHandler(_fixture.Mapper, _fixture.DbContext);
+        _handler = new CreateAirportHandler(_fixture.DbContext);
     }
 
-    public Task<AirportDto> Act(CreateAirport command, CancellationToken cancellationToken) =>
+    public Task<CreateAirportResult> Act(CreateAirport command, CancellationToken cancellationToken) =>
         _handler.Handle(command, cancellationToken);
 
     [Fact]

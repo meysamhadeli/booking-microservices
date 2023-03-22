@@ -15,10 +15,12 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public record CreateSeat(string SeatNumber, Enums.SeatType Type, Enums.SeatClass Class, long FlightId) : ICommand<SeatDto>, IInternalCommand
+public record CreateSeat(string SeatNumber, Enums.SeatType Type, Enums.SeatClass Class, long FlightId) : ICommand<CreateSeatResult>, IInternalCommand
 {
     public long Id { get; init; } = SnowFlakIdGenerator.NewId();
 }
+
+public record CreateSeatResult(long Id);
 
 internal class CreateSeatValidator : AbstractValidator<CreateSeat>
 {
@@ -34,18 +36,16 @@ internal class CreateSeatValidator : AbstractValidator<CreateSeat>
     }
 }
 
-internal class CreateSeatCommandHandler : IRequestHandler<CreateSeat, SeatDto>
+internal class CreateSeatCommandHandler : IRequestHandler<CreateSeat, CreateSeatResult>
 {
     private readonly FlightDbContext _flightDbContext;
-    private readonly IMapper _mapper;
 
-    public CreateSeatCommandHandler(IMapper mapper, FlightDbContext flightDbContext)
+    public CreateSeatCommandHandler(FlightDbContext flightDbContext)
     {
-        _mapper = mapper;
         _flightDbContext = flightDbContext;
     }
 
-    public async Task<SeatDto> Handle(CreateSeat command, CancellationToken cancellationToken)
+    public async Task<CreateSeatResult> Handle(CreateSeat command, CancellationToken cancellationToken)
     {
         Guard.Against.Null(command, nameof(command));
 
@@ -58,9 +58,9 @@ internal class CreateSeatCommandHandler : IRequestHandler<CreateSeat, SeatDto>
 
         var seatEntity = Seat.Create(command.Id, command.SeatNumber, command.Type, command.Class, command.FlightId);
 
-        var newSeat = await _flightDbContext.Seats.AddAsync(seatEntity, cancellationToken);
+        var newSeat = (await _flightDbContext.Seats.AddAsync(seatEntity, cancellationToken))?.Entity;
 
-        return _mapper.Map<SeatDto>(newSeat.Entity);
+        return new CreateSeatResult(newSeat.Id);
     }
 }
 

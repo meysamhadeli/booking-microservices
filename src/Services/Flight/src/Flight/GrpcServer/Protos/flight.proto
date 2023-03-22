@@ -5,13 +5,25 @@ import "google/protobuf/timestamp.proto";
 
 service FlightGrpcService {
 
-  rpc GetById (GetByIdRequest) returns (FlightResponse);
-  rpc GetAvailableSeats (GetAvailableSeatsRequest) returns (ListSeatsResponse);
-  rpc ReserveSeat (ReserveSeatRequest) returns (SeatsResponse);
+  rpc GetById (GetByIdRequest) returns (GetFlightByIdResult);
+  rpc GetAvailableSeats (GetAvailableSeatsRequest) returns (GetAvailableSeatsResult);
+  rpc ReserveSeat (ReserveSeatRequest) returns (ReserveSeatResult);
 }
 
 message GetByIdRequest {
   int64 Id = 1;
+}
+
+message GetFlightByIdResult{
+  FlightResponse FlightDto = 1;
+}
+
+message GetAvailableSeatsResult{
+repeated SeatDtoResponse SeatDtos = 1;
+}
+
+message ReserveSeatResult{
+    int64 Id = 1;
 }
 
 message FlightResponse {
@@ -33,7 +45,7 @@ message GetAvailableSeatsRequest {
   int64 FlightId = 1;
 }
 
-message SeatsResponse {
+message SeatDtoResponse {
   int64 Id = 1;
   string SeatNumber = 2;
   SeatType Type = 3;
@@ -47,9 +59,6 @@ message ReserveSeatRequest {
   string SeatNumber = 2;
 }
 
-message ListSeatsResponse {
-  repeated SeatsResponse items = 1;
-}
 
     enum FlightStatus {
       FLIGHT_STATUS_UNKNOWN = 0;

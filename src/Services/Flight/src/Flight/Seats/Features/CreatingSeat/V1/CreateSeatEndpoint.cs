@@ -13,22 +13,23 @@ using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
 public record CreateSeatRequestDto(string SeatNumber, Enums.SeatType Type, Enums.SeatClass Class, long FlightId);
+public record CreateSeatResponseDto(long Id);
 
 public class CreateSeatEndpoint : IMinimalEndpoint
 {
-    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder endpoints)
+    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
-        endpoints.MapPost($"{EndpointConfig.BaseApiPath}/flight/seat", CreateSeat)
+        builder.MapPost($"{EndpointConfig.BaseApiPath}/flight/seat", CreateSeat)
             .RequireAuthorization()
             .WithTags("Flight")
             .WithName("CreateSeat")
             .WithMetadata(new SwaggerOperationAttribute("Create Seat", "Create Seat"))
-            .WithApiVersionSet(endpoints.NewApiVersionSet("Flight").Build())
+            .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .WithMetadata(
                 new SwaggerResponseAttribute(
                     StatusCodes.Status200OK,
                     "Seat Created",
-                    typeof(SeatDto)))
+                    typeof(CreateSeatResponseDto)))
             .WithMetadata(
                 new SwaggerResponseAttribute(
                     StatusCodes.Status400BadRequest,
@@ -41,7 +42,7 @@ public class CreateSeatEndpoint : IMinimalEndpoint
                     typeof(StatusCodeProblemDetails)))
             .HasApiVersion(1.0);
 
-        return endpoints;
+        return builder;
     }
 
     private async Task<IResult> CreateSeat(CreateSeatRequestDto request, IMediator mediator, IMapper mapper,
@@ -51,6 +52,8 @@ public class CreateSeatEndpoint : IMinimalEndpoint
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return Results.Ok(result);
+        var response = new CreateSeatResponseDto(result.Id);
+
+        return Results.Ok(response);
     }
 }

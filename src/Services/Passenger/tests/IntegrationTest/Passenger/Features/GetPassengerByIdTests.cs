@@ -34,7 +34,7 @@ public class GetPassengerByIdTests : PassengerIntegrationTestBase
 
         // Assert
         response.Should().NotBeNull();
-        response?.Id.Should().Be(passengerEntity.Id);
+        response?.PassengerDto?.Id.Should().Be(passengerEntity.Id);
     }
 
     [Fact]
@@ -53,6 +53,6 @@ public class GetPassengerByIdTests : PassengerIntegrationTestBase
 
         // Assert
         response?.Should().NotBeNull();
-        response?.Id.Should().Be(passengerEntity.Id);
+        response?.PassengerDto?.Id.Should().Be(passengerEntity.Id);
     }
 }

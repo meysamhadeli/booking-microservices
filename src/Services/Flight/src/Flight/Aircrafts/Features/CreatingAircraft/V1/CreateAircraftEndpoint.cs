@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
 public record CreateAircraftRequestDto(string Name, string Model, int ManufacturingYear);
+public record CreateAircraftResponseDto(long Id);
 
 public class CreateAircraftEndpoint : IMinimalEndpoint
 {
@@ -28,7 +29,7 @@ public class CreateAircraftEndpoint : IMinimalEndpoint
                 new SwaggerResponseAttribute(
                     StatusCodes.Status200OK,
                     "Aircraft Created",
-                    typeof(AircraftDto)))
+                    typeof(CreateAircraftResponseDto)))
             .WithMetadata(
                 new SwaggerResponseAttribute(
                     StatusCodes.Status400BadRequest,
@@ -51,6 +52,8 @@ public class CreateAircraftEndpoint : IMinimalEndpoint
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return Results.Ok(result);
+        var response = new CreateAircraftResponseDto(result.Id);
+
+        return Results.Ok(response);
     }
 }

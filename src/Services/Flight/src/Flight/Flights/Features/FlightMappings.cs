@@ -1,13 +1,14 @@
 using BuildingBlocks.IdsGenerator;
-using Flight.Flights.Dtos;
 using Mapster;
 
 namespace Flight.Flights.Features;
 
 using CreatingFlight.V1;
 using DeletingFlight.V1;
+using GettingAvailableFlights.V1;
 using Models;
 using UpdatingFlight.V1;
+using FlightDto = Dtos.FlightDto;
 
 public class FlightMappings : IRegister
 {
