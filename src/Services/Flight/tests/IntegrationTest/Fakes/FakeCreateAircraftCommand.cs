@@ -9,6 +9,6 @@ public class FakeCreateAircraftCommand : AutoFaker<CreateAircraft>
 {
     public FakeCreateAircraftCommand()
     {
-        RuleFor(r => r.Id, _ => SnowFlakIdGenerator.NewId());
+        RuleFor(r => r.Id, _ => SnowflakeIdGenerator.NewId());
     }
 }

@@ -10,7 +10,7 @@ public sealed class FakeCompleteRegisterPassengerCommand : AutoFaker<CompleteReg
 {
     public FakeCompleteRegisterPassengerCommand(string passportNumber)
     {
-        RuleFor(r => r.Id, _ => SnowFlakIdGenerator.NewId());
+        RuleFor(r => r.Id, _ => SnowflakeIdGenerator.NewId());
         RuleFor(r => r.PassportNumber, _ => passportNumber);
         RuleFor(r => r.PassengerType, _ => PassengerType.Male);
         RuleFor(r => r.Age, _ => 30);

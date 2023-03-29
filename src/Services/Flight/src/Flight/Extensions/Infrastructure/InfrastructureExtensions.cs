@@ -31,7 +31,6 @@ using Serilog;
 namespace Flight.Extensions.Infrastructure;
 
 using BuildingBlocks.PersistMessageProcessor.Data;
-using Microsoft.AspNetCore.HttpOverrides;
 
 public static class InfrastructureExtensions
 {
@@ -39,6 +38,9 @@ public static class InfrastructureExtensions
     {
         var configuration = builder.Configuration;
         var env = builder.Environment;
+
+        // https://github.com/tonerdo/dotnet-env
+        DotNetEnv.Env.TraversePath().Load();
 
         builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
         builder.Services.AddScoped<IEventMapper, EventMapper>();
@@ -85,8 +87,6 @@ public static class InfrastructureExtensions
         {
             options.Interceptors.Add<GrpcExceptionInterceptor>();
         });
-
-        SnowFlakIdGenerator.Configure(1);
 
         builder.Services.AddEasyCaching(options => { options.UseInMemory(configuration, "mem"); });
 

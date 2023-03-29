@@ -11,11 +11,11 @@ public class AircraftMappings : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<CreateAircraftMongo, AircraftReadModel>()
-            .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
+            .Map(d => d.Id, s => SnowflakeIdGenerator.NewId())
             .Map(d => d.AircraftId, s => s.Id);
 
         config.NewConfig<Aircraft, AircraftReadModel>()
-            .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
+            .Map(d => d.Id, s => SnowflakeIdGenerator.NewId())
             .Map(d => d.AircraftId, s => s.Id);
 
         config.NewConfig<CreateAircraftRequestDto, CreatingAircraft.V1.CreateAircraft>()

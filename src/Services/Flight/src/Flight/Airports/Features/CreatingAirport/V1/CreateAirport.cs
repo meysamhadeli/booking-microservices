@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 public record CreateAirport(string Name, string Address, string Code) : ICommand<CreateAirportResult>, IInternalCommand
 {
-    public long Id { get; init; } = SnowFlakIdGenerator.NewId();
+    public long Id { get; init; } = SnowflakeIdGenerator.NewId();
 }
 
 public record CreateAirportResult(long Id);

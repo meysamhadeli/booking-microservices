@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Passenger\Passenger.csproj"/>
+    <ProjectReference Include="..\Passenger\Passenger.csproj" />
   </ItemGroup>
 
 </Project>

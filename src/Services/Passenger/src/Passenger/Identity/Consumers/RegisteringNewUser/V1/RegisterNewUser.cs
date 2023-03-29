@@ -45,7 +45,7 @@ public class RegisterNewUserHandler : IConsumer<UserCreated>
             return;
         }
 
-        var passenger = Passengers.Models.Passenger.Create(SnowFlakIdGenerator.NewId(), context.Message.Name,
+        var passenger = Passengers.Models.Passenger.Create(SnowflakeIdGenerator.NewId(), context.Message.Name,
             context.Message.PassportNumber);
 
         await _passengerDbContext.AddAsync(passenger);

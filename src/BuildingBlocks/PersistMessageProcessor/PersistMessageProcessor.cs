@@ -202,7 +202,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
         if (messageEnvelope.Message is IEvent message)
             id = message.EventId;
         else
-            id = SnowFlakIdGenerator.NewId();
+            id = SnowflakeIdGenerator.NewId();
 
         await _persistMessageDbContext.PersistMessages.AddAsync(
             new PersistMessage(

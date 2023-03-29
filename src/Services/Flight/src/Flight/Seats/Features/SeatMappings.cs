@@ -16,11 +16,11 @@ public class SeatMappings : IRegister
             .ConstructUsing(x => new SeatDto(x.Id, x.SeatNumber, x.Type, x.Class, x.FlightId));
 
         config.NewConfig<CreateSeatMongo, SeatReadModel>()
-            .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
+            .Map(d => d.Id, s => SnowflakeIdGenerator.NewId())
             .Map(d => d.SeatId, s => s.Id);
 
         config.NewConfig<Seat, SeatReadModel>()
-            .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
+            .Map(d => d.Id, s => SnowflakeIdGenerator.NewId())
             .Map(d => d.SeatId, s => s.Id);
 
         config.NewConfig<ReserveSeatMongo, SeatReadModel>()

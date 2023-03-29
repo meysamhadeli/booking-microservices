@@ -13,7 +13,6 @@ namespace Unit.Test.Common
     {
         public UnitTestFixture()
         {
-            SnowFlakIdGeneratorFactory.Create();
             Mapper = MapperFactory.Create();
             DbContext = DbContextFactory.Create();
         }

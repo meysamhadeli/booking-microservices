@@ -19,7 +19,7 @@ public record CreateFlight(string FlightNumber, long AircraftId, long DepartureA
     decimal DurationMinutes, DateTime FlightDate, Enums.FlightStatus Status,
     decimal Price) : ICommand<CreateFlightResult>, IInternalCommand
 {
-    public long Id { get; init; } = SnowFlakIdGenerator.NewId();
+    public long Id { get; init; } = SnowflakeIdGenerator.NewId();
 }
 
 public record CreateFlightResult(long Id);
