@@ -1,12 +1,11 @@
 namespace Passenger.Passengers.Features.GettingPassengerById.Queries.V1;
 
 using BuildingBlocks.Web;
-using Hellang.Middleware.ProblemDetails;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Passenger.Passengers.Dtos;
+using Dtos;
 using Swashbuckle.AspNetCore.Annotations;
 
 public record GetPassengerByIdResponseDto(PassengerDto PassengerDto);
@@ -17,25 +16,10 @@ public class GetPassengerByIdEndpoint : IMinimalEndpoint
     {
         builder.MapGet($"{EndpointConfig.BaseApiPath}/passenger/{{id}}", GetById)
             .RequireAuthorization()
-            .WithTags("Passenger")
-            .WithName("GetPassengerById")
             .WithMetadata(new SwaggerOperationAttribute("Get Passenger By Id", "Get Passenger By Id"))
             .WithApiVersionSet(builder.NewApiVersionSet("Passenger").Build())
-            .WithMetadata(
-                new SwaggerResponseAttribute(
-                    StatusCodes.Status200OK,
-                    "GetPassengerById",
-                    typeof(GetPassengerByIdResponseDto)))
-            .WithMetadata(
-                new SwaggerResponseAttribute(
-                    StatusCodes.Status400BadRequest,
-                    "BadRequest",
-                    typeof(StatusCodeProblemDetails)))
-            .WithMetadata(
-                new SwaggerResponseAttribute(
-                    StatusCodes.Status401Unauthorized,
-                    "UnAuthorized",
-                    typeof(StatusCodeProblemDetails)))
+            .Produces<GetPassengerByIdResponseDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
             .HasApiVersion(1.0);
 
         return builder;

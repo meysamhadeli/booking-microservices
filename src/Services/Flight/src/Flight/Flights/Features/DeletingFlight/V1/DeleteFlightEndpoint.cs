@@ -3,8 +3,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
-using Flight.Flights.Dtos;
-using Hellang.Middleware.ProblemDetails;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -17,24 +15,10 @@ public class DeleteFlightEndpoint : IMinimalEndpoint
     {
         builder.MapDelete($"{EndpointConfig.BaseApiPath}/flight/{{id}}", DeleteFlight)
             .RequireAuthorization()
-            .WithTags("Flight")
-            .WithName("DeleteFlight")
             .WithMetadata(new SwaggerOperationAttribute("Delete Flight", "Delete Flight"))
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
-            .WithMetadata(
-                new SwaggerResponseAttribute(
-                    StatusCodes.Status204NoContent,
-                    "Flight Deleted"))
-            .WithMetadata(
-                new SwaggerResponseAttribute(
-                    StatusCodes.Status400BadRequest,
-                    "BadRequest",
-                    typeof(StatusCodeProblemDetails)))
-            .WithMetadata(
-                new SwaggerResponseAttribute(
-                    StatusCodes.Status401Unauthorized,
-                    "UnAuthorized",
-                    typeof(StatusCodeProblemDetails)))
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
             .HasApiVersion(1.0);
 
         return builder;

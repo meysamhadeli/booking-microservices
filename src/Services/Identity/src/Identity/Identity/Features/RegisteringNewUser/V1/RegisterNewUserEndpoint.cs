@@ -3,7 +3,6 @@ namespace Identity.Identity.Features.RegisteringNewUser.V1;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
-using Hellang.Middleware.ProblemDetails;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -21,20 +20,10 @@ public class RegisterNewUserEndpoint : IMinimalEndpoint
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/identity/register-user", RegisterNewUser)
-            .WithTags("Identity")
-            .WithName("RegisterUser")
             .WithMetadata(new SwaggerOperationAttribute("Register User", "Register User"))
             .WithApiVersionSet(builder.NewApiVersionSet("Identity").Build())
-            .WithMetadata(
-                new SwaggerResponseAttribute(
-                    StatusCodes.Status200OK,
-                    "User Registered",
-                    typeof(RegisterNewUserResponseDto)))
-            .WithMetadata(
-                new SwaggerResponseAttribute(
-                    StatusCodes.Status400BadRequest,
-                    "BadRequest",
-                    typeof(StatusCodeProblemDetails)))
+            .Produces<RegisterNewUserResponseDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
             .HasApiVersion(1.0);
 
         return builder;
