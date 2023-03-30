@@ -3,8 +3,6 @@ namespace Flight.Seats.Features.CreatingSeat.V1;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
-using Flight.Seats.Dtos;
-using Hellang.Middleware.ProblemDetails;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -21,25 +19,11 @@ public class CreateSeatEndpoint : IMinimalEndpoint
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/flight/seat", CreateSeat)
             .RequireAuthorization()
-            .WithTags("Flight")
             .WithName("CreateSeat")
             .WithMetadata(new SwaggerOperationAttribute("Create Seat", "Create Seat"))
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
-            .WithMetadata(
-                new SwaggerResponseAttribute(
-                    StatusCodes.Status200OK,
-                    "Seat Created",
-                    typeof(CreateSeatResponseDto)))
-            .WithMetadata(
-                new SwaggerResponseAttribute(
-                    StatusCodes.Status400BadRequest,
-                    "BadRequest",
-                    typeof(StatusCodeProblemDetails)))
-            .WithMetadata(
-                new SwaggerResponseAttribute(
-                    StatusCodes.Status401Unauthorized,
-                    "UnAuthorized",
-                    typeof(StatusCodeProblemDetails)))
+            .Produces<CreateSeatResponseDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
             .HasApiVersion(1.0);
 
         return builder;

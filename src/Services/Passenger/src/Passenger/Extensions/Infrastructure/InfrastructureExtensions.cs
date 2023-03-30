@@ -3,7 +3,6 @@ using BuildingBlocks.Core;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.Exception;
 using BuildingBlocks.HealthCheck;
-using BuildingBlocks.IdsGenerator;
 using BuildingBlocks.Jwt;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
@@ -15,7 +14,6 @@ using BuildingBlocks.Swagger;
 using BuildingBlocks.Web;
 using Figgle;
 using FluentValidation;
-using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -73,7 +71,7 @@ public static class InfrastructureExtensions
         builder.Services.AddCustomVersioning();
         builder.Services.AddCustomMediatR();
         builder.Services.AddValidatorsFromAssembly(typeof(PassengerRoot).Assembly);
-        builder.Services.AddCustomProblemDetails();
+        builder.Services.AddProblemDetails();
         builder.Services.AddCustomMapster(typeof(PassengerRoot).Assembly);
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddCustomHealthCheck();
@@ -93,7 +91,7 @@ public static class InfrastructureExtensions
         var env = app.Environment;
         var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
-        app.UseProblemDetails();
+        app.UseCustomProblemDetails();
         app.UseSerilogRequestLogging(options =>
         {
             options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest;

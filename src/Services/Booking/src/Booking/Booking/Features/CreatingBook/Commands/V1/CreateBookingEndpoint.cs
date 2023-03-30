@@ -1,7 +1,6 @@
 namespace Booking.Booking.Features.CreatingBook.Commands.V1;
 
 using BuildingBlocks.Web;
-using Hellang.Middleware.ProblemDetails;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -18,25 +17,11 @@ public class CreateBookingEndpoint : IMinimalEndpoint
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/booking", CreateBooking)
             .RequireAuthorization()
-            .WithTags("Booking")
             .WithName("CreateBooking")
             .WithMetadata(new SwaggerOperationAttribute("Create Booking", "Create Booking"))
             .WithApiVersionSet(builder.NewApiVersionSet("Booking").Build())
-            .WithMetadata(
-                new SwaggerResponseAttribute(
-                    StatusCodes.Status200OK,
-                    "Booking Created",
-                    typeof(CreateBookingResponseDto)))
-            .WithMetadata(
-                new SwaggerResponseAttribute(
-                    StatusCodes.Status400BadRequest,
-                    "BadRequest",
-                    typeof(StatusCodeProblemDetails)))
-            .WithMetadata(
-                new SwaggerResponseAttribute(
-                    StatusCodes.Status401Unauthorized,
-                    "UnAuthorized",
-                    typeof(StatusCodeProblemDetails)))
+            .Produces<CreateBookingResponseDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
             .HasApiVersion(1.0);
 
         return builder;

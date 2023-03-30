@@ -1,98 +1,106 @@
-using System;
-using BuildingBlocks.Exception;
-using Hellang.Middleware.ProblemDetails;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
 namespace Identity.Extensions.Infrastructure;
 
+using BuildingBlocks.Exception;
+using Grpc.Core;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 public static class ProblemDetailsExtensions
 {
-    public static IServiceCollection AddCustomProblemDetails(this IServiceCollection services)
+    public static WebApplication UseCustomProblemDetails(this WebApplication app)
     {
-        services.AddProblemDetails(x =>
+        app.UseExceptionHandler(exceptionHandlerApp =>
         {
-            // Control when an exception is included
-            x.IncludeExceptionDetails = (ctx, _) =>
+            exceptionHandlerApp.Run(async context =>
             {
-                // Fetch services from HttpContext.RequestServices
-                var env = ctx.RequestServices.GetRequiredService<IHostEnvironment>();
-                return env.IsDevelopment() || env.IsStaging();
-            };
-            x.Map<ConflictException>(ex => new ProblemDetailsWithCode
-            {
-                Title = ex.GetType().Name,
-                Status = StatusCodes.Status409Conflict,
-                Detail = ex.Message,
-                Type = "https://somedomain/application-rule-validation-error"
-            });
+                context.Response.ContentType = "application/problem+json";
 
-            // Exception will produce and returns from our FluentValidation RequestValidationBehavior
-            x.Map<ValidationException>(ex => new ProblemDetailsWithCode
-            {
-                Title = ex.GetType().Name,
-                Status = (int)ex.StatusCode,
-                Detail = ex.Message,
-                Type = "https://somedomain/input-validation-rules-error"
-            });
-            x.Map<BadRequestException>(ex => new ProblemDetailsWithCode
-            {
-                Title = ex.GetType().Name,
-                Status = StatusCodes.Status400BadRequest,
-                Detail = ex.Message,
-                Type = "https://somedomain/bad-request-error"
-            });
-            x.Map<NotFoundException>(ex => new ProblemDetailsWithCode
-            {
-                Title = ex.GetType().Name,
-                Status = StatusCodes.Status404NotFound,
-                Detail = ex.Message,
-                Type = "https://somedomain/not-found-error"
-            });
-            x.Map<InternalServerException>(ex => new ProblemDetailsWithCode
-            {
-                Title = ex.GetType().Name,
-                Status = StatusCodes.Status500InternalServerError,
-                Detail = ex.Message,
-                Type = "https://somedomain/api-server-error"
-            });
-            x.Map<AppException>(ex => new ProblemDetailsWithCode
-            {
-                Title = ex.GetType().Name,
-                Status = StatusCodes.Status400BadRequest,
-                Detail = ex.Message,
-                Type = "https://somedomain/application-error"
-            });
-
-            x.Map<DbUpdateConcurrencyException>(ex => new ProblemDetailsWithCode
-            {
-                Title = ex.GetType().Name,
-                Status = StatusCodes.Status409Conflict,
-                Detail = ex.Message,
-                Type = "https://somedomain/db-update-concurrency-error"
-            });
-
-            x.MapToStatusCode<ArgumentNullException>(StatusCodes.Status400BadRequest);
-
-            x.MapStatusCode = context =>
-            {
-                return context.Response.StatusCode switch
+                if (context.RequestServices.GetService<IProblemDetailsService>() is { } problemDetailsService)
                 {
-                    StatusCodes.Status401Unauthorized => new ProblemDetailsWithCode
-                    {
-                        Status = context.Response.StatusCode,
-                        Title = "identity exception",
-                        Detail = "You are not Authorized",
-                        Type = "https://somedomain/identity-error"
-                    },
+                    var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
+                    var exceptionType = exceptionHandlerFeature?.Error;
 
-                    _ => new StatusCodeProblemDetails(context.Response.StatusCode)
-                };
-            };
+                    if (exceptionType is not null)
+                    {
+                        (string Detail, string Type, string Title, int StatusCode) details = exceptionType switch
+                        {
+                            ConflictException =>
+                            (
+                                exceptionType.Message,
+                                exceptionType.GetType().ToString(),
+                                exceptionType.GetType().Name,
+                                context.Response.StatusCode = StatusCodes.Status409Conflict
+                            ),
+                            ValidationException validationException =>
+                            (
+                                exceptionType.Message,
+                                exceptionType.GetType().ToString(),
+                                exceptionType.GetType().Name,
+                                context.Response.StatusCode = (int)validationException.StatusCode
+                            ),
+                            BadRequestException =>
+                            (
+                                exceptionType.Message,
+                                exceptionType.GetType().ToString(),
+                                exceptionType.GetType().Name,
+                                context.Response.StatusCode = StatusCodes.Status400BadRequest
+                            ),
+                            NotFoundException =>
+                            (
+                                exceptionType.Message,
+                                exceptionType.GetType().ToString(),
+                                exceptionType.GetType().Name,
+                                context.Response.StatusCode = StatusCodes.Status404NotFound
+                            ),
+                            AppException =>
+                            (
+                                exceptionType.Message,
+                                exceptionType.GetType().ToString(),
+                                exceptionType.GetType().Name,
+                                context.Response.StatusCode = StatusCodes.Status400BadRequest
+                            ),
+                            DbUpdateConcurrencyException =>
+                            (
+                                exceptionType.Message,
+                                exceptionType.GetType().ToString(),
+                                exceptionType.GetType().Name,
+                                context.Response.StatusCode = StatusCodes.Status409Conflict
+                            ),
+                            RpcException =>
+                            (
+                                exceptionType.Message,
+                                exceptionType.GetType().ToString(),
+                                exceptionType.GetType().Name,
+                                context.Response.StatusCode = StatusCodes.Status400BadRequest
+                            ),
+                            _ =>
+                            (
+                                exceptionType.Message,
+                                exceptionType.GetType().ToString(),
+                                exceptionType.GetType().Name,
+                                context.Response.StatusCode = StatusCodes.Status500InternalServerError
+                            )
+                        };
+
+                        await problemDetailsService.WriteAsync(new ProblemDetailsContext
+                        {
+                            HttpContext = context,
+                            ProblemDetails =
+                            {
+                                Title = details.Title,
+                                Detail = details.Detail,
+                                Type = details.Type,
+                                Status = details.StatusCode
+                            }
+                        });
+                    }
+                }
+            });
         });
-        return services;
+
+        return app;
     }
 }
