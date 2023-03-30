@@ -17,7 +17,7 @@ using Microsoft.EntityFrameworkCore;
 
 public record CreateSeat(string SeatNumber, Enums.SeatType Type, Enums.SeatClass Class, long FlightId) : ICommand<CreateSeatResult>, IInternalCommand
 {
-    public long Id { get; init; } = SnowFlakIdGenerator.NewId();
+    public long Id { get; init; } = SnowflakeIdGenerator.NewId();
 }
 
 public record CreateSeatResult(long Id);

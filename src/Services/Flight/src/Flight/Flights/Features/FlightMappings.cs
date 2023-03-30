@@ -19,11 +19,11 @@ public class FlightMappings : IRegister
                 x.ArriveDate, x.ArriveAirportId, x.DurationMinutes, x.FlightDate, x.Status, x.Price));
 
         config.NewConfig<CreateFlightMongo, FlightReadModel>()
-            .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
+            .Map(d => d.Id, s => SnowflakeIdGenerator.NewId())
             .Map(d => d.FlightId, s => s.Id);
 
         config.NewConfig<Models.Flight, FlightReadModel>()
-            .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
+            .Map(d => d.Id, s => SnowflakeIdGenerator.NewId())
             .Map(d => d.FlightId, s => s.Id);
 
         config.NewConfig<FlightReadModel, FlightDto>()

@@ -37,6 +37,9 @@ public static class InfrastructureExtensions
         var configuration = builder.Configuration;
         var env = builder.Environment;
 
+        // https://github.com/tonerdo/dotnet-env
+        DotNetEnv.Env.TraversePath().Load();
+
         builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
         builder.Services.AddScoped<IEventMapper, EventMapper>();
         builder.Services.AddScoped<IEventDispatcher, EventDispatcher>();
@@ -75,8 +78,6 @@ public static class InfrastructureExtensions
 
         builder.Services.AddCustomMassTransit(env, typeof(IdentityRoot).Assembly);
         builder.Services.AddCustomOpenTelemetry();
-
-        SnowFlakIdGenerator.Configure(4);
 
         builder.AddCustomIdentityServer();
 

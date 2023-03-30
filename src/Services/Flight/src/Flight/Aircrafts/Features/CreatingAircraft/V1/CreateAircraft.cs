@@ -17,7 +17,7 @@ using Microsoft.EntityFrameworkCore;
 
 public record CreateAircraft(string Name, string Model, int ManufacturingYear) : ICommand<CreateAircraftResult>, IInternalCommand
 {
-    public long Id { get; init; } = SnowFlakIdGenerator.NewId();
+    public long Id { get; init; } = SnowflakeIdGenerator.NewId();
 }
 
 public record CreateAircraftResult(long Id);

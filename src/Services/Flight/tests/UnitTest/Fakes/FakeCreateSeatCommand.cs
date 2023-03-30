@@ -10,7 +10,7 @@ public class FakeCreateSeatCommand : AutoFaker<CreateSeat>
 {
     public FakeCreateSeatCommand()
     {
-        RuleFor(r => r.Id, _ => SnowFlakIdGenerator.NewId());
+        RuleFor(r => r.Id, _ => SnowflakeIdGenerator.NewId());
         RuleFor(r => r.FlightId, _ => 1);
         RuleFor(r => r.SeatNumber, _ => "F99");
         RuleFor(r => r.Type, _ => SeatType.Window);

@@ -8,6 +8,6 @@ public class FakePassengerResponse : AutoFaker<PassengerResponse>
 {
     public FakePassengerResponse()
     {
-        RuleFor(r => r.Id, _ => SnowFlakIdGenerator.NewId());
+        RuleFor(r => r.Id, _ => SnowflakeIdGenerator.NewId());
     }
 }

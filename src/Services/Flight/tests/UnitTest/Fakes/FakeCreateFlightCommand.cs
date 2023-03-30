@@ -9,7 +9,7 @@ public sealed class FakeCreateFlightCommand : AutoFaker<CreateFlight>
 {
     public FakeCreateFlightCommand()
     {
-        RuleFor(r => r.Id, _ => SnowFlakIdGenerator.NewId());
+        RuleFor(r => r.Id, _ => SnowflakeIdGenerator.NewId());
         RuleFor(r => r.FlightNumber, r => r.Random.Number(1000, 2000).ToString());
         RuleFor(r => r.DepartureAirportId, _ => 1);
         RuleFor(r => r.ArriveAirportId, _ => 2);

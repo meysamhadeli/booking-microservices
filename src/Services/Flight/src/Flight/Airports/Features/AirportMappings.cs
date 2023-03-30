@@ -10,11 +10,11 @@ public class AirportMappings : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<CreateAirportMongo, AirportReadModel>()
-            .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
+            .Map(d => d.Id, s => SnowflakeIdGenerator.NewId())
             .Map(d => d.AirportId, s => s.Id);
 
         config.NewConfig<Airport, AirportReadModel>()
-            .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
+            .Map(d => d.Id, s => SnowflakeIdGenerator.NewId())
             .Map(d => d.AirportId, s => s.Id);
 
         config.NewConfig<CreateAirportRequestDto, CreateAirport>()

@@ -11,7 +11,7 @@ public class PassengerMappings : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<CompleteRegisterPassengerMongoCommand, PassengerReadModel>()
-            .Map(d => d.Id, s => SnowFlakIdGenerator.NewId())
+            .Map(d => d.Id, s => SnowflakeIdGenerator.NewId())
             .Map(d => d.PassengerId, s => s.Id);
 
         config.NewConfig<CompleteRegisterPassengerRequestDto, CompleteRegisterPassenger>()

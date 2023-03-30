@@ -41,7 +41,7 @@ public class BookingProjection : IProjectionProcessor
         {
             var bookingReadModel = new BookingReadModel
             {
-                Id = SnowFlakIdGenerator.NewId(),
+                Id = SnowflakeIdGenerator.NewId(),
                 Trip = @event.Trip,
                 BookId = @event.Id,
                 PassengerInfo = @event.PassengerInfo,

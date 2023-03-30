@@ -15,7 +15,7 @@ using Passenger;
 
 public record CreateBooking(long PassengerId, long FlightId, string Description) : ICommand<CreateBookingResult>, IInternalCommand
 {
-    public long Id { get; init; } = SnowFlakIdGenerator.NewId();
+    public long Id { get; init; } = SnowflakeIdGenerator.NewId();
 }
 
 public record CreateBookingResult(ulong Id);

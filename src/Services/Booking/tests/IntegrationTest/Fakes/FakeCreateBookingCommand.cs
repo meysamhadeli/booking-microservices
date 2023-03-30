@@ -9,7 +9,7 @@ public sealed class FakeCreateBookingCommand : AutoFaker<CreateBooking>
 {
     public FakeCreateBookingCommand()
     {
-        RuleFor(r => r.Id, _ => SnowFlakIdGenerator.NewId());
+        RuleFor(r => r.Id, _ => SnowflakeIdGenerator.NewId());
         RuleFor(r => r.FlightId, _ => 1);
         RuleFor(r => r.PassengerId, _ => 1);
     }

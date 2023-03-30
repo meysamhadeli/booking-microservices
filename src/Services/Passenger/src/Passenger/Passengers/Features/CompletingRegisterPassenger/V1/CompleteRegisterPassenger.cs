@@ -13,7 +13,7 @@ using Dtos;
 
 public record CompleteRegisterPassenger(string PassportNumber, Enums.PassengerType PassengerType, int Age) : ICommand<CompleteRegisterPassengerResult>, IInternalCommand
 {
-    public long Id { get; init; } = SnowFlakIdGenerator.NewId();
+    public long Id { get; init; } = SnowflakeIdGenerator.NewId();
 }
 
 public record CompleteRegisterPassengerResult(PassengerDto PassengerDto);
