@@ -16,6 +16,7 @@ public class GetPassengerByIdEndpoint : IMinimalEndpoint
     {
         builder.MapGet($"{EndpointConfig.BaseApiPath}/passenger/{{id}}", GetById)
             .RequireAuthorization()
+            .WithName("GetPassengerById")
             .WithMetadata(new SwaggerOperationAttribute("Get Passenger By Id", "Get Passenger By Id"))
             .WithApiVersionSet(builder.NewApiVersionSet("Passenger").Build())
             .Produces<GetPassengerByIdResponseDto>()

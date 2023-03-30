@@ -19,6 +19,7 @@ public class CreateAircraftEndpoint : IMinimalEndpoint
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/flight/aircraft", CreateAircraft)
             .RequireAuthorization()
+            .WithName("CreateAircraft")
             .WithMetadata(new SwaggerOperationAttribute("Create Aircraft", "Create Aircraft"))
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<CreateAircraftResponseDto>()

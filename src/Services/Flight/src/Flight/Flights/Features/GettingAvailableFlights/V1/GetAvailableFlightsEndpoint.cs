@@ -19,6 +19,7 @@ public class GetAvailableFlightsEndpoint : IMinimalEndpoint
     {
         builder.MapGet($"{EndpointConfig.BaseApiPath}/flight/get-available-flights", GetAvailableFlights)
             .RequireAuthorization()
+            .WithName("GetAvailableFlights")
             .WithMetadata(new SwaggerOperationAttribute("Get Available Flights", "Get Available Flights"))
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<GetAvailableFlightsResponseDto>()

@@ -19,6 +19,7 @@ public class ReserveSeatEndpoint : IMinimalEndpoint
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/flight/reserve-seat", ReserveSeat)
             .RequireAuthorization()
+            .WithName("ReserveSeat")
             .WithMetadata(new SwaggerOperationAttribute("Reserve Seat", "Reserve Seat"))
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<ReserveSeatResponseDto>()

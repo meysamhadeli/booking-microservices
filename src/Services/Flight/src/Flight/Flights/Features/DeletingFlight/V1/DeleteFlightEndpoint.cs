@@ -15,6 +15,7 @@ public class DeleteFlightEndpoint : IMinimalEndpoint
     {
         builder.MapDelete($"{EndpointConfig.BaseApiPath}/flight/{{id}}", DeleteFlight)
             .RequireAuthorization()
+            .WithName("DeleteFlight")
             .WithMetadata(new SwaggerOperationAttribute("Delete Flight", "Delete Flight"))
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces(StatusCodes.Status204NoContent)

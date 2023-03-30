@@ -20,6 +20,7 @@ public class RegisterNewUserEndpoint : IMinimalEndpoint
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/identity/register-user", RegisterNewUser)
+            .WithName("RegisterUser")
             .WithMetadata(new SwaggerOperationAttribute("Register User", "Register User"))
             .WithApiVersionSet(builder.NewApiVersionSet("Identity").Build())
             .Produces<RegisterNewUserResponseDto>()

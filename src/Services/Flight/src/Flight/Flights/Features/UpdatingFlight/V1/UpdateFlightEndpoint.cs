@@ -20,6 +20,7 @@ public class UpdateFlightEndpoint : IMinimalEndpoint
     {
         builder.MapPut($"{EndpointConfig.BaseApiPath}/flight", UpdateFlight)
             .RequireAuthorization()
+            .WithName("UpdateFlight")
             .WithMetadata(new SwaggerOperationAttribute("Update Flight", "Update Flight"))
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces(StatusCodes.Status204NoContent)

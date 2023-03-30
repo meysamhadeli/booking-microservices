@@ -17,6 +17,7 @@ public class CreateBookingEndpoint : IMinimalEndpoint
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/booking", CreateBooking)
             .RequireAuthorization()
+            .WithName("CreateBooking")
             .WithMetadata(new SwaggerOperationAttribute("Create Booking", "Create Booking"))
             .WithApiVersionSet(builder.NewApiVersionSet("Booking").Build())
             .Produces<CreateBookingResponseDto>()
