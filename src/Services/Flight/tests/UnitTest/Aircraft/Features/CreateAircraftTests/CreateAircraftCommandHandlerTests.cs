@@ -39,7 +39,7 @@ public class CreateAircraftCommandHandlerTests
         var entity = await _fixture.DbContext.Aircraft.FindAsync(response?.Id);
 
         entity?.Should().NotBeNull();
-        response?.Id.Should().Be(entity?.Id);
+        response?.Id.Should().Be(entity.Id);
     }
 
     [Fact]

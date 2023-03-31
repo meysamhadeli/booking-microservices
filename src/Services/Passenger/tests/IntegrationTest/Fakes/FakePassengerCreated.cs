@@ -1,12 +1,13 @@
 ﻿using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.IdsGenerator;
 
 namespace Integration.Test.Fakes;
+
+using MassTransit;
 
 public static class FakePassengerCreated
 {
     public static global::Passenger.Passengers.Models.Passenger Generate(UserCreated userCreated)
     {
-        return global::Passenger.Passengers.Models.Passenger.Create(SnowflakeIdGenerator.NewId(), userCreated.Name, userCreated.PassportNumber);
+        return global::Passenger.Passengers.Models.Passenger.Create(NewId.NextGuid(), userCreated.Name, userCreated.PassportNumber);
     }
 }

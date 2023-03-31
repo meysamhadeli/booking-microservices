@@ -1,5 +1,6 @@
 namespace Flight.Seats.Features.ReservingSeat.Commands.V1;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
@@ -10,8 +11,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
-public record ReserveSeatRequestDto(long FlightId, string SeatNumber);
-public record ReserveSeatResponseDto(long Id);
+public record ReserveSeatRequestDto(Guid FlightId, string SeatNumber);
+public record ReserveSeatResponseDto(Guid Id);
 
 public class ReserveSeatEndpoint : IMinimalEndpoint
 {

@@ -15,7 +15,7 @@ namespace Flight.Data.Migrations
                 name: "aircraft",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false),
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "text", nullable: true),
                     model = table.Column<string>(type: "text", nullable: true),
                     manufacturingyear = table.Column<int>(name: "manufacturing_year", type: "integer", nullable: false),
@@ -35,7 +35,7 @@ namespace Flight.Data.Migrations
                 name: "airport",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false),
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "text", nullable: true),
                     address = table.Column<string>(type: "text", nullable: true),
                     code = table.Column<string>(type: "text", nullable: true),
@@ -55,13 +55,13 @@ namespace Flight.Data.Migrations
                 name: "flight",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false),
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     flightnumber = table.Column<string>(name: "flight_number", type: "text", nullable: true),
-                    aircraftid = table.Column<long>(name: "aircraft_id", type: "bigint", nullable: false),
+                    aircraftid = table.Column<Guid>(name: "aircraft_id", type: "uuid", nullable: false),
                     departuredate = table.Column<DateTime>(name: "departure_date", type: "timestamp with time zone", nullable: false),
-                    departureairportid = table.Column<long>(name: "departure_airport_id", type: "bigint", nullable: false),
+                    departureairportid = table.Column<Guid>(name: "departure_airport_id", type: "uuid", nullable: false),
                     arrivedate = table.Column<DateTime>(name: "arrive_date", type: "timestamp with time zone", nullable: false),
-                    arriveairportid = table.Column<long>(name: "arrive_airport_id", type: "bigint", nullable: false),
+                    arriveairportid = table.Column<Guid>(name: "arrive_airport_id", type: "uuid", nullable: false),
                     durationminutes = table.Column<decimal>(name: "duration_minutes", type: "numeric", nullable: false),
                     flightdate = table.Column<DateTime>(name: "flight_date", type: "timestamp with time zone", nullable: false),
                     status = table.Column<string>(type: "text", nullable: false, defaultValue: "Unknown"),
@@ -94,11 +94,11 @@ namespace Flight.Data.Migrations
                 name: "seat",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false),
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     seatnumber = table.Column<string>(name: "seat_number", type: "text", nullable: true),
                     type = table.Column<string>(type: "text", nullable: false, defaultValue: "Unknown"),
                     @class = table.Column<string>(name: "class", type: "text", nullable: false, defaultValue: "Unknown"),
-                    flightid = table.Column<long>(name: "flight_id", type: "bigint", nullable: false),
+                    flightid = table.Column<Guid>(name: "flight_id", type: "uuid", nullable: false),
                     createdat = table.Column<DateTime>(name: "created_at", type: "timestamp with time zone", nullable: true),
                     createdby = table.Column<long>(name: "created_by", type: "bigint", nullable: true),
                     lastmodified = table.Column<DateTime>(name: "last_modified", type: "timestamp with time zone", nullable: true),

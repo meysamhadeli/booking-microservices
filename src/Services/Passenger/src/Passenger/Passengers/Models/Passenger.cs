@@ -5,9 +5,9 @@ namespace Passenger.Passengers.Models;
 using Features.CompletingRegisterPassenger.V1;
 using Identity.Consumers.RegisteringNewUser.V1;
 
-public record Passenger : Aggregate<long>
+public record Passenger : Aggregate<Guid>
 {
-    public Passenger CompleteRegistrationPassenger(long id, string name, string passportNumber, Enums.PassengerType passengerType, int age, bool isDeleted = false)
+    public Passenger CompleteRegistrationPassenger(Guid id, string name, string passportNumber, Enums.PassengerType passengerType, int age, bool isDeleted = false)
     {
         var passenger = new Passenger
         {
@@ -28,7 +28,7 @@ public record Passenger : Aggregate<long>
     }
 
 
-    public static Passenger Create(long id, string name, string passportNumber, bool isDeleted = false)
+    public static Passenger Create(Guid id, string name, string passportNumber, bool isDeleted = false)
     {
         var passenger = new Passenger { Id = id, Name = name, PassportNumber = passportNumber, IsDeleted = isDeleted };
 

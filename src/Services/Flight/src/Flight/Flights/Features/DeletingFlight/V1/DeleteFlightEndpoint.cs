@@ -1,5 +1,6 @@
 ﻿namespace Flight.Flights.Features.DeletingFlight.V1;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
@@ -25,7 +26,7 @@ public class DeleteFlightEndpoint : IMinimalEndpoint
         return builder;
     }
 
-    private async Task<IResult> DeleteFlight(long id, IMediator mediator, CancellationToken cancellationToken)
+    private async Task<IResult> DeleteFlight(Guid id, IMediator mediator, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new DeleteFlight(id), cancellationToken);
 

@@ -9,6 +9,8 @@ using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
+using System.Linq;
+using global::Flight.Data.Seed;
 using global::Flight.Flights.Features.UpdatingFlight.V1;
 
 public class UpdateFlightTests : FlightIntegrationTestBase
@@ -22,7 +24,7 @@ public class UpdateFlightTests : FlightIntegrationTestBase
     public async Task should_update_flight_to_db_and_publish_message_to_broker()
     {
         // Arrange
-        var flightEntity = await Fixture.FindAsync<global::Flight.Flights.Models.Flight>(1);
+        var flightEntity = await Fixture.FindAsync<global::Flight.Flights.Models.Flight>( InitialData.Flights.First().Id);
         var command = new FakeUpdateFlightCommand(flightEntity).Generate();
 
         // Act
@@ -30,7 +32,7 @@ public class UpdateFlightTests : FlightIntegrationTestBase
 
         // Assert
         response.Should().NotBeNull();
-        response?.Id.Should().Be(flightEntity?.Id);
+        response?.Id.Should().Be(flightEntity.Id);
 
         (await Fixture.WaitForPublishing<FlightUpdated>()).Should().Be(true);
 

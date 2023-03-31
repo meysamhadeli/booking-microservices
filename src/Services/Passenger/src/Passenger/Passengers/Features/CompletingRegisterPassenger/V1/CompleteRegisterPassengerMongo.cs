@@ -8,9 +8,9 @@ using MediatR;
 using Models;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using Passenger.Data;
+using Data;
 
-public record CompleteRegisterPassengerMongoCommand(long Id, string PassportNumber, string Name,
+public record CompleteRegisterPassengerMongoCommand(Guid Id, string PassportNumber, string Name,
     Enums.PassengerType PassengerType, int Age, bool IsDeleted) : InternalCommand;
 
 

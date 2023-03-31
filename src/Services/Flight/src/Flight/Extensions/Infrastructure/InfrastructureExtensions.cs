@@ -4,7 +4,6 @@ using BuildingBlocks.Core;
 using BuildingBlocks.EFCore;
 using BuildingBlocks.Exception;
 using BuildingBlocks.HealthCheck;
-using BuildingBlocks.IdsGenerator;
 using BuildingBlocks.Jwt;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
@@ -37,9 +36,6 @@ public static class InfrastructureExtensions
     {
         var configuration = builder.Configuration;
         var env = builder.Environment;
-
-        // https://github.com/tonerdo/dotnet-env
-        DotNetEnv.Env.TraversePath().Load();
 
         builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
         builder.Services.AddScoped<IEventMapper, EventMapper>();

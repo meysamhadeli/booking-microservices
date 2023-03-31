@@ -26,7 +26,7 @@ public class GetPassengerByIdEndpoint : IMinimalEndpoint
         return builder;
     }
 
-    private async Task<IResult> GetById(long id, IMediator mediator, CancellationToken cancellationToken)
+    private async Task<IResult> GetById(Guid id, IMediator mediator, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetPassengerById(id), cancellationToken);
 

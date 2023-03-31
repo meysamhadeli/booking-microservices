@@ -2,7 +2,6 @@
 using System.Text.Json;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Event;
-using BuildingBlocks.IdsGenerator;
 using BuildingBlocks.Utils;
 using MassTransit;
 using MediatR;
@@ -40,7 +39,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
         await SavePersistMessageAsync(messageEnvelope, MessageDeliveryType.Outbox, cancellationToken);
     }
 
-    public Task<long> AddReceivedMessageAsync<TMessageEnvelope>(TMessageEnvelope messageEnvelope,
+    public Task<Guid> AddReceivedMessageAsync<TMessageEnvelope>(TMessageEnvelope messageEnvelope,
         CancellationToken cancellationToken = default) where TMessageEnvelope : MessageEnvelope
     {
         return SavePersistMessageAsync(messageEnvelope, MessageDeliveryType.Inbox, cancellationToken);
@@ -60,7 +59,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
             .AsReadOnly();
     }
 
-    public Task<PersistMessage> ExistMessageAsync(long messageId, CancellationToken cancellationToken = default)
+    public Task<PersistMessage> ExistMessageAsync(Guid messageId, CancellationToken cancellationToken = default)
     {
         return _persistMessageDbContext.PersistMessages.FirstOrDefaultAsync(x =>
                 x.Id == messageId &&
@@ -70,7 +69,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
     }
 
     public async Task ProcessAsync(
-        long messageId,
+        Guid messageId,
         MessageDeliveryType deliveryType,
         CancellationToken cancellationToken = default)
     {
@@ -131,7 +130,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
         }
     }
 
-    public async Task ProcessInboxAsync(long messageId, CancellationToken cancellationToken = default)
+    public async Task ProcessInboxAsync(Guid messageId, CancellationToken cancellationToken = default)
     {
         var message = await _persistMessageDbContext.PersistMessages.FirstOrDefaultAsync(
             x => x.Id == messageId &&
@@ -191,18 +190,18 @@ public class PersistMessageProcessor : IPersistMessageProcessor
         return true;
     }
 
-    private async Task<long> SavePersistMessageAsync(
+    private async Task<Guid> SavePersistMessageAsync(
         MessageEnvelope messageEnvelope,
         MessageDeliveryType deliveryType,
         CancellationToken cancellationToken = default)
     {
         Guard.Against.Null(messageEnvelope.Message, nameof(messageEnvelope.Message));
 
-        long id;
+        Guid id;
         if (messageEnvelope.Message is IEvent message)
             id = message.EventId;
         else
-            id = SnowflakeIdGenerator.NewId();
+            id = NewId.NextGuid();
 
         await _persistMessageDbContext.PersistMessages.AddAsync(
             new PersistMessage(

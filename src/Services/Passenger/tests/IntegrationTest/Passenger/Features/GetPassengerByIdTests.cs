@@ -10,6 +10,7 @@ using Xunit;
 namespace Integration.Test.Passenger.Features;
 
 using global::Passenger.Passengers.Features.GettingPassengerById.Queries.V1;
+using Thrift.Protocol;
 
 public class GetPassengerByIdTests : PassengerIntegrationTestBase
 {
@@ -49,10 +50,10 @@ public class GetPassengerByIdTests : PassengerIntegrationTestBase
         var passengerGrpcClient = new PassengerGrpcService.PassengerGrpcServiceClient(Fixture.Channel);
 
         // Act
-        var response = await passengerGrpcClient.GetByIdAsync(new GetByIdRequest {Id = passengerEntity.Id});
+        var response = await passengerGrpcClient.GetByIdAsync(new GetByIdRequest {Id = passengerEntity.Id.ToString()});
 
         // Assert
         response?.Should().NotBeNull();
-        response?.PassengerDto?.Id.Should().Be(passengerEntity.Id);
+        response?.PassengerDto?.Id.Should().Be(passengerEntity.Id.ToString());
     }
 }

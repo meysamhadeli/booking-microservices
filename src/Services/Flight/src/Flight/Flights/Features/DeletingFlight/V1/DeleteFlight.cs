@@ -1,20 +1,19 @@
 ﻿namespace Flight.Flights.Features.DeletingFlight.V1;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
 using Data;
-using Dtos;
 using Exceptions;
 using FluentValidation;
-using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 
-public record DeleteFlight(long Id) : ICommand<DeleteFlightResult>, IInternalCommand;
+public record DeleteFlight(Guid Id) : ICommand<DeleteFlightResult>, IInternalCommand;
 
-public record DeleteFlightResult(long Id);
+public record DeleteFlightResult(Guid Id);
 
 internal class DeleteFlightValidator : AbstractValidator<DeleteFlight>
 {

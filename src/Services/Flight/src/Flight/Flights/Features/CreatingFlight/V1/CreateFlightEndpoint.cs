@@ -11,11 +11,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
-public record CreateFlightRequestDto(string FlightNumber, long AircraftId, long DepartureAirportId,
-    DateTime DepartureDate, DateTime ArriveDate, long ArriveAirportId,
+public record CreateFlightRequestDto(string FlightNumber, Guid AircraftId, Guid DepartureAirportId,
+    DateTime DepartureDate, DateTime ArriveDate, Guid ArriveAirportId,
     decimal DurationMinutes, DateTime FlightDate, Enums.FlightStatus Status, decimal Price);
 
-public record CreateFlightResponseDto(long Id);
+public record CreateFlightResponseDto(Guid Id);
 
 public class CreateFlightEndpoint : IMinimalEndpoint
 {

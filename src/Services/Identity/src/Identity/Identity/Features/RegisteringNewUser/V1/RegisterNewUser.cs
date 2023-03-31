@@ -1,5 +1,6 @@
 namespace Identity.Identity.Features.RegisteringNewUser.V1;
 
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ using Models;
 public record RegisterNewUser(string FirstName, string LastName, string Username, string Email,
     string Password, string ConfirmPassword, string PassportNumber) : ICommand<RegisterNewUserResult>;
 
-public record RegisterNewUserResult(long Id, string FirstName, string LastName, string Username, string PassportNumber);
+public record RegisterNewUserResult(Guid Id, string FirstName, string LastName, string Username, string PassportNumber);
 
 internal class RegisterNewUserValidator : AbstractValidator<RegisterNewUser>
 {

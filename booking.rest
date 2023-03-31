@@ -8,8 +8,8 @@
 @booking-api=http://localhost:6010
 
 @contentType = application/json
-@flightid = 1
-@passengerId = 1
+@flightid = "3c5c0000-97c6-fc34-2eb9-08db322230c9"
+@passengerId = "8c9c0000-97c6-fc34-2eb9-66db322230c9"
 
 ################################# Identity API #################################
 
@@ -70,7 +70,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
   "seatNumber": "1255",
   "type": 1,
   "class": 1,
-  "flightId": 1
+  "flightId": "3c5c0000-97c6-fc34-2eb9-08db322230c9"
 }
 ###
 
@@ -83,7 +83,7 @@ Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
-  "flightId": 1,
+  "flightId": "3c5c0000-97c6-fc34-2eb9-08db322230c9",
   "seatNumber": "1255"
 }
 ###
@@ -125,11 +125,11 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
   "flightNumber": "12BB",
-  "aircraftId": 1,
-  "departureAirportId": 1,
+  "aircraftId": "3c5c0000-97c6-fc34-fcd3-08db322230c8",
+  "departureAirportId": "3c5c0000-97c6-fc34-a0cb-08db322230c8",
   "departureDate": "2022-03-01T14:55:41.255Z",
   "arriveDate": "2022-03-01T14:55:41.255Z",
-  "arriveAirportId": 2,
+  "arriveAirportId": "3c5c0000-97c6-fc34-fc3c-08db322230c8",
   "durationMinutes": 120,
   "flightDate": "2022-03-01T14:55:41.255Z",
   "status": 1,
@@ -148,11 +148,11 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 {
   "id": 1,
   "flightNumber": "BD467",
-  "aircraftId": 1,
-  "departureAirportId": 1,
+  "aircraftId": "3c5c0000-97c6-fc34-fcd3-08db322230c8",
+  "departureAirportId": "3c5c0000-97c6-fc34-a0cb-08db322230c8",
   "departureDate": "2022-04-23T12:17:45.140Z",
   "arriveDate": "2022-04-23T12:17:45.140Z",
-  "arriveAirportId": 2,
+  "arriveAirportId": "3c5c0000-97c6-fc34-fc3c-08db322230c8",
   "durationMinutes": 120,
   "flightDate": "2022-04-23T12:17:45.140Z",
   "status": 4,
@@ -250,8 +250,8 @@ Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
-  "passengerId": 8765596234940416,
-  "flightId": 1,
+  "passengerId": "8c9c0000-97c6-fc34-2eb9-66db322230c9",
+  "flightId": "3c5c0000-97c6-fc34-2eb9-08db322230c9",
   "description": "I want to fly to iran"
 }
 ###

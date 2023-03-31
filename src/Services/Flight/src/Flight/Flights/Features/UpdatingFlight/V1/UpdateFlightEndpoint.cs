@@ -11,8 +11,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
-public record UpdateFlightRequestDto(long Id, string FlightNumber, long AircraftId, long DepartureAirportId, DateTime DepartureDate, DateTime ArriveDate,
-    long ArriveAirportId, decimal DurationMinutes, DateTime FlightDate, Enums.FlightStatus Status, decimal Price, bool IsDeleted);
+public record UpdateFlightRequestDto(Guid Id, string FlightNumber, Guid AircraftId, Guid DepartureAirportId, DateTime DepartureDate, DateTime ArriveDate,
+    Guid ArriveAirportId, decimal DurationMinutes, DateTime FlightDate, Enums.FlightStatus Status, decimal Price, bool IsDeleted);
 
 public class UpdateFlightEndpoint : IMinimalEndpoint
 {

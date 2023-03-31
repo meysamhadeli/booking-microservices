@@ -1,13 +1,22 @@
-﻿using AutoBogus;
-using BuildingBlocks.IdsGenerator;
+﻿namespace Integration.Test.Fakes;
+
+using MassTransit;
 using Passenger;
 
-namespace Integration.Test.Fakes;
-
-public class FakePassengerResponse : AutoFaker<PassengerResponse>
+public static class FakePassengerResponse
 {
-    public FakePassengerResponse()
+    public static GetPassengerByIdResult Generate()
     {
-        RuleFor(r => r.Id, _ => SnowflakeIdGenerator.NewId());
+        var result = new GetPassengerByIdResult
+        {
+            PassengerDto = new PassengerResponse()
+            {
+                Id = NewId.NextGuid().ToString(),
+                Name = "Test",
+                PassportNumber = "121618"
+            }
+        };
+
+        return result;
     }
 }

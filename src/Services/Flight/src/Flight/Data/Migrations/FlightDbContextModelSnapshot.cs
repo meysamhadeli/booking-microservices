@@ -17,15 +17,15 @@ namespace Flight.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.1")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Flight.Aircrafts.Models.Aircraft", b =>
                 {
-                    b.Property<long>("Id")
-                        .HasColumnType("bigint")
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
 
                     b.Property<DateTime?>("CreatedAt")
@@ -73,8 +73,8 @@ namespace Flight.Data.Migrations
 
             modelBuilder.Entity("Flight.Airports.Models.Airport", b =>
                 {
-                    b.Property<long>("Id")
-                        .HasColumnType("bigint")
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
 
                     b.Property<string>("Address")
@@ -122,16 +122,16 @@ namespace Flight.Data.Migrations
 
             modelBuilder.Entity("Flight.Flights.Models.Flight", b =>
                 {
-                    b.Property<long>("Id")
-                        .HasColumnType("bigint")
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<long>("AircraftId")
-                        .HasColumnType("bigint")
+                    b.Property<Guid>("AircraftId")
+                        .HasColumnType("uuid")
                         .HasColumnName("aircraft_id");
 
-                    b.Property<long>("ArriveAirportId")
-                        .HasColumnType("bigint")
+                    b.Property<Guid>("ArriveAirportId")
+                        .HasColumnType("uuid")
                         .HasColumnName("arrive_airport_id");
 
                     b.Property<DateTime>("ArriveDate")
@@ -146,8 +146,8 @@ namespace Flight.Data.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("created_by");
 
-                    b.Property<long>("DepartureAirportId")
-                        .HasColumnType("bigint")
+                    b.Property<Guid>("DepartureAirportId")
+                        .HasColumnType("uuid")
                         .HasColumnName("departure_airport_id");
 
                     b.Property<DateTime>("DepartureDate")
@@ -208,8 +208,8 @@ namespace Flight.Data.Migrations
 
             modelBuilder.Entity("Flight.Seats.Models.Seat", b =>
                 {
-                    b.Property<long>("Id")
-                        .HasColumnType("bigint")
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
 
                     b.Property<string>("Class")
@@ -227,8 +227,8 @@ namespace Flight.Data.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("created_by");
 
-                    b.Property<long>("FlightId")
-                        .HasColumnType("bigint")
+                    b.Property<Guid>("FlightId")
+                        .HasColumnType("uuid")
                         .HasColumnName("flight_id");
 
                     b.Property<bool>("IsDeleted")

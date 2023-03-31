@@ -2,4 +2,4 @@
 
 using BuildingBlocks.Core.Event;
 
-public record PassengerCreatedDomainEvent(long Id, string Name, string PassportNumber, bool IsDeleted = false) : IDomainEvent;
+public record PassengerCreatedDomainEvent(Guid Id, string Name, string PassportNumber, bool IsDeleted = false) : IDomainEvent;

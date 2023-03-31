@@ -1,5 +1,4 @@
 ﻿using BuildingBlocks.Core.CQRS;
-using BuildingBlocks.IdsGenerator;
 
 namespace BuildingBlocks.Core.Event;
 

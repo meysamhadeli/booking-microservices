@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Booking.Api;
 using Booking.Data;
 using BuildingBlocks.Contracts.EventBus.Messages;
@@ -54,7 +53,7 @@ namespace Integration.Test.Booking.Features
                 var mockPassenger = Substitute.For<PassengerGrpcService.PassengerGrpcServiceClient>();
 
                 mockPassenger.GetByIdAsync(Arg.Any<Passenger.GetByIdRequest>())
-                    .Returns(TestCalls.AsyncUnaryCall(Task.FromResult(new FakePassengerResponse().Generate()),
+                    .Returns(TestCalls.AsyncUnaryCall(Task.FromResult(FakePassengerResponse.Generate()),
                         Task.FromResult(new Metadata()), () => Status.DefaultSuccess, () => new Metadata(), () => { }));
 
                 return mockPassenger;
@@ -68,15 +67,15 @@ namespace Integration.Test.Booking.Features
                 var mockFlight = Substitute.For<FlightGrpcService.FlightGrpcServiceClient>();
 
                 mockFlight.GetByIdAsync(Arg.Any<GetByIdRequest>())
-                    .Returns(TestCalls.AsyncUnaryCall(Task.FromResult(new FakeFlightResponse().Generate()),
+                    .Returns(TestCalls.AsyncUnaryCall(Task.FromResult(FakeFlightResponse.Generate()),
                         Task.FromResult(new Metadata()), () => Status.DefaultSuccess, () => new Metadata(), () => { }));
 
                 mockFlight.GetAvailableSeatsAsync(Arg.Any<GetAvailableSeatsRequest>())
-                    .Returns(TestCalls.AsyncUnaryCall(Task.FromResult(FakeSeatsResponse.Generate()),
+                    .Returns(TestCalls.AsyncUnaryCall(Task.FromResult(FakeGetAvailableSeatsResponse.Generate()),
                         Task.FromResult(new Metadata()), () => Status.DefaultSuccess, () => new Metadata(), () => { }));
 
                 mockFlight.ReserveSeatAsync(Arg.Any<ReserveSeatRequest>())
-                    .Returns(TestCalls.AsyncUnaryCall(Task.FromResult(FakeSeatsResponse.Generate()?.Items?.First()),
+                    .Returns(TestCalls.AsyncUnaryCall(Task.FromResult(FakeReserveSeatResponse.Generate()),
                         Task.FromResult(new Metadata()), () => Status.DefaultSuccess, () => new Metadata(), () => { }));
 
                 return mockFlight;
