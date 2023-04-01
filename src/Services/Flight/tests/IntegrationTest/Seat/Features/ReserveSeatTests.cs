@@ -40,11 +40,11 @@ public class ReserveSeatTests : FlightIntegrationTestBase
         // Act
         var response = await flightGrpcClient.ReserveSeatAsync(new ReserveSeatRequest()
         {
-            FlightId = seatCommand.FlightId, SeatNumber = seatCommand.SeatNumber
+            FlightId = seatCommand.FlightId.ToString(), SeatNumber = seatCommand.SeatNumber
         });
 
         // Assert
         response?.Should().NotBeNull();
-        response?.Id.Should().Be(seatCommand.Id);
+        response?.Id.Should().Be(seatCommand.Id.ToString());
     }
 }

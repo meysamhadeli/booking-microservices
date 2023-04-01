@@ -5,17 +5,17 @@ using BuildingBlocks.Core;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.EventStoreDB.Repository;
-using BuildingBlocks.IdsGenerator;
 using BuildingBlocks.Web;
 using Exceptions;
 using Flight;
 using FluentValidation;
+using MassTransit;
 using Models.ValueObjects;
 using Passenger;
 
-public record CreateBooking(long PassengerId, long FlightId, string Description) : ICommand<CreateBookingResult>, IInternalCommand
+public record CreateBooking(Guid PassengerId, Guid FlightId, string Description) : ICommand<CreateBookingResult>, IInternalCommand
 {
-    public long Id { get; init; } = SnowflakeIdGenerator.NewId();
+    public Guid Id { get; init; } = NewId.NextGuid();
 }
 
 public record CreateBookingResult(ulong Id);
@@ -54,19 +54,17 @@ internal class CreateBookingCommandHandler : ICommandHandler<CreateBooking, Crea
     {
         Guard.Against.Null(command, nameof(command));
 
-        var flight = await _flightGrpcServiceClient.GetByIdAsync(new Flight.GetByIdRequest { Id = command.FlightId });
+        var flight = await _flightGrpcServiceClient.GetByIdAsync(new Flight.GetByIdRequest { Id = command.FlightId.ToString()});
 
         if (flight is null)
         {
             throw new FlightNotFoundException();
         }
 
-        var passenger =
-            await _passengerGrpcServiceClient.GetByIdAsync(new Passenger.GetByIdRequest { Id = command.PassengerId });
+        var passenger = await _passengerGrpcServiceClient.GetByIdAsync(new Passenger.GetByIdRequest { Id = command.PassengerId.ToString() });
 
-        var emptySeat = (await _flightGrpcServiceClient
-                .GetAvailableSeatsAsync(new GetAvailableSeatsRequest { FlightId = command.FlightId }).ResponseAsync)
-            ?.Items?.FirstOrDefault();
+        var emptySeat = (await _flightGrpcServiceClient.GetAvailableSeatsAsync(new GetAvailableSeatsRequest { FlightId = command.FlightId.ToString() }).ResponseAsync)
+            ?.SeatDtos?.FirstOrDefault();
 
         var reservation = await _eventStoreDbRepository.Find(command.Id, cancellationToken);
 
@@ -75,9 +73,9 @@ internal class CreateBookingCommandHandler : ICommandHandler<CreateBooking, Crea
             throw new BookingAlreadyExistException();
         }
 
-        var aggrigate = Models.Booking.Create(command.Id, new PassengerInfo(passenger.Name), new Trip(
-                flight.FlightNumber, flight.AircraftId, flight.DepartureAirportId,
-                flight.ArriveAirportId, flight.FlightDate.ToDateTime(), (decimal)flight.Price, command.Description,
+        var aggrigate = Models.Booking.Create(command.Id, new PassengerInfo(passenger.PassengerDto?.Name), new Trip(
+                flight.FlightDto.FlightNumber, new Guid(flight.FlightDto.AircraftId), new Guid(flight.FlightDto.DepartureAirportId),
+                new Guid(flight.FlightDto.ArriveAirportId), flight.FlightDto.FlightDate.ToDateTime(), (decimal)flight.FlightDto.Price, command.Description,
                 emptySeat?.SeatNumber),
             false, _currentUserProvider.GetCurrentUserId());
 
@@ -85,7 +83,7 @@ internal class CreateBookingCommandHandler : ICommandHandler<CreateBooking, Crea
 
         await _flightGrpcServiceClient.ReserveSeatAsync(new ReserveSeatRequest
         {
-            FlightId = flight.Id, SeatNumber = emptySeat?.SeatNumber
+            FlightId = flight.FlightDto.Id, SeatNumber = emptySeat?.SeatNumber
         });
 
         var result = await _eventStoreDbRepository.Add(

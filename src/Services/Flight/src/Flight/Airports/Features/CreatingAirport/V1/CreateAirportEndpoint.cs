@@ -1,5 +1,6 @@
 namespace Flight.Airports.Features.CreatingAirport.V1;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
@@ -11,7 +12,7 @@ using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
 public record CreateAirportRequestDto(string Name, string Address, string Code);
-public record CreateAirportResponseDto(long Id);
+public record CreateAirportResponseDto(Guid Id);
 
 public class CreateAirportEndpoint : IMinimalEndpoint
 {

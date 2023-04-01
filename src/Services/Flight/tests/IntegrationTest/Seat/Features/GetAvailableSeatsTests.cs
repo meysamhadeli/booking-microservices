@@ -38,7 +38,7 @@ public class GetAvailableSeatsTests : FlightIntegrationTestBase
         var flightGrpcClient = new FlightGrpcService.FlightGrpcServiceClient(Fixture.Channel);
 
         // Act
-        var response = await flightGrpcClient.GetAvailableSeatsAsync(new GetAvailableSeatsRequest{FlightId = flightCommand.Id});
+        var response = await flightGrpcClient.GetAvailableSeatsAsync(new GetAvailableSeatsRequest{FlightId = flightCommand.Id.ToString()});
 
         // Assert
         response?.Should().NotBeNull();

@@ -15,7 +15,7 @@ namespace BuildingBlocks.PersistMessageProcessor.Data.Migrations
                 name: "persist_message",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false),
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     datatype = table.Column<string>(name: "data_type", type: "text", nullable: true),
                     data = table.Column<string>(type: "text", nullable: true),
                     created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),

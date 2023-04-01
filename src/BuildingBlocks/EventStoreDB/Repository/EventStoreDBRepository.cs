@@ -4,9 +4,9 @@ using EventStore.Client;
 
 namespace BuildingBlocks.EventStoreDB.Repository;
 
-public interface IEventStoreDBRepository<T> where T : class, IAggregateEventSourcing<long>
+public interface IEventStoreDBRepository<T> where T : class, IAggregateEventSourcing<Guid>
 {
-    Task<T?> Find(long id, CancellationToken cancellationToken);
+    Task<T?> Find(Guid id, CancellationToken cancellationToken);
     Task<ulong> Add(T aggregate, CancellationToken cancellationToken);
 
     Task<ulong> Update(T aggregate, long? expectedRevision = null,
@@ -15,7 +15,7 @@ public interface IEventStoreDBRepository<T> where T : class, IAggregateEventSour
     Task<ulong> Delete(T aggregate, long? expectedRevision = null, CancellationToken cancellationToken = default);
 }
 
-public class EventStoreDBRepository<T> : IEventStoreDBRepository<T> where T : class, IAggregateEventSourcing<long>
+public class EventStoreDBRepository<T> : IEventStoreDBRepository<T> where T : class, IAggregateEventSourcing<Guid>
 {
     private static readonly long _currentUserId;
     private readonly EventStoreClient eventStore;
@@ -25,7 +25,7 @@ public class EventStoreDBRepository<T> : IEventStoreDBRepository<T> where T : cl
         this.eventStore = eventStore ?? throw new ArgumentNullException(nameof(eventStore));
     }
 
-    public Task<T?> Find(long id, CancellationToken cancellationToken)
+    public Task<T?> Find(Guid id, CancellationToken cancellationToken)
     {
         return eventStore.AggregateStream<T>(
             id,

@@ -12,7 +12,7 @@ using Passenger.Data;
 namespace Passenger.Data.Migrations
 {
     [DbContext(typeof(PassengerDbContext))]
-    [Migration("20230120222631_initial")]
+    [Migration("20230331204805_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -20,15 +20,15 @@ namespace Passenger.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.1")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Passenger.Passengers.Models.Passenger", b =>
                 {
-                    b.Property<long>("Id")
-                        .HasColumnType("bigint")
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
 
                     b.Property<int>("Age")

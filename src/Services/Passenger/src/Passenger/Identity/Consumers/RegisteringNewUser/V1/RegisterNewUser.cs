@@ -4,14 +4,13 @@ using Ardalis.GuardClauses;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.Event;
-using BuildingBlocks.IdsGenerator;
 using BuildingBlocks.Web;
 using Humanizer;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Passenger.Data;
+using Data;
 
 public class RegisterNewUserHandler : IConsumer<UserCreated>
 {
@@ -45,7 +44,7 @@ public class RegisterNewUserHandler : IConsumer<UserCreated>
             return;
         }
 
-        var passenger = Passengers.Models.Passenger.Create(SnowflakeIdGenerator.NewId(), context.Message.Name,
+        var passenger = Passengers.Models.Passenger.Create(NewId.NextGuid(), context.Message.Name,
             context.Message.PassportNumber);
 
         await _passengerDbContext.AddAsync(passenger);

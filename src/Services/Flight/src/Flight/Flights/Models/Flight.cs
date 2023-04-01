@@ -7,22 +7,22 @@ using Features.CreatingFlight.V1;
 using Features.DeletingFlight.V1;
 using Features.UpdatingFlight.V1;
 
-public record Flight : Aggregate<long>
+public record Flight : Aggregate<Guid>
 {
     public string FlightNumber { get; private set; }
-    public long AircraftId { get; private set; }
+    public Guid AircraftId { get; private set; }
     public DateTime DepartureDate { get; private set; }
-    public long DepartureAirportId { get; private set; }
+    public Guid DepartureAirportId { get; private set; }
     public DateTime ArriveDate { get; private set; }
-    public long ArriveAirportId { get; private set; }
+    public Guid ArriveAirportId { get; private set; }
     public decimal DurationMinutes { get; private set; }
     public DateTime FlightDate { get; private set; }
     public Enums.FlightStatus Status { get; private set; }
     public decimal Price { get; private set; }
 
-    public static Flight Create(long id, string flightNumber, long aircraftId,
-        long departureAirportId, DateTime departureDate, DateTime arriveDate,
-        long arriveAirportId, decimal durationMinutes, DateTime flightDate, Enums.FlightStatus status,
+    public static Flight Create(Guid id, string flightNumber, Guid aircraftId,
+        Guid departureAirportId, DateTime departureDate, DateTime arriveDate,
+        Guid arriveAirportId, decimal durationMinutes, DateTime flightDate, Enums.FlightStatus status,
         decimal price, bool isDeleted = false)
     {
         var flight = new Flight
@@ -52,9 +52,9 @@ public record Flight : Aggregate<long>
     }
 
 
-    public void Update(long id, string flightNumber, long aircraftId,
-        long departureAirportId, DateTime departureDate, DateTime arriveDate,
-        long arriveAirportId, decimal durationMinutes, DateTime flightDate, Enums.FlightStatus status,
+    public void Update(Guid id, string flightNumber, Guid aircraftId,
+        Guid departureAirportId, DateTime departureDate, DateTime arriveDate,
+        Guid arriveAirportId, decimal durationMinutes, DateTime flightDate, Enums.FlightStatus status,
         decimal price, bool isDeleted = false)
     {
         FlightNumber = flightNumber;
@@ -75,9 +75,9 @@ public record Flight : Aggregate<long>
         AddDomainEvent(@event);
     }
 
-    public void Delete(long id, string flightNumber, long aircraftId,
-        long departureAirportId, DateTime departureDate, DateTime arriveDate,
-        long arriveAirportId, decimal durationMinutes, DateTime flightDate, Enums.FlightStatus status,
+    public void Delete(Guid id, string flightNumber, Guid aircraftId,
+        Guid departureAirportId, DateTime departureDate, DateTime arriveDate,
+        Guid arriveAirportId, decimal durationMinutes, DateTime flightDate, Enums.FlightStatus status,
         decimal price, bool isDeleted = true)
     {
         FlightNumber = flightNumber;

@@ -1,5 +1,6 @@
 namespace Flight.Seats.Features.ReservingSeat.Commands.V1;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -11,9 +12,9 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public record ReserveSeat(long FlightId, string SeatNumber) : ICommand<ReserveSeatResult>, IInternalCommand;
+public record ReserveSeat(Guid FlightId, string SeatNumber) : ICommand<ReserveSeatResult>, IInternalCommand;
 
-public record ReserveSeatResult(long Id);
+public record ReserveSeatResult(Guid Id);
 
 internal class ReserveSeatValidator : AbstractValidator<ReserveSeat>
 {

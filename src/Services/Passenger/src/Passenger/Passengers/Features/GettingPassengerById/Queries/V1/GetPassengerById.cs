@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Ardalis.GuardClauses;
 using Exceptions;
 
-public record GetPassengerById(long Id) : IQuery<GetPassengerByIdResult>;
+public record GetPassengerById(Guid Id) : IQuery<GetPassengerByIdResult>;
 
 public record GetPassengerByIdResult(PassengerDto PassengerDto);
 

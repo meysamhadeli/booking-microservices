@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Identity.Data.Seed;
 
+using System.Linq;
+
 public class IdentityDataSeeder : IDataSeeder
 {
     private readonly UserManager<User> _userManager;
@@ -33,55 +35,39 @@ public class IdentityDataSeeder : IDataSeeder
     private async Task SeedRoles()
     {
         if (await _roleManager.RoleExistsAsync(Constants.Role.Admin) == false)
+        {
             await _roleManager.CreateAsync(new Role {Name = Constants.Role.Admin});
+        }
 
         if (await _roleManager.RoleExistsAsync(Constants.Role.User) == false)
+        {
             await _roleManager.CreateAsync(new Role {Name = Constants.Role.User});
+        }
     }
 
     private async Task SeedUsers()
     {
         if (await _userManager.FindByNameAsync("samh") == null)
         {
-            var user = new User
-            {
-                FirstName = "Sam",
-                LastName = "H",
-                UserName = "samh",
-                PassPortNumber = "123456789",
-                Email = "sam@test.com",
-                SecurityStamp = Guid.NewGuid().ToString()
-            };
-
-            var result = await _userManager.CreateAsync(user, "Admin@123456");
+            var result = await _userManager.CreateAsync(InitialData.Users.First(), "Admin@123456");
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, Constants.Role.Admin);
+                await _userManager.AddToRoleAsync(InitialData.Users.First(), Constants.Role.Admin);
 
-                await _eventDispatcher.SendAsync(new UserCreated(user.Id, user.FirstName + " " + user.LastName, user.PassPortNumber));
+                await _eventDispatcher.SendAsync(new UserCreated(InitialData.Users.First().Id, InitialData.Users.First().FirstName + " " + InitialData.Users.First().LastName, InitialData.Users.First().PassPortNumber));
             }
         }
 
         if (await _userManager.FindByNameAsync("meysamh2") == null)
         {
-            var user = new User
-            {
-                FirstName = "Sam2",
-                LastName = "H2",
-                UserName = "samh2",
-                PassPortNumber = "987654321",
-                Email = "sam2@test.com",
-                SecurityStamp = Guid.NewGuid().ToString()
-            };
-
-            var result = await _userManager.CreateAsync(user, "User@123456");
+            var result = await _userManager.CreateAsync(InitialData.Users.Last(), "User@123456");
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, Constants.Role.User);
+                await _userManager.AddToRoleAsync(InitialData.Users.Last(), Constants.Role.User);
 
-                await _eventDispatcher.SendAsync(new UserCreated(user.Id, user.FirstName + " " + user.LastName, user.PassPortNumber));
+                await _eventDispatcher.SendAsync(new UserCreated(InitialData.Users.Last().Id, InitialData.Users.Last().FirstName + " " + InitialData.Users.Last().LastName, InitialData.Users.Last().PassPortNumber));
             }
         }
     }

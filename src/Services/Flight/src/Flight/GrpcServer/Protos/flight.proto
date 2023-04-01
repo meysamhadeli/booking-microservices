@@ -11,7 +11,7 @@ service FlightGrpcService {
 }
 
 message GetByIdRequest {
-  int64 Id = 1;
+  string Id = 1;
 }
 
 message GetFlightByIdResult{
@@ -23,39 +23,39 @@ repeated SeatDtoResponse SeatDtos = 1;
 }
 
 message ReserveSeatResult{
-    int64 Id = 1;
+    string Id = 1;
 }
 
 message FlightResponse {
-  int64 Id = 1;
+  string Id = 1;
   string FlightNumber = 2;
-  int64 AircraftId = 3;
-  int64 DepartureAirportId = 4;
+  string AircraftId = 3;
+  string DepartureAirportId = 4;
   google.protobuf.Timestamp DepartureDate = 5;
   google.protobuf.Timestamp ArriveDate = 6;
-  int64 ArriveAirportId = 7;
+  string ArriveAirportId = 7;
   double DurationMinutes = 8;
   google.protobuf.Timestamp FlightDate = 9;
   FlightStatus Status = 10;
   double Price = 11;
-  int64 FlightId = 12;
+  string FlightId = 12;
 }
 
 message GetAvailableSeatsRequest {
-  int64 FlightId = 1;
+  string FlightId = 1;
 }
 
 message SeatDtoResponse {
-  int64 Id = 1;
+  string Id = 1;
   string SeatNumber = 2;
   SeatType Type = 3;
   SeatClass Class = 4;
-  int64 FlightId = 5;
+  string FlightId = 5;
 }
 
 
 message ReserveSeatRequest {
-  int64 FlightId = 1;
+  string FlightId = 1;
   string SeatNumber = 2;
 }
 

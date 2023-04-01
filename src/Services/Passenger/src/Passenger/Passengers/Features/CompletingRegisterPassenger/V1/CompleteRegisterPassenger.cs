@@ -3,17 +3,17 @@ namespace Passenger.Passengers.Features.CompletingRegisterPassenger.V1;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
-using BuildingBlocks.IdsGenerator;
 using Exceptions;
 using FluentValidation;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Data;
 using Dtos;
+using MassTransit;
 
 public record CompleteRegisterPassenger(string PassportNumber, Enums.PassengerType PassengerType, int Age) : ICommand<CompleteRegisterPassengerResult>, IInternalCommand
 {
-    public long Id { get; init; } = SnowflakeIdGenerator.NewId();
+    public Guid Id { get; init; } = NewId.NextGuid();
 }
 
 public record CompleteRegisterPassengerResult(PassengerDto PassengerDto);

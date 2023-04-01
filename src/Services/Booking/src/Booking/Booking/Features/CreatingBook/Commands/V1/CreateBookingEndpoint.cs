@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
-public record CreateBookingRequestDto(long PassengerId, long FlightId, string Description);
+public record CreateBookingRequestDto(Guid PassengerId, Guid FlightId, string Description);
 public record CreateBookingResponseDto(ulong Id);
 
 public class CreateBookingEndpoint : IMinimalEndpoint

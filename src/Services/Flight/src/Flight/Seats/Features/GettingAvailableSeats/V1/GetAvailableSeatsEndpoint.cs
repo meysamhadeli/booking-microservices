@@ -1,5 +1,6 @@
 namespace Flight.Seats.Features.GettingAvailableSeats.V1;
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ public class GetAvailableSeatsEndpoint : IMinimalEndpoint
         return builder;
     }
 
-    private async Task<IResult> GetAvailableSeats(long id, IMediator mediator, CancellationToken cancellationToken)
+    private async Task<IResult> GetAvailableSeats(Guid id, IMediator mediator, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetAvailableSeats(id), cancellationToken);
 

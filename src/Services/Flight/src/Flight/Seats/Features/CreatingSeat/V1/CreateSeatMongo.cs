@@ -1,5 +1,6 @@
 ﻿namespace Flight.Seats.Features.CreatingSeat.V1;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -13,8 +14,8 @@ using MediatR;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-public record CreateSeatMongo(long Id, string SeatNumber, Enums.SeatType Type,
-    Enums.SeatClass Class, long FlightId, bool IsDeleted) : InternalCommand;
+public record CreateSeatMongo(Guid Id, string SeatNumber, Enums.SeatType Type,
+    Enums.SeatClass Class, Guid FlightId, bool IsDeleted) : InternalCommand;
 
 public class CreateSeatMongoHandler : ICommandHandler<CreateSeatMongo>
 {

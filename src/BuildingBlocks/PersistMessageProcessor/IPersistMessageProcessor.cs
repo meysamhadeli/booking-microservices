@@ -15,7 +15,7 @@ public interface IPersistMessageProcessor
         CancellationToken cancellationToken = default)
         where TMessageEnvelope : MessageEnvelope;
 
-    Task<long> AddReceivedMessageAsync<TMessageEnvelope>(
+    Task<Guid> AddReceivedMessageAsync<TMessageEnvelope>(
         TMessageEnvelope messageEnvelope,
         CancellationToken cancellationToken = default)
         where TMessageEnvelope : MessageEnvelope;
@@ -30,14 +30,14 @@ public interface IPersistMessageProcessor
         CancellationToken cancellationToken = default);
 
     Task<PersistMessage> ExistMessageAsync(
-        long messageId,
+        Guid messageId,
         CancellationToken cancellationToken = default);
 
     Task ProcessInboxAsync(
-        long messageId,
+        Guid messageId,
         CancellationToken cancellationToken = default);
 
-    Task ProcessAsync(long messageId, MessageDeliveryType deliveryType, CancellationToken cancellationToken = default);
+    Task ProcessAsync(Guid messageId, MessageDeliveryType deliveryType, CancellationToken cancellationToken = default);
 
     Task ProcessAllAsync(CancellationToken cancellationToken = default);
 }

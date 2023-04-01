@@ -1,4 +1,3 @@
-using BuildingBlocks.IdsGenerator;
 using Mapster;
 
 namespace Flight.Flights.Features;
@@ -6,6 +5,7 @@ namespace Flight.Flights.Features;
 using CreatingFlight.V1;
 using DeletingFlight.V1;
 using GettingAvailableFlights.V1;
+using MassTransit;
 using Models;
 using UpdatingFlight.V1;
 using FlightDto = Dtos.FlightDto;
@@ -19,11 +19,11 @@ public class FlightMappings : IRegister
                 x.ArriveDate, x.ArriveAirportId, x.DurationMinutes, x.FlightDate, x.Status, x.Price));
 
         config.NewConfig<CreateFlightMongo, FlightReadModel>()
-            .Map(d => d.Id, s => SnowflakeIdGenerator.NewId())
+            .Map(d => d.Id, s => NewId.NextGuid())
             .Map(d => d.FlightId, s => s.Id);
 
         config.NewConfig<Models.Flight, FlightReadModel>()
-            .Map(d => d.Id, s => SnowflakeIdGenerator.NewId())
+            .Map(d => d.Id, s => NewId.NextGuid())
             .Map(d => d.FlightId, s => s.Id);
 
         config.NewConfig<FlightReadModel, FlightDto>()

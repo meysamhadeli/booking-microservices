@@ -20,8 +20,7 @@ public class UpdateFlightTests
         FakeFlightUpdate.Generate(fakeFlight);
 
         // Assert
-        fakeFlight.ArriveAirportId.Should().Be(3);
-        fakeFlight.AircraftId.Should().Be(3);
+        fakeFlight.Price.Should().Be(1000);
     }
 
     [Fact]

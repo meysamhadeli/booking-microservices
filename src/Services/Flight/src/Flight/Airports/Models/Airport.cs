@@ -1,17 +1,17 @@
 using BuildingBlocks.Core.Model;
-using BuildingBlocks.IdsGenerator;
 
 namespace Flight.Airports.Models;
 
+using System;
 using Features.CreatingAirport.V1;
 
-public record Airport : Aggregate<long>
+public record Airport : Aggregate<Guid>
 {
     public string Name { get; private set; }
     public string Address { get; private set; }
     public string Code { get; private set; }
 
-    public static Airport Create(long id, string name, string address, string code, bool isDeleted = false)
+    public static Airport Create(Guid id, string name, string address, string code, bool isDeleted = false)
     {
         var airport = new Airport
         {

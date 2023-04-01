@@ -7,9 +7,9 @@ public static class RepositoryExtensions
 {
     public static async Task<T> Get<T>(
         this IEventStoreDBRepository<T> repository,
-        long id,
+        Guid id,
         CancellationToken cancellationToken
-    ) where T : class, IAggregateEventSourcing<long>
+    ) where T : class, IAggregateEventSourcing<Guid>
     {
         var entity = await repository.Find(id, cancellationToken);
 
@@ -18,11 +18,11 @@ public static class RepositoryExtensions
 
     public static async Task<ulong> GetAndUpdate<T>(
         this IEventStoreDBRepository<T> repository,
-        long id,
+        Guid id,
         Action<T> action,
         long? expectedVersion = null,
         CancellationToken cancellationToken = default
-    ) where T : class, IAggregateEventSourcing<long>
+    ) where T : class, IAggregateEventSourcing<Guid>
     {
         var entity = await repository.Get(id, cancellationToken);
 

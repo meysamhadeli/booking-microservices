@@ -398,7 +398,7 @@ public class TestWriteFixture<TEntryPoint, TWContext> : TestFixture<TEntryPoint>
         });
     }
 
-    public Task<T> FindAsync<T>(long id)
+    public Task<T> FindAsync<T>(Guid id)
         where T : class, IAudit
     {
         return ExecuteDbContextAsync(db => db.Set<T>().FindAsync(id).AsTask());

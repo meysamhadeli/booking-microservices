@@ -1,5 +1,6 @@
 namespace Flight.Aircrafts.Features.CreatingAircraft.V1;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
@@ -11,7 +12,7 @@ using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
 public record CreateAircraftRequestDto(string Name, string Model, int ManufacturingYear);
-public record CreateAircraftResponseDto(long Id);
+public record CreateAircraftResponseDto(Guid Id);
 
 public class CreateAircraftEndpoint : IMinimalEndpoint
 {

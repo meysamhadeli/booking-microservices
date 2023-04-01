@@ -7,9 +7,9 @@ namespace Flight.Seats.Models;
 using Features.CreatingSeat.V1;
 using Features.ReservingSeat.Commands.V1;
 
-public record Seat : Aggregate<long>
+public record Seat : Aggregate<Guid>
 {
-    public static Seat Create(long id, string seatNumber, Enums.SeatType type, Enums.SeatClass @class, long flightId,
+    public static Seat Create(Guid id, string seatNumber, Enums.SeatType type, Enums.SeatClass @class, Guid flightId,
         bool isDeleted = false)
     {
         var seat = new Seat()
@@ -56,5 +56,5 @@ public record Seat : Aggregate<long>
     public string SeatNumber { get; private set; }
     public Enums.SeatType Type { get; private set; }
     public Enums.SeatClass Class { get; private set; }
-    public long FlightId { get; private set; }
+    public Guid FlightId { get; private set; }
 }

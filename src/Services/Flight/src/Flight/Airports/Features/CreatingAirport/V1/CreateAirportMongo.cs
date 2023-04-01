@@ -1,5 +1,6 @@
 ﻿namespace Flight.Airports.Features.CreatingAirport.V1;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -13,7 +14,7 @@ using MediatR;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-public record CreateAirportMongo(long Id, string Name, string Address, string Code, bool IsDeleted) : InternalCommand;
+public record CreateAirportMongo(Guid Id, string Name, string Address, string Code, bool IsDeleted) : InternalCommand;
 
 internal class CreateAirportMongoHandler : ICommandHandler<CreateAirportMongo>
 {

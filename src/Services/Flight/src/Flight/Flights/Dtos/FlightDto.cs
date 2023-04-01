@@ -2,6 +2,6 @@ using System;
 
 namespace Flight.Flights.Dtos;
 
-public record FlightDto(long Id, string FlightNumber, long AircraftId, long DepartureAirportId,
-    DateTime DepartureDate, DateTime ArriveDate, long ArriveAirportId, decimal DurationMinutes, DateTime FlightDate,
+public record FlightDto(Guid Id, string FlightNumber, Guid AircraftId, Guid DepartureAirportId,
+    DateTime DepartureDate, DateTime ArriveDate, Guid ArriveAirportId, decimal DurationMinutes, DateTime FlightDate,
     Enums.FlightStatus Status, decimal Price);

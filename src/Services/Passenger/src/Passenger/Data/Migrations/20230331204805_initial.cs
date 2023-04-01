@@ -15,7 +15,7 @@ namespace Passenger.Data.Migrations
                 name: "passenger",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false),
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     passportnumber = table.Column<string>(name: "passport_number", type: "text", nullable: true),
                     name = table.Column<string>(type: "text", nullable: true),
                     passengertype = table.Column<int>(name: "passenger_type", type: "integer", nullable: false),

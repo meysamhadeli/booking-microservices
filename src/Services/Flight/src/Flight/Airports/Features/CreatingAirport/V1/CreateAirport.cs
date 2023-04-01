@@ -1,25 +1,24 @@
 namespace Flight.Airports.Features.CreatingAirport.V1;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
-using BuildingBlocks.IdsGenerator;
-using Dtos;
 using Exceptions;
 using Data;
 using FluentValidation;
-using MapsterMapper;
+using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 public record CreateAirport(string Name, string Address, string Code) : ICommand<CreateAirportResult>, IInternalCommand
 {
-    public long Id { get; init; } = SnowflakeIdGenerator.NewId();
+    public Guid Id { get; init; } = NewId.NextGuid();
 }
 
-public record CreateAirportResult(long Id);
+public record CreateAirportResult(Guid Id);
 
 internal class CreateAirportValidator : AbstractValidator<CreateAirport>
 {

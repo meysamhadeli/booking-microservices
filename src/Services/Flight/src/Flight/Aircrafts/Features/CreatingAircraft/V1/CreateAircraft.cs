@@ -1,26 +1,25 @@
 namespace Flight.Aircrafts.Features.CreatingAircraft.V1;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
-using BuildingBlocks.IdsGenerator;
 using Exceptions;
-using Flight.Aircrafts.Dtos;
-using Flight.Aircrafts.Models;
-using Flight.Data;
+using Models;
+using Data;
 using FluentValidation;
-using MapsterMapper;
+using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 public record CreateAircraft(string Name, string Model, int ManufacturingYear) : ICommand<CreateAircraftResult>, IInternalCommand
 {
-    public long Id { get; init; } = SnowflakeIdGenerator.NewId();
+    public Guid Id { get; init; } = NewId.NextGuid();
 }
 
-public record CreateAircraftResult(long Id);
+public record CreateAircraftResult(Guid Id);
 
 internal class CreateAircraftValidator : AbstractValidator<CreateAircraft>
 {

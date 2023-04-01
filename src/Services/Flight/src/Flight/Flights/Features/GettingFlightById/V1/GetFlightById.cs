@@ -1,5 +1,6 @@
 namespace Flight.Flights.Features.GettingFlightById.V1;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -12,7 +13,7 @@ using MapsterMapper;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-public record GetFlightById(long Id) : IQuery<GetFlightByIdResult>;
+public record GetFlightById(Guid Id) : IQuery<GetFlightByIdResult>;
 
 public record GetFlightByIdResult(FlightDto FlightDto);
 
