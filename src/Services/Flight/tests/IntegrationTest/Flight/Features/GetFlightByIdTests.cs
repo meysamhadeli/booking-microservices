@@ -11,6 +11,7 @@ namespace Integration.Test.Flight.Features;
 
 using global::Flight.Flights.Features.CreatingFlight.V1;
 using global::Flight.Flights.Features.GettingFlightById.V1;
+using Thrift.Protocol;
 
 public class GetFlightByIdTests : FlightIntegrationTestBase
 {
@@ -50,10 +51,10 @@ public class GetFlightByIdTests : FlightIntegrationTestBase
         var flightGrpcClient = new FlightGrpcService.FlightGrpcServiceClient(Fixture.Channel);
 
         // Act
-        var response = await flightGrpcClient.GetByIdAsync(new GetByIdRequest {Id = 1}).ResponseAsync;
+        var response = await flightGrpcClient.GetByIdAsync(new GetByIdRequest {Id = command.Id.ToString()}).ResponseAsync;
 
         // Assert
         response?.Should().NotBeNull();
-        // response?.Id.Should().Be(command.Id);
+        response?.FlightDto.Id.Should().Be(command.Id.ToString());
     }
 }

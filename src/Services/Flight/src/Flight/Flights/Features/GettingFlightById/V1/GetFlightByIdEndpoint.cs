@@ -1,5 +1,6 @@
 namespace Flight.Flights.Features.GettingFlightById.V1;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
@@ -28,7 +29,7 @@ public class GetFlightByIdEndpoint : IMinimalEndpoint
         return builder;
     }
 
-    private async Task<IResult> GetById(long id, IMediator mediator, CancellationToken cancellationToken)
+    private async Task<IResult> GetById(Guid id, IMediator mediator, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetFlightById(id), cancellationToken);
 

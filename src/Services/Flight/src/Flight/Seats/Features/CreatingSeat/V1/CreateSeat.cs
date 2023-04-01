@@ -1,26 +1,25 @@
 namespace Flight.Seats.Features.CreatingSeat.V1;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
-using BuildingBlocks.IdsGenerator;
 using Flight.Data;
-using Flight.Seats.Dtos;
 using Flight.Seats.Exceptions;
 using Flight.Seats.Models;
 using FluentValidation;
-using MapsterMapper;
+using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public record CreateSeat(string SeatNumber, Enums.SeatType Type, Enums.SeatClass Class, long FlightId) : ICommand<CreateSeatResult>, IInternalCommand
+public record CreateSeat(string SeatNumber, Enums.SeatType Type, Enums.SeatClass Class, Guid FlightId) : ICommand<CreateSeatResult>, IInternalCommand
 {
-    public long Id { get; init; } = SnowflakeIdGenerator.NewId();
+    public Guid Id { get; init; } = NewId.NextGuid();
 }
 
-public record CreateSeatResult(long Id);
+public record CreateSeatResult(Guid Id);
 
 internal class CreateSeatValidator : AbstractValidator<CreateSeat>
 {

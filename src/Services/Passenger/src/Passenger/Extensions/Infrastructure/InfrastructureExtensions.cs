@@ -35,9 +35,6 @@ public static class InfrastructureExtensions
         var configuration = builder.Configuration;
         var env = builder.Environment;
 
-        // https://github.com/tonerdo/dotnet-env
-        DotNetEnv.Env.TraversePath().Load();
-
         builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
         builder.Services.AddScoped<IEventMapper, EventMapper>();
         builder.Services.AddScoped<IEventDispatcher, EventDispatcher>();

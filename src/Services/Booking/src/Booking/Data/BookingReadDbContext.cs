@@ -1,10 +1,11 @@
-﻿using Booking.Booking.Models.Reads;
-using BuildingBlocks.Mongo;
+﻿using BuildingBlocks.Mongo;
 using Humanizer;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace Booking.Data;
+
+using Booking.Models;
 
 public class BookingReadDbContext : MongoDbContext
 {

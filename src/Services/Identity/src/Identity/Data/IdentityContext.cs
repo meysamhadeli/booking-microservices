@@ -18,7 +18,7 @@ namespace Identity.Data;
 
 using System;
 
-public sealed class IdentityContext : IdentityDbContext<User, Role, long,
+public sealed class IdentityContext : IdentityDbContext<User, Role, Guid,
     UserClaim, UserRole, UserLogin, RoleClaim, UserToken>, IDbContext
 {
     public IdentityContext(DbContextOptions<IdentityContext> options) : base(options)

@@ -1,4 +1,4 @@
 namespace Booking.Booking.Dtos;
 
-public record BookingResponseDto(long Id, string Name, string FlightNumber, long AircraftId, decimal Price,
-    DateTime FlightDate, string SeatNumber, long DepartureAirportId, long ArriveAirportId, string Description);
+public record BookingResponseDto(Guid Id, string Name, string FlightNumber, Guid AircraftId, decimal Price,
+    DateTime FlightDate, string SeatNumber, Guid DepartureAirportId, Guid ArriveAirportId, string Description);

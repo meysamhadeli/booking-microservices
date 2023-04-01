@@ -14,8 +14,8 @@ using Models;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-public record UpdateFlightMongo(long Id, string FlightNumber, long AircraftId, DateTime DepartureDate,
-    long DepartureAirportId, DateTime ArriveDate, long ArriveAirportId, decimal DurationMinutes, DateTime FlightDate,
+public record UpdateFlightMongo(Guid Id, string FlightNumber, Guid AircraftId, DateTime DepartureDate,
+    Guid DepartureAirportId, DateTime ArriveDate, Guid ArriveAirportId, decimal DurationMinutes, DateTime FlightDate,
     Enums.FlightStatus Status, decimal Price, bool IsDeleted) : InternalCommand;
 
 

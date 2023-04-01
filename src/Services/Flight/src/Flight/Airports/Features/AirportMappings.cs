@@ -1,20 +1,20 @@
 ﻿namespace Flight.Airports.Features;
 
-using BuildingBlocks.IdsGenerator;
-using Flight.Airports.Features.CreatingAirport.V1;
-using Flight.Airports.Models;
+using CreatingAirport.V1;
+using Models;
 using Mapster;
+using MassTransit;
 
 public class AirportMappings : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<CreateAirportMongo, AirportReadModel>()
-            .Map(d => d.Id, s => SnowflakeIdGenerator.NewId())
+            .Map(d => d.Id, s => NewId.NextGuid())
             .Map(d => d.AirportId, s => s.Id);
 
         config.NewConfig<Airport, AirportReadModel>()
-            .Map(d => d.Id, s => SnowflakeIdGenerator.NewId())
+            .Map(d => d.Id, s => NewId.NextGuid())
             .Map(d => d.AirportId, s => s.Id);
 
         config.NewConfig<CreateAirportRequestDto, CreateAirport>()

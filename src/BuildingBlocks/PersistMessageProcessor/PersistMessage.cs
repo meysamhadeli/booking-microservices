@@ -4,7 +4,7 @@ using Core.Model;
 
 public class PersistMessage: IVersion
 {
-    public PersistMessage(long id, string dataType, string data, MessageDeliveryType deliveryType)
+    public PersistMessage(Guid id, string dataType, string data, MessageDeliveryType deliveryType)
     {
         Id = id;
         DataType = dataType;
@@ -15,7 +15,7 @@ public class PersistMessage: IVersion
         RetryCount = 0;
     }
 
-    public long Id { get; private set; }
+    public Guid Id { get; private set; }
     public string DataType { get; private set; }
     public string Data { get; private set; }
     public DateTime Created { get; private set; }

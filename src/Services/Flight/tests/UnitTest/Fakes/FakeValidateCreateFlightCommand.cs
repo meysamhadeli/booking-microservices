@@ -12,9 +12,9 @@ public class FakeValidateCreateFlightCommand : AutoFaker<CreateFlight>
     {
         RuleFor(r => r.Price, _ => -10);
         RuleFor(r => r.Status, _ => (FlightStatus)10);
-        RuleFor(r => r.AircraftId, _ => 0);
-        RuleFor(r => r.DepartureAirportId, _ => 0);
-        RuleFor(r => r.ArriveAirportId, _ => 0);
+        RuleFor(r => r.AircraftId, _ => Guid.Empty);
+        RuleFor(r => r.DepartureAirportId, _ => Guid.Empty);
+        RuleFor(r => r.ArriveAirportId, _ => Guid.Empty);
         RuleFor(r => r.DurationMinutes, _ => 0);
         RuleFor(r => r.FlightDate, _ => new DateTime());
     }

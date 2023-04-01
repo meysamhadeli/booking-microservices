@@ -1,8 +1,6 @@
-using Booking.Booking.Models.Reads;
 using Booking.Data;
 using BuildingBlocks.EventStoreDB.Events;
 using BuildingBlocks.EventStoreDB.Projections;
-using BuildingBlocks.IdsGenerator;
 using MediatR;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
@@ -10,6 +8,8 @@ using MongoDB.Driver.Linq;
 namespace Booking;
 
 using Booking.Features.CreatingBook.Commands.V1;
+using Booking.Models;
+using MassTransit;
 
 public class BookingProjection : IProjectionProcessor
 {
@@ -41,7 +41,7 @@ public class BookingProjection : IProjectionProcessor
         {
             var bookingReadModel = new BookingReadModel
             {
-                Id = SnowflakeIdGenerator.NewId(),
+                Id = NewId.NextGuid(),
                 Trip = @event.Trip,
                 BookId = @event.Id,
                 PassengerInfo = @event.PassengerInfo,

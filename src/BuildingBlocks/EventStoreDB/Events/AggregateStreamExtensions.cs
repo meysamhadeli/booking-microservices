@@ -7,7 +7,7 @@ public static class AggregateStreamExtensions
 {
     public static async Task<T?> AggregateStream<T>(
         this EventStoreClient eventStore,
-        long id,
+        Guid id,
         CancellationToken cancellationToken,
         ulong? fromVersion = null
     ) where T : class, IProjection
@@ -19,11 +19,13 @@ public static class AggregateStreamExtensions
             cancellationToken: cancellationToken
         );
 
-        // TODO: consider adding extension method for the aggregation and deserialisation
+        // TODO: consider adding extension method for the aggregation and deserialization
         var aggregate = (T)Activator.CreateInstance(typeof(T), true)!;
 
         if (await readResult.ReadState == ReadState.StreamNotFound)
+        {
             return null;
+        }
 
         await foreach (var @event in readResult)
         {

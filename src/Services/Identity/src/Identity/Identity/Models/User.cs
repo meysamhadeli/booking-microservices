@@ -2,9 +2,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Identity.Identity.Models;
 
+using System;
 using BuildingBlocks.Core.Model;
 
-public class User : IdentityUser<long>, IVersion
+public class User : IdentityUser<Guid>, IVersion
 {
     public string FirstName { get; init; }
     public string LastName { get; init; }

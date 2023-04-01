@@ -16,8 +16,7 @@ namespace Identity.Data.Migrations
                 name: "asp_net_roles",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     version = table.Column<long>(type: "bigint", nullable: false),
                     name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalizedname = table.Column<string>(name: "normalized_name", type: "character varying(256)", maxLength: 256, nullable: true),
@@ -32,8 +31,7 @@ namespace Identity.Data.Migrations
                 name: "asp_net_users",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     firstname = table.Column<string>(name: "first_name", type: "text", nullable: true),
                     lastname = table.Column<string>(name: "last_name", type: "text", nullable: true),
                     passportnumber = table.Column<string>(name: "pass_port_number", type: "text", nullable: true),
@@ -65,7 +63,7 @@ namespace Identity.Data.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     version = table.Column<long>(type: "bigint", nullable: false),
-                    roleid = table.Column<long>(name: "role_id", type: "bigint", nullable: false),
+                    roleid = table.Column<Guid>(name: "role_id", type: "uuid", nullable: false),
                     claimtype = table.Column<string>(name: "claim_type", type: "text", nullable: true),
                     claimvalue = table.Column<string>(name: "claim_value", type: "text", nullable: true)
                 },
@@ -87,7 +85,7 @@ namespace Identity.Data.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     version = table.Column<long>(type: "bigint", nullable: false),
-                    userid = table.Column<long>(name: "user_id", type: "bigint", nullable: false),
+                    userid = table.Column<Guid>(name: "user_id", type: "uuid", nullable: false),
                     claimtype = table.Column<string>(name: "claim_type", type: "text", nullable: true),
                     claimvalue = table.Column<string>(name: "claim_value", type: "text", nullable: true)
                 },
@@ -110,7 +108,7 @@ namespace Identity.Data.Migrations
                     providerkey = table.Column<string>(name: "provider_key", type: "text", nullable: false),
                     version = table.Column<long>(type: "bigint", nullable: false),
                     providerdisplayname = table.Column<string>(name: "provider_display_name", type: "text", nullable: true),
-                    userid = table.Column<long>(name: "user_id", type: "bigint", nullable: false)
+                    userid = table.Column<Guid>(name: "user_id", type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -127,8 +125,8 @@ namespace Identity.Data.Migrations
                 name: "asp_net_user_roles",
                 columns: table => new
                 {
-                    userid = table.Column<long>(name: "user_id", type: "bigint", nullable: false),
-                    roleid = table.Column<long>(name: "role_id", type: "bigint", nullable: false),
+                    userid = table.Column<Guid>(name: "user_id", type: "uuid", nullable: false),
+                    roleid = table.Column<Guid>(name: "role_id", type: "uuid", nullable: false),
                     version = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -152,7 +150,7 @@ namespace Identity.Data.Migrations
                 name: "asp_net_user_tokens",
                 columns: table => new
                 {
-                    userid = table.Column<long>(name: "user_id", type: "bigint", nullable: false),
+                    userid = table.Column<Guid>(name: "user_id", type: "uuid", nullable: false),
                     loginprovider = table.Column<string>(name: "login_provider", type: "text", nullable: false),
                     name = table.Column<string>(type: "text", nullable: false),
                     version = table.Column<long>(type: "bigint", nullable: false),

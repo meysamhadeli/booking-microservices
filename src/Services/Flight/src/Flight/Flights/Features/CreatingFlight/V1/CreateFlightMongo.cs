@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
-using Flight.Data;
-using Flight.Flights.Exceptions;
+using Data;
+using Exceptions;
 using MapsterMapper;
 using MediatR;
 using Models;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-public record CreateFlightMongo(long Id, string FlightNumber, long AircraftId, DateTime DepartureDate,
-    long DepartureAirportId, DateTime ArriveDate, long ArriveAirportId, decimal DurationMinutes, DateTime FlightDate,
+public record CreateFlightMongo(Guid Id, string FlightNumber, Guid AircraftId, DateTime DepartureDate,
+    Guid DepartureAirportId, DateTime ArriveDate, Guid ArriveAirportId, decimal DurationMinutes, DateTime FlightDate,
     Enums.FlightStatus Status, decimal Price, bool IsDeleted) : InternalCommand;
 
 internal class CreateFlightMongoHandler : ICommandHandler<CreateFlightMongo>

@@ -6,23 +6,21 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
-using BuildingBlocks.IdsGenerator;
 using Data;
-using Dtos;
 using Exceptions;
 using FluentValidation;
-using MapsterMapper;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
-public record CreateFlight(string FlightNumber, long AircraftId, long DepartureAirportId,
-    DateTime DepartureDate, DateTime ArriveDate, long ArriveAirportId,
+public record CreateFlight(string FlightNumber, Guid AircraftId, Guid DepartureAirportId,
+    DateTime DepartureDate, DateTime ArriveDate, Guid ArriveAirportId,
     decimal DurationMinutes, DateTime FlightDate, Enums.FlightStatus Status,
     decimal Price) : ICommand<CreateFlightResult>, IInternalCommand
 {
-    public long Id { get; init; } = SnowflakeIdGenerator.NewId();
+    public Guid Id { get; init; } = NewId.NextGuid();
 }
 
-public record CreateFlightResult(long Id);
+public record CreateFlightResult(Guid Id);
 
 internal class CreateFlightValidator : AbstractValidator<CreateFlight>
 {

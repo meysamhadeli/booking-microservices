@@ -1,5 +1,6 @@
 namespace Identity.Identity.Features.RegisteringNewUser.V1;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BuildingBlocks.Web;
@@ -13,7 +14,7 @@ using Swashbuckle.AspNetCore.Annotations;
 public record RegisterNewUserRequestDto(string FirstName, string LastName, string Username, string Email,
     string Password, string ConfirmPassword, string PassportNumber);
 
-public record RegisterNewUserResponseDto(long Id, string FirstName, string LastName, string Username, string PassportNumber);
+public record RegisterNewUserResponseDto(Guid Id, string FirstName, string LastName, string Username, string PassportNumber);
 
 public class RegisterNewUserEndpoint : IMinimalEndpoint
 {

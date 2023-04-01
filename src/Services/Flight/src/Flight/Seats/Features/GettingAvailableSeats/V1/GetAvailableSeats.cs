@@ -1,5 +1,6 @@
 namespace Flight.Seats.Features.GettingAvailableSeats.V1;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -14,7 +15,7 @@ using MapsterMapper;
 using MediatR;
 using MongoDB.Driver;
 
-public record GetAvailableSeats(long FlightId) : IQuery<GetAvailableSeatsResult>;
+public record GetAvailableSeats(Guid FlightId) : IQuery<GetAvailableSeatsResult>;
 
 public record GetAvailableSeatsResult(IEnumerable<SeatDto> SeatDtos);
 

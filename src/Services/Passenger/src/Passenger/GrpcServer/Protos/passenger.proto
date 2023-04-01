@@ -8,20 +8,20 @@ service PassengerGrpcService {
 }
 
 message GetByIdRequest {
-  int64 Id = 1;
+  string Id = 1;
+}
+
+message GetPassengerByIdResult {
+   PassengerResponse PassengerDto = 1;
 }
 
 message PassengerResponse {
-  int64 Id = 1;
+  string Id = 1;
   string Name = 2;
   string PassportNumber = 3;
   PassengerType PassengerType = 4;
   int32 Age = 5;
   string Email = 6;
-}
-
-message GetPassengerByIdResult {
-  PassengerResponse PassengerDto = 1;
 }
 
 

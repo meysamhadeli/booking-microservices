@@ -7,23 +7,21 @@ using Ardalis.GuardClauses;
 using BuildingBlocks.Caching;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
-using Flight.Data;
-using Flight.Flights.Dtos;
-using Flight.Flights.Exceptions;
+using Data;
+using Exceptions;
 using Flight.Flights.Features.CreatingFlight.V1;
 using FluentValidation;
-using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 
-public record UpdateFlight(long Id, string FlightNumber, long AircraftId, long DepartureAirportId,
-    DateTime DepartureDate, DateTime ArriveDate, long ArriveAirportId, decimal DurationMinutes, DateTime FlightDate,
+public record UpdateFlight(Guid Id, string FlightNumber, Guid AircraftId, Guid DepartureAirportId,
+    DateTime DepartureDate, DateTime ArriveDate, Guid ArriveAirportId, decimal DurationMinutes, DateTime FlightDate,
     Enums.FlightStatus Status, bool IsDeleted, decimal Price) : ICommand<UpdateFlightResult>, IInternalCommand,
     IInvalidateCacheRequest
 {
     public string CacheKey => "GetAvailableFlights";
 }
 
-public record UpdateFlightResult(long Id);
+public record UpdateFlightResult(Guid Id);
 
 internal class UpdateFlightValidator : AbstractValidator<CreateFlight>
 {

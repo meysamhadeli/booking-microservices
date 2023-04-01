@@ -5,6 +5,7 @@ using MediatR;
 
 namespace Flight.GrpcServer.Services;
 
+using System;
 using Flights.Features.GettingFlightById.V1;
 using Seats.Features.GettingAvailableSeats.V1;
 using Seats.Features.ReservingSeat.Commands.V1;
@@ -23,7 +24,7 @@ public class FlightGrpcServices : FlightGrpcService.FlightGrpcServiceBase
 
     public override async Task<GetFlightByIdResult> GetById(GetByIdRequest request, ServerCallContext context)
     {
-        var result = await _mediator.Send(new GetFlightById(request.Id));
+        var result = await _mediator.Send(new GetFlightById(new Guid(request.Id)));
         return result.Adapt<GetFlightByIdResult>();
     }
 
@@ -31,7 +32,7 @@ public class FlightGrpcServices : FlightGrpcService.FlightGrpcServiceBase
     {
         var result = new GetAvailableSeatsResult();
 
-        var availableSeats = await _mediator.Send(new GetAvailableSeats(request.FlightId));
+        var availableSeats = await _mediator.Send(new GetAvailableSeats(new Guid(request.FlightId)));
 
         if (availableSeats?.SeatDtos == null)
         {
@@ -48,7 +49,7 @@ public class FlightGrpcServices : FlightGrpcService.FlightGrpcServiceBase
 
     public override async Task<ReserveSeatResult> ReserveSeat(ReserveSeatRequest request, ServerCallContext context)
     {
-        var result = await _mediator.Send(new ReserveSeat(request.FlightId, request.SeatNumber));
+        var result = await _mediator.Send(new ReserveSeat(new Guid(request.FlightId), request.SeatNumber));
         return result.Adapt<ReserveSeatResult>();
     }
 }

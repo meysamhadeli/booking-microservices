@@ -4,4 +4,4 @@ using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using Models.ValueObjects;
 
-public record BookingCreatedDomainEvent(long Id, PassengerInfo PassengerInfo, Trip Trip) : Audit, IDomainEvent;
+public record BookingCreatedDomainEvent(Guid Id, PassengerInfo PassengerInfo, Trip Trip) : Audit, IDomainEvent;

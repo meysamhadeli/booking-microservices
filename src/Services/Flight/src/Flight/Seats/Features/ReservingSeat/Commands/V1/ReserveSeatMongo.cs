@@ -1,5 +1,6 @@
 ﻿namespace Flight.Seats.Features.ReservingSeat.Commands.V1;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -11,8 +12,8 @@ using MapsterMapper;
 using MediatR;
 using MongoDB.Driver;
 
-public record ReserveSeatMongo(long Id, string SeatNumber, Enums.SeatType Type,
-    Enums.SeatClass Class, long FlightId, bool IsDeleted) : InternalCommand;
+public record ReserveSeatMongo(Guid Id, string SeatNumber, Enums.SeatType Type,
+    Enums.SeatClass Class, Guid FlightId, bool IsDeleted) : InternalCommand;
 
 internal class ReserveSeatMongoHandler : ICommandHandler<ReserveSeatMongo>
 {

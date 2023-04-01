@@ -18,7 +18,6 @@
     <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="6.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.SQLite.Storage" Version="6.0.5" />
     <PackageReference Include="Ben.BlockingDetector" Version="0.0.4" />
-    <PackageReference Include="DotNetEnv" Version="2.5.0" />
     <PackageReference Include="EasyCaching.Core" Version="1.8.0" />
     <PackageReference Include="EasyCaching.InMemory" Version="1.8.0" />
     <PackageReference Include="EasyNetQ.Management.Client" Version="1.4.2" />
