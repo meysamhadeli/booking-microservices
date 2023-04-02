@@ -11,7 +11,9 @@ using Data;
 using Dtos;
 using MassTransit;
 
-public record CompleteRegisterPassenger(string PassportNumber, Enums.PassengerType PassengerType, int Age) : ICommand<CompleteRegisterPassengerResult>, IInternalCommand
+public record CompleteRegisterPassenger
+    (string PassportNumber, Enums.PassengerType PassengerType, int Age) : ICommand<CompleteRegisterPassengerResult>,
+        IInternalCommand
 {
     public Guid Id { get; init; } = NewId.NextGuid();
 }
@@ -33,7 +35,9 @@ internal class CompleteRegisterPassengerValidator : AbstractValidator<CompleteRe
     }
 }
 
-internal class CompleteRegisterPassengerCommandHandler : ICommandHandler<CompleteRegisterPassenger, CompleteRegisterPassengerResult>
+internal class
+    CompleteRegisterPassengerCommandHandler : ICommandHandler<CompleteRegisterPassenger,
+        CompleteRegisterPassengerResult>
 {
     private readonly IMapper _mapper;
     private readonly PassengerDbContext _passengerDbContext;
@@ -44,7 +48,8 @@ internal class CompleteRegisterPassengerCommandHandler : ICommandHandler<Complet
         _passengerDbContext = passengerDbContext;
     }
 
-    public async Task<CompleteRegisterPassengerResult> Handle(CompleteRegisterPassenger request, CancellationToken cancellationToken)
+    public async Task<CompleteRegisterPassengerResult> Handle(CompleteRegisterPassenger request,
+        CancellationToken cancellationToken)
     {
         Guard.Against.Null(request, nameof(request));
 

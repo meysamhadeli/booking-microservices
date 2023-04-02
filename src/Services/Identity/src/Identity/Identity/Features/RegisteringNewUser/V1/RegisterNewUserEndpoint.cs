@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Annotations;
 
 public record RegisterNewUserRequestDto(string FirstName, string LastName, string Username, string Email,
     string Password, string ConfirmPassword, string PassportNumber);
