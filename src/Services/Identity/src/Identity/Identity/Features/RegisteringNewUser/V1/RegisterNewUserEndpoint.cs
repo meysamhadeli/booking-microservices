@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
 public record RegisterNewUserRequestDto(string FirstName, string LastName, string Username, string Email,
@@ -22,10 +23,10 @@ public class RegisterNewUserEndpoint : IMinimalEndpoint
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/identity/register-user", RegisterNewUser)
             .WithName("RegisterUser")
-            .WithMetadata(new SwaggerOperationAttribute("Register User", "Register User"))
             .WithApiVersionSet(builder.NewApiVersionSet("Identity").Build())
             .Produces<RegisterNewUserResponseDto>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithOpenApi(operation => new OpenApiOperation(operation) { Summary = "Register User", Description = "Register User" })
             .HasApiVersion(1.0);
 
         return builder;

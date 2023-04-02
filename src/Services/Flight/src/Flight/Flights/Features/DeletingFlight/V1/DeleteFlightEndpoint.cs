@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
 public class DeleteFlightEndpoint : IMinimalEndpoint
@@ -17,10 +18,10 @@ public class DeleteFlightEndpoint : IMinimalEndpoint
         builder.MapDelete($"{EndpointConfig.BaseApiPath}/flight/{{id}}", DeleteFlight)
             .RequireAuthorization()
             .WithName("DeleteFlight")
-            .WithMetadata(new SwaggerOperationAttribute("Delete Flight", "Delete Flight"))
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithOpenApi(operation => new OpenApiOperation(operation) { Summary = "Delete Flight", Description = "Delete Flight" })
             .HasApiVersion(1.0);
 
         return builder;
