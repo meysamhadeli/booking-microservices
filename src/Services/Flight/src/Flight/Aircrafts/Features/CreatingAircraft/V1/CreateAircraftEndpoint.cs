@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Annotations;
 
 public record CreateAircraftRequestDto(string Name, string Model, int ManufacturingYear);
 public record CreateAircraftResponseDto(Guid Id);

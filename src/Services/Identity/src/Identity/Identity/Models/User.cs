@@ -7,8 +7,8 @@ using BuildingBlocks.Core.Model;
 
 public class User : IdentityUser<Guid>, IVersion
 {
-    public string FirstName { get; init; }
-    public string LastName { get; init; }
-    public string PassPortNumber { get; init; }
+    public required string FirstName { get; init; }
+    public required string LastName { get; init; }
+    public required string PassPortNumber { get; init; }
     public long Version { get; set; }
 }

@@ -25,5 +25,5 @@ public abstract record Aggregate<TId> : Audit, IAggregate<TId>
 
     public long Version { get; set; }
 
-    public TId Id { get; set;  }
+    public required TId Id { get; set;  }
 }

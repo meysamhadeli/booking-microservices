@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Annotations;
 
 public record CreateBookingRequestDto(Guid PassengerId, Guid FlightId, string Description);
 public record CreateBookingResponseDto(ulong Id);

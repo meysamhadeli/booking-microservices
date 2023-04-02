@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Annotations;
 
 public record ReserveSeatRequestDto(Guid FlightId, string SeatNumber);
 public record ReserveSeatResponseDto(Guid Id);

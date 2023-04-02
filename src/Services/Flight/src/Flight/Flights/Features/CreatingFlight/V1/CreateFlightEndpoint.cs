@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Annotations;
 
 public record CreateFlightRequestDto(string FlightNumber, Guid AircraftId, Guid DepartureAirportId,
     DateTime DepartureDate, DateTime ArriveDate, Guid ArriveAirportId,
