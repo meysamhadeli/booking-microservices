@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
 public record GetFlightByIdResponseDto(FlightDto FlightDto);
@@ -20,10 +21,10 @@ public class GetFlightByIdEndpoint : IMinimalEndpoint
         builder.MapGet($"{EndpointConfig.BaseApiPath}/flight/{{id}}", GetById)
             .RequireAuthorization()
             .WithName("GetFlightById")
-            .WithMetadata(new SwaggerOperationAttribute("Get Flight By Id", "Get Flight By Id"))
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<GetFlightByIdResponseDto>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithOpenApi(operation => new OpenApiOperation(operation) { Summary = "Get Flight By Id", Description = "Get Flight By Id" })
             .HasApiVersion(1.0);
 
         return builder;

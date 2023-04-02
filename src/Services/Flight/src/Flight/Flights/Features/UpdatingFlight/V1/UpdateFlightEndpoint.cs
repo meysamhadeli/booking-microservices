@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
 public record UpdateFlightRequestDto(Guid Id, string FlightNumber, Guid AircraftId, Guid DepartureAirportId, DateTime DepartureDate, DateTime ArriveDate,
@@ -21,10 +22,10 @@ public class UpdateFlightEndpoint : IMinimalEndpoint
         builder.MapPut($"{EndpointConfig.BaseApiPath}/flight", UpdateFlight)
             .RequireAuthorization()
             .WithName("UpdateFlight")
-            .WithMetadata(new SwaggerOperationAttribute("Update Flight", "Update Flight"))
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithOpenApi(operation => new OpenApiOperation(operation) { Summary = "Update Flight", Description = "Update Flight" })
             .HasApiVersion(1.0);
 
         return builder;

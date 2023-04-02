@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
 public record CreateAirportRequestDto(string Name, string Address, string Code);
@@ -21,10 +22,10 @@ public class CreateAirportEndpoint : IMinimalEndpoint
         builder.MapPost($"{EndpointConfig.BaseApiPath}/flight/airport", CreateAirport)
             .RequireAuthorization()
             .WithName("CreateAirport")
-            .WithMetadata(new SwaggerOperationAttribute("Create Airport", "Create Airport"))
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<CreateAirportResponseDto>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithOpenApi(operation => new OpenApiOperation(operation) { Summary = "Create Airport", Description = "Create Airport" })
             .HasApiVersion(1.0);
 
         return builder;
