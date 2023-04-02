@@ -62,7 +62,7 @@ public static class ServiceCollectionExtensions
                 // options.OperationFilter<TagBySwaggerOperationFilter>();
 
                 // Enables Swagger annotations (SwaggerOperationAttribute, SwaggerParameterAttribute etc.)
-                options.EnableAnnotations();
+                // options.EnableAnnotations();
             });
 
         services.Configure<SwaggerGeneratorOptions>(o => o.InferSecuritySchemes = true);

@@ -4,11 +4,11 @@ using System;
 
 public class SeatReadModel
 {
-    public Guid Id { get; init; }
-    public Guid SeatId { get; init; }
-    public string SeatNumber { get; init; }
-    public Enums.SeatType Type { get; init; }
-    public Enums.SeatClass Class { get; init; }
-    public Guid FlightId { get; init; }
-    public bool IsDeleted { get; init; }
+    public required Guid Id { get; init; }
+    public required Guid SeatId { get; init; }
+    public required string SeatNumber { get; init; }
+    public required Enums.SeatType Type { get; init; }
+    public required Enums.SeatClass Class { get; init; }
+    public required Guid FlightId { get; init; }
+    public required bool IsDeleted { get; init; }
 }
