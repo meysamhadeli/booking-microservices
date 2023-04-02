@@ -10,6 +10,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
 public record GetAvailableSeatsResponseDto(IEnumerable<SeatDto> SeatDtos);
@@ -21,10 +22,10 @@ public class GetAvailableSeatsEndpoint : IMinimalEndpoint
         builder.MapGet($"{EndpointConfig.BaseApiPath}/flight/get-available-seats/{{id}}", GetAvailableSeats)
             .RequireAuthorization()
             .WithName("GetAvailableSeats")
-            .WithMetadata(new SwaggerOperationAttribute("Get Available Seats", "Get Available Seats"))
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<GetAvailableSeatsResponseDto>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithOpenApi(operation => new OpenApiOperation(operation) { Summary = "Get Available Seats", Description = "Get Available Seats" })
             .HasApiVersion(1.0);
 
         return builder;

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Dtos;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
 public record GetPassengerByIdResponseDto(PassengerDto PassengerDto);
@@ -17,10 +18,10 @@ public class GetPassengerByIdEndpoint : IMinimalEndpoint
         builder.MapGet($"{EndpointConfig.BaseApiPath}/passenger/{{id}}", GetById)
             .RequireAuthorization()
             .WithName("GetPassengerById")
-            .WithMetadata(new SwaggerOperationAttribute("Get Passenger By Id", "Get Passenger By Id"))
             .WithApiVersionSet(builder.NewApiVersionSet("Passenger").Build())
             .Produces<GetPassengerByIdResponseDto>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithOpenApi(operation => new OpenApiOperation(operation) { Summary = "Get Passenger By Id", Description = "Get Passenger By Id" })
             .HasApiVersion(1.0);
 
         return builder;

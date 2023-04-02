@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
 public record CreateSeatRequestDto(string SeatNumber, Enums.SeatType Type, Enums.SeatClass Class, Guid FlightId);
@@ -21,10 +22,10 @@ public class CreateSeatEndpoint : IMinimalEndpoint
         builder.MapPost($"{EndpointConfig.BaseApiPath}/flight/seat", CreateSeat)
             .RequireAuthorization()
             .WithName("CreateSeat")
-            .WithMetadata(new SwaggerOperationAttribute("Create Seat", "Create Seat"))
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<CreateSeatResponseDto>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithOpenApi(operation => new OpenApiOperation(operation) { Summary = "Create Seat", Description = "Create Seat" })
             .HasApiVersion(1.0);
 
         return builder;
