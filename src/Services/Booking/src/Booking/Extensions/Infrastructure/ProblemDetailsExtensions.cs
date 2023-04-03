@@ -30,56 +30,56 @@ public static class ProblemDetailsExtensions
                             ConflictException =>
                             (
                                 exceptionType.Message,
-                                exceptionType.GetType().ToString(),
+                                "https://www.rfc-editor.org/rfc/rfc7231#section-6.5.8",
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = StatusCodes.Status409Conflict
                             ),
                             ValidationException validationException =>
                             (
                                 exceptionType.Message,
-                                exceptionType.GetType().ToString(),
+                                "https://www.rfc-editor.org/rfc/rfc7231#section-6.5.1",
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = (int)validationException.StatusCode
                             ),
                             BadRequestException =>
                             (
                                 exceptionType.Message,
-                                exceptionType.GetType().ToString(),
+                                "https://www.rfc-editor.org/rfc/rfc7231#section-6.5.1",
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = StatusCodes.Status400BadRequest
                             ),
                             NotFoundException =>
                             (
                                 exceptionType.Message,
-                                exceptionType.GetType().ToString(),
+                                "https://www.rfc-editor.org/rfc/rfc7231#section-6.5.4",
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = StatusCodes.Status404NotFound
                             ),
                             AppException =>
                             (
                                 exceptionType.Message,
-                                exceptionType.GetType().ToString(),
+                                "https://www.rfc-editor.org/rfc/rfc7231#section-6.5.1",
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = StatusCodes.Status400BadRequest
                             ),
                             DbUpdateConcurrencyException =>
                             (
                                 exceptionType.Message,
-                                exceptionType.GetType().ToString(),
+                                "https://www.rfc-editor.org/rfc/rfc7231#section-6.5.8",
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = StatusCodes.Status409Conflict
                             ),
                             RpcException =>
                             (
                                 exceptionType.Message,
-                                exceptionType.GetType().ToString(),
+                                "https://www.rfc-editor.org/rfc/rfc7231#section-6.5.1",
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = StatusCodes.Status400BadRequest
                             ),
                             _ =>
                             (
                                 exceptionType.Message,
-                                exceptionType.GetType().ToString(),
+                                "https://www.rfc-editor.org/rfc/rfc7231#section-6.6.1",
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = StatusCodes.Status500InternalServerError
                             )
