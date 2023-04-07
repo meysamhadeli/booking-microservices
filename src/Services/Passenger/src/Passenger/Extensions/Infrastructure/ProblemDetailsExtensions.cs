@@ -4,14 +4,39 @@ using BuildingBlocks.Exception;
 using Grpc.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 public static class ProblemDetailsExtensions
 {
     public static WebApplication UseCustomProblemDetails(this WebApplication app)
     {
+        app.UseStatusCodePages(statusCodeHandlerApp =>
+        {
+            statusCodeHandlerApp.Run(async context =>
+            {
+                context.Response.ContentType = "application/problem+json";
+
+                if (context.RequestServices.GetService<IProblemDetailsService>() is { } problemDetailsService)
+                {
+                    await problemDetailsService.WriteAsync(new ProblemDetailsContext
+                    {
+                        HttpContext = context,
+                        ProblemDetails =
+                        {
+                            Detail = ReasonPhrases.GetReasonPhrase(context.Response.StatusCode),
+                            Status = context.Response.StatusCode
+                        }
+                    });
+                }
+            });
+
+        });
+
         app.UseExceptionHandler(exceptionHandlerApp =>
         {
             exceptionHandlerApp.Run(async context =>
@@ -20,82 +45,81 @@ public static class ProblemDetailsExtensions
 
                 if (context.RequestServices.GetService<IProblemDetailsService>() is { } problemDetailsService)
                 {
+                    var env = context.RequestServices.GetRequiredService<IWebHostEnvironment>();
                     var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
                     var exceptionType = exceptionHandlerFeature?.Error;
 
                     if (exceptionType is not null)
                     {
-                        (string Detail, string Type, string Title, int StatusCode) details = exceptionType switch
+                        (string Detail, string Title, int StatusCode) details = exceptionType switch
                         {
                             ConflictException =>
                             (
                                 exceptionType.Message,
-                                "https://www.rfc-editor.org/rfc/rfc7231#section-6.5.8",
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = StatusCodes.Status409Conflict
                             ),
                             ValidationException validationException =>
                             (
                                 exceptionType.Message,
-                                "https://www.rfc-editor.org/rfc/rfc7231#section-6.5.1",
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = (int)validationException.StatusCode
                             ),
                             BadRequestException =>
                             (
                                 exceptionType.Message,
-                                "https://www.rfc-editor.org/rfc/rfc7231#section-6.5.1",
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = StatusCodes.Status400BadRequest
                             ),
                             NotFoundException =>
                             (
                                 exceptionType.Message,
-                                "https://www.rfc-editor.org/rfc/rfc7231#section-6.5.4",
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = StatusCodes.Status404NotFound
                             ),
                             AppException =>
                             (
                                 exceptionType.Message,
-                                "https://www.rfc-editor.org/rfc/rfc7231#section-6.5.1",
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = StatusCodes.Status400BadRequest
                             ),
                             DbUpdateConcurrencyException =>
                             (
                                 exceptionType.Message,
-                                "https://www.rfc-editor.org/rfc/rfc7231#section-6.5.8",
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = StatusCodes.Status409Conflict
                             ),
                             RpcException =>
                             (
                                 exceptionType.Message,
-                                "https://www.rfc-editor.org/rfc/rfc7231#section-6.5.1",
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = StatusCodes.Status400BadRequest
                             ),
                             _ =>
                             (
                                 exceptionType.Message,
-                                "https://www.rfc-editor.org/rfc/rfc7231#section-6.6.1",
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = StatusCodes.Status500InternalServerError
                             )
                         };
 
-                        await problemDetailsService.WriteAsync(new ProblemDetailsContext
+                        var problem = new ProblemDetailsContext
                         {
                             HttpContext = context,
                             ProblemDetails =
                             {
                                 Title = details.Title,
                                 Detail = details.Detail,
-                                Type = details.Type,
                                 Status = details.StatusCode
                             }
-                        });
+                        };
+
+                        if (env.IsDevelopment())
+                        {
+                            problem.ProblemDetails.Extensions.Add("exception", exceptionHandlerFeature?.Error.ToString());
+                        }
+
+                        await problemDetailsService.WriteAsync(problem);
                     }
                 }
             });
