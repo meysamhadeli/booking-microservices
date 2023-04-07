@@ -45,7 +45,6 @@ public static class ProblemDetailsExtensions
 
                 if (context.RequestServices.GetService<IProblemDetailsService>() is { } problemDetailsService)
                 {
-                    var env = context.RequestServices.GetRequiredService<IWebHostEnvironment>();
                     var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
                     var exceptionType = exceptionHandlerFeature?.Error;
 
@@ -114,7 +113,7 @@ public static class ProblemDetailsExtensions
                             }
                         };
 
-                        if (env.IsDevelopment())
+                        if (app.Environment.IsDevelopment())
                         {
                             problem.ProblemDetails.Extensions.Add("exception", exceptionHandlerFeature?.Error.ToString());
                         }
