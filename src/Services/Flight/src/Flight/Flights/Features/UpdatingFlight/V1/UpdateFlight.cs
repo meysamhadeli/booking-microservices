@@ -7,10 +7,16 @@ using Ardalis.GuardClauses;
 using BuildingBlocks.Caching;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
+using BuildingBlocks.Web;
 using Data;
 using Exceptions;
 using Flight.Flights.Features.CreatingFlight.V1;
 using FluentValidation;
+using MapsterMapper;
+using MediatR;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 
 public record UpdateFlight(Guid Id, string FlightNumber, Guid AircraftId, Guid DepartureAirportId,
@@ -22,6 +28,43 @@ public record UpdateFlight(Guid Id, string FlightNumber, Guid AircraftId, Guid D
 }
 
 public record UpdateFlightResult(Guid Id);
+
+public record FlightUpdatedDomainEvent(Guid Id, string FlightNumber, Guid AircraftId, DateTime DepartureDate,
+    Guid DepartureAirportId, DateTime ArriveDate, Guid ArriveAirportId, decimal DurationMinutes,
+    DateTime FlightDate, Enums.FlightStatus Status, decimal Price, bool IsDeleted) : IDomainEvent;
+
+public record UpdateFlightRequestDto(Guid Id, string FlightNumber, Guid AircraftId, Guid DepartureAirportId,
+    DateTime DepartureDate, DateTime ArriveDate,
+    Guid ArriveAirportId, decimal DurationMinutes, DateTime FlightDate, Enums.FlightStatus Status, decimal Price,
+    bool IsDeleted);
+
+public class UpdateFlightEndpoint : IMinimalEndpoint
+{
+    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
+    {
+        builder.MapPut($"{EndpointConfig.BaseApiPath}/flight", async (UpdateFlightRequestDto request,
+                IMediator mediator,
+                IMapper mapper, CancellationToken cancellationToken) =>
+            {
+                var command = mapper.Map<UpdateFlight>(request);
+
+                await mediator.Send(command, cancellationToken);
+
+                return Results.NoContent();
+            })
+            .RequireAuthorization()
+            .WithName("UpdateFlight")
+            .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithSummary("Update Flight")
+            .WithDescription("Update Flight")
+            .WithOpenApi()
+            .HasApiVersion(1.0);
+
+        return builder;
+    }
+}
 
 internal class UpdateFlightValidator : AbstractValidator<CreateFlight>
 {

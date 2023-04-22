@@ -6,20 +6,65 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
+using BuildingBlocks.Web;
 using Flight.Data;
 using Flight.Seats.Exceptions;
 using Flight.Seats.Models;
 using FluentValidation;
+using MapsterMapper;
 using MassTransit;
 using MediatR;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 
-public record CreateSeat(string SeatNumber, Enums.SeatType Type, Enums.SeatClass Class, Guid FlightId) : ICommand<CreateSeatResult>, IInternalCommand
+public record CreateSeat
+    (string SeatNumber, Enums.SeatType Type, Enums.SeatClass Class, Guid FlightId) : ICommand<CreateSeatResult>,
+        IInternalCommand
 {
     public Guid Id { get; init; } = NewId.NextGuid();
 }
 
 public record CreateSeatResult(Guid Id);
+
+public record SeatCreatedDomainEvent(Guid Id, string SeatNumber, Enums.SeatType Type, Enums.SeatClass Class,
+    Guid FlightId, bool IsDeleted) : IDomainEvent;
+
+public record CreateSeatRequestDto(string SeatNumber, Enums.SeatType Type, Enums.SeatClass Class, Guid FlightId);
+
+public record CreateSeatResponseDto(Guid Id);
+
+public class CreateSeatEndpoint : IMinimalEndpoint
+{
+    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
+    {
+        builder.MapPost($"{EndpointConfig.BaseApiPath}/flight/seat", CreateSeat)
+            .RequireAuthorization()
+            .WithName("CreateSeat")
+            .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
+            .Produces<CreateSeatResponseDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithSummary("Create Seat")
+            .WithDescription("Create Seat")
+            .WithOpenApi()
+            .HasApiVersion(1.0);
+
+        return builder;
+    }
+
+    private async Task<IResult> CreateSeat(CreateSeatRequestDto request, IMediator mediator, IMapper mapper,
+        CancellationToken cancellationToken)
+    {
+        var command = mapper.Map<CreateSeat>(request);
+
+        var result = await mediator.Send(command, cancellationToken);
+
+        var response = new CreateSeatResponseDto(result.Id);
+
+        return Results.Ok(response);
+    }
+}
 
 internal class CreateSeatValidator : AbstractValidator<CreateSeat>
 {
@@ -62,4 +107,3 @@ internal class CreateSeatCommandHandler : IRequestHandler<CreateSeat, CreateSeat
         return new CreateSeatResult(newSeat.Id);
     }
 }
-
