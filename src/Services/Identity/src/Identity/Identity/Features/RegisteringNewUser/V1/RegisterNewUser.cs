@@ -8,15 +8,56 @@ using Ardalis.GuardClauses;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.CQRS;
+using BuildingBlocks.Web;
 using Exceptions;
 using FluentValidation;
+using MapsterMapper;
+using MediatR;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Routing;
 using Models;
 
 public record RegisterNewUser(string FirstName, string LastName, string Username, string Email,
     string Password, string ConfirmPassword, string PassportNumber) : ICommand<RegisterNewUserResult>;
 
 public record RegisterNewUserResult(Guid Id, string FirstName, string LastName, string Username, string PassportNumber);
+
+public record RegisterNewUserRequestDto(string FirstName, string LastName, string Username, string Email,
+    string Password, string ConfirmPassword, string PassportNumber);
+
+public record RegisterNewUserResponseDto(Guid Id, string FirstName, string LastName, string Username,
+    string PassportNumber);
+
+public class RegisterNewUserEndpoint : IMinimalEndpoint
+{
+    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
+    {
+        builder.MapPost($"{EndpointConfig.BaseApiPath}/identity/register-user", async (
+                RegisterNewUserRequestDto request, IMediator mediator, IMapper mapper,
+                CancellationToken cancellationToken) =>
+            {
+                var command = mapper.Map<RegisterNewUser>(request);
+
+                var result = await mediator.Send(command, cancellationToken);
+
+                var response = mapper.Map<RegisterNewUserResponseDto>(result);
+
+                return Results.Ok(response);
+            })
+            .WithName("RegisterUser")
+            .WithApiVersionSet(builder.NewApiVersionSet("Identity").Build())
+            .Produces<RegisterNewUserResponseDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithSummary("Register User")
+            .WithDescription("Register User")
+            .WithOpenApi()
+            .HasApiVersion(1.0);
+
+        return builder;
+    }
+}
 
 internal class RegisterNewUserValidator : AbstractValidator<RegisterNewUser>
 {
@@ -81,8 +122,9 @@ internal class RegisterNewUserHandler : ICommandHandler<RegisterNewUser, Registe
             throw new RegisterIdentityUserException(string.Join(',', roleResult.Errors.Select(e => e.Description)));
         }
 
-        await _eventDispatcher.SendAsync(new UserCreated(applicationUser.Id, applicationUser.FirstName + " " + applicationUser.LastName,
-            applicationUser.PassPortNumber),cancellationToken: cancellationToken);
+        await _eventDispatcher.SendAsync(new UserCreated(applicationUser.Id,
+            applicationUser.FirstName + " " + applicationUser.LastName,
+            applicationUser.PassPortNumber), cancellationToken: cancellationToken);
 
         return new RegisterNewUserResult(applicationUser.Id, applicationUser.FirstName, applicationUser.LastName,
             applicationUser.UserName, applicationUser.PassPortNumber);
