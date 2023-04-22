@@ -3,6 +3,7 @@ namespace Passenger.Passengers.Features.CompletingRegisterPassenger.V1;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
+using BuildingBlocks.Web;
 using Exceptions;
 using FluentValidation;
 using MapsterMapper;
@@ -10,6 +11,10 @@ using Microsoft.EntityFrameworkCore;
 using Data;
 using Dtos;
 using MassTransit;
+using MediatR;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 
 public record CompleteRegisterPassenger
     (string PassportNumber, Enums.PassengerType PassengerType, int Age) : ICommand<CompleteRegisterPassengerResult>,
@@ -18,7 +23,44 @@ public record CompleteRegisterPassenger
     public Guid Id { get; init; } = NewId.NextGuid();
 }
 
+public record PassengerRegistrationCompletedDomainEvent(Guid Id, string Name, string PassportNumber,
+    Enums.PassengerType PassengerType, int Age, bool IsDeleted = false) : IDomainEvent;
+
 public record CompleteRegisterPassengerResult(PassengerDto PassengerDto);
+
+public record CompleteRegisterPassengerRequestDto(string PassportNumber, Enums.PassengerType PassengerType, int Age);
+
+public record CompleteRegisterPassengerResponseDto(PassengerDto PassengerDto);
+
+public class CompleteRegisterPassengerEndpoint : IMinimalEndpoint
+{
+    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
+    {
+        builder.MapPost($"{EndpointConfig.BaseApiPath}/passenger/complete-registration", async (
+                CompleteRegisterPassengerRequestDto request, IMapper mapper,
+                IMediator mediator, CancellationToken cancellationToken) =>
+            {
+                var command = mapper.Map<CompleteRegisterPassenger>(request);
+
+                var result = await mediator.Send(command, cancellationToken);
+
+                var response = new CompleteRegisterPassengerResponseDto(result?.PassengerDto);
+
+                return Results.Ok(response);
+            })
+            .RequireAuthorization()
+            .WithName("CompleteRegisterPassenger")
+            .WithApiVersionSet(builder.NewApiVersionSet("Passenger").Build())
+            .Produces<CompleteRegisterPassengerResponseDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithSummary("Complete Register Passenger")
+            .WithDescription("Complete Register Passenger")
+            .WithOpenApi()
+            .HasApiVersion(1.0);
+
+        return builder;
+    }
+}
 
 internal class CompleteRegisterPassengerValidator : AbstractValidator<CompleteRegisterPassenger>
 {
@@ -35,9 +77,8 @@ internal class CompleteRegisterPassengerValidator : AbstractValidator<CompleteRe
     }
 }
 
-internal class
-    CompleteRegisterPassengerCommandHandler : ICommandHandler<CompleteRegisterPassenger,
-        CompleteRegisterPassengerResult>
+internal class CompleteRegisterPassengerCommandHandler : ICommandHandler<CompleteRegisterPassenger,
+    CompleteRegisterPassengerResult>
 {
     private readonly IMapper _mapper;
     private readonly PassengerDbContext _passengerDbContext;

@@ -6,15 +6,58 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
+using BuildingBlocks.Web;
 using Data;
 using Exceptions;
 using FluentValidation;
+using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 
 public record ReserveSeat(Guid FlightId, string SeatNumber) : ICommand<ReserveSeatResult>, IInternalCommand;
 
 public record ReserveSeatResult(Guid Id);
+
+public record SeatReservedDomainEvent(Guid Id, string SeatNumber, Enums.SeatType Type, Enums.SeatClass Class,
+    Guid FlightId, bool IsDeleted) : IDomainEvent;
+
+public record ReserveSeatRequestDto(Guid FlightId, string SeatNumber);
+
+public record ReserveSeatResponseDto(Guid Id);
+
+public class ReserveSeatEndpoint : IMinimalEndpoint
+{
+    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
+    {
+        builder.MapPost($"{EndpointConfig.BaseApiPath}/flight/reserve-seat", ReserveSeat)
+            .RequireAuthorization()
+            .WithName("ReserveSeat")
+            .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
+            .Produces<ReserveSeatResponseDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithSummary("Reserve Seat")
+            .WithDescription("Reserve Seat")
+            .WithOpenApi()
+            .HasApiVersion(1.0);
+
+        return builder;
+    }
+
+    private async Task<IResult> ReserveSeat(ReserveSeatRequestDto request, IMediator mediator, IMapper mapper,
+        CancellationToken cancellationToken)
+    {
+        var command = mapper.Map<V1.ReserveSeat>(request);
+
+        var result = await mediator.Send(command, cancellationToken);
+
+        var response = new ReserveSeatResponseDto(result.Id);
+
+        return Results.Ok(response);
+    }
+}
 
 internal class ReserveSeatValidator : AbstractValidator<ReserveSeat>
 {
@@ -38,7 +81,8 @@ internal class ReserveSeatCommandHandler : IRequestHandler<ReserveSeat, ReserveS
     {
         Guard.Against.Null(command, nameof(command));
 
-        var seat = await _flightDbContext.Seats.SingleOrDefaultAsync(x => x.SeatNumber == command.SeatNumber && x.FlightId == command.FlightId, cancellationToken);
+        var seat = await _flightDbContext.Seats.SingleOrDefaultAsync(
+            x => x.SeatNumber == command.SeatNumber && x.FlightId == command.FlightId, cancellationToken);
 
         if (seat is null)
         {

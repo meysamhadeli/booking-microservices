@@ -6,10 +6,16 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
+using BuildingBlocks.Web;
 using Data;
 using Exceptions;
 using FluentValidation;
+using MapsterMapper;
 using MassTransit;
+using MediatR;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 
 public record CreateFlight(string FlightNumber, Guid AircraftId, Guid DepartureAirportId,
@@ -21,6 +27,46 @@ public record CreateFlight(string FlightNumber, Guid AircraftId, Guid DepartureA
 }
 
 public record CreateFlightResult(Guid Id);
+
+public record FlightCreatedDomainEvent(Guid Id, string FlightNumber, Guid AircraftId, DateTime DepartureDate,
+    Guid DepartureAirportId, DateTime ArriveDate, Guid ArriveAirportId, decimal DurationMinutes,
+    DateTime FlightDate, Enums.FlightStatus Status, decimal Price, bool IsDeleted) : IDomainEvent;
+
+public record CreateFlightRequestDto(string FlightNumber, Guid AircraftId, Guid DepartureAirportId,
+    DateTime DepartureDate, DateTime ArriveDate, Guid ArriveAirportId,
+    decimal DurationMinutes, DateTime FlightDate, Enums.FlightStatus Status, decimal Price);
+
+public record CreateFlightResponseDto(Guid Id);
+
+public class CreateFlightEndpoint : IMinimalEndpoint
+{
+    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
+    {
+        builder.MapPost($"{EndpointConfig.BaseApiPath}/flight", async (CreateFlightRequestDto request,
+                IMediator mediator, IMapper mapper,
+                CancellationToken cancellationToken) =>
+            {
+                var command = mapper.Map<CreateFlight>(request);
+
+                var result = await mediator.Send(command, cancellationToken);
+
+                var response = new CreateFlightResponseDto(result.Id);
+
+                return Results.CreatedAtRoute("GetFlightById", new { id = result.Id }, response);
+            })
+            .RequireAuthorization()
+            .WithName("CreateFlight")
+            .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
+            .Produces<CreateFlightResponseDto>(StatusCodes.Status201Created)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithSummary("Create Flight")
+            .WithDescription("Create Flight")
+            .WithOpenApi()
+            .HasApiVersion(1.0);
+
+        return builder;
+    }
+}
 
 internal class CreateFlightValidator : AbstractValidator<CreateFlight>
 {

@@ -6,14 +6,48 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
+using BuildingBlocks.Web;
 using Data;
 using Exceptions;
 using FluentValidation;
+using MediatR;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 
 public record DeleteFlight(Guid Id) : ICommand<DeleteFlightResult>, IInternalCommand;
 
 public record DeleteFlightResult(Guid Id);
+
+public record FlightDeletedDomainEvent(Guid Id, string FlightNumber, Guid AircraftId, DateTime DepartureDate,
+    Guid DepartureAirportId, DateTime ArriveDate, Guid ArriveAirportId, decimal DurationMinutes,
+    DateTime FlightDate, Enums.FlightStatus Status, decimal Price, bool IsDeleted) : IDomainEvent;
+
+public class DeleteFlightEndpoint : IMinimalEndpoint
+{
+    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
+    {
+        builder.MapDelete($"{EndpointConfig.BaseApiPath}/flight/{{id}}",
+                async (Guid id, IMediator mediator, CancellationToken cancellationToken) =>
+                {
+                    var result = await mediator.Send(new DeleteFlight(id), cancellationToken);
+
+                    return Results.NoContent();
+                })
+            .RequireAuthorization()
+            .WithName("DeleteFlight")
+            .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithSummary("Delete Flight")
+            .WithDescription("Delete Flight")
+            .WithOpenApi()
+            .HasApiVersion(1.0);
+
+        return builder;
+    }
+}
 
 internal class DeleteFlightValidator : AbstractValidator<DeleteFlight>
 {

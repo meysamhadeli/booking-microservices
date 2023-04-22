@@ -6,20 +6,63 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
+using BuildingBlocks.Web;
 using Exceptions;
 using Models;
 using Data;
 using FluentValidation;
+using MapsterMapper;
 using MassTransit;
 using MediatR;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 
-public record CreateAircraft(string Name, string Model, int ManufacturingYear) : ICommand<CreateAircraftResult>, IInternalCommand
+public record CreateAircraft(string Name, string Model, int ManufacturingYear) : ICommand<CreateAircraftResult>,
+    IInternalCommand
 {
     public Guid Id { get; init; } = NewId.NextGuid();
 }
 
 public record CreateAircraftResult(Guid Id);
+
+public record AircraftCreatedDomainEvent
+    (Guid Id, string Name, string Model, int ManufacturingYear, bool IsDeleted) : IDomainEvent;
+
+public record CreateAircraftRequestDto(string Name, string Model, int ManufacturingYear);
+
+public record CreateAircraftResponseDto(Guid Id);
+
+public class CreateAircraftEndpoint : IMinimalEndpoint
+{
+    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
+    {
+        builder.MapPost($"{EndpointConfig.BaseApiPath}/flight/aircraft", async (CreateAircraftRequestDto request,
+                IMediator mediator, IMapper mapper,
+                CancellationToken cancellationToken) =>
+            {
+                var command = mapper.Map<CreateAircraft>(request);
+
+                var result = await mediator.Send(command, cancellationToken);
+
+                var response = new CreateAircraftResponseDto(result.Id);
+
+                return Results.Ok(response);
+            })
+            .RequireAuthorization()
+            .WithName("CreateAircraft")
+            .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
+            .Produces<CreateAircraftResponseDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithSummary("Create Aircraft")
+            .WithDescription("Create Aircraft")
+            .WithOpenApi()
+            .HasApiVersion(1.0);
+
+        return builder;
+    }
+}
 
 internal class CreateAircraftValidator : AbstractValidator<CreateAircraft>
 {
@@ -44,7 +87,8 @@ internal class CreateAircraftHandler : IRequestHandler<CreateAircraft, CreateAir
     {
         Guard.Against.Null(request, nameof(request));
 
-        var aircraft = await _flightDbContext.Aircraft.SingleOrDefaultAsync(x => x.Model == request.Model, cancellationToken);
+        var aircraft =
+            await _flightDbContext.Aircraft.SingleOrDefaultAsync(x => x.Model == request.Model, cancellationToken);
 
         if (aircraft is not null)
         {
