@@ -30,9 +30,23 @@ services:
    command:
      - "postgres"
      - "-c"
-     - "wal_level=logical"     
+     - "wal_level=logical"
    networks:
      - booking
+
+
+    #######################################################
+    #  SqlServer
+    #######################################################
+  # sql:
+  #   container_name: sql
+  #   image: mcr.microsoft.com/mssql/server
+  #   ports:
+  #     - "1433:1433"
+  #   environment:
+  #     SA_PASSWORD: "Password@1234"
+  #     ACCEPT_EULA: "Y"
+
 
     #######################################################
     #  Jaeger
@@ -140,8 +154,6 @@ services:
       - booking
     ports:
       - 6379:6379
-
-
 
 networks:
   booking:

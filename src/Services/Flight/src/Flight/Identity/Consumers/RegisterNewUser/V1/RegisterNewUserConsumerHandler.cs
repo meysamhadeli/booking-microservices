@@ -1,3 +1,5 @@
+namespace Flight.Identity.Consumers.RegisterNewUser.V1;
+
 using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Web;
@@ -5,8 +7,6 @@ using Humanizer;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-
-namespace Flight.Identity.Consumers.RegisterNewUser.Consumes.V1;
 
 public class RegisterNewUserConsumerHandler : IConsumer<UserCreated>
 {

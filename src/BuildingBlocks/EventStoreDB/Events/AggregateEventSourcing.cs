@@ -3,7 +3,7 @@ using BuildingBlocks.Core.Model;
 
 namespace BuildingBlocks.EventStoreDB.Events
 {
-    public abstract record AggregateEventSourcing<TId> : Audit, IAggregateEventSourcing<TId>
+    public abstract record AggregateEventSourcing<TId> : Entity<TId>, IAggregateEventSourcing<TId>
     {
         private readonly List<IDomainEvent> _domainEvents = new();
         public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
@@ -23,10 +23,6 @@ namespace BuildingBlocks.EventStoreDB.Events
         }
 
         public virtual void When(object @event) { }
-
-        public long Version { get; protected set; } = -1;
-
-        public TId Id { get; protected set;  }
     }
 }
 

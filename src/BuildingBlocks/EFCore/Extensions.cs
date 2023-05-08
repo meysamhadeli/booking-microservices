@@ -66,7 +66,7 @@ public static class Extensions
     {
         Expression<Func<IAggregate, bool>> filterExpr = e => !e.IsDeleted;
         foreach (var mutableEntityType in modelBuilder.Model.GetEntityTypes()
-                     .Where(m => m.ClrType.IsAssignableTo(typeof(IAudit))))
+                     .Where(m => m.ClrType.IsAssignableTo(typeof(IEntity))))
         {
             // modify expression to handle correct child type
             var parameter = Expression.Parameter(mutableEntityType.ClrType);
