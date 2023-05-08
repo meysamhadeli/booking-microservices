@@ -77,6 +77,7 @@
     <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.2" />
     <PackageReference Include="Serilog.Sinks.SpectreConsole" Version="0.3.3" />
     <PackageReference Include="Serilog.Sinks.XUnit" Version="3.0.3" />
+    <PackageReference Include="Sieve" Version="2.5.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
@@ -99,6 +100,8 @@
     <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="6.2.2" />
     <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.2" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+    <PackageReference Include="System.Linq.Async.Queryable" Version="6.0.1" />
     <PackageReference Include="Testcontainers" Version="3.0.0" />
     <PackageReference Include="Testcontainers.EventStoreDb" Version="3.0.0" />
     <PackageReference Include="Testcontainers.MongoDb" Version="3.0.0" />
@@ -141,10 +144,9 @@
     <PackageReference Include="Google.Protobuf" Version="3.21.12" />
     <PackageReference Include="Grpc.Net.Client" Version="2.51.0" />
     <PackageReference Include="Grpc.Net.ClientFactory" Version="2.51.0" />
-    <PackageReference Update="AsyncFixer" Version="1.6.0" />
+    
     <PackageReference Update="Meziantou.Analyzer" Version="1.0.758" />
-    <PackageReference Remove="Microsoft.VisualStudio.Threading.Analyzers" />
-    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.4.27" />
+    <PackageReference Update="AsyncFixer" Version="1.6.0" />
     <PackageReference Update="Roslynator.Analyzers" Version="4.2.0" />
     <PackageReference Update="Roslynator.CodeAnalysis.Analyzers" Version="4.2.0" />
     <PackageReference Update="Roslynator.Formatting.Analyzers" Version="4.2.0" />
@@ -154,6 +156,7 @@
 
   <ItemGroup>
     <Folder Include="Contracts" />
+    <Folder Include="Core\Pagination" />
     <Folder Include="EventStoreDB\BackgroundWorkers" />
     <Folder Include="PersistMessageProcessor\Data\Configurations" />
     <Folder Include="PersistMessageProcessor\Data\Migrations" />

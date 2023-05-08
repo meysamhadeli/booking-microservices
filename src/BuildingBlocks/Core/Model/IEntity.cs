@@ -1,6 +1,11 @@
-namespace BuildingBlocks.Core.Model;
+﻿namespace BuildingBlocks.Core.Model;
 
-public abstract record Audit : IAudit
+public interface IEntity<T> : IEntity
+{
+    public T Id { get; set; }
+}
+
+public interface IEntity: IVersion
 {
     public DateTime? CreatedAt { get; set; }
     public long? CreatedBy { get; set; }

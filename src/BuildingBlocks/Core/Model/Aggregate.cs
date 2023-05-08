@@ -2,9 +2,7 @@
 
 namespace BuildingBlocks.Core.Model;
 
-public abstract record Aggregate : Aggregate<long>;
-
-public abstract record Aggregate<TId> : Audit, IAggregate<TId>
+public abstract record Aggregate<TId> : Entity<TId>, IAggregate<TId>
 {
     private readonly List<IDomainEvent> _domainEvents = new();
     public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
@@ -22,8 +20,4 @@ public abstract record Aggregate<TId> : Audit, IAggregate<TId>
 
         return dequeuedEvents;
     }
-
-    public long Version { get; set; }
-
-    public required TId Id { get; set;  }
 }

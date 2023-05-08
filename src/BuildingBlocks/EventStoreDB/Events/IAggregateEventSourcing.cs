@@ -3,17 +3,15 @@ using BuildingBlocks.Core.Model;
 
 namespace BuildingBlocks.EventStoreDB.Events
 {
-    public interface IAggregateEventSourcing : IProjection, IAudit
+    using Microsoft.FSharp.Control;
+
+    public interface IAggregateEventSourcing : IProjection, IEntity
     {
         IReadOnlyList<IDomainEvent> DomainEvents { get; }
         IDomainEvent[] ClearDomainEvents();
-        long Version { get; }
     }
 
-    public interface IAggregateEventSourcing<out T> : IAggregateEventSourcing
+    public interface IAggregateEventSourcing<T> : IAggregateEventSourcing, IEntity<T>
     {
-        T Id { get; }
     }
 }
-
-
