@@ -59,7 +59,7 @@ public static class InfrastructureExtensions
         });
 
         builder.Services.AddControllers();
-        builder.Services.AddPersistMessageProcessor();
+        builder.Services.AddPersistMessageProcessor(env);
         builder.Services.AddCustomDbContext<IdentityContext>();
         builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
         builder.AddCustomSerilog(env);

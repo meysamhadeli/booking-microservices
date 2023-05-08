@@ -159,7 +159,6 @@
     <Folder Include="Core\Pagination" />
     <Folder Include="EventStoreDB\BackgroundWorkers" />
     <Folder Include="PersistMessageProcessor\Data\Configurations" />
-    <Folder Include="PersistMessageProcessor\Data\Migrations" />
   </ItemGroup>
 
 </Project>

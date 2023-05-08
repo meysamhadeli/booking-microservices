@@ -10,7 +10,8 @@ using Microsoft.AspNetCore.Hosting;
 
 public static class Extensions
 {
-    public static IServiceCollection AddPersistMessageProcessor(this IServiceCollection services)
+    public static IServiceCollection AddPersistMessageProcessor(this IServiceCollection services,
+        IWebHostEnvironment env)
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -21,23 +22,28 @@ public static class Extensions
             var persistMessageOptions = sp.GetRequiredService<PersistMessageOptions>();
 
             options.UseNpgsql(persistMessageOptions.ConnectionString,
-                dbOptions =>
-                {
-                    dbOptions.MigrationsAssembly(typeof(PersistMessageDbContext).Assembly.GetName().Name);
-                })
+                    dbOptions =>
+                    {
+                        dbOptions.MigrationsAssembly(typeof(PersistMessageDbContext).Assembly.GetName().Name);
+                    })
                 // https://github.com/efcore/EFCore.NamingConventions
-                .UseSnakeCaseNamingConvention();;
+                .UseSnakeCaseNamingConvention();
         });
 
         services.AddScoped<IPersistMessageDbContext>(provider => provider.GetService<PersistMessageDbContext>());
 
         services.AddScoped<IPersistMessageProcessor, PersistMessageProcessor>();
-        services.AddHostedService<PersistMessageBackgroundService>();
+
+        if (env.EnvironmentName != "test")
+        {
+            services.AddHostedService<PersistMessageBackgroundService>();
+        }
 
         return services;
     }
 
-    public static IApplicationBuilder UseMigrationPersistMessage<TContext>(this IApplicationBuilder app, IWebHostEnvironment env)
+    public static IApplicationBuilder UseMigrationPersistMessage<TContext>(this IApplicationBuilder app,
+        IWebHostEnvironment env)
         where TContext : DbContext, IPersistMessageDbContext
     {
         using var scope = app.ApplicationServices.CreateScope();
