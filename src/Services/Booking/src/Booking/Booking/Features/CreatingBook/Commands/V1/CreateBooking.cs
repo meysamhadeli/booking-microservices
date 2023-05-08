@@ -7,6 +7,7 @@ using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EventStoreDB.Repository;
 using BuildingBlocks.Web;
+using Elasticsearch.Net;
 using Exceptions;
 using Flight;
 using FluentValidation;
@@ -27,7 +28,7 @@ public record CreateBooking(Guid PassengerId, Guid FlightId, string Description)
 
 public record CreateBookingResult(ulong Id);
 
-public record BookingCreatedDomainEvent(Guid Id, PassengerInfo PassengerInfo, Trip Trip) : Audit, IDomainEvent;
+public record BookingCreatedDomainEvent(Guid Id, PassengerInfo PassengerInfo, Trip Trip) : Entity<Guid>, IDomainEvent;
 
 public record CreateBookingRequestDto(Guid PassengerId, Guid FlightId, string Description);
 

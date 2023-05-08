@@ -63,7 +63,7 @@ public sealed class IdentityContext : IdentityDbContext<User, Role, Guid,
     public IReadOnlyList<IDomainEvent> GetDomainEvents()
     {
         var domainEntities = ChangeTracker
-            .Entries<Aggregate>()
+            .Entries<IAggregate>()
             .Where(x => x.Entity.DomainEvents.Any())
             .Select(x => x.Entity)
             .ToList();

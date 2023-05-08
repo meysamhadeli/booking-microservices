@@ -1,13 +1,12 @@
-﻿namespace Unit.Test.Flight.Features.Commands.CreateFlight;
+﻿namespace Unit.Test.Flight.Features.Handlers.CreateFlight;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using global::Flight.Flights.Dtos;
 using global::Flight.Flights.Features.CreatingFlight.V1;
-using Common;
-using Fakes;
+using Unit.Test.Common;
+using Unit.Test.Fakes;
 using Xunit;
 
 [Collection(nameof(UnitTestFixture))]
