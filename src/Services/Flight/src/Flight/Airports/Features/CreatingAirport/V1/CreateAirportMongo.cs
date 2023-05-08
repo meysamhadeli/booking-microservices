@@ -14,7 +14,7 @@ using MediatR;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-public record CreateAirportMongo(Guid Id, string Name, string Address, string Code, bool IsDeleted) : InternalCommand;
+public record CreateAirportMongo(Guid Id, string Name, string Address, string Code, bool IsDeleted = false) : InternalCommand;
 
 internal class CreateAirportMongoHandler : ICommandHandler<CreateAirportMongo>
 {

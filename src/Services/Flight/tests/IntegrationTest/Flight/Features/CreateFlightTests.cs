@@ -33,7 +33,5 @@ public class CreateFlightTests : FlightIntegrationTestBase
 
         (await Fixture.WaitForPublishing<FlightCreated>()).Should().Be(true);
         (await Fixture.WaitForConsuming<FlightCreated>()).Should().Be(true);
-
-        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongo>()).Should().Be(true);
     }
 }

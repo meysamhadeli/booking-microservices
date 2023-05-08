@@ -11,7 +11,7 @@ using MongoDB.Driver.Linq;
 using Data;
 
 public record CompleteRegisterPassengerMongoCommand(Guid Id, string PassportNumber, string Name,
-    Enums.PassengerType PassengerType, int Age, bool IsDeleted) : InternalCommand;
+    Enums.PassengerType PassengerType, int Age, bool IsDeleted = false) : InternalCommand;
 
 
 internal class CompleteRegisterPassengerMongoHandler : ICommandHandler<CompleteRegisterPassengerMongoCommand>

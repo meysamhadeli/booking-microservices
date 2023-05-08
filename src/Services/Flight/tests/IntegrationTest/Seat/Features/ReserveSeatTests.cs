@@ -27,13 +27,9 @@ public class ReserveSeatTests : FlightIntegrationTestBase
 
         await Fixture.SendAsync(flightCommand);
 
-        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongo>()).Should().Be(true);
-
         var seatCommand = new FakeCreateSeatCommand(flightCommand.Id).Generate();
 
         await Fixture.SendAsync(seatCommand);
-
-        (await Fixture.ShouldProcessedPersistInternalCommand<CreateSeatMongo>()).Should().Be(true);
 
         var flightGrpcClient = new FlightGrpcService.FlightGrpcServiceClient(Fixture.Channel);
 

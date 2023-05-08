@@ -3,6 +3,7 @@ using Mapster;
 namespace Passenger.Passengers.Features;
 
 using CompletingRegisterPassenger.V1;
+using Dtos;
 using MassTransit;
 using Models;
 
@@ -16,5 +17,8 @@ public class PassengerMappings : IRegister
 
         config.NewConfig<CompleteRegisterPassengerRequestDto, CompleteRegisterPassenger>()
             .ConstructUsing(x => new CompleteRegisterPassenger(x.PassportNumber, x.PassengerType, x.Age));
+
+        config.NewConfig<PassengerReadModel, PassengerDto>()
+            .ConstructUsing(x => new PassengerDto(x.PassengerId, x.Name, x.PassportNumber, x.PassengerType, x.Age));
     }
 }

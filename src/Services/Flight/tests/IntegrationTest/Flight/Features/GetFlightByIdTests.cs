@@ -24,10 +24,9 @@ public class GetFlightByIdTests : FlightIntegrationTestBase
     public async Task should_retrive_a_flight_by_id_currectly()
     {
         //Arrange
-        var command = new FakeCreateFlightCommand().Generate();
-        await Fixture.SendAsync(command);
+        var command = new FakeCreateFlightMongoCommand().Generate();
 
-        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongo>()).Should().Be(true);
+        await Fixture.SendAsync(command);
 
         var query = new GetFlightById(command.Id);
 
@@ -36,17 +35,16 @@ public class GetFlightByIdTests : FlightIntegrationTestBase
 
         // Assert
         response.Should().NotBeNull();
-        // response?.FlightDto?.Id.Should().Be(command.Id);
+        response?.FlightDto?.Id.Should().Be(command.Id);
     }
 
     [Fact]
     public async Task should_retrive_a_flight_by_id_from_grpc_service()
     {
         //Arrange
-        var command = new FakeCreateFlightCommand().Generate();
-        await Fixture.SendAsync(command);
+        var command = new FakeCreateFlightMongoCommand().Generate();
 
-        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongo>()).Should().Be(true);
+        await Fixture.SendAsync(command);
 
         var flightGrpcClient = new FlightGrpcService.FlightGrpcServiceClient(Fixture.Channel);
 

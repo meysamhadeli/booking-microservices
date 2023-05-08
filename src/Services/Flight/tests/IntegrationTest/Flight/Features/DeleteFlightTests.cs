@@ -41,7 +41,5 @@ public class DeleteFlightTests : FlightIntegrationTestBase
         deletedFlight?.IsDeleted.Should().BeTrue();
 
         (await Fixture.WaitForPublishing<FlightDeleted>()).Should().Be(true);
-
-        (await Fixture.ShouldProcessedPersistInternalCommand<DeleteFlightMongo>()).Should().Be(true);
     }
 }

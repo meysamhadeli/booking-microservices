@@ -23,11 +23,9 @@ public class GetAvailableFlightsTests : FlightIntegrationTestBase
     public async Task should_return_available_flights()
     {
         // Arrange
-        var flightCommand = new FakeCreateFlightCommand().Generate();
+        var command = new FakeCreateFlightMongoCommand().Generate();
 
-        await Fixture.SendAsync(flightCommand);
-
-        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongo>()).Should().Be(true);
+        await Fixture.SendAsync(command);
 
         var query = new GetAvailableFlights();
 

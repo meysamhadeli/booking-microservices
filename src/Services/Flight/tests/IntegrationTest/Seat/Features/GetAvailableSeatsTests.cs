@@ -23,17 +23,13 @@ public class GetAvailableSeatsTests : FlightIntegrationTestBase
     public async Task should_return_available_seats_from_grpc_service()
     {
         // Arrange
-        var flightCommand = new FakeCreateFlightCommand().Generate();
+        var flightCommand = new FakeCreateFlightMongoCommand().Generate();
 
         await Fixture.SendAsync(flightCommand);
 
-        (await Fixture.ShouldProcessedPersistInternalCommand<CreateFlightMongo>()).Should().Be(true);
-
-        var seatCommand = new FakeCreateSeatCommand(flightCommand.Id).Generate();
+        var seatCommand = new FakeCreateSeatMongoCommand(flightCommand.Id).Generate();
 
         await Fixture.SendAsync(seatCommand);
-
-        (await Fixture.ShouldProcessedPersistInternalCommand<CreateSeatMongo>()).Should().Be(true);
 
         var flightGrpcClient = new FlightGrpcService.FlightGrpcServiceClient(Fixture.Channel);
 

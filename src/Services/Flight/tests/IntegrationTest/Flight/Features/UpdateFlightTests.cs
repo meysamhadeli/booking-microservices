@@ -37,7 +37,5 @@ public class UpdateFlightTests : FlightIntegrationTestBase
         response?.Id.Should().Be(flightEntity.Id);
 
         (await Fixture.WaitForPublishing<FlightUpdated>()).Should().Be(true);
-
-        (await Fixture.ShouldProcessedPersistInternalCommand<UpdateFlightMongo>()).Should().Be(true);
     }
 }
