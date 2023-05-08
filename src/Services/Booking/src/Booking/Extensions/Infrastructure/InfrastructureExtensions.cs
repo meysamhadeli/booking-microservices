@@ -57,7 +57,7 @@ public static class InfrastructureExtensions
                     }));
         });
 
-        builder.Services.AddPersistMessageProcessor();
+        builder.Services.AddPersistMessageProcessor(env);
         builder.Services.AddMongoDbContext<BookingReadDbContext>(configuration);
 
         builder.AddCustomSerilog(env);

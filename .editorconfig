@@ -373,6 +373,11 @@ dotnet_naming_rule.sanity_check_uncovered_field_case_rule.symbols  = sanity_chec
 dotnet_naming_rule.sanity_check_uncovered_field_case_rule.style    = internal_error_style
 dotnet_naming_rule.sanity_check_uncovered_field_case_rule.severity = error
 
+##########################################
+# VSThread
+##########################################
+dotnet_diagnostic.VSTHRD111.severity = none
+
 
 ##########################################
 # Other Naming Rules

@@ -5,7 +5,6 @@ using BuildingBlocks.EFCore;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Web;
-using DotNet.Testcontainers.Containers;
 using EasyNetQ.Management.Client;
 using Grpc.Net.Client;
 using MassTransit;
@@ -49,6 +48,10 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
     public RabbitMqContainer RabbitMqTestContainer;
     public MongoDbContainer MongoDbTestContainer;
     public EventStoreDbContainer EventStoreDbTestContainer;
+    public CancellationTokenSource CancellationTokenSource;
+
+    public PersistMessageBackgroundService PersistMessageBackgroundService =>
+        ServiceProvider.GetRequiredService<PersistMessageBackgroundService>();
 
     public HttpClient HttpClient
     {
@@ -85,6 +88,12 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
                     TestRegistrationServices?.Invoke(services);
                     services.ReplaceSingleton(AddHttpContextAccessorMock);
 
+                    services.AddSingleton<PersistMessageBackgroundService>();
+
+                    // // remove persist-message processor background service
+                    // var descriptor = services.Single(s => s.ImplementationType == typeof(PersistMessageBackgroundService));
+                    // services.Remove(descriptor);
+
                     // add authentication using a fake jwt bearer - we can use SetAdminUser method to set authenticate user to existing HttContextAccessor
                     // https://github.com/webmotions/fake-authentication-jwtbearer
                     // https://github.com/webmotions/fake-authentication-jwtbearer/issues/14
@@ -99,6 +108,7 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
+        CancellationTokenSource = new CancellationTokenSource();
         await StartTestContainerAsync();
     }
 
@@ -106,6 +116,7 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
     {
         await StopTestContainerAsync();
         await _factory.DisposeAsync();
+        CancellationTokenSource.Cancel();
     }
 
     public virtual void RegisterServices(Action<IServiceCollection> services)
@@ -141,6 +152,7 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
         return result;
     }
 
+
     public Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
     {
         return ExecuteScopeAsync(sp =>
@@ -173,7 +185,6 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
         {
             var published = await TestHarness.Published.Any<TMessage>(cancellationToken);
             var faulty = await TestHarness.Published.Any<Fault<TMessage>>(cancellationToken);
-
             return published && faulty == false;
         });
         return result;
@@ -188,6 +199,30 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
             var faulty = await TestHarness.Consumed.Any<Fault<TMessage>>(cancellationToken);
 
             return consumed && faulty == false;
+        });
+
+        return result;
+    }
+
+    public async Task<bool> ShouldProcessedPersistInternalCommand<TInternalCommand>(
+        CancellationToken cancellationToken = default)
+        where TInternalCommand : class, IInternalCommand
+    {
+        var result = await WaitUntilConditionMet(async () =>
+        {
+            return await ExecuteScopeAsync(async sp =>
+            {
+                var persistMessageProcessor = sp.GetService<IPersistMessageProcessor>();
+                Guard.Against.Null(persistMessageProcessor, nameof(persistMessageProcessor));
+
+                var filter = await persistMessageProcessor.GetByFilterAsync(x =>
+                    x.DeliveryType == MessageDeliveryType.Internal &&
+                    typeof(TInternalCommand).ToString() == x.DataType);
+
+                var res = filter.Any(x => x.MessageStatus == MessageStatus.Processed);
+
+                return res;
+            });
         });
 
         return result;
@@ -215,30 +250,6 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
 
         return true;
     }
-
-    public async Task<bool> ShouldProcessedPersistInternalCommand<TInternalCommand>()
-        where TInternalCommand : class, IInternalCommand
-    {
-        var result = await WaitUntilConditionMet(async () =>
-        {
-            return await ExecuteScopeAsync(async sp =>
-            {
-                var persistMessageProcessor = sp.GetService<IPersistMessageProcessor>();
-                Guard.Against.Null(persistMessageProcessor, nameof(persistMessageProcessor));
-
-                var filter = await persistMessageProcessor.GetByFilterAsync(x =>
-                    x.DeliveryType == MessageDeliveryType.Internal &&
-                    typeof(TInternalCommand).ToString() == x.DataType);
-
-                var res = filter.Any(x => x.MessageStatus == MessageStatus.Processed);
-
-                return res;
-            });
-        });
-
-        return result;
-    }
-
 
     private async Task StartTestContainerAsync()
     {
@@ -496,6 +507,8 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
 
         if (!string.IsNullOrEmpty(persistOptions?.ConnectionString))
         {
+            await Fixture.PersistMessageBackgroundService.StartAsync(Fixture.CancellationTokenSource.Token);
+
             PersistDbConnection = new NpgsqlConnection(persistOptions.ConnectionString);
             await PersistDbConnection.OpenAsync();
 
@@ -520,6 +533,8 @@ public class TestFixtureCore<TEntryPoint> : IAsyncLifetime
         if (PersistDbConnection is not null)
         {
             await _reSpawnerPersistDb.ResetAsync(PersistDbConnection);
+
+            await Fixture.PersistMessageBackgroundService.StopAsync(Fixture.CancellationTokenSource.Token);
         }
 
         if (DefaultDbConnection is not null)
