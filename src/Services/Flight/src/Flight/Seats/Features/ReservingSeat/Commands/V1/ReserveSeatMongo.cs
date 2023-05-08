@@ -13,7 +13,7 @@ using MediatR;
 using MongoDB.Driver;
 
 public record ReserveSeatMongo(Guid Id, string SeatNumber, Enums.SeatType Type,
-    Enums.SeatClass Class, Guid FlightId, bool IsDeleted) : InternalCommand;
+    Enums.SeatClass Class, Guid FlightId, bool IsDeleted = false) : InternalCommand;
 
 internal class ReserveSeatMongoHandler : ICommandHandler<ReserveSeatMongo>
 {

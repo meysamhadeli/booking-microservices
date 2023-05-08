@@ -14,7 +14,7 @@ using MediatR;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-public record CreateAircraftMongo(Guid Id, string Name, string Model, int ManufacturingYear, bool IsDeleted) : InternalCommand;
+public record CreateAircraftMongo(Guid Id, string Name, string Model, int ManufacturingYear, bool IsDeleted = false) : InternalCommand;
 
 public class CreateAircraftMongoHandler : ICommandHandler<CreateAircraftMongo>
 {

@@ -24,8 +24,4 @@
     <ProjectReference Include="..\..\src\Flight.Api\Flight.Api.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Fakes" />
-  </ItemGroup>
-
 </Project>

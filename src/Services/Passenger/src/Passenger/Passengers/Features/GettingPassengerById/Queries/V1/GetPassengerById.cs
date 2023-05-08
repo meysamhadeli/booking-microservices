@@ -5,7 +5,6 @@ using Data;
 using Dtos;
 using FluentValidation;
 using MapsterMapper;
-using Microsoft.EntityFrameworkCore;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Web;
 using Exceptions;
@@ -13,6 +12,8 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 public record GetPassengerById(Guid Id) : IQuery<GetPassengerByIdResult>;
 
@@ -57,13 +58,13 @@ internal class GetPassengerByIdValidator : AbstractValidator<GetPassengerById>
 
 internal class GetPassengerByIdHandler : IQueryHandler<GetPassengerById, GetPassengerByIdResult>
 {
-    private readonly PassengerDbContext _passengerDbContext;
     private readonly IMapper _mapper;
+    private readonly PassengerReadDbContext _passengerReadDbContext;
 
-    public GetPassengerByIdHandler(IMapper mapper, PassengerDbContext passengerDbContext)
+    public GetPassengerByIdHandler(IMapper mapper, PassengerReadDbContext passengerReadDbContext)
     {
         _mapper = mapper;
-        _passengerDbContext = passengerDbContext;
+        _passengerReadDbContext = passengerReadDbContext;
     }
 
     public async Task<GetPassengerByIdResult> Handle(GetPassengerById query, CancellationToken cancellationToken)
@@ -71,7 +72,8 @@ internal class GetPassengerByIdHandler : IQueryHandler<GetPassengerById, GetPass
         Guard.Against.Null(query, nameof(query));
 
         var passenger =
-            await _passengerDbContext.Passengers.SingleOrDefaultAsync(x => x.Id == query.Id, cancellationToken);
+            await _passengerReadDbContext.Passenger.AsQueryable()
+                .SingleOrDefaultAsync(x => x.PassengerId == query.Id && x.IsDeleted == false, cancellationToken);
 
         if (passenger is null)
         {
