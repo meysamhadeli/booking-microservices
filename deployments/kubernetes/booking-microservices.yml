@@ -390,7 +390,13 @@ metadata:
   name: postgres
 spec:
   containers:
-    - env:
+    - args:
+        - postgres
+        - -c
+        - wal_level=logical
+        - -c
+        - max_prepared_transactions=10  
+      env:
         - name: POSTGRES_PASSWORD
           value: postgres
         - name: POSTGRES_USER

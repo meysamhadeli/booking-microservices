@@ -46,6 +46,7 @@ public class RegisterNewUserEndpoint : IMinimalEndpoint
 
                 return Results.Ok(response);
             })
+            .RequireAuthorization()
             .WithName("RegisterUser")
             .WithApiVersionSet(builder.NewApiVersionSet("Identity").Build())
             .Produces<RegisterNewUserResponseDto>()

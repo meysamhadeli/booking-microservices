@@ -1,16 +1,18 @@
 namespace BuildingBlocks.EFCore;
 
 using System.Collections.Immutable;
-using BuildingBlocks.Core.Event;
-using BuildingBlocks.Core.Model;
+using Core.Event;
+using Core.Model;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
+using Microsoft.EntityFrameworkCore.Storage;
 using Web;
 using Exception = System.Exception;
+using IsolationLevel = System.Data.IsolationLevel;
 
 public abstract class AppDbContextBase : DbContext, IDbContext
 {
     private readonly ICurrentUserProvider _currentUserProvider;
+    private IDbContextTransaction? _currentTransaction;
 
     protected AppDbContextBase(DbContextOptions options, ICurrentUserProvider currentUserProvider) :
         base(options)
@@ -22,13 +24,53 @@ public abstract class AppDbContextBase : DbContext, IDbContext
     {
     }
 
+    public async Task BeginTransactionalAsync(CancellationToken cancellationToken = default)
+    {
+        _currentTransaction ??= await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+    }
+
+    //ref: https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency#execution-strategies-and-transactions
+    public async Task CommitTransactionalAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await SaveChangesAsync(cancellationToken);
+            await _currentTransaction?.CommitAsync(cancellationToken)!;
+        }
+        catch
+        {
+            await _currentTransaction?.RollbackAsync(cancellationToken)!;
+            throw;
+        }
+        finally
+        {
+            _currentTransaction?.Dispose();
+            _currentTransaction = null;
+        }
+    }
+
+
+    public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await _currentTransaction?.RollbackAsync(cancellationToken)!;
+        }
+        finally
+        {
+            _currentTransaction?.Dispose();
+            _currentTransaction = null;
+        }
+    }
+
     //ref: https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency#execution-strategies-and-transactions
     public Task ExecuteTransactionalAsync(CancellationToken cancellationToken = default)
     {
         var strategy = Database.CreateExecutionStrategy();
         return strategy.ExecuteAsync(async () =>
         {
-            await using var transaction = await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+            await using var transaction =
+                await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
             try
             {
                 await SaveChangesAsync(cancellationToken);

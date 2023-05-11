@@ -31,6 +31,8 @@ services:
      - "postgres"
      - "-c"
      - "wal_level=logical"
+     - "-c"
+     - "max_prepared_transactions=10"
    networks:
      - booking
 
