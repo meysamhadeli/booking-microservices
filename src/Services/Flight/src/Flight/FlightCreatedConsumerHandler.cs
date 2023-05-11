@@ -5,7 +5,7 @@ using MassTransit;
 
 namespace Flight;
 
-public class CreateFlightConsumerHandler : IConsumer<FlightCreated>
+public class FlightCreatedConsumerHandler : IConsumer<FlightCreated>
 {
     public Task Consume(ConsumeContext<FlightCreated> context)
     {

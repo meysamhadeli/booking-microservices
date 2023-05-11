@@ -36,7 +36,7 @@ public static class Extensions
                     {
                         dbOptions.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name);
                         //ref: https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency
-                        dbOptions.EnableRetryOnFailure(3, TimeSpan.FromSeconds(1), null);
+                        // dbOptions.EnableRetryOnFailure(3, TimeSpan.FromSeconds(1), null);
                     })
                 // https://github.com/efcore/EFCore.NamingConventions
                 .UseSnakeCaseNamingConvention();

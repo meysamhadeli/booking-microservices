@@ -1,24 +1,27 @@
 version: "3.3"
 services:
 
-    ######################################################
-    #  Postgres
-    ######################################################
+   #######################################################
+   #  Postgres
+   ######################################################
   postgres:
-    image: postgres:latest
-    container_name: postgres
-    restart: on-failure
-    ports:
-      - '5432:5432'
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    command:
-      - "postgres"
-      - "-c"
-      - "wal_level=logical"
-    networks:
-      - booking
+   image: postgres:latest
+   container_name: postgres
+   restart: on-failure
+   ports:
+     - '5432:5432'
+   environment:
+     - POSTGRES_USER=postgres
+     - POSTGRES_PASSWORD=postgres
+   command:
+     - "postgres"
+     - "-c"
+     - "wal_level=logical"
+     - "-c"
+     - "max_prepared_transactions=10"
+   networks:
+     - booking
+
 
 
     #######################################################

@@ -8,7 +8,6 @@ using Configurations;
 using Core.Model;
 using global::Polly;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Exception = System.Exception;
 
 public class PersistMessageDbContext : DbContext, IPersistMessageDbContext

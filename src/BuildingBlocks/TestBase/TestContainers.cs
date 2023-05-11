@@ -1,4 +1,5 @@
 ﻿namespace BuildingBlocks.TestBase;
+
 using Testcontainers.EventStoreDb;
 using Testcontainers.MongoDb;
 using Testcontainers.PostgreSql;
@@ -7,21 +8,25 @@ using Web;
 
 public static class TestContainers
 {
-    public static RabbitMqContainerOptions RabbitMqContainerConfiguration { get;}
-    public static PostgresContainerOptions PostgresContainerConfiguration { get;}
-    public static PostgresPersistContainerOptions PostgresPersistContainerConfiguration { get;}
-    public static MongoContainerOptions MongoContainerConfiguration { get;}
-    public static EventStoreContainerOptions EventStoreContainerConfiguration { get;}
+    public static RabbitMqContainerOptions RabbitMqContainerConfiguration { get; }
+    public static PostgresContainerOptions PostgresContainerConfiguration { get; }
+    public static PostgresPersistContainerOptions PostgresPersistContainerConfiguration { get; }
+    public static MongoContainerOptions MongoContainerConfiguration { get; }
+    public static EventStoreContainerOptions EventStoreContainerConfiguration { get; }
 
     static TestContainers()
     {
         var configuration = ConfigurationHelper.GetConfiguration();
 
-        RabbitMqContainerConfiguration = configuration.GetOptions<RabbitMqContainerOptions>(nameof(RabbitMqContainerOptions));
-        PostgresContainerConfiguration = configuration.GetOptions<PostgresContainerOptions>(nameof(PostgresContainerOptions));
-        PostgresPersistContainerConfiguration = configuration.GetOptions<PostgresPersistContainerOptions>(nameof(PostgresPersistContainerOptions));
+        RabbitMqContainerConfiguration =
+            configuration.GetOptions<RabbitMqContainerOptions>(nameof(RabbitMqContainerOptions));
+        PostgresContainerConfiguration =
+            configuration.GetOptions<PostgresContainerOptions>(nameof(PostgresContainerOptions));
+        PostgresPersistContainerConfiguration =
+            configuration.GetOptions<PostgresPersistContainerOptions>(nameof(PostgresPersistContainerOptions));
         MongoContainerConfiguration = configuration.GetOptions<MongoContainerOptions>(nameof(MongoContainerOptions));
-        EventStoreContainerConfiguration = configuration.GetOptions<EventStoreContainerOptions>(nameof(EventStoreContainerOptions));
+        EventStoreContainerConfiguration =
+            configuration.GetOptions<EventStoreContainerOptions>(nameof(EventStoreContainerOptions));
     }
 
     public static PostgreSqlContainer PostgresTestContainer()
@@ -34,6 +39,7 @@ public static class TestContainers
         var builder = baseBuilder
             .WithImage(PostgresContainerConfiguration.ImageName)
             .WithName(PostgresContainerConfiguration.Name)
+            .WithCommand(new string[2] { "-c", "max_prepared_transactions=10" })
             .WithPortBinding(PostgresContainerConfiguration.Port, true)
             .Build();
 
@@ -50,6 +56,7 @@ public static class TestContainers
         var builder = baseBuilder
             .WithImage(PostgresPersistContainerConfiguration.ImageName)
             .WithName(PostgresPersistContainerConfiguration.Name)
+            .WithCommand(new string[2] { "-c", "max_prepared_transactions=10" })
             .WithPortBinding(PostgresPersistContainerConfiguration.Port, true)
             .Build();
 

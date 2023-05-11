@@ -9,18 +9,19 @@ using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
 using Identity.Identity.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Identity.Data;
 
 using System;
+using Microsoft.EntityFrameworkCore.Storage;
 
 public sealed class IdentityContext : IdentityDbContext<User, Role, Guid,
     UserClaim, UserRole, UserLogin, RoleClaim, UserToken>, IDbContext
 {
+    private IDbContextTransaction? _currentTransaction;
+
     public IdentityContext(DbContextOptions<IdentityContext> options) : base(options)
     {
     }
@@ -31,6 +32,45 @@ public sealed class IdentityContext : IdentityDbContext<User, Role, Guid,
         base.OnModelCreating(builder);
         builder.FilterSoftDeletedProperties();
         builder.ToSnakeCaseTables();
+    }
+
+    public async Task BeginTransactionalAsync(CancellationToken cancellationToken = default)
+    {
+        _currentTransaction ??= await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+    }
+
+    //ref: https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency#execution-strategies-and-transactions
+    public async Task CommitTransactionalAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await SaveChangesAsync(cancellationToken);
+            await _currentTransaction?.CommitAsync(cancellationToken)!;
+        }
+        catch
+        {
+            await _currentTransaction?.RollbackAsync(cancellationToken)!;
+            throw;
+        }
+        finally
+        {
+            _currentTransaction?.Dispose();
+            _currentTransaction = null;
+        }
+    }
+
+
+    public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await _currentTransaction?.RollbackAsync(cancellationToken)!;
+        }
+        finally
+        {
+            _currentTransaction?.Dispose();
+            _currentTransaction = null;
+        }
     }
 
     //ref: https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency#execution-strategies-and-transactions
