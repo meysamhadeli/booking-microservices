@@ -9,7 +9,7 @@ public class FlightCreatedConsumerHandler : IConsumer<FlightCreated>
 {
     public Task Consume(ConsumeContext<FlightCreated> context)
     {
-        Console.WriteLine("It's for test");
+        Console.WriteLine($"We retrieve message: {context.Message}");
         return Task.CompletedTask;
     }
 }

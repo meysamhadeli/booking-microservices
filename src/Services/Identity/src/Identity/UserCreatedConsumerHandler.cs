@@ -9,6 +9,7 @@ public class UserCreatedConsumerHandler : IConsumer<UserCreated>
 {
     public Task Consume(ConsumeContext<UserCreated> context)
     {
-        Console.WriteLine("It's for test"); return Task.CompletedTask;
+        Console.WriteLine($"We retrieve message: {context.Message}");
+        return Task.CompletedTask;
     }
 }
