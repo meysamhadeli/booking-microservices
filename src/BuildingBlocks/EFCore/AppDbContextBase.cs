@@ -24,45 +24,6 @@ public abstract class AppDbContextBase : DbContext, IDbContext
     {
     }
 
-    public async Task BeginTransactionalAsync(CancellationToken cancellationToken = default)
-    {
-        _currentTransaction ??= await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
-    }
-
-    //ref: https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency#execution-strategies-and-transactions
-    public async Task CommitTransactionalAsync(CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            await SaveChangesAsync(cancellationToken);
-            await _currentTransaction?.CommitAsync(cancellationToken)!;
-        }
-        catch
-        {
-            await _currentTransaction?.RollbackAsync(cancellationToken)!;
-            throw;
-        }
-        finally
-        {
-            _currentTransaction?.Dispose();
-            _currentTransaction = null;
-        }
-    }
-
-
-    public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            await _currentTransaction?.RollbackAsync(cancellationToken)!;
-        }
-        finally
-        {
-            _currentTransaction?.Dispose();
-            _currentTransaction = null;
-        }
-    }
-
     //ref: https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency#execution-strategies-and-transactions
     public Task ExecuteTransactionalAsync(CancellationToken cancellationToken = default)
     {
