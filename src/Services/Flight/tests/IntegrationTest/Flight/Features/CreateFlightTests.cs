@@ -9,8 +9,6 @@ using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
-using global::Flight.Flights.Features.CreatingFlight.V1;
-
 public class CreateFlightTests : FlightIntegrationTestBase
 {
     public CreateFlightTests(
