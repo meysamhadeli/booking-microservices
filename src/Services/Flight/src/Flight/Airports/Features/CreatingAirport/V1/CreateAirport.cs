@@ -9,6 +9,7 @@ using BuildingBlocks.Core.Event;
 using BuildingBlocks.Web;
 using Exceptions;
 using Data;
+using Duende.IdentityServer.EntityFramework.Entities;
 using FluentValidation;
 using MapsterMapper;
 using MassTransit;
@@ -48,7 +49,7 @@ public class CreateAirportEndpoint : IMinimalEndpoint
 
                 return Results.Ok(response);
             })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("CreateAirport")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<CreateAirportResponseDto>()

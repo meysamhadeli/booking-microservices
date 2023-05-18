@@ -20,9 +20,6 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration,
         params Assembly[] assemblies)
     {
-         // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/openapi
-        services.AddEndpointsApiExplorer();
-
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
         services.AddOptions<SwaggerOptions>().Bind(configuration.GetSection(nameof(SwaggerOptions)))
             .ValidateDataAnnotations();
@@ -41,19 +38,29 @@ public static class ServiceCollectionExtensions
 
                 options.AddEnumsWithValuesFixFilters();
 
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    BearerFormat = "JWT",
+                    Scheme = "oauth2",
+                    Name = "Bearer",
+                    In = ParameterLocation.Header
+                });
+
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
                         new OpenApiSecurityScheme
                         {
-                            Reference = new OpenApiReference {Type = ReferenceType.SecurityScheme, Id = "Bearer"},
-                            Scheme = "oauth2",
-                            Name = "Bearer",
-                            In = ParameterLocation.Header
+                            Reference = new OpenApiReference
+                            {
+                                Type=ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                            }
                         },
-                        new List<string>()
+                        new string[]{}
                     }
                 });
+
 
                 options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 
@@ -65,7 +72,7 @@ public static class ServiceCollectionExtensions
                 // options.EnableAnnotations();
             });
 
-        services.Configure<SwaggerGeneratorOptions>(o => o.InferSecuritySchemes = true);
+        // services.Configure<SwaggerGeneratorOptions>(o => o.InferSecuritySchemes = true);
 
         static string XmlCommentsFilePath(Assembly assembly)
         {

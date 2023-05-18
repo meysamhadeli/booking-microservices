@@ -9,6 +9,7 @@ using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Web;
 using Data;
+using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using Flight.Flights.Features.CreatingFlight.V1;
 using FluentValidation;
@@ -52,7 +53,7 @@ public class UpdateFlightEndpoint : IMinimalEndpoint
 
                 return Results.NoContent();
             })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("UpdateFlight")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces(StatusCodes.Status204NoContent)

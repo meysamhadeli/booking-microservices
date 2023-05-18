@@ -60,6 +60,7 @@ public static class InfrastructureExtensions
         builder.Services.AddPersistMessageProcessor(env);
         builder.Services.AddMongoDbContext<BookingReadDbContext>(configuration);
 
+        builder.Services.AddEndpointsApiExplorer();
         builder.AddCustomSerilog(env);
         builder.Services.AddJwt();
         builder.Services.AddHttpContextAccessor();

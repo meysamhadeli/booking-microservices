@@ -9,6 +9,7 @@ using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Web;
+using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using FluentValidation;
 using MapsterMapper;

@@ -7,6 +7,7 @@ using FluentValidation;
 using MapsterMapper;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Web;
+using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -34,7 +35,7 @@ public class GetPassengerByIdEndpoint : IMinimalEndpoint
 
                     return Results.Ok(response);
                 })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("GetPassengerById")
             .WithApiVersionSet(builder.NewApiVersionSet("Passenger").Build())
             .Produces<GetPassengerByIdResponseDto>()
