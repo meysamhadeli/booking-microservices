@@ -60,7 +60,9 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
             var claims =
                 new Dictionary<string, object>
                 {
-                    { ClaimTypes.Name, "test@sample.com" }, { ClaimTypes.Role, "admin" },
+                    { ClaimTypes.Name, "test@sample.com" },
+                    { ClaimTypes.Role, "admin" },
+                    {"scope", "flight-api"}
                 };
             var httpClient = _factory?.CreateClient();
             httpClient.SetFakeBearerToken(claims);
