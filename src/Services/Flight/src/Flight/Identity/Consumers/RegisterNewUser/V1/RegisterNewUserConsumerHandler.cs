@@ -23,6 +23,7 @@ public class RegisterNewUserConsumerHandler : IConsumer<UserCreated>
     public Task Consume(ConsumeContext<UserCreated> context)
     {
         _logger.LogInformation($"this is a test consumer for {nameof(UserCreated).Underscore()} in {_options.Name}");
+        _logger.LogInformation($"we got this message: {context?.Message}");
         return Task.CompletedTask;
     }
 }

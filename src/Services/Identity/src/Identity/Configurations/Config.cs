@@ -59,7 +59,7 @@ public static class Config
                     Constants.StandardScopes.FlightApi,
                     Constants.StandardScopes.PassengerApi,
                     Constants.StandardScopes.BookingApi,
-                    new(Constants.StandardScopes.IdentityApi)
+                    Constants.StandardScopes.IdentityApi
                 }
             }
         };

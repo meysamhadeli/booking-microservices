@@ -10,6 +10,7 @@ using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Data;
 using Dtos;
+using Duende.IdentityServer.EntityFramework.Entities;
 using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -48,7 +49,7 @@ public class CompleteRegisterPassengerEndpoint : IMinimalEndpoint
 
                 return Results.Ok(response);
             })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("CompleteRegisterPassenger")
             .WithApiVersionSet(builder.NewApiVersionSet("Passenger").Build())
             .Produces<CompleteRegisterPassengerResponseDto>()

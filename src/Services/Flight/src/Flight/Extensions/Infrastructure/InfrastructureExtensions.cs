@@ -67,6 +67,7 @@ public static class InfrastructureExtensions
         builder.Services.AddMongoDbContext<FlightReadDbContext>(configuration);
         builder.Services.AddPersistMessageProcessor(env);
 
+        builder.Services.AddEndpointsApiExplorer();
         builder.AddCustomSerilog(env);
         builder.Services.AddJwt();
         builder.Services.AddCustomSwagger(configuration, typeof(FlightRoot).Assembly);

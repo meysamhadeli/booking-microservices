@@ -10,6 +10,7 @@ using BuildingBlocks.Web;
 using Exceptions;
 using Models;
 using Data;
+using Duende.IdentityServer.EntityFramework.Entities;
 using FluentValidation;
 using MapsterMapper;
 using MassTransit;
@@ -50,7 +51,7 @@ public class CreateAircraftEndpoint : IMinimalEndpoint
 
                 return Results.Ok(response);
             })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("CreateAircraft")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<CreateAircraftResponseDto>()

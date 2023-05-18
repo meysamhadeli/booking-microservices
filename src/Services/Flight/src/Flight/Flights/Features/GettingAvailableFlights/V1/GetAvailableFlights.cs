@@ -11,6 +11,7 @@ using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Web;
 using Data;
 using Dtos;
+using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using MapsterMapper;
 using MediatR;
@@ -42,8 +43,7 @@ public class GetAvailableFlightsEndpoint : IMinimalEndpoint
 
                     return Results.Ok(response);
                 })
-            .WithOpenApi()
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("GetAvailableFlights")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<GetAvailableFlightsResponseDto>()

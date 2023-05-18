@@ -8,6 +8,7 @@ using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Web;
 using Data;
 using Dtos;
+using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using FluentValidation;
 using MapsterMapper;
@@ -37,7 +38,7 @@ public class GetFlightByIdEndpoint : IMinimalEndpoint
 
                     return Results.Ok(response);
                 })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("GetFlightById")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<GetFlightByIdResponseDto>()

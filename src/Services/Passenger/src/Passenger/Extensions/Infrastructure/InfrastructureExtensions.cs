@@ -64,6 +64,7 @@ public static class InfrastructureExtensions
 
         builder.AddCustomSerilog(env);
         builder.Services.AddJwt();
+        builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddCustomSwagger(configuration, typeof(PassengerRoot).Assembly);
         builder.Services.AddCustomVersioning();
         builder.Services.AddCustomMediatR();

@@ -58,6 +58,7 @@ public static class InfrastructureExtensions
                     }));
         });
 
+        builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddControllers();
         builder.Services.AddPersistMessageProcessor(env);
         builder.Services.AddCustomDbContext<IdentityContext>();

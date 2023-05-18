@@ -8,6 +8,7 @@ using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Web;
 using Data;
+using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using FluentValidation;
 using MapsterMapper;
@@ -54,7 +55,7 @@ public class CreateFlightEndpoint : IMinimalEndpoint
 
                 return Results.CreatedAtRoute("GetFlightById", new { id = result.Id }, response);
             })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("CreateFlight")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<CreateFlightResponseDto>(StatusCodes.Status201Created)
