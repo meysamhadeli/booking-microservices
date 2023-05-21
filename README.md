@@ -192,7 +192,7 @@ Thanks a bunch for supporting me!
 
 Thanks to all [contributors](https://github.com/meysamhadeli/booking-microservices/graphs/contributors), you're awesome and this wouldn't be possible without you! The goal is to build a categorized, community-driven collection of very well-known resources.
 
-Please follow this [Contribution Guideline](./CONTRIBUTION.md) to submit a pull request or create the issue.
+Please follow this [contribution guideline](./CONTRIBUTION.md) to submit a pull request or create the issue.
 
 ## Project References & Credits
 
