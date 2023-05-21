@@ -7,10 +7,9 @@ using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Web;
-using Exceptions;
-using Models;
 using Data;
 using Duende.IdentityServer.EntityFramework.Entities;
+using Exceptions;
 using FluentValidation;
 using MapsterMapper;
 using MassTransit;
@@ -19,6 +18,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Models;
+using Models.ValueObjects;
 
 public record CreateAircraft(string Name, string Model, int ManufacturingYear) : ICommand<CreateAircraftResult>,
     IInternalCommand
@@ -96,7 +97,7 @@ internal class CreateAircraftHandler : IRequestHandler<CreateAircraft, CreateAir
             throw new AircraftAlreadyExistException();
         }
 
-        var aircraftEntity = Aircraft.Create(request.Id, request.Name, request.Model, request.ManufacturingYear);
+        var aircraftEntity = Aircraft.Create(request.Id, NameValue.Of(request.Name), ModelValue.Of(request.Model), ManufacturingYearValue.Of(request.ManufacturingYear));
 
         var newAircraft = (await _flightDbContext.Aircraft.AddAsync(aircraftEntity, cancellationToken))?.Entity;
 

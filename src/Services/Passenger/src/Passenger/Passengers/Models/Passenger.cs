@@ -3,24 +3,25 @@ using BuildingBlocks.Core.Model;
 namespace Passenger.Passengers.Models;
 
 using Features.CompletingRegisterPassenger.V1;
+using global::Passenger.Passengers.Models.ValueObjects;
 using Identity.Consumers.RegisteringNewUser.V1;
 
 public record Passenger : Aggregate<Guid>
 {
-    public Passenger CompleteRegistrationPassenger(Guid id, string name, string passportNumber, Enums.PassengerType passengerType, int age, bool isDeleted = false)
+    public Passenger CompleteRegistrationPassenger(Guid id, NameValue name, PassportNumberValue passportNumber, Enums.PassengerType passengerType, AgeValue age, bool isDeleted = false)
     {
         var passenger = new Passenger
         {
+            Id = id,
             Name = name,
             PassportNumber = passportNumber,
             PassengerType = passengerType,
             Age = age,
-            Id = id,
             IsDeleted = isDeleted
         };
 
         var @event = new PassengerRegistrationCompletedDomainEvent(passenger.Id, passenger.Name, passenger.PassportNumber,
-            passenger.PassengerType, passenger.Age, passenger.IsDeleted);
+            passenger.PassengerType, passenger.Age.Value, passenger.IsDeleted);
 
         passenger.AddDomainEvent(@event);
 
@@ -28,7 +29,7 @@ public record Passenger : Aggregate<Guid>
     }
 
 
-    public static Passenger Create(Guid id, string name, string passportNumber, bool isDeleted = false)
+    public static Passenger Create(Guid id, NameValue name, PassportNumberValue passportNumber, bool isDeleted = false)
     {
         var passenger = new Passenger { Id = id, Name = name, PassportNumber = passportNumber, IsDeleted = isDeleted };
 
@@ -40,8 +41,8 @@ public record Passenger : Aggregate<Guid>
     }
 
 
-    public string PassportNumber { get; private set; }
-    public string Name { get; private set; }
+    public PassportNumberValue PassportNumber { get; private set; }
+    public NameValue Name { get; private set; }
     public Enums.PassengerType PassengerType { get; private set; }
-    public int Age { get; private set; }
+    public AgeValue Age { get; private set; }
 }

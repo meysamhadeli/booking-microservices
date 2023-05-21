@@ -1,9 +1,10 @@
-﻿namespace Flight.Data.Seed;
+namespace Flight.Data.Seed;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Aircrafts.Models;
+using Aircrafts.Models.ValueObjects;
 using Airports.Models;
 using Flights.Models;
 using MassTransit;
@@ -11,9 +12,9 @@ using Seats.Models;
 
 public static class InitialData
 {
-    public static List<Airport> Airports { get;}
-    public static List<Aircraft> Aircrafts { get;}
-    public static List<Seat> Seats { get;}
+    public static List<Airport> Airports { get; }
+    public static List<Aircraft> Aircrafts { get; }
+    public static List<Seat> Seats { get; }
     public static List<Flight> Flights { get; }
 
 
@@ -27,9 +28,9 @@ public static class InitialData
 
         Aircrafts = new List<Aircraft>
         {
-            Aircraft.Create(new Guid("3c5c0000-97c6-fc34-fcd3-08db322230c8"), "Boeing 737", "B737", 2005),
-            Aircraft.Create(new Guid("3c5c0000-97c6-fc34-2e04-08db322230c9"), "Airbus 300", "A300", 2000),
-            Aircraft.Create(new Guid("3c5c0000-97c6-fc34-2e11-08db322230c9"), "Airbus 320", "A320", 2003)
+            Aircraft.Create(new Guid("3c5c0000-97c6-fc34-fcd3-08db322230c8"), NameValue.Of("Boeing 737"), ModelValue.Of("B737"), ManufacturingYearValue.Of(2005)),
+            Aircraft.Create(new Guid("3c5c0000-97c6-fc34-2e04-08db322230c9"), NameValue.Of("Airbus 300"), ModelValue.Of("A300"), ManufacturingYearValue.Of(2000)),
+            Aircraft.Create(new Guid("3c5c0000-97c6-fc34-2e11-08db322230c9"), NameValue.Of("Airbus 320"), ModelValue.Of("A320"), ManufacturingYearValue.Of(2003))
         };
 
 

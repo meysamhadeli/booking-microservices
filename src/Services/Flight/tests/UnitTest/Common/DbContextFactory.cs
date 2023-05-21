@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Flight.Data;
 using Flight.Flights.Enums;
@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Unit.Test.Common;
 
+using global::Flight.Aircrafts.Models.ValueObjects;
 using MassTransit;
 
 public static class DbContextFactory
@@ -45,9 +46,9 @@ public static class DbContextFactory
 
         var aircrafts = new List<global::Flight.Aircrafts.Models.Aircraft>
         {
-            global::Flight.Aircrafts.Models.Aircraft.Create(_aircraft1, "Boeing 737", "B737", 2005),
-            global::Flight.Aircrafts.Models.Aircraft.Create(_aircraft2, "Airbus 300", "A300", 2000),
-            global::Flight.Aircrafts.Models.Aircraft.Create(_aircraft3, "Airbus 320", "A320", 2003)
+            global::Flight.Aircrafts.Models.Aircraft.Create(_aircraft1, NameValue.Of("Boeing 737"), ModelValue.Of("B737"), ManufacturingYearValue.Of(2005)),
+            global::Flight.Aircrafts.Models.Aircraft.Create(_aircraft2, NameValue.Of("Airbus 300"), ModelValue.Of("A300"), ManufacturingYearValue.Of(2000)),
+            global::Flight.Aircrafts.Models.Aircraft.Create(_aircraft3, NameValue.Of("Airbus 320"), ModelValue.Of("A320"), ManufacturingYearValue.Of(2003))
         };
 
         context.Aircraft.AddRange(aircrafts);

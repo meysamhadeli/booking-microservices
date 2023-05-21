@@ -5,12 +5,13 @@ using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Web;
+using Data;
 using Humanizer;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Data;
+using Passenger.Passengers.Models.ValueObjects;
 
 public class RegisterNewUserHandler : IConsumer<UserCreated>
 {
@@ -44,8 +45,8 @@ public class RegisterNewUserHandler : IConsumer<UserCreated>
             return;
         }
 
-        var passenger = Passengers.Models.Passenger.Create(NewId.NextGuid(), context.Message.Name,
-            context.Message.PassportNumber);
+        var passenger = Passengers.Models.Passenger.Create(NewId.NextGuid(), NameValue.Of(context.Message.Name),
+            PassportNumberValue.Of(context.Message.PassportNumber));
 
         await _passengerDbContext.AddAsync(passenger);
 
