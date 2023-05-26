@@ -1,9 +1,9 @@
 namespace Flight.Aircrafts.Models.ValueObjects;
 using System;
 
-public record NameValue : GenericValueObject<string>
+public record Name : GenericValueObject<string>
 {
-    public NameValue(string value) : base(value)
+    public Name(string value) : base(value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
@@ -11,8 +11,8 @@ public record NameValue : GenericValueObject<string>
         }
     }
 
-    public static NameValue Of(string value)
+    public static Name Of(string value)
     {
-        return new NameValue(value);
+        return new Name(value);
     }
 }

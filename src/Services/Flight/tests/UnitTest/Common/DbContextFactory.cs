@@ -46,16 +46,16 @@ public static class DbContextFactory
 
         var aircrafts = new List<global::Flight.Aircrafts.Models.Aircraft>
         {
-            global::Flight.Aircrafts.Models.Aircraft.Create(_aircraft1, NameValue.Of("Boeing 737"), ModelValue.Of("B737"), ManufacturingYearValue.Of(2005)),
-            global::Flight.Aircrafts.Models.Aircraft.Create(_aircraft2, NameValue.Of("Airbus 300"), ModelValue.Of("A300"), ManufacturingYearValue.Of(2000)),
-            global::Flight.Aircrafts.Models.Aircraft.Create(_aircraft3, NameValue.Of("Airbus 320"), ModelValue.Of("A320"), ManufacturingYearValue.Of(2003))
+            global::Flight.Aircrafts.Models.Aircraft.Create(AircraftId.Of(_aircraft1), Name.Of("Boeing 737"), Model.Of("B737"), ManufacturingYear.Of(2005)),
+            global::Flight.Aircrafts.Models.Aircraft.Create(AircraftId.Of(_aircraft2), Name.Of("Airbus 300"), Model.Of("A300"), ManufacturingYear.Of(2000)),
+            global::Flight.Aircrafts.Models.Aircraft.Create(AircraftId.Of(_aircraft3), Name.Of("Airbus 320"), Model.Of("A320"), ManufacturingYear.Of(2003))
         };
 
         context.Aircraft.AddRange(aircrafts);
 
         var flights = new List<global::Flight.Flights.Models.Flight>
         {
-            global::Flight.Flights.Models.Flight.Create(_flightId1, "BD467", _aircraft1, _airportId1,
+            global::Flight.Flights.Models.Flight.Create(_flightId1, "BD467", AircraftId.Of(_aircraft1), _airportId1,
                 new DateTime(2022, 1, 31, 12, 0, 0),
                 new DateTime(2022, 1, 31, 14, 0, 0),
                 _airportId2, 120m,

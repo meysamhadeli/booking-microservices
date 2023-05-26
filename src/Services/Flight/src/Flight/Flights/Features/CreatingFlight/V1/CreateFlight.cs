@@ -3,6 +3,7 @@ namespace Flight.Flights.Features.CreatingFlight.V1;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Aircrafts.Models.ValueObjects;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
@@ -111,7 +112,7 @@ internal class CreateFlightHandler : ICommandHandler<CreateFlight, CreateFlightR
             throw new FlightAlreadyExistException();
         }
 
-        var flightEntity = Models.Flight.Create(request.Id, request.FlightNumber, request.AircraftId,
+        var flightEntity = Models.Flight.Create(request.Id, request.FlightNumber, AircraftId.Of(request.AircraftId),
             request.DepartureAirportId, request.DepartureDate,
             request.ArriveDate, request.ArriveAirportId, request.DurationMinutes, request.FlightDate, request.Status,
             request.Price);

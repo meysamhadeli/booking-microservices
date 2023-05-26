@@ -1,9 +1,9 @@
 namespace Passenger.Passengers.Models.ValueObjects;
 using System;
 
-public record AgeValue : GenericValueObject<int>
+public record Age : GenericValueObject<int>
 {
-    public AgeValue(int value) : base(value)
+    public Age(int value) : base(value)
     {
         if (value < 0)
         {
@@ -11,8 +11,8 @@ public record AgeValue : GenericValueObject<int>
         }
         Value = value;
     }
-    public static AgeValue Of(int value)
+    public static Age Of(int value)
     {
-        return new AgeValue(value);
+        return new Age(value);
     }
 }

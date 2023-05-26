@@ -1,8 +1,8 @@
 namespace Flight.Aircrafts.Models.ValueObjects;
 using System;
-public record ModelValue : GenericValueObject<string>
+public record Model : GenericValueObject<string>
 {
-    public ModelValue(string value) : base(value)
+    public Model(string value) : base(value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
@@ -10,8 +10,8 @@ public record ModelValue : GenericValueObject<string>
         }
     }
 
-    public static ModelValue Of(string value)
+    public static Model Of(string value)
     {
-        return new ModelValue(value);
+        return new Model(value);
     }
 }

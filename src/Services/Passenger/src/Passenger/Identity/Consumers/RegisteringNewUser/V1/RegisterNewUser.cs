@@ -38,15 +38,15 @@ public class RegisterNewUserHandler : IConsumer<UserCreated>
         _logger.LogInformation($"consumer for {nameof(UserCreated).Underscore()} in {_options.Name}");
 
         var passengerExist =
-            await _passengerDbContext.Passengers.AnyAsync(x => x.PassportNumber == context.Message.PassportNumber);
+            await _passengerDbContext.Passengers.AnyAsync(x => x.PassportNumber == PassportNumber.Of(context.Message.PassportNumber));
 
         if (passengerExist)
         {
             return;
         }
 
-        var passenger = Passengers.Models.Passenger.Create(NewId.NextGuid(), NameValue.Of(context.Message.Name),
-            PassportNumberValue.Of(context.Message.PassportNumber));
+        var passenger = Passengers.Models.Passenger.Create(PassengerId.Of(NewId.NextGuid()), Name.Of(context.Message.Name),
+            PassportNumber.Of(context.Message.PassportNumber));
 
         await _passengerDbContext.AddAsync(passenger);
 

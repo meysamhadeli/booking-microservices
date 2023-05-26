@@ -1,18 +1,19 @@
 namespace Passenger.Passengers.Features.GettingPassengerById.Queries.V1;
 
+using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
+using BuildingBlocks.Web;
 using Data;
 using Dtos;
-using FluentValidation;
-using MapsterMapper;
-using Ardalis.GuardClauses;
-using BuildingBlocks.Web;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
+using FluentValidation;
+using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Models.ValueObjects;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
@@ -74,7 +75,7 @@ internal class GetPassengerByIdHandler : IQueryHandler<GetPassengerById, GetPass
 
         var passenger =
             await _passengerReadDbContext.Passenger.AsQueryable()
-                .SingleOrDefaultAsync(x => x.PassengerId == query.Id && x.IsDeleted == false, cancellationToken);
+                .SingleOrDefaultAsync(x => x.PassengerId == PassengerId.Of(query.Id) && x.IsDeleted == false, cancellationToken);
 
         if (passenger is null)
         {

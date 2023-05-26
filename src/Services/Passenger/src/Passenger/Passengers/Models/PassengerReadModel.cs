@@ -1,5 +1,4 @@
-﻿namespace Passenger.Passengers.Models;
-
+namespace Passenger.Passengers.Models;
 public class PassengerReadModel
 {
     public required Guid Id { get; init; }

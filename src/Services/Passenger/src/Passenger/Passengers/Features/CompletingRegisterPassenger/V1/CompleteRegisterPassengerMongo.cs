@@ -1,14 +1,15 @@
-﻿namespace Passenger.Passengers.Features.CompletingRegisterPassenger.V1;
+namespace Passenger.Passengers.Features.CompletingRegisterPassenger.V1;
 
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
+using Data;
 using MapsterMapper;
 using MediatR;
 using Models;
+using Models.ValueObjects;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using Data;
 
 public record CompleteRegisterPassengerMongoCommand(Guid Id, string PassportNumber, string Name,
     Enums.PassengerType PassengerType, int Age, bool IsDeleted = false) : InternalCommand;
@@ -34,14 +35,14 @@ internal class CompleteRegisterPassengerMongoHandler : ICommandHandler<CompleteR
         var passengerReadModel = _mapper.Map<PassengerReadModel>(request);
 
         var passenger = await _passengerReadDbContext.Passenger.AsQueryable()
-            .FirstOrDefaultAsync(x => x.PassengerId == passengerReadModel.PassengerId && !x.IsDeleted, cancellationToken);
+            .FirstOrDefaultAsync(x => x.PassengerId == PassengerId.Of(passengerReadModel.PassengerId) && !x.IsDeleted, cancellationToken);
 
         if (passenger is not null)
         {
             await _passengerReadDbContext.Passenger.UpdateOneAsync(
-                x => x.PassengerId == passengerReadModel.PassengerId,
+                x => x.PassengerId == PassengerId.Of(passengerReadModel.PassengerId),
                 Builders<PassengerReadModel>.Update
-                    .Set(x => x.PassengerId, passengerReadModel.PassengerId)
+                    .Set(x => x.PassengerId, PassengerId.Of(passengerReadModel.PassengerId))
                     .Set(x => x.Age, passengerReadModel.Age)
                     .Set(x => x.Name, passengerReadModel.Name)
                     .Set(x => x.IsDeleted, passengerReadModel.IsDeleted)

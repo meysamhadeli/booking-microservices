@@ -6,9 +6,14 @@ using Features.CompletingRegisterPassenger.V1;
 using global::Passenger.Passengers.Models.ValueObjects;
 using Identity.Consumers.RegisteringNewUser.V1;
 
-public record Passenger : Aggregate<Guid>
+public record Passenger : Aggregate<PassengerId>
 {
-    public Passenger CompleteRegistrationPassenger(Guid id, NameValue name, PassportNumberValue passportNumber, Enums.PassengerType passengerType, AgeValue age, bool isDeleted = false)
+    public PassportNumber PassportNumber { get; private set; }
+    public Name Name { get; private set; }
+    public Enums.PassengerType PassengerType { get; private set; }
+    public Age Age { get; private set; }
+
+    public Passenger CompleteRegistrationPassenger(PassengerId id, Name name, PassportNumber passportNumber, Enums.PassengerType passengerType, Age age, bool isDeleted = false)
     {
         var passenger = new Passenger
         {
@@ -29,7 +34,7 @@ public record Passenger : Aggregate<Guid>
     }
 
 
-    public static Passenger Create(Guid id, NameValue name, PassportNumberValue passportNumber, bool isDeleted = false)
+    public static Passenger Create(PassengerId id, Name name, PassportNumber passportNumber, bool isDeleted = false)
     {
         var passenger = new Passenger { Id = id, Name = name, PassportNumber = passportNumber, IsDeleted = isDeleted };
 
@@ -39,10 +44,4 @@ public record Passenger : Aggregate<Guid>
 
         return passenger;
     }
-
-
-    public PassportNumberValue PassportNumber { get; private set; }
-    public NameValue Name { get; private set; }
-    public Enums.PassengerType PassengerType { get; private set; }
-    public AgeValue Age { get; private set; }
 }

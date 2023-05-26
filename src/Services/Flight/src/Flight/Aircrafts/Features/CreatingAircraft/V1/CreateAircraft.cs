@@ -1,6 +1,7 @@
 namespace Flight.Aircrafts.Features.CreatingAircraft.V1;
 
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -17,7 +18,6 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.ValueObjects;
 
@@ -27,7 +27,7 @@ public record CreateAircraft(string Name, string Model, int ManufacturingYear) :
     public Guid Id { get; init; } = NewId.NextGuid();
 }
 
-public record CreateAircraftResult(Guid Id);
+public record CreateAircraftResult(AircraftId Id);
 
 public record AircraftCreatedDomainEvent
     (Guid Id, string Name, string Model, int ManufacturingYear, bool IsDeleted) : IDomainEvent;
@@ -89,15 +89,19 @@ internal class CreateAircraftHandler : IRequestHandler<CreateAircraft, CreateAir
     {
         Guard.Against.Null(request, nameof(request));
 
-        var aircraft =
-            await _flightDbContext.Aircraft.SingleOrDefaultAsync(x => x.Model == request.Model, cancellationToken);
+        //var aircraft =
+        //    await _flightDbContext.Aircraft.SingleOrDefaultAsync(x => x.Model == Model.Of(request.Model), cancellationToken);
+
+        var aircraft = _flightDbContext.Aircraft.AsEnumerable()
+            .FirstOrDefault(a => a.Model.Equals(Model.Of(request.Model)));
+
 
         if (aircraft is not null)
         {
             throw new AircraftAlreadyExistException();
         }
 
-        var aircraftEntity = Aircraft.Create(request.Id, NameValue.Of(request.Name), ModelValue.Of(request.Model), ManufacturingYearValue.Of(request.ManufacturingYear));
+        var aircraftEntity = Aircraft.Create(AircraftId.Of(request.Id), Name.Of(request.Name), Model.Of(request.Model), ManufacturingYear.Of(request.ManufacturingYear));
 
         var newAircraft = (await _flightDbContext.Aircraft.AddAsync(aircraftEntity, cancellationToken))?.Entity;
 
