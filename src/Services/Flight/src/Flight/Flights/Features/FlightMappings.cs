@@ -4,7 +4,6 @@ namespace Flight.Flights.Features;
 
 using CreatingFlight.V1;
 using DeletingFlight.V1;
-using GettingAvailableFlights.V1;
 using MassTransit;
 using Models;
 using UpdatingFlight.V1;
@@ -15,7 +14,8 @@ public class FlightMappings : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<Models.Flight, FlightDto>()
-            .ConstructUsing(x => new FlightDto(x.Id, x.FlightNumber, x.AircraftId, x.DepartureAirportId, x.DepartureDate,
+            .ConstructUsing(x => new FlightDto(x.Id, x.FlightNumber, x.AircraftId, x.DepartureAirportId,
+                x.DepartureDate,
                 x.ArriveDate, x.ArriveAirportId, x.DurationMinutes, x.FlightDate, x.Status, x.Price));
 
         config.NewConfig<CreateFlightMongo, FlightReadModel>()

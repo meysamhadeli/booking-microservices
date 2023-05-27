@@ -96,11 +96,9 @@ internal class CompleteRegisterPassengerCommandHandler : ICommandHandler<Complet
     {
         Guard.Against.Null(request, nameof(request));
 
-        //var passenger = await _passengerDbContext.Passengers.AsNoTracking().SingleOrDefaultAsync(
-        //    x => x.PassportNumber == PassportNumber.Of(request.PassportNumber), cancellationToken);
+        var passenger = await _passengerDbContext.Passengers.AsNoTracking().SingleOrDefaultAsync(
+            x => x.PassportNumber.Value.Equals(PassportNumber.Of(request.PassportNumber)), cancellationToken);
 
-        var passenger = _passengerDbContext.Passengers.AsEnumerable()
-            .FirstOrDefault(a => a.PassportNumber.Equals(PassportNumber.Of(request.PassportNumber)));
 
         if (passenger is null)
         {

@@ -1,17 +1,24 @@
 namespace Flight.Aircrafts.Models.ValueObjects;
-using System;
-public record Model : GenericValueObject<string>
+using Flight.Aircrafts.Exceptions;
+
+public record Model
 {
-    public Model(string value) : base(value)
+    public string Value { get; }
+    public Model(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
-            throw new ArgumentException("Model cannot be empty or whitespace.");
+            throw new InvalidModelException();
         }
+        Value = value;
     }
-
     public static Model Of(string value)
     {
         return new Model(value);
+    }
+
+    public static implicit operator string(Model model)
+    {
+        return model.Value;
     }
 }

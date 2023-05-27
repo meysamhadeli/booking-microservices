@@ -1,18 +1,24 @@
 namespace Passenger.Passengers.Models.ValueObjects;
-using System;
+using Exceptions;
 
-public record Name : GenericValueObject<string>
+public record Name
 {
-    public Name(string value) : base(value)
+    public string Value { get; }
+    public Name(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
-            throw new ArgumentException("Name cannot be empty or whitespace.");
+            throw new InvalidNameException();
         }
         Value = value;
     }
     public static Name Of(string value)
     {
         return new Name(value);
+    }
+
+    public static implicit operator string(Name name)
+    {
+        return name.Value;
     }
 }

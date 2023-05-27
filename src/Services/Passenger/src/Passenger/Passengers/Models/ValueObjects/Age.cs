@@ -1,18 +1,25 @@
 namespace Passenger.Passengers.Models.ValueObjects;
-using System;
+using global::Passenger.Passengers.Exceptions;
 
-public record Age : GenericValueObject<int>
+public record Age
 {
-    public Age(int value) : base(value)
+    public int Value { get; }
+    public Age(int value)
     {
-        if (value < 0)
+        if (value <= 0 || value == null)
         {
-            throw new ArgumentException("Age cannot be negative.");
+            throw new InvalidAgeException();
         }
+
         Value = value;
     }
     public static Age Of(int value)
     {
         return new Age(value);
+    }
+
+    public static implicit operator int(Age age)
+    {
+        return age.Value;
     }
 }

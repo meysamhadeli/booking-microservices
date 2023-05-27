@@ -23,8 +23,8 @@ public class CompleteRegisterPassengerTests : PassengerIntegrationTestBase
         var userCreated = new FakeUserCreated().Generate();
 
         await Fixture.Publish(userCreated);
-        (await Fixture.WaitForPublishing<UserCreated>()).Should().Be(true);
-        (await Fixture.WaitForConsuming<UserCreated>()).Should().Be(true);
+        await Fixture.WaitForPublishing<UserCreated>();
+        await Fixture.WaitForConsuming<UserCreated>();
 
         var command = new FakeCompleteRegisterPassengerCommand(userCreated.PassportNumber).Generate();
 

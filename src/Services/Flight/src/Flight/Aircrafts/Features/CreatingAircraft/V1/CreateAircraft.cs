@@ -18,6 +18,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.ValueObjects;
 
@@ -89,11 +90,8 @@ internal class CreateAircraftHandler : IRequestHandler<CreateAircraft, CreateAir
     {
         Guard.Against.Null(request, nameof(request));
 
-        //var aircraft =
-        //    await _flightDbContext.Aircraft.SingleOrDefaultAsync(x => x.Model == Model.Of(request.Model), cancellationToken);
-
-        var aircraft = _flightDbContext.Aircraft.AsEnumerable()
-            .FirstOrDefault(a => a.Model.Equals(Model.Of(request.Model)));
+        var aircraft = await _flightDbContext.Aircraft.AsNoTracking().SingleOrDefaultAsync(
+            a => a.Model.Value.Equals(Model.Of(request.Model)), cancellationToken);
 
 
         if (aircraft is not null)

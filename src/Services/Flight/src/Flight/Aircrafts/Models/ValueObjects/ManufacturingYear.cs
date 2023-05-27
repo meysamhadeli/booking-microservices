@@ -1,19 +1,26 @@
 namespace Flight.Aircrafts.Models.ValueObjects;
 
-using System;
+using Flight.Aircrafts.Exceptions;
 
-public record ManufacturingYear : GenericValueObject<int>
+public record ManufacturingYear
 {
-    public ManufacturingYear(int value) : base(value)
+    public int Value { get; }
+    public ManufacturingYear(int value)
     {
         if (string.IsNullOrWhiteSpace(value.ToString()))
         {
-            throw new ArgumentException("ManufacturingYear cannot be empty or whitespace.");
+            throw new InvalidManufacturingYearException();
         }
-    }
 
+        Value = value;
+    }
     public static ManufacturingYear Of(int value)
     {
         return new ManufacturingYear(value);
+    }
+
+    public static implicit operator int(ManufacturingYear manufacturingYear)
+    {
+        return manufacturingYear.Value;
     }
 }

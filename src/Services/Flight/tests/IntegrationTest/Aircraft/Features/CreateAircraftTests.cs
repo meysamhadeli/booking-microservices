@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.TestBase;
 using Flight.Api;
@@ -26,7 +26,7 @@ public class CreateAircraftTests : FlightIntegrationTestBase
         var response = await Fixture.SendAsync(command);
 
         // Assert
-        response?.Id.Should().Be(command.Id);
+        response?.Id.Value.Should().Be(command.Id);
 
         (await Fixture.WaitForPublishing<AircraftCreated>()).Should().Be(true);
     }
