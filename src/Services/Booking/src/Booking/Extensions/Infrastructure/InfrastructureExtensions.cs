@@ -24,8 +24,6 @@ using Serilog;
 
 namespace Booking.Extensions.Infrastructure;
 
-using BuildingBlocks.PersistMessageProcessor.Data;
-
 public static class InfrastructureExtensions
 {
     public static WebApplicationBuilder AddInfrastructure(this WebApplicationBuilder builder)
@@ -97,7 +95,6 @@ public static class InfrastructureExtensions
         });
         app.UseCorrelationId();
         app.UseHttpMetrics();
-        app.UseMigrationPersistMessage<PersistMessageDbContext>(env);
         app.UseCustomHealthCheck();
         app.MapMetrics();
         app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));

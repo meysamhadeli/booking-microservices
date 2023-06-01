@@ -102,7 +102,6 @@ public static class InfrastructureExtensions
         });
         app.UseCorrelationId();
         app.UseHttpMetrics();
-        app.UseMigrationPersistMessage<PersistMessageDbContext>(env);
         app.UseMigration<FlightDbContext>(env);
         app.MapMetrics();
         app.UseCustomHealthCheck();
