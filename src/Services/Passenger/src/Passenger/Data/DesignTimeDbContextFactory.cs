@@ -11,6 +11,6 @@ public class DesignTimeDbContextFactory: IDesignTimeDbContextFactory<PassengerDb
 
         builder.UseNpgsql("Server=localhost;Port=5432;Database=passenger;User Id=postgres;Password=postgres;Include Error Detail=true")
             .UseSnakeCaseNamingConvention();
-        return new PassengerDbContext(builder.Options, null);
+        return new PassengerDbContext(builder.Options);
     }
 }

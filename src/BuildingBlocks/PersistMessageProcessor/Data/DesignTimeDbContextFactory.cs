@@ -11,6 +11,6 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<PersistMes
 
         builder.UseNpgsql("Server=localhost;Port=5432;Database=persist_message;User Id=postgres;Password=postgres;Include Error Detail=true")
             .UseSnakeCaseNamingConvention();
-        return new PersistMessageDbContext(builder.Options, null);
+        return new PersistMessageDbContext(builder.Options);
     }
 }
