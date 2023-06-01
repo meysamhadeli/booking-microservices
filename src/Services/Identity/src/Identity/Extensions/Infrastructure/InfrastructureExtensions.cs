@@ -99,7 +99,6 @@ public static class InfrastructureExtensions
         {
             options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest;
         });
-        app.UseMigrationPersistMessage<PersistMessageDbContext>(env);
         app.UseMigration<IdentityContext>(env);
         app.UseCorrelationId();
         app.UseHttpMetrics();

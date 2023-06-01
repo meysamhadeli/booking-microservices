@@ -30,7 +30,15 @@ public static class Extensions
                 .UseSnakeCaseNamingConvention();
         });
 
-        services.AddScoped<IPersistMessageDbContext>(provider => provider.GetService<PersistMessageDbContext>());
+        services.AddScoped<IPersistMessageDbContext>(provider =>
+        {
+            var persistMessageDbContext = provider.GetRequiredService<PersistMessageDbContext>();
+
+            persistMessageDbContext.Database.EnsureCreated();
+            persistMessageDbContext.CreatePersistMessageTable();
+
+            return persistMessageDbContext;
+        });
 
         services.AddScoped<IPersistMessageProcessor, PersistMessageProcessor>();
 
@@ -40,20 +48,5 @@ public static class Extensions
         }
 
         return services;
-    }
-
-    public static IApplicationBuilder UseMigrationPersistMessage<TContext>(this IApplicationBuilder app,
-        IWebHostEnvironment env)
-        where TContext : DbContext, IPersistMessageDbContext
-    {
-        using var scope = app.ApplicationServices.CreateScope();
-
-        var persistMessageContext = scope.ServiceProvider.GetRequiredService<PersistMessageDbContext>();
-        persistMessageContext.Database.Migrate();
-
-        var context = scope.ServiceProvider.GetRequiredService<TContext>();
-        context.Database.Migrate();
-
-        return app;
     }
 }

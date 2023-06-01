@@ -57,6 +57,29 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
         }
     }
 
+    public void CreatePersistMessageTable()
+    {
+        if (Database.GetPendingMigrations().Any())
+        {
+            throw new InvalidOperationException("Cannot create table if there are pending migrations.");
+        }
+
+        string createTableSql = @"
+            create table if not exists persist_message (
+            id uuid not null,
+            data_type text,
+            data text,
+            created timestamp with time zone not null,
+            retry_count integer not null,
+            message_status text not null default 'InProgress'::text,
+            delivery_type text not null default 'Outbox'::text,
+            version bigint not null,
+            constraint pk_persist_message primary key (id)
+            )";
+
+        Database.ExecuteSqlRaw(createTableSql);
+    }
+
     private void OnBeforeSaving()
     {
         try
