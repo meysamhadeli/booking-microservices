@@ -3,7 +3,6 @@ namespace Flight.Flights.Features.CreatingFlight.V1;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Aircrafts.Models.ValueObjects;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
@@ -15,7 +14,7 @@ using Models;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-public record CreateFlightMongo(Guid Id, string FlightNumber, AircraftId AircraftId, DateTime DepartureDate,
+public record CreateFlightMongo(Guid Id, string FlightNumber, Guid AircraftId, DateTime DepartureDate,
     Guid DepartureAirportId, DateTime ArriveDate, Guid ArriveAirportId, decimal DurationMinutes, DateTime FlightDate,
     Enums.FlightStatus Status, decimal Price, bool IsDeleted = false) : InternalCommand;
 

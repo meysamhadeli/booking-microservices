@@ -38,7 +38,7 @@ public class RegisterNewUserHandler : IConsumer<UserCreated>
         _logger.LogInformation($"consumer for {nameof(UserCreated).Underscore()} in {_options.Name}");
 
         var passengerExist =
-            await _passengerDbContext.Passengers.AnyAsync(x => x.PassportNumber == PassportNumber.Of(context.Message.PassportNumber));
+            await _passengerDbContext.Passengers.AnyAsync(x => x.PassportNumber.Value == PassportNumber.Of(context.Message.PassportNumber).Value);
 
         if (passengerExist)
         {

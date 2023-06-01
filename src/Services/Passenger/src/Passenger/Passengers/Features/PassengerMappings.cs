@@ -21,5 +21,8 @@ public class PassengerMappings : IRegister
 
         config.NewConfig<PassengerReadModel, PassengerDto>()
             .ConstructUsing(x => new PassengerDto(x.PassengerId, x.Name, x.PassportNumber, x.PassengerType, x.Age));
+
+        config.NewConfig<Passenger, PassengerDto>()
+            .ConstructUsing(x => new PassengerDto(x.Id.Value, x.Name.Value, x.PassportNumber.Value, x.PassengerType, x.Age.Value));
     }
 }

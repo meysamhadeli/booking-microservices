@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Flight.Flights.Dtos;
 using MapsterMapper;
@@ -25,7 +25,7 @@ public class FlightMappingTests
             yield return new object[]
             {
                 // these types will instantiate with reflection in the future
-                typeof(global::Flight.Flights.Models.Flight), typeof(FlightDto)
+                typeof(global::Flight.Flights.Models.FlightReadModel), typeof(FlightDto)
             };
         }
     }
