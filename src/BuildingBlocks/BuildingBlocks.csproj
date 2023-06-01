@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
-
 
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" Version="4.0.1" />
@@ -144,7 +144,7 @@
     <PackageReference Include="Google.Protobuf" Version="3.21.12" />
     <PackageReference Include="Grpc.Net.Client" Version="2.51.0" />
     <PackageReference Include="Grpc.Net.ClientFactory" Version="2.51.0" />
-    
+
     <PackageReference Update="Meziantou.Analyzer" Version="1.0.758" />
     <PackageReference Update="AsyncFixer" Version="1.6.0" />
     <PackageReference Update="Roslynator.Analyzers" Version="4.2.0" />

@@ -16,14 +16,16 @@ namespace Identity.Data;
 
 using System;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
 
 public sealed class IdentityContext : IdentityDbContext<User, Role, Guid,
     UserClaim, UserRole, UserLogin, RoleClaim, UserToken>, IDbContext
 {
-    private IDbContextTransaction? _currentTransaction;
+    private readonly ILogger<IdentityContext>? _logger;
 
-    public IdentityContext(DbContextOptions<IdentityContext> options) : base(options)
+    public IdentityContext(DbContextOptions<IdentityContext> options, ILogger<IdentityContext>? logger = null) : base(options)
     {
+        _logger = logger;
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -58,7 +60,29 @@ public sealed class IdentityContext : IdentityDbContext<User, Role, Guid,
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         OnBeforeSaving();
-        return await base.SaveChangesAsync(cancellationToken);
+        try
+        {
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+        //ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=data-annotations#resolving-concurrency-conflicts
+        catch (DbUpdateConcurrencyException ex)
+        {
+            foreach (var entry in ex.Entries)
+            {
+                var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
+
+                if (databaseValues == null)
+                {
+                    _logger.LogError("The record no longer exists in the database, The record has been deleted by another user.");
+                    throw;
+                }
+
+                // Refresh the original values to bypass next concurrency check
+                entry.OriginalValues.SetValues(databaseValues);
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
+        }
     }
 
     public IReadOnlyList<IDomainEvent> GetDomainEvents()

@@ -23,7 +23,7 @@ public static class DbContextFactory
         var options = new DbContextOptionsBuilder<FlightDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
 
-        var context = new FlightDbContext(options, currentUserProvider: null);
+        var context = new FlightDbContext(options, currentUserProvider: null, null);
 
         // Seed our data
         FlightDataSeeder(context);
