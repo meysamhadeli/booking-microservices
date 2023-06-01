@@ -1,6 +1,5 @@
 using System.Linq.Expressions;
 using BuildingBlocks.Core.Model;
-using BuildingBlocks.PersistMessageProcessor.Data;
 using BuildingBlocks.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -113,9 +112,6 @@ public static class Extensions
         where TContext : DbContext, IDbContext
     {
         using var scope = serviceProvider.CreateScope();
-
-        var persistMessageContext = scope.ServiceProvider.GetRequiredService<PersistMessageDbContext>();
-        await persistMessageContext.Database.MigrateAsync();
 
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
         await context.Database.MigrateAsync();
