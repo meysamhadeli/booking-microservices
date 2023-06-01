@@ -5,10 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Passenger.Data;
 
+using Microsoft.Extensions.Logging;
+
 public sealed class PassengerDbContext : AppDbContextBase
 {
-    public PassengerDbContext(DbContextOptions<PassengerDbContext> options, ICurrentUserProvider currentUserProvider) :
-        base(options, currentUserProvider)
+    public PassengerDbContext(DbContextOptions<PassengerDbContext> options,
+        ICurrentUserProvider? currentUserProvider = null, ILogger<PassengerDbContext>? logger = null) :
+        base(options, currentUserProvider, logger)
     {
     }
 

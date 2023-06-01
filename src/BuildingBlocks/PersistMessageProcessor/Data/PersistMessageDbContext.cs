@@ -3,19 +3,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildingBlocks.PersistMessageProcessor.Data;
 
-using System.Net;
 using Configurations;
 using Core.Model;
-using global::Polly;
 using Microsoft.Extensions.Logging;
 using Exception = System.Exception;
 
 public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
 {
-    private readonly ILogger<PersistMessageDbContext> _logger;
+    private readonly ILogger<PersistMessageDbContext>? _logger;
 
     public PersistMessageDbContext(DbContextOptions<PersistMessageDbContext> options,
-        ILogger<PersistMessageDbContext> logger)
+        ILogger<PersistMessageDbContext>? logger = null)
         : base(options)
     {
         _logger = logger;
@@ -34,23 +32,9 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
     {
         OnBeforeSaving();
 
-        var policy = Policy.Handle<DbUpdateConcurrencyException>()
-            .WaitAndRetryAsync(retryCount: 3,
-                sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(1),
-                onRetry: (exception, timeSpan, retryCount, context) =>
-                {
-                    if (exception != null)
-                    {
-                        _logger.LogError(exception,
-                            "Request failed with {StatusCode}. Waiting {TimeSpan} before next retry. Retry attempt {RetryCount}.",
-                            HttpStatusCode.Conflict,
-                            timeSpan,
-                            retryCount);
-                    }
-                });
         try
         {
-            return await policy.ExecuteAsync(async () => await base.SaveChangesAsync(cancellationToken));
+            return await base.SaveChangesAsync(cancellationToken);
         }
         //ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=data-annotations#resolving-concurrency-conflicts
         catch (DbUpdateConcurrencyException ex)

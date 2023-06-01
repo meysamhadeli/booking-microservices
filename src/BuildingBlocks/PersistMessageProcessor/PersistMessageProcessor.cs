@@ -17,8 +17,6 @@ public class PersistMessageProcessor : IPersistMessageProcessor
     private readonly IMediator _mediator;
     private readonly IPersistMessageDbContext _persistMessageDbContext;
     private readonly IPublishEndpoint _publishEndpoint;
-    private SemaphoreSlim Semaphore => new SemaphoreSlim(1);
-
     public PersistMessageProcessor(
         ILogger<PersistMessageProcessor> logger,
         IMediator mediator,
@@ -108,7 +106,6 @@ public class PersistMessageProcessor : IPersistMessageProcessor
         }
     }
 
-
     public async Task ProcessAllAsync(CancellationToken cancellationToken = default)
     {
         var messages = await _persistMessageDbContext.PersistMessages
@@ -117,16 +114,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
 
         foreach (var message in messages)
         {
-            await Semaphore.WaitAsync(cancellationToken);
-
-            try
-            {
-                await ProcessAsync(message.Id, message.DeliveryType, cancellationToken);
-            }
-            finally
-            {
-                Semaphore.Release();
-            }
+            await ProcessAsync(message.Id, message.DeliveryType, cancellationToken);
         }
     }
 

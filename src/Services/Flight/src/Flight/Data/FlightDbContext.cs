@@ -7,11 +7,13 @@ using Microsoft.EntityFrameworkCore;
 namespace Flight.Data;
 
 using BuildingBlocks.Web;
+using Microsoft.Extensions.Logging;
 
 public sealed class FlightDbContext : AppDbContextBase
 {
-    public FlightDbContext(DbContextOptions<FlightDbContext> options, ICurrentUserProvider currentUserProvider) : base(
-        options, currentUserProvider)
+    public FlightDbContext(DbContextOptions<FlightDbContext> options, ICurrentUserProvider? currentUserProvider = null,
+        ILogger<FlightDbContext>? logger = null) : base(
+        options, currentUserProvider, logger)
     {
     }
 
