@@ -4,7 +4,7 @@ using BuildingBlocks.Exception;
 
 public class InvalidManufacturingYearException : BadRequestException
 {
-    public InvalidManufacturingYearException() : base("ManufacturingYear cannot be empty or whitespace.")
+    public InvalidManufacturingYearException() : base("ManufacturingYear must be greater than 1900")
     {
     }
 }
