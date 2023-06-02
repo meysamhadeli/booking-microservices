@@ -1,4 +1,4 @@
-﻿namespace Flight.Aircrafts.Features.CreatingAircraft.V1;
+namespace Flight.Aircrafts.Features.CreatingAircraft.V1;
 
 using System;
 using System.Threading;
@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
-using Exceptions;
-using Models;
 using Data;
+using Exceptions;
 using MapsterMapper;
 using MediatR;
+using Models;
+using Models.ValueObjects;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
@@ -36,7 +37,7 @@ public class CreateAircraftMongoHandler : ICommandHandler<CreateAircraftMongo>
         var aircraftReadModel = _mapper.Map<AircraftReadModel>(request);
 
         var aircraft = await _flightReadDbContext.Aircraft.AsQueryable()
-            .FirstOrDefaultAsync(x => x.AircraftId == aircraftReadModel.AircraftId, cancellationToken);
+            .FirstOrDefaultAsync(x => x.AircraftId == AircraftId.Of(aircraftReadModel.AircraftId), cancellationToken);
 
         if (aircraft is not null)
         {

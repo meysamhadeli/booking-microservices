@@ -3,24 +3,31 @@ using BuildingBlocks.Core.Model;
 namespace Passenger.Passengers.Models;
 
 using Features.CompletingRegisterPassenger.V1;
+using global::Passenger.Passengers.Models.ValueObjects;
+using global::Passenger.Passengers.ValueObjects;
 using Identity.Consumers.RegisteringNewUser.V1;
 
-public record Passenger : Aggregate<Guid>
+public record Passenger : Aggregate<PassengerId>
 {
-    public Passenger CompleteRegistrationPassenger(Guid id, string name, string passportNumber, Enums.PassengerType passengerType, int age, bool isDeleted = false)
+    public PassportNumber PassportNumber { get; private set; } = default!;
+    public Name Name { get; private set; } = default!;
+    public Enums.PassengerType PassengerType { get; private set; }
+    public Age? Age { get; private set; }
+
+    public Passenger CompleteRegistrationPassenger(PassengerId id, Name name, PassportNumber passportNumber, Enums.PassengerType passengerType, Age age, bool isDeleted = false)
     {
         var passenger = new Passenger
         {
+            Id = id,
             Name = name,
             PassportNumber = passportNumber,
             PassengerType = passengerType,
             Age = age,
-            Id = id,
             IsDeleted = isDeleted
         };
 
         var @event = new PassengerRegistrationCompletedDomainEvent(passenger.Id, passenger.Name, passenger.PassportNumber,
-            passenger.PassengerType, passenger.Age, passenger.IsDeleted);
+            passenger.PassengerType, passenger.Age.Value, passenger.IsDeleted);
 
         passenger.AddDomainEvent(@event);
 
@@ -28,7 +35,7 @@ public record Passenger : Aggregate<Guid>
     }
 
 
-    public static Passenger Create(Guid id, string name, string passportNumber, bool isDeleted = false)
+    public static Passenger Create(PassengerId id, Name name, PassportNumber passportNumber, bool isDeleted = false)
     {
         var passenger = new Passenger { Id = id, Name = name, PassportNumber = passportNumber, IsDeleted = isDeleted };
 
@@ -38,10 +45,4 @@ public record Passenger : Aggregate<Guid>
 
         return passenger;
     }
-
-
-    public string PassportNumber { get; private set; }
-    public string Name { get; private set; }
-    public Enums.PassengerType PassengerType { get; private set; }
-    public int Age { get; private set; }
 }

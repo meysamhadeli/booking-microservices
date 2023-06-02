@@ -4,18 +4,20 @@ using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Web;
-using Exceptions;
-using FluentValidation;
-using MapsterMapper;
-using Microsoft.EntityFrameworkCore;
 using Data;
 using Dtos;
 using Duende.IdentityServer.EntityFramework.Entities;
+using Exceptions;
+using FluentValidation;
+using MapsterMapper;
 using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
+using Passenger.Passengers.Models.ValueObjects;
+using Passenger.Passengers.ValueObjects;
 
 public record CompleteRegisterPassenger
     (string PassportNumber, Enums.PassengerType PassengerType, int Age) : ICommand<CompleteRegisterPassengerResult>,
@@ -96,7 +98,8 @@ internal class CompleteRegisterPassengerCommandHandler : ICommandHandler<Complet
         Guard.Against.Null(request, nameof(request));
 
         var passenger = await _passengerDbContext.Passengers.AsNoTracking().SingleOrDefaultAsync(
-            x => x.PassportNumber == request.PassportNumber, cancellationToken);
+            x => x.PassportNumber.Value.Equals(PassportNumber.Of(request.PassportNumber).Value), cancellationToken);
+
 
         if (passenger is null)
         {
@@ -104,11 +107,11 @@ internal class CompleteRegisterPassengerCommandHandler : ICommandHandler<Complet
         }
 
         var passengerEntity = passenger.CompleteRegistrationPassenger(passenger.Id, passenger.Name,
-            passenger.PassportNumber, request.PassengerType, request.Age);
+            passenger.PassportNumber, request.PassengerType, Age.Of(request.Age));
 
-        var updatePassenger = _passengerDbContext.Passengers.Update(passengerEntity);
+        var updatePassenger = _passengerDbContext.Passengers.Update(passengerEntity)?.Entity;
 
-        var passengerDto = _mapper.Map<PassengerDto>(updatePassenger.Entity);
+        var passengerDto = _mapper.Map<PassengerDto>(updatePassenger);
 
         return new CompleteRegisterPassengerResult(passengerDto);
     }

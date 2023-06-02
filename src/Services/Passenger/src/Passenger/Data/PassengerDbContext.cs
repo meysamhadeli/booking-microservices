@@ -1,7 +1,7 @@
 using System.Reflection;
 using BuildingBlocks.EFCore;
-using Microsoft.EntityFrameworkCore;
 using BuildingBlocks.Web;
+using Microsoft.EntityFrameworkCore;
 
 namespace Passenger.Data;
 

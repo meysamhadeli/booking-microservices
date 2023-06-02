@@ -5,12 +5,13 @@ using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Web;
+using Data;
 using Humanizer;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Data;
+using Passenger.Passengers.Models.ValueObjects;
 
 public class RegisterNewUserHandler : IConsumer<UserCreated>
 {
@@ -37,15 +38,15 @@ public class RegisterNewUserHandler : IConsumer<UserCreated>
         _logger.LogInformation($"consumer for {nameof(UserCreated).Underscore()} in {_options.Name}");
 
         var passengerExist =
-            await _passengerDbContext.Passengers.AnyAsync(x => x.PassportNumber == context.Message.PassportNumber);
+            await _passengerDbContext.Passengers.AnyAsync(x => x.PassportNumber.Value == PassportNumber.Of(context.Message.PassportNumber).Value);
 
         if (passengerExist)
         {
             return;
         }
 
-        var passenger = Passengers.Models.Passenger.Create(NewId.NextGuid(), context.Message.Name,
-            context.Message.PassportNumber);
+        var passenger = Passengers.Models.Passenger.Create(PassengerId.Of(NewId.NextGuid()), Name.Of(context.Message.Name),
+            PassportNumber.Of(context.Message.PassportNumber));
 
         await _passengerDbContext.AddAsync(passenger);
 

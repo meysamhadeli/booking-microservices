@@ -1,4 +1,6 @@
-﻿namespace Unit.Test.Fakes;
+namespace Unit.Test.Fakes;
+
+using global::Flight.Aircrafts.Models.ValueObjects;
 
 public static class FakeFlightCreate
 {
@@ -7,7 +9,7 @@ public static class FakeFlightCreate
         var command = new FakeCreateFlightCommand().Generate();
 
         return global::Flight.Flights.Models.Flight.Create(command.Id, command.FlightNumber,
-            command.AircraftId, command.DepartureAirportId, command.DepartureDate,
+            AircraftId.Of(command.AircraftId), command.DepartureAirportId, command.DepartureDate,
             command.ArriveDate, command.ArriveAirportId, command.DurationMinutes,
             command.FlightDate, command.Status, command.Price);
     }

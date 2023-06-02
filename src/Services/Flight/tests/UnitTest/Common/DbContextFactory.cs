@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Flight.Data;
 using Flight.Flights.Enums;
@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Unit.Test.Common;
 
+using global::Flight.Aircrafts.Models.ValueObjects;
 using MassTransit;
 
 public static class DbContextFactory
@@ -45,16 +46,16 @@ public static class DbContextFactory
 
         var aircrafts = new List<global::Flight.Aircrafts.Models.Aircraft>
         {
-            global::Flight.Aircrafts.Models.Aircraft.Create(_aircraft1, "Boeing 737", "B737", 2005),
-            global::Flight.Aircrafts.Models.Aircraft.Create(_aircraft2, "Airbus 300", "A300", 2000),
-            global::Flight.Aircrafts.Models.Aircraft.Create(_aircraft3, "Airbus 320", "A320", 2003)
+            global::Flight.Aircrafts.Models.Aircraft.Create(AircraftId.Of(_aircraft1), Name.Of("Boeing 737"), Model.Of("B737"), ManufacturingYear.Of(2005)),
+            global::Flight.Aircrafts.Models.Aircraft.Create(AircraftId.Of(_aircraft2), Name.Of("Airbus 300"), Model.Of("A300"), ManufacturingYear.Of(2000)),
+            global::Flight.Aircrafts.Models.Aircraft.Create(AircraftId.Of(_aircraft3), Name.Of("Airbus 320"), Model.Of("A320"), ManufacturingYear.Of(2003))
         };
 
         context.Aircraft.AddRange(aircrafts);
 
         var flights = new List<global::Flight.Flights.Models.Flight>
         {
-            global::Flight.Flights.Models.Flight.Create(_flightId1, "BD467", _aircraft1, _airportId1,
+            global::Flight.Flights.Models.Flight.Create(_flightId1, "BD467", AircraftId.Of(_aircraft1), _airportId1,
                 new DateTime(2022, 1, 31, 12, 0, 0),
                 new DateTime(2022, 1, 31, 14, 0, 0),
                 _airportId2, 120m,

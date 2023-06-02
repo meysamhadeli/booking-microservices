@@ -6,11 +6,12 @@ namespace Flight.Flights.Models;
 using Features.CreatingFlight.V1;
 using Features.DeletingFlight.V1;
 using Features.UpdatingFlight.V1;
+using global::Flight.Aircrafts.Models.ValueObjects;
 
 public record Flight : Aggregate<Guid>
 {
     public string FlightNumber { get; private set; }
-    public Guid AircraftId { get; private set; }
+    public AircraftId AircraftId { get; private set; }
     public DateTime DepartureDate { get; private set; }
     public Guid DepartureAirportId { get; private set; }
     public DateTime ArriveDate { get; private set; }
@@ -20,7 +21,7 @@ public record Flight : Aggregate<Guid>
     public Enums.FlightStatus Status { get; private set; }
     public decimal Price { get; private set; }
 
-    public static Flight Create(Guid id, string flightNumber, Guid aircraftId,
+    public static Flight Create(Guid id, string flightNumber, AircraftId aircraftId,
         Guid departureAirportId, DateTime departureDate, DateTime arriveDate,
         Guid arriveAirportId, decimal durationMinutes, DateTime flightDate, Enums.FlightStatus status,
         decimal price, bool isDeleted = false)
@@ -52,7 +53,7 @@ public record Flight : Aggregate<Guid>
     }
 
 
-    public void Update(Guid id, string flightNumber, Guid aircraftId,
+    public void Update(Guid id, string flightNumber, AircraftId aircraftId,
         Guid departureAirportId, DateTime departureDate, DateTime arriveDate,
         Guid arriveAirportId, decimal durationMinutes, DateTime flightDate, Enums.FlightStatus status,
         decimal price, bool isDeleted = false)
@@ -75,7 +76,7 @@ public record Flight : Aggregate<Guid>
         AddDomainEvent(@event);
     }
 
-    public void Delete(Guid id, string flightNumber, Guid aircraftId,
+    public void Delete(Guid id, string flightNumber, AircraftId aircraftId,
         Guid departureAirportId, DateTime departureDate, DateTime arriveDate,
         Guid arriveAirportId, decimal durationMinutes, DateTime flightDate, Enums.FlightStatus status,
         decimal price, bool isDeleted = true)

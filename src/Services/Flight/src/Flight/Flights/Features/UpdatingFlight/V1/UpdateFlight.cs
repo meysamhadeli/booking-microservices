@@ -3,6 +3,7 @@ namespace Flight.Flights.Features.UpdatingFlight.V1;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Aircrafts.Models.ValueObjects;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Caching;
 using BuildingBlocks.Core.CQRS;
@@ -110,7 +111,7 @@ internal class UpdateFlightHandler : ICommandHandler<UpdateFlight, UpdateFlightR
         }
 
 
-        flight.Update(request.Id, request.FlightNumber, request.AircraftId, request.DepartureAirportId,
+        flight.Update(request.Id, request.FlightNumber, AircraftId.Of(request.AircraftId), request.DepartureAirportId,
             request.DepartureDate,
             request.ArriveDate, request.ArriveAirportId, request.DurationMinutes, request.FlightDate, request.Status,
             request.Price, request.IsDeleted);

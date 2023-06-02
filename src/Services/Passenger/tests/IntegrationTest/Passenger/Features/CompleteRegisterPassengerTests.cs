@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.TestBase;
 using FluentAssertions;
@@ -8,9 +8,9 @@ using Passenger.Data;
 using Xunit;
 
 namespace Integration.Test.Passenger.Features;
-
 public class CompleteRegisterPassengerTests : PassengerIntegrationTestBase
 {
+
     public CompleteRegisterPassengerTests(
         TestFixture<Program, PassengerDbContext, PassengerReadDbContext> integrationTestFactory) : base(integrationTestFactory)
     {
@@ -23,8 +23,8 @@ public class CompleteRegisterPassengerTests : PassengerIntegrationTestBase
         var userCreated = new FakeUserCreated().Generate();
 
         await Fixture.Publish(userCreated);
-        await Fixture.WaitForPublishing<UserCreated>();
-        await Fixture.WaitForConsuming<UserCreated>();
+        (await Fixture.WaitForPublishing<UserCreated>()).Should().Be(true);
+        (await Fixture.WaitForConsuming<UserCreated>()).Should().Be(true);
 
         var command = new FakeCompleteRegisterPassengerCommand(userCreated.PassportNumber).Generate();
 
