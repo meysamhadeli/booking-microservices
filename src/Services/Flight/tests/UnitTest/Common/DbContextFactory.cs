@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Unit.Test.Common;
 
 using global::Flight.Aircrafts.Models.ValueObjects;
+using global::Flight.Aircrafts.ValueObjects;
 using MassTransit;
 
 public static class DbContextFactory
