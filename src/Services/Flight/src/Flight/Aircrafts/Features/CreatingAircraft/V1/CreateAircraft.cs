@@ -11,6 +11,7 @@ using BuildingBlocks.Web;
 using Data;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
+using Flight.Aircrafts.ValueObjects;
 using FluentValidation;
 using MapsterMapper;
 using MassTransit;
