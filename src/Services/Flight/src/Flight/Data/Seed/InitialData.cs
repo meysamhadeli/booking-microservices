@@ -6,6 +6,7 @@ using System.Linq;
 using Aircrafts.Models;
 using Aircrafts.Models.ValueObjects;
 using Airports.Models;
+using Flight.Aircrafts.ValueObjects;
 using Flights.Models;
 using MassTransit;
 using Seats.Models;
