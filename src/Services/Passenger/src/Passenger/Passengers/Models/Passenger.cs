@@ -8,10 +8,10 @@ using Identity.Consumers.RegisteringNewUser.V1;
 
 public record Passenger : Aggregate<PassengerId>
 {
-    public PassportNumber PassportNumber { get; private set; }
-    public Name Name { get; private set; }
+    public PassportNumber PassportNumber { get; private set; } = default!;
+    public Name Name { get; private set; } = default!;
     public Enums.PassengerType PassengerType { get; private set; }
-    public Age Age { get; private set; }
+    public Age? Age { get; private set; }
 
     public Passenger CompleteRegistrationPassenger(PassengerId id, Name name, PassportNumber passportNumber, Enums.PassengerType passengerType, Age age, bool isDeleted = false)
     {
