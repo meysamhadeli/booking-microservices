@@ -1,12 +1,13 @@
-namespace Passenger.Passengers.Models.ValueObjects;
-using global::Passenger.Passengers.Exceptions;
+namespace Passenger.Passengers.ValueObjects;
+
+using Passenger.Passengers.Exceptions;
 
 public record Age
 {
     public int Value { get; }
     public Age(int value)
     {
-        if (value <= 0 || value == null)
+        if (value <= 0)
         {
             throw new InvalidAgeException();
         }
