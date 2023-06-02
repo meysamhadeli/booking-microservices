@@ -3,6 +3,7 @@ using BuildingBlocks.Core.Model;
 namespace Flight.Aircrafts.Models;
 
 using Features.CreatingAircraft.V1;
+using Flight.Aircrafts.ValueObjects;
 using ValueObjects;
 
 public record Aircraft : Aggregate<AircraftId>
