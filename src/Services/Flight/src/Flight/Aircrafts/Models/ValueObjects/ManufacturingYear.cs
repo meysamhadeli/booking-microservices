@@ -1,4 +1,4 @@
-namespace Flight.Aircrafts.Models.ValueObjects;
+namespace Flight.Aircrafts.ValueObjects;
 
 using Flight.Aircrafts.Exceptions;
 
@@ -7,7 +7,7 @@ public record ManufacturingYear
     public int Value { get; }
     public ManufacturingYear(int value)
     {
-        if (string.IsNullOrWhiteSpace(value.ToString()))
+        if (value < 1900)
         {
             throw new InvalidManufacturingYearException();
         }
