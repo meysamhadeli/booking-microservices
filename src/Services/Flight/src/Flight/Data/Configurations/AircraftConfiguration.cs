@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Flight.Data.Configurations;
 
 using System;
-using Flight.Aircrafts.Models.ValueObjects;
+using Aircrafts.ValueObjects;
 
 public class AircraftConfiguration : IEntityTypeConfiguration<Aircraft>
 {

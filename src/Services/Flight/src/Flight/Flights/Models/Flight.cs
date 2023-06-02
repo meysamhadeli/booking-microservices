@@ -3,10 +3,10 @@ using BuildingBlocks.Core.Model;
 
 namespace Flight.Flights.Models;
 
+using Aircrafts.ValueObjects;
 using Features.CreatingFlight.V1;
 using Features.DeletingFlight.V1;
 using Features.UpdatingFlight.V1;
-using global::Flight.Aircrafts.Models.ValueObjects;
 
 public record Flight : Aggregate<Guid>
 {

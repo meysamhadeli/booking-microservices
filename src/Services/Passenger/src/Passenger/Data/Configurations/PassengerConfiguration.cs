@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Passenger.Data.Configurations;
 
-using Passengers.Models.ValueObjects;
+using Passengers.ValueObjects;
 
 public class PassengerConfiguration : IEntityTypeConfiguration<Passengers.Models.Passenger>
 {

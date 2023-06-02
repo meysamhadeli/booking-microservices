@@ -11,9 +11,9 @@ using Exceptions;
 using MapsterMapper;
 using MediatR;
 using Models;
-using Models.ValueObjects;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using ValueObjects;
 
 public record CreateAircraftMongo(Guid Id, string Name, string Model, int ManufacturingYear, bool IsDeleted = false) : InternalCommand;
 

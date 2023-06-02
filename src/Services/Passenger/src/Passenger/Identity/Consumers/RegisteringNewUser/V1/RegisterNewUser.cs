@@ -11,7 +11,7 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Passenger.Passengers.Models.ValueObjects;
+using Passengers.ValueObjects;
 
 public class RegisterNewUserHandler : IConsumer<UserCreated>
 {

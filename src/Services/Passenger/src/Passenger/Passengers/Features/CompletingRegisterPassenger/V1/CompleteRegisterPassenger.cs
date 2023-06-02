@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
-using Passenger.Passengers.Models.ValueObjects;
 using Passenger.Passengers.ValueObjects;
 
 public record CompleteRegisterPassenger

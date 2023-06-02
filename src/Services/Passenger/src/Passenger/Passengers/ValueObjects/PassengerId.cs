@@ -1,6 +1,7 @@
-namespace Passenger.Passengers.Models.ValueObjects;
+namespace Passenger.Passengers.ValueObjects;
+
 using System;
-using global::Passenger.Exceptions;
+using Passenger.Exceptions;
 
 public record PassengerId
 {

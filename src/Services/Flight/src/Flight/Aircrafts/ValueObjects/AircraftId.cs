@@ -1,6 +1,7 @@
-namespace Flight.Aircrafts.Models.ValueObjects;
+namespace Flight.Aircrafts.ValueObjects;
+
 using System;
-using Exceptions;
+using Flight.Aircrafts.Exceptions;
 
 public record AircraftId
 {

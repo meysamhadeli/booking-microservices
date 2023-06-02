@@ -7,9 +7,9 @@ using Data;
 using MapsterMapper;
 using MediatR;
 using Models;
-using Models.ValueObjects;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using ValueObjects;
 
 public record CompleteRegisterPassengerMongoCommand(Guid Id, string PassportNumber, string Name,
     Enums.PassengerType PassengerType, int Age, bool IsDeleted = false) : InternalCommand;

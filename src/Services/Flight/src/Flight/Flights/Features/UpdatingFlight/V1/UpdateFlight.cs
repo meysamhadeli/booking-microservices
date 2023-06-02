@@ -3,7 +3,7 @@ namespace Flight.Flights.Features.UpdatingFlight.V1;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Aircrafts.Models.ValueObjects;
+using Aircrafts.ValueObjects;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Caching;
 using BuildingBlocks.Core.CQRS;

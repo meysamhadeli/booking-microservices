@@ -15,6 +15,7 @@ public class FlightMappingTests
 
     public FlightMappingTests(UnitTestFixture fixture)
     {
+        _fixture = fixture;
         _mapper = fixture.Mapper;
     }
 
@@ -25,7 +26,6 @@ public class FlightMappingTests
             yield return new object[]
             {
                 // these types will instantiate with reflection in the future
-                //typeof(global::Flight.Flights.Models.Flight), typeof(FlightDto),
                 typeof(global::Flight.Flights.Models.FlightReadModel), typeof(FlightDto)
             };
         }

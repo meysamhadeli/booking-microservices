@@ -6,7 +6,7 @@ using CompletingRegisterPassenger.V1;
 using Dtos;
 using MassTransit;
 using Models;
-using Passenger.Passengers.Models.ValueObjects;
+using ValueObjects;
 
 public class PassengerMappings : IRegister
 {

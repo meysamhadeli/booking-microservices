@@ -3,7 +3,6 @@ using BuildingBlocks.Core.Model;
 namespace Passenger.Passengers.Models;
 
 using Features.CompletingRegisterPassenger.V1;
-using global::Passenger.Passengers.Models.ValueObjects;
 using global::Passenger.Passengers.ValueObjects;
 using Identity.Consumers.RegisteringNewUser.V1;
 

@@ -1,5 +1,6 @@
-namespace Passenger.Passengers.Models.ValueObjects;
-using Exceptions;
+namespace Flight.Aircrafts.ValueObjects;
+
+using Flight.Aircrafts.Exceptions;
 
 public record Name
 {

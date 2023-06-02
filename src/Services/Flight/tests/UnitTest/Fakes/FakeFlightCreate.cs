@@ -1,6 +1,6 @@
 namespace Unit.Test.Fakes;
 
-using global::Flight.Aircrafts.Models.ValueObjects;
+using global::Flight.Aircrafts.ValueObjects;
 
 public static class FakeFlightCreate
 {

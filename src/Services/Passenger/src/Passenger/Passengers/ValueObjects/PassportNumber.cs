@@ -1,5 +1,6 @@
-namespace Passenger.Passengers.Models.ValueObjects;
-using Exceptions;
+namespace Passenger.Passengers.ValueObjects;
+
+using Passenger.Passengers.Exceptions;
 
 public record PassportNumber
 {

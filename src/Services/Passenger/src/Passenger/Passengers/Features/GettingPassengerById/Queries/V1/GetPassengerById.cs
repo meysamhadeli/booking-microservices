@@ -13,9 +13,9 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Models.ValueObjects;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using ValueObjects;
 
 public record GetPassengerById(Guid Id) : IQuery<GetPassengerByIdResult>;
 

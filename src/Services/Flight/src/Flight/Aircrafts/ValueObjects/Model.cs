@@ -1,4 +1,5 @@
-namespace Flight.Aircrafts.Models.ValueObjects;
+namespace Flight.Aircrafts.ValueObjects;
+
 using Flight.Aircrafts.Exceptions;
 
 public record Model

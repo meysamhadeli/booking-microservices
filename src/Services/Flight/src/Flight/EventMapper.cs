@@ -5,7 +5,7 @@ using BuildingBlocks.Core.Event;
 namespace Flight;
 
 using Aircrafts.Features.CreatingAircraft.V1;
-using Aircrafts.Models.ValueObjects;
+using Aircrafts.ValueObjects;
 using Airports.Features.CreatingAirport.V1;
 using Flights.Features.CreatingFlight.V1;
 using Flights.Features.DeletingFlight.V1;

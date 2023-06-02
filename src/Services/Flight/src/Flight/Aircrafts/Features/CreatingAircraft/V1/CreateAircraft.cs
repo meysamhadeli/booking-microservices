@@ -21,7 +21,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Models;
-using Models.ValueObjects;
 
 public record CreateAircraft(string Name, string Model, int ManufacturingYear) : ICommand<CreateAircraftResult>,
     IInternalCommand
