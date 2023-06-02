@@ -7,9 +7,9 @@ using ValueObjects;
 
 public record Aircraft : Aggregate<AircraftId>
 {
-    public Name Name { get; private set; }
-    public Model Model { get; private set; }
-    public ManufacturingYear ManufacturingYear { get; private set; }
+    public Name Name { get; private set; } = default!;
+    public Model Model { get; private set; } = default!;
+    public ManufacturingYear ManufacturingYear { get; private set; } = default!;
 
     public static Aircraft Create(AircraftId id, Name name, Model model, ManufacturingYear manufacturingYear, bool isDeleted = false)
     {
