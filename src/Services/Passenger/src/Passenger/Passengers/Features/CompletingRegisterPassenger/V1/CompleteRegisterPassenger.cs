@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Passenger.Passengers.Models.ValueObjects;
+using Passenger.Passengers.ValueObjects;
 
 public record CompleteRegisterPassenger
     (string PassportNumber, Enums.PassengerType PassengerType, int Age) : ICommand<CompleteRegisterPassengerResult>,
