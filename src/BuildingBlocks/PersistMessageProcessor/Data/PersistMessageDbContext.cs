@@ -7,6 +7,7 @@ using Configurations;
 using Core.Model;
 using Microsoft.Extensions.Logging;
 using Exception = System.Exception;
+using IsolationLevel = System.Data.IsolationLevel;
 
 public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
 {
@@ -26,6 +27,27 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
         builder.ApplyConfiguration(new PersistMessageConfiguration());
         base.OnModelCreating(builder);
         builder.ToSnakeCaseTables();
+    }
+
+    //ref: https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency#execution-strategies-and-transactions
+    public Task ExecuteTransactionalAsync(CancellationToken cancellationToken = default)
+    {
+        var strategy = Database.CreateExecutionStrategy();
+        return strategy.ExecuteAsync(async () =>
+        {
+            await using var transaction =
+                await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+            try
+            {
+                await SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
+        });
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

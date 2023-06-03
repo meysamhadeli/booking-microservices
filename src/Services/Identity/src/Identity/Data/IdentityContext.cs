@@ -22,6 +22,7 @@ public sealed class IdentityContext : IdentityDbContext<User, Role, Guid,
     UserClaim, UserRole, UserLogin, RoleClaim, UserToken>, IDbContext
 {
     private readonly ILogger<IdentityContext>? _logger;
+    private IDbContextTransaction _currentTransaction;
 
     public IdentityContext(DbContextOptions<IdentityContext> options, ILogger<IdentityContext>? logger = null) : base(options)
     {
@@ -36,10 +37,51 @@ public sealed class IdentityContext : IdentityDbContext<User, Role, Guid,
         builder.ToSnakeCaseTables();
     }
 
+    public IExecutionStrategy CreateExecutionStrategy() => Database.CreateExecutionStrategy();
+
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        if (_currentTransaction != null) return;
+
+        _currentTransaction = await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+    }
+
+    public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await SaveChangesAsync(cancellationToken);
+            await _currentTransaction?.CommitAsync(cancellationToken)!;
+        }
+        catch
+        {
+            await RollbackTransactionAsync(cancellationToken);
+            throw;
+        }
+        finally
+        {
+            _currentTransaction?.Dispose();
+            _currentTransaction = null;
+        }
+    }
+
+    public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await _currentTransaction?.RollbackAsync(cancellationToken)!;
+        }
+        finally
+        {
+            _currentTransaction?.Dispose();
+            _currentTransaction = null;
+        }
+    }
+
     //ref: https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency#execution-strategies-and-transactions
     public Task ExecuteTransactionalAsync(CancellationToken cancellationToken = default)
     {
-        var strategy = Database.CreateExecutionStrategy();
+        var strategy = CreateExecutionStrategy();
         return strategy.ExecuteAsync(async () =>
         {
             await using var transaction =

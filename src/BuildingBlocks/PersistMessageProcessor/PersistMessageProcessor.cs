@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace BuildingBlocks.PersistMessageProcessor;
 
 using Microsoft.EntityFrameworkCore;
+using Polly;
 
 public class PersistMessageProcessor : IPersistMessageProcessor
 {
@@ -199,7 +200,10 @@ public class PersistMessageProcessor : IPersistMessageProcessor
                 deliveryType),
             cancellationToken);
 
-        await _persistMessageDbContext.SaveChangesAsync(cancellationToken);
+        await _persistMessageDbContext.RetryOnFailure(async () =>
+        {
+            await _persistMessageDbContext.SaveChangesAsync(cancellationToken);
+        });
 
         _logger.LogInformation(
             "Message with id: {MessageID} and delivery type: {DeliveryType} saved in persistence message store.",
@@ -215,6 +219,9 @@ public class PersistMessageProcessor : IPersistMessageProcessor
 
         _persistMessageDbContext.PersistMessages.Update(message);
 
-        await _persistMessageDbContext.SaveChangesAsync(cancellationToken);
+        await _persistMessageDbContext.RetryOnFailure(async () =>
+        {
+            await _persistMessageDbContext.SaveChangesAsync(cancellationToken);
+        });
     }
 }
