@@ -7,6 +7,7 @@ namespace BuildingBlocks.EFCore;
 
 using System.Transactions;
 using PersistMessageProcessor;
+using Polly;
 
 public class EfTxBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull, IRequest<TResponse>
@@ -48,10 +49,10 @@ public class EfTxBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TRe
             nameof(EfTxBehavior<TRequest, TResponse>),
             typeof(TRequest).FullName);
 
-        // ref: https://learn.microsoft.com/en-us/ef/core/saving/transactions#using-systemtransactions
-        using var scope = new TransactionScope(TransactionScopeOption.Required,
-            new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
-            TransactionScopeAsyncFlowOption.Enabled);
+        //ref: https://learn.microsoft.com/en-us/ef/core/saving/transactions#using-systemtransactions
+         using var scope = new TransactionScope(TransactionScopeOption.Required,
+             new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
+             TransactionScopeAsyncFlowOption.Enabled);
 
         var response = await next();
 
@@ -71,10 +72,23 @@ public class EfTxBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TRe
 
             await _eventDispatcher.SendAsync(domainEvents.ToArray(), typeof(TRequest), cancellationToken);
 
-            await _dbContextBase.SaveChangesAsync(cancellationToken);
+            // Save data to database with some retry policy in distributed transaction
+            await _dbContextBase.RetryOnFailure(async () =>
+            {
+                await _dbContextBase.SaveChangesAsync(cancellationToken);
+            });
+
+            // Save data to database with some retry policy in distributed transaction
+            await _dbContextBase.RetryOnFailure(async () =>
+            {
+                await _dbContextBase.SaveChangesAsync(cancellationToken);
+            });
+
             await _persistMessageDbContext.SaveChangesAsync(cancellationToken);
 
             scope.Complete();
+
+            return response;
         }
     }
 }
