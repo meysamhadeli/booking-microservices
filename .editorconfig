@@ -195,6 +195,9 @@ dotnet_separate_import_directive_groups = false
 dotnet_style_namespace_match_folder = false
 dotnet_diagnostic.IDE0130.severity = none
 
+[*.{cs,vb}]
+dotnet_diagnostic.CA1305.severity = none
+
 # C# formatting rules
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/formatting-rules#c-formatting-rules
 [*.{cs,csx,cake}]

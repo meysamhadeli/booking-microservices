@@ -1,6 +1,7 @@
 ﻿namespace BuildingBlocks.Polly;
 
 using global::Polly;
+using Serilog;
 using Exception = System.Exception;
 
 public static class Extensions
@@ -9,10 +10,10 @@ public static class Extensions
     {
         var retryPolicy = Policy
             .Handle<Exception>()
-            .Retry(retryCount, (exception, retryAttempt) =>
+            .Retry(retryCount, (exception, retryAttempt, context) =>
             {
-                Console.WriteLine($"Retry attempt: {retryAttempt}");
-                Console.WriteLine($"Exception: {exception.Message}");
+                Log.Information($"Retry attempt: {retryAttempt}");
+                Log.Error($"Exception: {exception.Message}");
             });
 
         return retryPolicy.Execute(action);

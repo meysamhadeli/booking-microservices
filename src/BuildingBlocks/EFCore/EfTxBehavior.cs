@@ -79,12 +79,10 @@ public class EfTxBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TRe
             });
 
             // Save data to database with some retry policy in distributed transaction
-            await _dbContextBase.RetryOnFailure(async () =>
+            await _persistMessageDbContext.RetryOnFailure(async () =>
             {
-                await _dbContextBase.SaveChangesAsync(cancellationToken);
+                await _persistMessageDbContext.SaveChangesAsync(cancellationToken);
             });
-
-            await _persistMessageDbContext.SaveChangesAsync(cancellationToken);
 
             scope.Complete();
 
