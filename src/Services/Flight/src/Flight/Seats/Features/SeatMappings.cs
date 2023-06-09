@@ -13,7 +13,7 @@ public class SeatMappings : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<Seat, SeatDto>()
-            .ConstructUsing(x => new SeatDto(x.Id, x.SeatNumber, x.Type, x.Class, x.FlightId));
+            .ConstructUsing(x => new SeatDto(x.Id.Value, x.SeatNumber.Value, x.Type, x.Class, x.FlightId.Value));
 
         config.NewConfig<CreateSeatMongo, SeatReadModel>()
             .Map(d => d.Id, s => NewId.NextGuid())
@@ -21,7 +21,7 @@ public class SeatMappings : IRegister
 
         config.NewConfig<Seat, SeatReadModel>()
             .Map(d => d.Id, s => NewId.NextGuid())
-            .Map(d => d.SeatId, s => s.Id);
+            .Map(d => d.SeatId, s => s.Id.Value);
 
         config.NewConfig<ReserveSeatMongo, SeatReadModel>()
             .Map(d => d.SeatId, s => s.Id);

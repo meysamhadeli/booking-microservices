@@ -2,16 +2,16 @@ using BuildingBlocks.Core.Model;
 
 namespace Flight.Airports.Models;
 
-using System;
 using Features.CreatingAirport.V1;
+using Flight.Airports.ValueObjects;
 
-public record Airport : Aggregate<Guid>
+public record Airport : Aggregate<AirportId>
 {
-    public string Name { get; private set; }
-    public string Address { get; private set; }
-    public string Code { get; private set; }
+    public Name Name { get; private set; } = default!;
+    public Address Address { get; private set; } = default!;
+    public Code Code { get; private set; }
 
-    public static Airport Create(Guid id, string name, string address, string code, bool isDeleted = false)
+    public static Airport Create(AirportId id, Name name, Address address, Code code, bool isDeleted = false)
     {
         var airport = new Airport
         {
@@ -22,10 +22,10 @@ public record Airport : Aggregate<Guid>
         };
 
         var @event = new AirportCreatedDomainEvent(
-            airport.Id,
-            airport.Name,
-            airport.Address,
-            airport.Code,
+            airport.Id.Value,
+            airport.Name.Value,
+            airport.Address.Value,
+            airport.Code.Value,
             isDeleted);
 
         airport.AddDomainEvent(@event);

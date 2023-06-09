@@ -1,9 +1,9 @@
-﻿namespace Flight.Airports.Features;
+namespace Flight.Airports.Features;
 
 using CreatingAirport.V1;
-using Models;
 using Mapster;
 using MassTransit;
+using Models;
 
 public class AirportMappings : IRegister
 {
@@ -15,7 +15,7 @@ public class AirportMappings : IRegister
 
         config.NewConfig<Airport, AirportReadModel>()
             .Map(d => d.Id, s => NewId.NextGuid())
-            .Map(d => d.AirportId, s => s.Id);
+            .Map(d => d.AirportId, s => s.Id.Value);
 
         config.NewConfig<CreateAirportRequestDto, CreateAirport>()
             .ConstructUsing(x => new CreateAirport(x.Name, x.Address, x.Code));

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -8,8 +8,8 @@ using Xunit;
 
 namespace Unit.Test.Airport.Features.CreateAirportTests;
 
-using global::Flight.Airports.Dtos;
 using global::Flight.Airports.Features.CreatingAirport.V1;
+using global::Flight.Airports.ValueObjects;
 
 [Collection(nameof(UnitTestFixture))]
 public class CreateAirportCommandHandlerTests
@@ -37,7 +37,7 @@ public class CreateAirportCommandHandlerTests
         var response = await Act(command, CancellationToken.None);
 
         // Assert
-        var entity = await _fixture.DbContext.Airports.FindAsync(response?.Id);
+        var entity = await _fixture.DbContext.Airports.FindAsync(AirportId.Of(response.Id));
 
         entity?.Should().NotBeNull();
         response?.Id.Should().Be(entity.Id);

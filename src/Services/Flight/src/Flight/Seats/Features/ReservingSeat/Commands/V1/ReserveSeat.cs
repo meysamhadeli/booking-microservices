@@ -10,6 +10,7 @@ using BuildingBlocks.Web;
 using Data;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
+using Flights.ValueObjects;
 using FluentValidation;
 using MapsterMapper;
 using MediatR;
@@ -17,6 +18,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using ValueObjects;
 
 public record ReserveSeat(Guid FlightId, string SeatNumber) : ICommand<ReserveSeatResult>, IInternalCommand;
 
@@ -82,8 +84,10 @@ internal class ReserveSeatCommandHandler : IRequestHandler<ReserveSeat, ReserveS
     {
         Guard.Against.Null(command, nameof(command));
 
-        var seat = await _flightDbContext.Seats.SingleOrDefaultAsync(
-            x => x.SeatNumber == command.SeatNumber && x.FlightId == command.FlightId, cancellationToken);
+
+
+        var seat = await _flightDbContext.Seats.AsNoTracking().SingleOrDefaultAsync(
+            x => x.SeatNumber.Value.Equals(SeatNumber.Of(command.SeatNumber)) && x.FlightId.Equals(FlightId.Of(command.FlightId)), cancellationToken);
 
         if (seat is null)
         {

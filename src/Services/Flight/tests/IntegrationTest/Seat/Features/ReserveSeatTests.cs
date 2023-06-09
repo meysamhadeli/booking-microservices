@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using BuildingBlocks.TestBase;
 using Flight;
 using Flight.Api;
@@ -8,10 +8,6 @@ using Integration.Test.Fakes;
 using Xunit;
 
 namespace Integration.Test.Seat.Features;
-
-using global::Flight.Flights.Features.CreatingFlight.V1;
-using global::Flight.Seats.Features.CreatingSeat.V1;
-
 public class ReserveSeatTests : FlightIntegrationTestBase
 {
     public ReserveSeatTests(
@@ -36,11 +32,12 @@ public class ReserveSeatTests : FlightIntegrationTestBase
         // Act
         var response = await flightGrpcClient.ReserveSeatAsync(new ReserveSeatRequest()
         {
-            FlightId = seatCommand.FlightId.ToString(), SeatNumber = seatCommand.SeatNumber
+            FlightId = seatCommand.FlightId.ToString(),
+            SeatNumber = seatCommand.SeatNumber
         });
 
         // Assert
         response?.Should().NotBeNull();
-        response?.Id.Should().Be(seatCommand.Id.ToString());
+        response?.Id.Should().Be(seatCommand?.Id.ToString());
     }
 }

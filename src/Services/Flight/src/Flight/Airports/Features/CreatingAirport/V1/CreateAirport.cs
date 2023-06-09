@@ -7,9 +7,9 @@ using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Web;
-using Exceptions;
 using Data;
 using Duende.IdentityServer.EntityFramework.Entities;
+using Exceptions;
 using FluentValidation;
 using MapsterMapper;
 using MassTransit;
@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using ValueObjects;
 
 public record CreateAirport(string Name, string Address, string Code) : ICommand<CreateAirportResult>, IInternalCommand
 {
@@ -87,17 +88,17 @@ internal class CreateAirportHandler : IRequestHandler<CreateAirport, CreateAirpo
         Guard.Against.Null(request, nameof(request));
 
         var airport =
-            await _flightDbContext.Airports.SingleOrDefaultAsync(x => x.Code == request.Code, cancellationToken);
+            await _flightDbContext.Airports.SingleOrDefaultAsync(x => x.Code.Value == request.Code, cancellationToken);
 
         if (airport is not null)
         {
             throw new AirportAlreadyExistException();
         }
 
-        var airportEntity = Models.Airport.Create(request.Id, request.Name, request.Code, request.Address);
+        var airportEntity = Models.Airport.Create(AirportId.Of(request.Id), Name.Of(request.Name), Address.Of(request.Address), Code.Of(request.Code));
 
         var newAirport = (await _flightDbContext.Airports.AddAsync(airportEntity, cancellationToken))?.Entity;
 
-        return new CreateAirportResult(newAirport.Id);
+        return new CreateAirportResult(newAirport.Id.Value);
     }
 }
