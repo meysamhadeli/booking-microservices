@@ -1,4 +1,3 @@
-using BuildingBlocks.EFCore;
 using Flight.Seats.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -6,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Flight.Data.Configurations;
 
 using System;
+using Seats.ValueObjects;
 
 public class SeatConfiguration : IEntityTypeConfiguration<Seat>
 {
@@ -14,10 +14,21 @@ public class SeatConfiguration : IEntityTypeConfiguration<Seat>
         builder.ToTable(nameof(Seat));
 
         builder.HasKey(r => r.Id);
-        builder.Property(r => r.Id).ValueGeneratedNever();
+        builder.Property(r => r.Id).ValueGeneratedNever()
+            .HasConversion<Guid>(seatId => seatId.Value, dbId => SeatId.Of(dbId));
 
-        // // ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=fluent-api
-         builder.Property(r => r.Version).IsConcurrencyToken();
+        builder.Property(r => r.Version).IsConcurrencyToken();
+
+        builder.OwnsOne(
+            x => x.SeatNumber,
+            a =>
+            {
+                a.Property(p => p.Value)
+                    .HasColumnName(nameof(Seat.SeatNumber))
+                    .HasMaxLength(50)
+                    .IsRequired();
+            }
+        );
 
         builder
             .HasOne<Flights.Models.Flight>()

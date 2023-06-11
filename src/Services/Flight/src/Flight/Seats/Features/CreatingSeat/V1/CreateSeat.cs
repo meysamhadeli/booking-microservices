@@ -1,6 +1,7 @@
 namespace Flight.Seats.Features.CreatingSeat.V1;
 
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -11,6 +12,7 @@ using Duende.IdentityServer.EntityFramework.Entities;
 using Flight.Data;
 using Flight.Seats.Exceptions;
 using Flight.Seats.Models;
+using Flights.ValueObjects;
 using FluentValidation;
 using MapsterMapper;
 using MassTransit;
@@ -19,6 +21,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using ValueObjects;
 
 public record CreateSeat
     (string SeatNumber, Enums.SeatType Type, Enums.SeatClass Class, Guid FlightId) : ICommand<CreateSeatResult>,
@@ -94,17 +97,16 @@ internal class CreateSeatCommandHandler : IRequestHandler<CreateSeat, CreateSeat
     {
         Guard.Against.Null(command, nameof(command));
 
-        var seat = await _flightDbContext.Seats.SingleOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
-
+        var seat = await _flightDbContext.Seats.AsNoTracking().SingleOrDefaultAsync(x => x.Id.Equals(SeatId.Of(command.Id)), cancellationToken);
         if (seat is not null)
         {
             throw new SeatAlreadyExistException();
         }
 
-        var seatEntity = Seat.Create(command.Id, command.SeatNumber, command.Type, command.Class, command.FlightId);
+        var seatEntity = Seat.Create(SeatId.Of(command.Id), SeatNumber.Of(command.SeatNumber), command.Type, command.Class, FlightId.Of(command.FlightId));
 
         var newSeat = (await _flightDbContext.Seats.AddAsync(seatEntity, cancellationToken))?.Entity;
 
-        return new CreateSeatResult(newSeat.Id);
+        return new CreateSeatResult(newSeat.Id.Value);
     }
 }

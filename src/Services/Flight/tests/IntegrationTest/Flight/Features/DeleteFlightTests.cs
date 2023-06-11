@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.TestBase;
@@ -10,10 +10,10 @@ using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
-using System;
 using global::Flight.Data.Seed;
 using global::Flight.Flights.Features.DeletingFlight.V1;
 using global::Flight.Flights.Models;
+using global::Flight.Flights.ValueObjects;
 
 public class DeleteFlightTests : FlightIntegrationTestBase
 {
@@ -26,13 +26,13 @@ public class DeleteFlightTests : FlightIntegrationTestBase
     public async Task should_delete_flight_from_db()
     {
         // Arrange
-        var flightEntity = await Fixture.FindAsync<Flight, Guid>( InitialData.Flights.First().Id);
-        var command = new DeleteFlight(flightEntity.Id);
+        var flightEntity = await Fixture.FindAsync<Flight, FlightId>(InitialData.Flights.First().Id);
+        var command = new DeleteFlight(flightEntity.Id.Value);
 
         // Act
         await Fixture.SendAsync(command);
         var deletedFlight = (await Fixture.ExecuteDbContextAsync(db => db.Flights
-                .Where(x => x.Id == command.Id)
+                .Where(x => x.Id == FlightId.Of(command.Id))
                 .IgnoreQueryFilters()
                 .ToListAsync())
             ).FirstOrDefault();

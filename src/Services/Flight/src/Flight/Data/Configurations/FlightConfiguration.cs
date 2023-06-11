@@ -1,4 +1,3 @@
-using BuildingBlocks.EFCore;
 using Flight.Aircrafts.Models;
 using Flight.Airports.Models;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Flight.Data.Configurations;
 
 using System;
+using Flights.Models;
+using Flights.ValueObjects;
 
 public class FlightConfiguration : IEntityTypeConfiguration<Flights.Models.Flight>
 {
@@ -15,11 +16,22 @@ public class FlightConfiguration : IEntityTypeConfiguration<Flights.Models.Fligh
         builder.ToTable(nameof(Flight));
 
         builder.HasKey(r => r.Id);
-        builder.Property(r => r.Id).ValueGeneratedNever();
+        builder.Property(r => r.Id).ValueGeneratedNever()
+            .HasConversion<Guid>(flight => flight.Value, dbId => FlightId.Of(dbId));
 
-
-        // // ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=fluent-api
         builder.Property(r => r.Version).IsConcurrencyToken();
+
+
+        builder.OwnsOne(
+            x => x.FlightNumber,
+            a =>
+            {
+                a.Property(p => p.Value)
+                    .HasColumnName(nameof(Flight.FlightNumber))
+                    .HasMaxLength(50)
+                    .IsRequired();
+            }
+        );
 
         builder
             .HasOne<Aircraft>()
@@ -29,9 +41,30 @@ public class FlightConfiguration : IEntityTypeConfiguration<Flights.Models.Fligh
         builder
             .HasOne<Airport>()
             .WithMany()
-            .HasForeignKey(d => d.DepartureAirportId)
-            .HasForeignKey(a => a.ArriveAirportId);
+            .HasForeignKey(d => d.DepartureAirportId);
 
+        builder
+            .HasOne<Airport>()
+            .WithMany()
+            .HasForeignKey(d => d.ArriveAirportId);
+
+        //builder
+        //    .HasOne<Airport>()
+        //    .WithMany()
+        //    .HasForeignKey(d => d.DepartureAirportId.Value)
+        //    .HasForeignKey(a => a.ArriveAirportId.Value);
+
+
+        builder.OwnsOne(
+            x => x.DurationMinutes,
+            a =>
+            {
+                a.Property(p => p.Value)
+                    .HasColumnName(nameof(Flight.DurationMinutes))
+                    .HasMaxLength(50)
+                    .IsRequired();
+            }
+        );
 
         builder.Property(x => x.Status)
             .HasDefaultValue(Flights.Enums.FlightStatus.Unknown)
@@ -39,15 +72,45 @@ public class FlightConfiguration : IEntityTypeConfiguration<Flights.Models.Fligh
                 x => x.ToString(),
                 x => (Flights.Enums.FlightStatus)Enum.Parse(typeof(Flights.Enums.FlightStatus), x));
 
-        // // https://docs.microsoft.com/en-us/ef/core/modeling/shadow-properties
-        // // https://docs.microsoft.com/en-us/ef/core/modeling/owned-entities
-        // builder.OwnsMany(p => p.Seats, a =>
-        // {
-        //     a.WithOwner().HasForeignKey("FlightId");
-        //     a.Property<long>("Id");
-        //     a.HasKey("Id");
-        //     a.Property<long>("FlightId");
-        //     a.ToTable("Seat");
-        // });
+        builder.OwnsOne(
+            x => x.Price,
+            a =>
+            {
+                a.Property(p => p.Value)
+                    .HasColumnName(nameof(Flight.Price))
+                    .HasMaxLength(10)
+                    .IsRequired();
+            }
+        );
+
+        builder.OwnsOne(
+            x => x.ArriveDate,
+            a =>
+            {
+                a.Property(p => p.Value)
+                    .HasColumnName(nameof(Flight.ArriveDate))
+                    .IsRequired();
+            }
+        );
+
+        builder.OwnsOne(
+            x => x.DepartureDate,
+            a =>
+            {
+                a.Property(p => p.Value)
+                    .HasColumnName(nameof(Flight.DepartureDate))
+                    .IsRequired();
+            }
+        );
+
+        builder.OwnsOne(
+            x => x.FlightDate,
+            a =>
+            {
+                a.Property(p => p.Value)
+                    .HasColumnName(nameof(Flight.FlightDate))
+                    .IsRequired();
+            }
+        );
     }
 }

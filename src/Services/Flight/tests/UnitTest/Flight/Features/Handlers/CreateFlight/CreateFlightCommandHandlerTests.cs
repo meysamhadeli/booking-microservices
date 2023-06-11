@@ -1,10 +1,11 @@
-﻿namespace Unit.Test.Flight.Features.Handlers.CreateFlight;
+namespace Unit.Test.Flight.Features.Handlers.CreateFlight;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using global::Flight.Flights.Features.CreatingFlight.V1;
+using global::Flight.Flights.ValueObjects;
 using Unit.Test.Common;
 using Unit.Test.Fakes;
 using Xunit;
@@ -34,7 +35,7 @@ public class CreateFlightCommandHandlerTests
         var response = await Act(command, CancellationToken.None);
 
         // Assert
-        var entity = await _fixture.DbContext.Flights.FindAsync(response?.Id);
+        var entity = await _fixture.DbContext.Flights.FindAsync(FlightId.Of(response.Id));
 
         entity?.Should().NotBeNull();
         response?.Id.Should().Be(entity.Id);

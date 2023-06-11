@@ -1,4 +1,4 @@
-﻿namespace Unit.Test.Flight.Features.Domains;
+namespace Unit.Test.Flight.Features.Domains;
 
 using System.Linq;
 using FluentAssertions;
@@ -20,7 +20,7 @@ public class UpdateFlightTests
         FakeFlightUpdate.Generate(fakeFlight);
 
         // Assert
-        fakeFlight.Price.Should().Be(1000);
+        fakeFlight.Price.Value.Should().Be(1000);
     }
 
     [Fact]

@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Flight.Seats.Dtos;
 using FluentAssertions;
 using Unit.Test.Common;
 using Unit.Test.Fakes;
@@ -10,6 +9,7 @@ using Xunit;
 namespace Unit.Test.Seat.Features;
 
 using global::Flight.Seats.Features.CreatingSeat.V1;
+using global::Flight.Seats.ValueObjects;
 
 [Collection(nameof(UnitTestFixture))]
 public class CreateSeatCommandHandlerTests
@@ -39,7 +39,7 @@ public class CreateSeatCommandHandlerTests
         var response = await Act(command, CancellationToken.None);
 
         // Assert
-        var entity = await _fixture.DbContext.Seats.FindAsync(response?.Id);
+        var entity = await _fixture.DbContext.Seats.FindAsync(SeatId.Of(response.Id));
 
         entity?.Should().NotBeNull();
         response?.Id.Should().Be(entity.Id);

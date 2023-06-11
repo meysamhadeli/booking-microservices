@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Flight.Seats.Dtos;
 using MapsterMapper;
@@ -25,7 +25,7 @@ public class SeatMappingTests
             yield return new object[]
             {
                 // these types will instantiate with reflection in the future
-                typeof(global::Flight.Seats.Models.Seat), typeof(SeatDto)
+                typeof(global::Flight.Seats.Models.SeatReadModel), typeof(SeatDto)
             };
         }
     }
