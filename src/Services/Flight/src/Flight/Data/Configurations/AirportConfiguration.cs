@@ -17,7 +17,7 @@ public class AirportConfiguration : IEntityTypeConfiguration<Airport>
         builder.HasKey(r => r.Id);
         builder.Property(r => r.Id).ValueGeneratedNever()
             .HasConversion<Guid>(airportId => airportId.Value, dbId => AirportId.Of(dbId));
-
+        // // ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=fluent-api
         builder.Property(r => r.Version).IsConcurrencyToken();
 
 

@@ -1,4 +1,3 @@
-using System;
 using BuildingBlocks.Core.Model;
 
 namespace Flight.Flights.Models;
@@ -8,7 +7,6 @@ using Airports.ValueObjects;
 using Features.CreatingFlight.V1;
 using Features.DeletingFlight.V1;
 using Features.UpdatingFlight.V1;
-using global::Flight.Flights.Exceptions;
 using global::Flight.Flights.ValueObjects;
 
 public record Flight : Aggregate<FlightId>
@@ -29,8 +27,6 @@ public record Flight : Aggregate<FlightId>
         AirportId arriveAirportId, DurationMinutes durationMinutes, FlightDate flightDate, Enums.FlightStatus status,
         Price price, bool isDeleted = false)
     {
-        //SimpleFlightValidate(departureDate.Value, arriveDate.Value, flightDate.Value);
-
         var flight = new Flight
         {
             Id = id,
@@ -102,28 +98,5 @@ public record Flight : Aggregate<FlightId>
             arriveDate.Value, arriveAirportId.Value, durationMinutes.Value, flightDate.Value, status, price.Value, isDeleted);
 
         AddDomainEvent(@event);
-    }
-
-    public static void SimpleFlightValidate(DateTime departureDate, DateTime arriveDate, DateTime flightDate)
-    {
-        if (departureDate >= arriveDate)
-        {
-            throw new FlightExceptions(departureDate, arriveDate);
-        }
-
-        if (flightDate < departureDate || flightDate > arriveDate)
-        {
-            throw new FlightExceptions(flightDate);
-        }
-    }
-
-    public static TimeSpan GetFlightDuration(DateTime departureDate, DateTime arriveDate)
-    {
-        return arriveDate - departureDate;
-    }
-
-    public static bool IsOnSameDay(DateTime departureDate, DateTime arriveDate)
-    {
-        return departureDate.Date == arriveDate.Date;
     }
 }
