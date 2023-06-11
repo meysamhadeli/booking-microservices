@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Flight.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,9 +16,9 @@ namespace Flight.Data.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: true),
-                    model = table.Column<string>(type: "text", nullable: true),
-                    manufacturingyear = table.Column<int>(name: "manufacturing_year", type: "integer", nullable: false),
+                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    model = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    manufacturingyear = table.Column<int>(name: "manufacturing_year", type: "integer", maxLength: 5, nullable: false),
                     createdat = table.Column<DateTime>(name: "created_at", type: "timestamp with time zone", nullable: true),
                     createdby = table.Column<long>(name: "created_by", type: "bigint", nullable: true),
                     lastmodified = table.Column<DateTime>(name: "last_modified", type: "timestamp with time zone", nullable: true),
@@ -36,9 +36,9 @@ namespace Flight.Data.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: true),
-                    address = table.Column<string>(type: "text", nullable: true),
-                    code = table.Column<string>(type: "text", nullable: true),
+                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    address = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     createdat = table.Column<DateTime>(name: "created_at", type: "timestamp with time zone", nullable: true),
                     createdby = table.Column<long>(name: "created_by", type: "bigint", nullable: true),
                     lastmodified = table.Column<DateTime>(name: "last_modified", type: "timestamp with time zone", nullable: true),
@@ -56,16 +56,16 @@ namespace Flight.Data.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    flightnumber = table.Column<string>(name: "flight_number", type: "text", nullable: true),
+                    flightnumber = table.Column<string>(name: "flight_number", type: "character varying(50)", maxLength: 50, nullable: false),
                     aircraftid = table.Column<Guid>(name: "aircraft_id", type: "uuid", nullable: false),
-                    departuredate = table.Column<DateTime>(name: "departure_date", type: "timestamp with time zone", nullable: false),
                     departureairportid = table.Column<Guid>(name: "departure_airport_id", type: "uuid", nullable: false),
-                    arrivedate = table.Column<DateTime>(name: "arrive_date", type: "timestamp with time zone", nullable: false),
                     arriveairportid = table.Column<Guid>(name: "arrive_airport_id", type: "uuid", nullable: false),
-                    durationminutes = table.Column<decimal>(name: "duration_minutes", type: "numeric", nullable: false),
-                    flightdate = table.Column<DateTime>(name: "flight_date", type: "timestamp with time zone", nullable: false),
+                    durationminutes = table.Column<decimal>(name: "duration_minutes", type: "numeric", maxLength: 50, nullable: false),
                     status = table.Column<string>(type: "text", nullable: false, defaultValue: "Unknown"),
-                    price = table.Column<decimal>(type: "numeric", nullable: false),
+                    price = table.Column<decimal>(type: "numeric", maxLength: 10, nullable: false),
+                    arrivedate = table.Column<DateTime>(name: "arrive_date", type: "timestamp with time zone", nullable: false),
+                    departuredate = table.Column<DateTime>(name: "departure_date", type: "timestamp with time zone", nullable: false),
+                    flightdate = table.Column<DateTime>(name: "flight_date", type: "timestamp with time zone", nullable: false),
                     createdat = table.Column<DateTime>(name: "created_at", type: "timestamp with time zone", nullable: true),
                     createdby = table.Column<long>(name: "created_by", type: "bigint", nullable: true),
                     lastmodified = table.Column<DateTime>(name: "last_modified", type: "timestamp with time zone", nullable: true),
@@ -88,6 +88,12 @@ namespace Flight.Data.Migrations
                         principalTable: "airport",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_flight_airport_departure_airport_id",
+                        column: x => x.departureairportid,
+                        principalTable: "airport",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -95,7 +101,7 @@ namespace Flight.Data.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    seatnumber = table.Column<string>(name: "seat_number", type: "text", nullable: true),
+                    seatnumber = table.Column<string>(name: "seat_number", type: "character varying(50)", maxLength: 50, nullable: false),
                     type = table.Column<string>(type: "text", nullable: false, defaultValue: "Unknown"),
                     @class = table.Column<string>(name: "class", type: "text", nullable: false, defaultValue: "Unknown"),
                     flightid = table.Column<Guid>(name: "flight_id", type: "uuid", nullable: false),
@@ -126,6 +132,11 @@ namespace Flight.Data.Migrations
                 name: "ix_flight_arrive_airport_id",
                 table: "flight",
                 column: "arrive_airport_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_flight_departure_airport_id",
+                table: "flight",
+                column: "departure_airport_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_seat_flight_id",

@@ -12,8 +12,8 @@ using Passenger.Data;
 namespace Passenger.Data.Migrations
 {
     [DbContext(typeof(PassengerDbContext))]
-    [Migration("20230526085126_change-behavior")]
-    partial class changebehavior
+    [Migration("20230611213031_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -71,7 +71,7 @@ namespace Passenger.Data.Migrations
 
             modelBuilder.Entity("Passenger.Passengers.Models.Passenger", b =>
                 {
-                    b.OwnsOne("Passenger.Passengers.Models.ValueObjects.Age", "Age", b1 =>
+                    b.OwnsOne("Passenger.Passengers.ValueObjects.Age", "Age", b1 =>
                         {
                             b1.Property<Guid>("PassengerId")
                                 .HasColumnType("uuid")
@@ -92,7 +92,7 @@ namespace Passenger.Data.Migrations
                                 .HasConstraintName("fk_passenger_passenger_id");
                         });
 
-                    b.OwnsOne("Passenger.Passengers.Models.ValueObjects.Name", "Name", b1 =>
+                    b.OwnsOne("Passenger.Passengers.ValueObjects.Name", "Name", b1 =>
                         {
                             b1.Property<Guid>("PassengerId")
                                 .HasColumnType("uuid")
@@ -114,7 +114,7 @@ namespace Passenger.Data.Migrations
                                 .HasConstraintName("fk_passenger_passenger_id");
                         });
 
-                    b.OwnsOne("Passenger.Passengers.Models.ValueObjects.PassportNumber", "PassportNumber", b1 =>
+                    b.OwnsOne("Passenger.Passengers.ValueObjects.PassportNumber", "PassportNumber", b1 =>
                         {
                             b1.Property<Guid>("PassengerId")
                                 .HasColumnType("uuid")
@@ -138,9 +138,11 @@ namespace Passenger.Data.Migrations
 
                     b.Navigation("Age");
 
-                    b.Navigation("Name");
+                    b.Navigation("Name")
+                        .IsRequired();
 
-                    b.Navigation("PassportNumber");
+                    b.Navigation("PassportNumber")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

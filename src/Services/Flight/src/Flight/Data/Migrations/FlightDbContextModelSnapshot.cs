@@ -106,7 +106,7 @@ namespace Flight.Data.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("aircraft_id");
 
-                    b.Property<Guid?>("ArriveAirportId")
+                    b.Property<Guid>("ArriveAirportId")
                         .HasColumnType("uuid")
                         .HasColumnName("arrive_airport_id");
 
@@ -118,7 +118,7 @@ namespace Flight.Data.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("created_by");
 
-                    b.Property<Guid?>("DepartureAirportId")
+                    b.Property<Guid>("DepartureAirportId")
                         .HasColumnType("uuid")
                         .HasColumnName("departure_airport_id");
 
@@ -386,11 +386,15 @@ namespace Flight.Data.Migrations
                     b.HasOne("Flight.Airports.Models.Airport", null)
                         .WithMany()
                         .HasForeignKey("ArriveAirportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_flight_airport_arrive_airport_id");
 
                     b.HasOne("Flight.Airports.Models.Airport", null)
                         .WithMany()
                         .HasForeignKey("DepartureAirportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_flight_airport_departure_airport_id");
 
                     b.OwnsOne("Flight.Flights.ValueObjects.ArriveDate", "ArriveDate", b1 =>
@@ -517,17 +521,23 @@ namespace Flight.Data.Migrations
                                 .HasConstraintName("fk_flight_flight_id");
                         });
 
-                    b.Navigation("ArriveDate");
+                    b.Navigation("ArriveDate")
+                        .IsRequired();
 
-                    b.Navigation("DepartureDate");
+                    b.Navigation("DepartureDate")
+                        .IsRequired();
 
-                    b.Navigation("DurationMinutes");
+                    b.Navigation("DurationMinutes")
+                        .IsRequired();
 
-                    b.Navigation("FlightDate");
+                    b.Navigation("FlightDate")
+                        .IsRequired();
 
-                    b.Navigation("FlightNumber");
+                    b.Navigation("FlightNumber")
+                        .IsRequired();
 
-                    b.Navigation("Price");
+                    b.Navigation("Price")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Flight.Seats.Models.Seat", b =>

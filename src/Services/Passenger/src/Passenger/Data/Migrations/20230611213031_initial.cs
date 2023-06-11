@@ -16,10 +16,10 @@ namespace Passenger.Data.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    passportnumber = table.Column<string>(name: "passport_number", type: "text", nullable: true),
-                    name = table.Column<string>(type: "text", nullable: true),
-                    passengertype = table.Column<int>(name: "passenger_type", type: "integer", nullable: false),
-                    age = table.Column<int>(type: "integer", nullable: false),
+                    passportnumber = table.Column<string>(name: "passport_number", type: "character varying(10)", maxLength: 10, nullable: false),
+                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    passengertype = table.Column<string>(name: "passenger_type", type: "text", nullable: false, defaultValue: "Unknown"),
+                    age = table.Column<int>(type: "integer", maxLength: 3, nullable: true),
                     createdat = table.Column<DateTime>(name: "created_at", type: "timestamp with time zone", nullable: true),
                     createdby = table.Column<long>(name: "created_by", type: "bigint", nullable: true),
                     lastmodified = table.Column<DateTime>(name: "last_modified", type: "timestamp with time zone", nullable: true),

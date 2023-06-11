@@ -48,12 +48,6 @@ public class FlightConfiguration : IEntityTypeConfiguration<Flights.Models.Fligh
             .WithMany()
             .HasForeignKey(d => d.ArriveAirportId);
 
-        //builder
-        //    .HasOne<Airport>()
-        //    .WithMany()
-        //    .HasForeignKey(d => d.DepartureAirportId.Value)
-        //    .HasForeignKey(a => a.ArriveAirportId.Value);
-
 
         builder.OwnsOne(
             x => x.DurationMinutes,
