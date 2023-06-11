@@ -11,16 +11,16 @@ using global::Flight.Flights.ValueObjects;
 
 public record Flight : Aggregate<FlightId>
 {
-    public FlightNumber? FlightNumber { get; private set; } = default!;
-    public AircraftId AircraftId { get; private set; }
-    public AirportId? DepartureAirportId { get; private set; }
-    public AirportId? ArriveAirportId { get; private set; }
-    public DurationMinutes? DurationMinutes { get; private set; }
+    public FlightNumber FlightNumber { get; private set; } = default!;
+    public AircraftId AircraftId { get; private set; } = default!;
+    public AirportId DepartureAirportId { get; private set; } = default!;
+    public AirportId ArriveAirportId { get; private set; } = default!;
+    public DurationMinutes DurationMinutes { get; private set; } = default!;
     public Enums.FlightStatus Status { get; private set; }
-    public Price? Price { get; private set; }
-    public ArriveDate? ArriveDate { get; private set; }
-    public DepartureDate? DepartureDate { get; private set; }
-    public FlightDate? FlightDate { get; private set; }
+    public Price Price { get; private set; } = default!;
+    public ArriveDate ArriveDate { get; private set; } = default!;
+    public DepartureDate DepartureDate { get; private set; } = default!;
+    public FlightDate FlightDate { get; private set; } = default!;
 
     public static Flight Create(FlightId id, FlightNumber flightNumber, AircraftId aircraftId,
         AirportId departureAirportId, DepartureDate departureDate, ArriveDate arriveDate,

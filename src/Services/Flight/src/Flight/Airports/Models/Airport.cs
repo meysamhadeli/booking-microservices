@@ -9,7 +9,7 @@ public record Airport : Aggregate<AirportId>
 {
     public Name Name { get; private set; } = default!;
     public Address Address { get; private set; } = default!;
-    public Code Code { get; private set; }
+    public Code Code { get; private set; } = default!;
 
     public static Airport Create(AirportId id, Name name, Address address, Code code, bool isDeleted = false)
     {

@@ -14,7 +14,7 @@ public record Seat : Aggregate<SeatId>
     public SeatNumber SeatNumber { get; private set; } = default!;
     public Enums.SeatType Type { get; private set; }
     public Enums.SeatClass Class { get; private set; }
-    public FlightId FlightId { get; private set; }
+    public FlightId FlightId { get; private set; } = default!;
 
     public static Seat Create(SeatId id, SeatNumber seatNumber, Enums.SeatType type, Enums.SeatClass @class, FlightId flightId,
         bool isDeleted = false)
