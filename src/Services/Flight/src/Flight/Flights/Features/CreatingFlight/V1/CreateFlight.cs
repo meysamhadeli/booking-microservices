@@ -119,8 +119,8 @@ internal class CreateFlightHandler : ICommandHandler<CreateFlight, CreateFlightR
             ArriveDate.Of(request.ArriveDate), AirportId.Of(request.ArriveAirportId), DurationMinutes.Of(request.DurationMinutes), FlightDate.Of(request.FlightDate), request.Status,
             Price.Of(request.Price));
 
-        var newFlight = (await _flightDbContext.Flights.AddAsync(flightEntity, cancellationToken))?.Entity;
+        var newFlight = (await _flightDbContext.Flights.AddAsync(flightEntity, cancellationToken)).Entity;
 
-        return new CreateFlightResult(newFlight.Id.Value);
+        return new CreateFlightResult(newFlight.Id);
     }
 }

@@ -37,7 +37,8 @@ public class CreateAircraftMongoHandler : ICommandHandler<CreateAircraftMongo>
         var aircraftReadModel = _mapper.Map<AircraftReadModel>(request);
 
         var aircraft = await _flightReadDbContext.Aircraft.AsQueryable()
-            .FirstOrDefaultAsync(x => x.AircraftId == AircraftId.Of(aircraftReadModel.AircraftId), cancellationToken);
+            .FirstOrDefaultAsync(x => x.AircraftId == aircraftReadModel.AircraftId &&
+                                      !x.IsDeleted, cancellationToken);
 
         if (aircraft is not null)
         {

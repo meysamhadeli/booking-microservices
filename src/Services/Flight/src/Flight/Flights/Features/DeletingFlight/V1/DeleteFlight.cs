@@ -74,7 +74,8 @@ internal class DeleteFlightHandler : ICommandHandler<DeleteFlight, DeleteFlightR
     {
         Guard.Against.Null(request, nameof(request));
 
-        var flight = await _flightDbContext.Flights.SingleOrDefaultAsync(x => x.Id == FlightId.Of(request.Id), cancellationToken);
+        var flight = await _flightDbContext.Flights.SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+
         if (flight is null)
         {
             throw new FlightNotFountException();
@@ -84,8 +85,8 @@ internal class DeleteFlightHandler : ICommandHandler<DeleteFlight, DeleteFlightR
             flight.DepartureDate, flight.ArriveDate, flight.ArriveAirportId, flight.DurationMinutes,
             flight.FlightDate, flight.Status, flight.Price);
 
-        var deleteFlight = _flightDbContext.Flights.Remove(flight)?.Entity;
+        var deleteFlight = _flightDbContext.Flights.Update(flight).Entity;
 
-        return new DeleteFlightResult(deleteFlight.Id.Value);
+        return new DeleteFlightResult(deleteFlight.Id);
     }
 }

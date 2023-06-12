@@ -16,7 +16,7 @@ using Seats.Features.ReservingSeat.Commands.V1;
 // ref: https://www.ledjonbehluli.com/posts/domain_to_integration_event/
 public sealed class EventMapper : IEventMapper
 {
-    public IIntegrationEvent MapToIntegrationEvent(IDomainEvent @event)
+    public IIntegrationEvent? MapToIntegrationEvent(IDomainEvent @event)
     {
         return @event switch
         {
@@ -31,7 +31,7 @@ public sealed class EventMapper : IEventMapper
         };
     }
 
-    public IInternalCommand MapToInternalCommand(IDomainEvent @event)
+    public IInternalCommand? MapToInternalCommand(IDomainEvent @event)
     {
         return @event switch
         {

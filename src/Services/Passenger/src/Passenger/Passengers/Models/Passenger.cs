@@ -26,7 +26,7 @@ public record Passenger : Aggregate<PassengerId>
         };
 
         var @event = new PassengerRegistrationCompletedDomainEvent(passenger.Id, passenger.Name, passenger.PassportNumber,
-            passenger.PassengerType, passenger.Age.Value, passenger.IsDeleted);
+            passenger.PassengerType, passenger.Age, passenger.IsDeleted);
 
         passenger.AddDomainEvent(@event);
 

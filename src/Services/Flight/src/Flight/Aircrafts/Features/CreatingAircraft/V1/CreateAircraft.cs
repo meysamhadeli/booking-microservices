@@ -53,7 +53,7 @@ public class CreateAircraftEndpoint : IMinimalEndpoint
 
                 return Results.Ok(response);
             })
-            .RequireAuthorization(nameof(ApiScope))
+            //.RequireAuthorization(nameof(ApiScope))
             .WithName("CreateAircraft")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<CreateAircraftResponseDto>()
@@ -90,9 +90,8 @@ internal class CreateAircraftHandler : IRequestHandler<CreateAircraft, CreateAir
     {
         Guard.Against.Null(request, nameof(request));
 
-        var aircraft = await _flightDbContext.Aircraft.AsNoTracking().SingleOrDefaultAsync(
-            a => a.Model.Value.Equals(Model.Of(request.Model)), cancellationToken);
-
+        var aircraft = await _flightDbContext.Aircraft.SingleOrDefaultAsync(
+            a => a.Model.Value == request.Model, cancellationToken);
 
         if (aircraft is not null)
         {
@@ -101,7 +100,7 @@ internal class CreateAircraftHandler : IRequestHandler<CreateAircraft, CreateAir
 
         var aircraftEntity = Aircraft.Create(AircraftId.Of(request.Id), Name.Of(request.Name), Model.Of(request.Model), ManufacturingYear.Of(request.ManufacturingYear));
 
-        var newAircraft = (await _flightDbContext.Aircraft.AddAsync(aircraftEntity, cancellationToken))?.Entity;
+        var newAircraft = (await _flightDbContext.Aircraft.AddAsync(aircraftEntity, cancellationToken)).Entity;
 
         return new CreateAircraftResult(newAircraft.Id);
     }

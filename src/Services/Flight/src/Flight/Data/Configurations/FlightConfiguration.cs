@@ -36,17 +36,20 @@ public class FlightConfiguration : IEntityTypeConfiguration<Flights.Models.Fligh
         builder
             .HasOne<Aircraft>()
             .WithMany()
-            .HasForeignKey(p => p.AircraftId);
+            .HasForeignKey(p => p.AircraftId)
+            .IsRequired();
 
         builder
             .HasOne<Airport>()
             .WithMany()
-            .HasForeignKey(d => d.DepartureAirportId);
+            .HasForeignKey(d => d.DepartureAirportId)
+            .IsRequired();
 
         builder
             .HasOne<Airport>()
             .WithMany()
-            .HasForeignKey(d => d.ArriveAirportId);
+            .HasForeignKey(d => d.ArriveAirportId)
+            .IsRequired();
 
 
         builder.OwnsOne(

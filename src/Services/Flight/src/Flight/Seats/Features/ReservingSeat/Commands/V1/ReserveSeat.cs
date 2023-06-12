@@ -84,10 +84,9 @@ internal class ReserveSeatCommandHandler : IRequestHandler<ReserveSeat, ReserveS
     {
         Guard.Against.Null(command, nameof(command));
 
-
-
-        var seat = await _flightDbContext.Seats.AsNoTracking().SingleOrDefaultAsync(
-            x => x.SeatNumber.Value.Equals(SeatNumber.Of(command.SeatNumber)) && x.FlightId.Equals(FlightId.Of(command.FlightId)), cancellationToken);
+        var seat = await _flightDbContext.Seats.SingleOrDefaultAsync(
+            x => x.SeatNumber.Value == command.SeatNumber &&
+                 x.FlightId == command.FlightId, cancellationToken);
 
         if (seat is null)
         {
@@ -96,7 +95,7 @@ internal class ReserveSeatCommandHandler : IRequestHandler<ReserveSeat, ReserveS
 
         var reserveSeat = await seat.ReserveSeat(seat);
 
-        var updatedSeat = (_flightDbContext.Seats.Update(reserveSeat))?.Entity;
+        var updatedSeat = (_flightDbContext.Seats.Update(reserveSeat)).Entity;
 
         return new ReserveSeatResult(updatedSeat.Id);
     }

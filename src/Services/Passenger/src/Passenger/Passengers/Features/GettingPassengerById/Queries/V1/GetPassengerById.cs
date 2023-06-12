@@ -75,7 +75,7 @@ internal class GetPassengerByIdHandler : IQueryHandler<GetPassengerById, GetPass
 
         var passenger =
             await _passengerReadDbContext.Passenger.AsQueryable()
-                .SingleOrDefaultAsync(x => x.PassengerId == PassengerId.Of(query.Id) && x.IsDeleted == false, cancellationToken);
+                .SingleOrDefaultAsync(x => x.PassengerId == query.Id && x.IsDeleted == false, cancellationToken);
 
         if (passenger is null)
         {

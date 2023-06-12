@@ -97,7 +97,8 @@ internal class CreateSeatCommandHandler : IRequestHandler<CreateSeat, CreateSeat
     {
         Guard.Against.Null(command, nameof(command));
 
-        var seat = await _flightDbContext.Seats.AsNoTracking().SingleOrDefaultAsync(x => x.Id.Equals(SeatId.Of(command.Id)), cancellationToken);
+        var seat = await _flightDbContext.Seats.SingleOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
+
         if (seat is not null)
         {
             throw new SeatAlreadyExistException();
@@ -105,8 +106,8 @@ internal class CreateSeatCommandHandler : IRequestHandler<CreateSeat, CreateSeat
 
         var seatEntity = Seat.Create(SeatId.Of(command.Id), SeatNumber.Of(command.SeatNumber), command.Type, command.Class, FlightId.Of(command.FlightId));
 
-        var newSeat = (await _flightDbContext.Seats.AddAsync(seatEntity, cancellationToken))?.Entity;
+        var newSeat = (await _flightDbContext.Seats.AddAsync(seatEntity, cancellationToken)).Entity;
 
-        return new CreateSeatResult(newSeat.Id.Value);
+        return new CreateSeatResult(newSeat.Id);
     }
 }

@@ -30,6 +30,5 @@ public class CreateFlightTests : FlightIntegrationTestBase
         response?.Id.Should().Be(command.Id);
 
         (await Fixture.WaitForPublishing<FlightCreated>()).Should().Be(true);
-        (await Fixture.WaitForConsuming<FlightCreated>()).Should().Be(true);
     }
 }

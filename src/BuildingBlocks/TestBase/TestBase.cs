@@ -92,10 +92,6 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
 
                     services.AddSingleton<PersistMessageBackgroundService>();
 
-                    // // remove persist-message processor background service
-                    // var descriptor = services.Single(s => s.ImplementationType == typeof(PersistMessageBackgroundService));
-                    // services.Remove(descriptor);
-
                     // add authentication using a fake jwt bearer - we can use SetAdminUser method to set authenticate user to existing HttContextAccessor
                     // https://github.com/webmotions/fake-authentication-jwtbearer
                     // https://github.com/webmotions/fake-authentication-jwtbearer/issues/14

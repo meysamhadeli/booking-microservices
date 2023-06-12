@@ -9,7 +9,7 @@ using Passengers.Features.CompletingRegisterPassenger.V1;
 
 public sealed class EventMapper : IEventMapper
 {
-    public IIntegrationEvent MapToIntegrationEvent(IDomainEvent @event)
+    public IIntegrationEvent? MapToIntegrationEvent(IDomainEvent @event)
     {
         return @event switch
         {
@@ -19,7 +19,7 @@ public sealed class EventMapper : IEventMapper
         };
     }
 
-    public IInternalCommand MapToInternalCommand(IDomainEvent @event)
+    public IInternalCommand? MapToInternalCommand(IDomainEvent @event)
     {
         return @event switch
         {

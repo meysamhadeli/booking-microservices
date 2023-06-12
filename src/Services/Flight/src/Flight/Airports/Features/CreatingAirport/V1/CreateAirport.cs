@@ -97,8 +97,8 @@ internal class CreateAirportHandler : IRequestHandler<CreateAirport, CreateAirpo
 
         var airportEntity = Models.Airport.Create(AirportId.Of(request.Id), Name.Of(request.Name), Address.Of(request.Address), Code.Of(request.Code));
 
-        var newAirport = (await _flightDbContext.Airports.AddAsync(airportEntity, cancellationToken))?.Entity;
+        var newAirport = (await _flightDbContext.Airports.AddAsync(airportEntity, cancellationToken)).Entity;
 
-        return new CreateAirportResult(newAirport.Id.Value);
+        return new CreateAirportResult(newAirport.Id);
     }
 }

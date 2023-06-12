@@ -36,7 +36,8 @@ internal class CreateAirportMongoHandler : ICommandHandler<CreateAirportMongo>
         var airportReadModel = _mapper.Map<AirportReadModel>(request);
 
         var aircraft = await _flightReadDbContext.Airport.AsQueryable()
-            .FirstOrDefaultAsync(x => x.AirportId == airportReadModel.AirportId, cancellationToken);
+            .FirstOrDefaultAsync(x => x.AirportId == airportReadModel.AirportId &&
+                                      !x.IsDeleted, cancellationToken);
 
         if (aircraft is not null)
         {

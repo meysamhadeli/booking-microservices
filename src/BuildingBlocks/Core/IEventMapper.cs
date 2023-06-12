@@ -4,6 +4,6 @@ namespace BuildingBlocks.Core;
 
 public interface IEventMapper
 {
-    IIntegrationEvent MapToIntegrationEvent(IDomainEvent @event);
-    IInternalCommand MapToInternalCommand(IDomainEvent @event);
+    IIntegrationEvent? MapToIntegrationEvent(IDomainEvent @event);
+    IInternalCommand? MapToInternalCommand(IDomainEvent @event);
 }

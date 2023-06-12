@@ -37,7 +37,8 @@ public class CreateSeatMongoHandler : ICommandHandler<CreateSeatMongo>
         var seatReadModel = _mapper.Map<SeatReadModel>(request);
 
         var seat = await _flightReadDbContext.Seat.AsQueryable()
-            .FirstOrDefaultAsync(x => x.SeatId == seatReadModel.SeatId, cancellationToken);
+            .FirstOrDefaultAsync(x => x.SeatId == seatReadModel.SeatId &&
+                                      !x.IsDeleted, cancellationToken);
 
         if (seat is not null)
         {

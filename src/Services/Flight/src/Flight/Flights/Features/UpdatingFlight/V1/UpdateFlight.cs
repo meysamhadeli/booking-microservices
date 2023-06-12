@@ -104,7 +104,7 @@ internal class UpdateFlightHandler : ICommandHandler<UpdateFlight, UpdateFlightR
     {
         Guard.Against.Null(request, nameof(request));
 
-        var flight = await _flightDbContext.Flights.SingleOrDefaultAsync(x => x.Id == FlightId.Of(request.Id),
+        var flight = await _flightDbContext.Flights.SingleOrDefaultAsync(x => x.Id == request.Id,
             cancellationToken);
 
         if (flight is null)
@@ -118,8 +118,8 @@ internal class UpdateFlightHandler : ICommandHandler<UpdateFlight, UpdateFlightR
             ArriveDate.Of(request.ArriveDate), AirportId.Of(request.ArriveAirportId), DurationMinutes.Of(request.DurationMinutes), FlightDate.Of(request.FlightDate), request.Status,
             Price.Of(request.Price), request.IsDeleted);
 
-        var updateFlight = (_flightDbContext.Flights.Update(flight))?.Entity;
+        var updateFlight = (_flightDbContext.Flights.Update(flight)).Entity;
 
-        return new UpdateFlightResult(updateFlight.Id.Value);
+        return new UpdateFlightResult(updateFlight.Id);
     }
 }

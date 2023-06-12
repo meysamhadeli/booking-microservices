@@ -17,7 +17,7 @@ public class AuthHeaderHandler : DelegatingHandler
     {
         var token = (_httpContext?.HttpContext?.Request.Headers["Authorization"])?.ToString();
 
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token?.Replace("Bearer ", "", StringComparison.Ordinal));
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token?.Replace("Bearer ", ""));
 
         return base.SendAsync(request, cancellationToken);
     }
