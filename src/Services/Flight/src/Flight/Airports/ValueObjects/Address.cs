@@ -1,21 +1,23 @@
 namespace Flight.Airports.ValueObjects;
+
 using Exceptions;
 
 public class Address
 {
     public string Value { get; }
 
-    public Address(string value)
+    private Address(string value)
     {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            throw new InvalidAddressException();
-        }
         Value = value;
     }
 
     public static Address Of(string value)
     {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new InvalidAddressException();
+        }
+
         return new Address(value);
     }
 

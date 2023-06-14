@@ -5,16 +5,19 @@ using Exceptions;
 public record Code
 {
     public string Value { get; }
-    public Code(string value)
+
+    private Code(string value)
+    {
+        Value = value;
+    }
+
+    public static Code Of(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
             throw new InvalidCodeException();
         }
-        Value = value;
-    }
-    public static Code Of(string value)
-    {
+
         return new Code(value);
     }
 

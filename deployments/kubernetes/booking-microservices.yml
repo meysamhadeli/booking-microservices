@@ -207,7 +207,7 @@ spec:
         - containerPort: 1113
         - containerPort: 2113
       resources: {}
-  restartPolicy: OnFailure
+  restartPolicy: Always
 status: {}
 ---
 apiVersion: v1
@@ -405,7 +405,7 @@ spec:
       name: postgres
       ports:
         - containerPort: 5432
-  restartPolicy: OnFailure
+  restartPolicy: Always
 ---
 apiVersion: v1
 kind: Service

@@ -1,4 +1,5 @@
 namespace Flight.Flights.ValueObjects;
+
 using System;
 using Exceptions;
 
@@ -8,16 +9,16 @@ public record FlightId
 
     private FlightId(Guid value)
     {
-        if (value == Guid.Empty)
-        {
-            throw new InvalidFlightIdExceptions(value);
-        }
-
         Value = value;
     }
 
     public static FlightId Of(Guid value)
     {
+        if (value == Guid.Empty)
+        {
+            throw new InvalidFlightIdExceptions(value);
+        }
+
         return new FlightId(value);
     }
 

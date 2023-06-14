@@ -21,7 +21,7 @@ services:
   postgres:
    image: postgres:latest
    container_name: postgres
-   restart: on-failure
+   restart: unless-stopped
    ports:
      - '5432:5432'
    environment:
@@ -43,6 +43,7 @@ services:
   # sql:
   #   container_name: sql
   #   image: mcr.microsoft.com/mssql/server
+  #   restart: unless-stopped
   #   ports:
   #     - "1433:1433"
   #   environment:
@@ -77,7 +78,7 @@ services:
   eventstore:
       container_name: eventstore
       image: eventstore/eventstore:21.2.0-buster-slim
-      restart: on-failure
+      restart: unless-stopped
       environment:
           - EVENTSTORE_CLUSTER_SIZE=1
           - EVENTSTORE_RUN_PROJECTIONS=All

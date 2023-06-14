@@ -1,21 +1,23 @@
 namespace Flight.Flights.ValueObjects;
+
 using Exceptions;
 
 public class DurationMinutes
 {
     public decimal Value { get; }
 
-    public DurationMinutes(decimal value)
+    private DurationMinutes(decimal value)
     {
-        if (value < 0)
-        {
-            throw new InvalidDurationException();
-        }
         Value = value;
     }
 
     public static DurationMinutes Of(decimal value)
     {
+        if (value < 0)
+        {
+            throw new InvalidDurationException();
+        }
+
         return new DurationMinutes(value);
     }
 

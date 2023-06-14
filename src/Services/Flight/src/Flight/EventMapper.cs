@@ -35,7 +35,7 @@ public sealed class EventMapper : IEventMapper
     {
         return @event switch
         {
-            FlightCreatedDomainEvent e => new CreateFlightMongo(e.Id, e.FlightNumber, AircraftId.Of(e.AircraftId), e.DepartureDate, e.DepartureAirportId,
+            FlightCreatedDomainEvent e => new CreateFlightMongo(e.Id, e.FlightNumber, e.AircraftId, e.DepartureDate, e.DepartureAirportId,
                 e.ArriveDate, e.ArriveAirportId, e.DurationMinutes, e.FlightDate, e.Status, e.Price, e.IsDeleted),
             FlightUpdatedDomainEvent e => new UpdateFlightMongo(e.Id, e.FlightNumber, e.AircraftId, e.DepartureDate, e.DepartureAirportId,
                 e.ArriveDate, e.ArriveAirportId, e.DurationMinutes, e.FlightDate, e.Status, e.Price, e.IsDeleted),

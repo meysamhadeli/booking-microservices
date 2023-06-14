@@ -1,21 +1,23 @@
 namespace Passenger.Passengers.ValueObjects;
 
-using Passenger.Passengers.Exceptions;
+using Exceptions;
 
 public record Age
 {
     public int Value { get; }
-    public Age(int value)
+
+    private Age(int value)
+    {
+        Value = value;
+    }
+
+    public static Age Of(int value)
     {
         if (value <= 0)
         {
             throw new InvalidAgeException();
         }
 
-        Value = value;
-    }
-    public static Age Of(int value)
-    {
         return new Age(value);
     }
 

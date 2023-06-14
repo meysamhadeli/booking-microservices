@@ -1,20 +1,23 @@
 namespace Flight.Aircrafts.ValueObjects;
 
-using Flight.Aircrafts.Exceptions;
+using Exceptions;
 
 public record Name
 {
     public string Value { get; }
-    public Name(string value)
+
+    private Name(string value)
+    {
+        Value = value;
+    }
+
+    public static Name Of(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
             throw new InvalidNameException();
         }
-        Value = value;
-    }
-    public static Name Of(string value)
-    {
+
         return new Name(value);
     }
 

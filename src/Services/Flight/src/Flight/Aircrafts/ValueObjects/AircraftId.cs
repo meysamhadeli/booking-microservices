@@ -9,16 +9,16 @@ public record AircraftId
 
     private AircraftId(Guid value)
     {
-        if (value == Guid.Empty)
-        {
-            throw new InvalidAircraftIdExceptions(value);
-        }
-
         Value = value;
     }
 
     public static AircraftId Of(Guid value)
     {
+        if (value == Guid.Empty)
+        {
+            throw new InvalidAircraftIdExceptions(value);
+        }
+        
         return new AircraftId(value);
     }
 

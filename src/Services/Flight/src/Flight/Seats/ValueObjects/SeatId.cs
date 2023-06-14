@@ -1,7 +1,7 @@
 namespace Flight.Seats.ValueObjects;
+
 using System;
 using Exceptions;
-
 
 public record SeatId
 {
@@ -9,16 +9,16 @@ public record SeatId
 
     private SeatId(Guid value)
     {
-        if (value == Guid.Empty)
-        {
-            throw new InvalidSeatIdExceptions(value);
-        }
-
         Value = value;
     }
 
     public static SeatId Of(Guid value)
     {
+        if (value == Guid.Empty)
+        {
+            throw new InvalidSeatIdExceptions(value);
+        }
+
         return new SeatId(value);
     }
 

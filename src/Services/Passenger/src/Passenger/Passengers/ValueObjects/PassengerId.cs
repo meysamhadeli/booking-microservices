@@ -9,16 +9,16 @@ public record PassengerId
 
     private PassengerId(Guid value)
     {
-        if (value == Guid.Empty)
-        {
-            throw new InvalidPassengerIdExceptions(value);
-        }
-
         Value = value;
     }
 
     public static PassengerId Of(Guid value)
     {
+        if (value == Guid.Empty)
+        {
+            throw new InvalidPassengerIdExceptions(value);
+        }
+
         return new PassengerId(value);
     }
 

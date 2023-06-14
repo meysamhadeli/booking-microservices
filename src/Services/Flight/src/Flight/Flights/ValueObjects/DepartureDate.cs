@@ -9,15 +9,16 @@ public record DepartureDate
 
     private DepartureDate(DateTime value)
     {
-        if (value == null)
-        {
-            throw new InvalidDepartureDateExceptions(value);
-        }
         Value = value;
     }
 
     public static DepartureDate Of(DateTime value)
     {
+        if (value == default)
+        {
+            throw new InvalidDepartureDateExceptions(value);
+        }
+        
         return new DepartureDate(value);
     }
 

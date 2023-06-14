@@ -1,20 +1,23 @@
 namespace Flight.Aircrafts.ValueObjects;
 
-using Flight.Aircrafts.Exceptions;
+using Exceptions;
 
 public record Model
 {
     public string Value { get; }
-    public Model(string value)
+
+    private Model(string value)
+    {
+        Value = value;
+    }
+
+    public static Model Of(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
             throw new InvalidModelException();
         }
-        Value = value;
-    }
-    public static Model Of(string value)
-    {
+
         return new Model(value);
     }
 

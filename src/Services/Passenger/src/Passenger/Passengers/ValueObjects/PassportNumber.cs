@@ -13,15 +13,16 @@ public record PassportNumber
 
     private PassportNumber(string value)
     {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            throw new InvalidPassportNumberException();
-        }
         Value = value;
     }
 
     public static PassportNumber Of(string value)
     {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new InvalidPassportNumberException();
+        }
+
         return new PassportNumber(value);
     }
 
@@ -30,4 +31,3 @@ public record PassportNumber
         return passportNumber.Value;
     }
 }
-

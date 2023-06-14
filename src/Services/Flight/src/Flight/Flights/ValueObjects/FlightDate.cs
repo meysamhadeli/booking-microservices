@@ -8,15 +8,16 @@ public record FlightDate
 
     private FlightDate(DateTime value)
     {
-        if (value == null)
-        {
-            throw new InvalidFlightDateExceptions(value);
-        }
         Value = value;
     }
 
     public static FlightDate Of(DateTime value)
     {
+        if (value == default)
+        {
+            throw new InvalidFlightDateExceptions(value);
+        }
+        
         return new FlightDate(value);
     }
 

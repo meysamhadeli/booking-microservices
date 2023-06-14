@@ -8,15 +8,16 @@ public record ArriveDate
 
     private ArriveDate(DateTime value)
     {
-        if (value == null)
-        {
-            throw new InvalidArriveDateExceptions(value);
-        }
         Value = value;
     }
 
     public static ArriveDate Of(DateTime value)
     {
+        if (value == default)
+        {
+            throw new InvalidArriveDateExceptions(value);
+        }
+
         return new ArriveDate(value);
     }
 
