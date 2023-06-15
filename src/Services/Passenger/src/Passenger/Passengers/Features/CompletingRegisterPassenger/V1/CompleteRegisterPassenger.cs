@@ -96,19 +96,18 @@ internal class CompleteRegisterPassengerCommandHandler : ICommandHandler<Complet
     {
         Guard.Against.Null(request, nameof(request));
 
-        var passenger = await _passengerDbContext.Passengers.AsNoTracking().SingleOrDefaultAsync(
+        var passenger = await _passengerDbContext.Passengers.SingleOrDefaultAsync(
             x => x.PassportNumber.Value == request.PassportNumber, cancellationToken);
-
 
         if (passenger is null)
         {
             throw new PassengerNotExist();
         }
 
-        var passengerEntity = passenger.CompleteRegistrationPassenger(passenger.Id, passenger.Name,
+        passenger.CompleteRegistrationPassenger(passenger.Id, passenger.Name,
             passenger.PassportNumber, request.PassengerType, Age.Of(request.Age));
 
-        var updatePassenger = _passengerDbContext.Passengers.Update(passengerEntity).Entity;
+        var updatePassenger = _passengerDbContext.Passengers.Update(passenger).Entity;
 
         var passengerDto = _mapper.Map<PassengerDto>(updatePassenger);
 
