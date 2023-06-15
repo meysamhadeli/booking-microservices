@@ -7,7 +7,7 @@ using Airports.ValueObjects;
 using Features.CreatingFlight.V1;
 using Features.DeletingFlight.V1;
 using Features.UpdatingFlight.V1;
-using global::Flight.Flights.ValueObjects;
+using ValueObjects;
 
 public record Flight : Aggregate<FlightId>
 {
@@ -43,10 +43,10 @@ public record Flight : Aggregate<FlightId>
             IsDeleted = isDeleted,
         };
 
-        var @event = new FlightCreatedDomainEvent(flight.Id.Value, flight.FlightNumber.Value, flight.AircraftId.Value,
-            flight.DepartureDate.Value, flight.DepartureAirportId.Value,
-            flight.ArriveDate.Value, flight.ArriveAirportId.Value, flight.DurationMinutes.Value, flight.FlightDate.Value, flight.Status,
-            flight.Price.Value, flight.IsDeleted);
+        var @event = new FlightCreatedDomainEvent(flight.Id, flight.FlightNumber, flight.AircraftId,
+            flight.DepartureDate, flight.DepartureAirportId,
+            flight.ArriveDate, flight.ArriveAirportId, flight.DurationMinutes, flight.FlightDate, flight.Status,
+            flight.Price, flight.IsDeleted);
 
         flight.AddDomainEvent(@event);
 
@@ -59,20 +59,20 @@ public record Flight : Aggregate<FlightId>
         AirportId arriveAirportId, DurationMinutes durationMinutes, FlightDate flightDate, Enums.FlightStatus status,
         Price price, bool isDeleted = false)
     {
-        FlightNumber = flightNumber;
-        AircraftId = aircraftId;
-        DepartureAirportId = departureAirportId;
-        DepartureDate = departureDate;
-        ArriveDate = arriveDate;
-        ArriveAirportId = arriveAirportId;
-        DurationMinutes = durationMinutes;
-        FlightDate = flightDate;
-        Status = status;
-        Price = price;
-        IsDeleted = isDeleted;
+        this.FlightNumber = flightNumber;
+        this.AircraftId = aircraftId;
+        this.DepartureAirportId = departureAirportId;
+        this.DepartureDate = departureDate;
+        this.ArriveDate = arriveDate;
+        this.ArriveAirportId = arriveAirportId;
+        this.DurationMinutes = durationMinutes;
+        this.FlightDate = flightDate;
+        this.Status = status;
+        this.Price = price;
+        this.IsDeleted = isDeleted;
 
-        var @event = new FlightUpdatedDomainEvent(id.Value, flightNumber.Value, aircraftId.Value, departureDate.Value, departureAirportId.Value,
-            arriveDate.Value, arriveAirportId.Value, durationMinutes.Value, flightDate.Value, status, price.Value, isDeleted);
+        var @event = new FlightUpdatedDomainEvent(id, flightNumber, aircraftId, departureDate, departureAirportId,
+            arriveDate, arriveAirportId, durationMinutes, flightDate, status, price, isDeleted);
 
         AddDomainEvent(@event);
     }
@@ -94,8 +94,8 @@ public record Flight : Aggregate<FlightId>
         Price = price;
         IsDeleted = isDeleted;
 
-        var @event = new FlightDeletedDomainEvent(id.Value, flightNumber.Value, aircraftId.Value, departureDate.Value, departureAirportId.Value,
-            arriveDate.Value, arriveAirportId.Value, durationMinutes.Value, flightDate.Value, status, price.Value, isDeleted);
+        var @event = new FlightDeletedDomainEvent(id, flightNumber, aircraftId, departureDate, departureAirportId,
+            arriveDate, arriveAirportId, durationMinutes, flightDate, status, price, isDeleted);
 
         AddDomainEvent(@event);
     }

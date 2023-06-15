@@ -118,7 +118,7 @@ internal class UpdateFlightHandler : ICommandHandler<UpdateFlight, UpdateFlightR
             ArriveDate.Of(request.ArriveDate), AirportId.Of(request.ArriveAirportId), DurationMinutes.Of(request.DurationMinutes), FlightDate.Of(request.FlightDate), request.Status,
             Price.Of(request.Price), request.IsDeleted);
 
-        var updateFlight = (_flightDbContext.Flights.Update(flight)).Entity;
+        var updateFlight = _flightDbContext.Flights.Update(flight).Entity;
 
         return new UpdateFlightResult(updateFlight.Id);
     }

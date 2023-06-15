@@ -93,9 +93,9 @@ internal class ReserveSeatCommandHandler : IRequestHandler<ReserveSeat, ReserveS
             throw new SeatNumberIncorrectException();
         }
 
-        var reserveSeat = await seat.ReserveSeat(seat);
+        seat.ReserveSeat();
 
-        var updatedSeat = (_flightDbContext.Seats.Update(reserveSeat)).Entity;
+        var updatedSeat = _flightDbContext.Seats.Update(seat).Entity;
 
         return new ReserveSeatResult(updatedSeat.Id);
     }

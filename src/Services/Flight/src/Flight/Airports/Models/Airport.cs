@@ -3,7 +3,7 @@ using BuildingBlocks.Core.Model;
 namespace Flight.Airports.Models;
 
 using Features.CreatingAirport.V1;
-using Flight.Airports.ValueObjects;
+using ValueObjects;
 
 public record Airport : Aggregate<AirportId>
 {
@@ -22,10 +22,10 @@ public record Airport : Aggregate<AirportId>
         };
 
         var @event = new AirportCreatedDomainEvent(
-            airport.Id.Value,
-            airport.Name.Value,
-            airport.Address.Value,
-            airport.Code.Value,
+            airport.Id,
+            airport.Name,
+            airport.Address,
+            airport.Code,
             isDeleted);
 
         airport.AddDomainEvent(@event);
