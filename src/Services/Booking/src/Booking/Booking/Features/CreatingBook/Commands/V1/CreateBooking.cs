@@ -18,8 +18,8 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Models.ValueObjects;
 using Passenger;
+using ValueObjects;
 
 public record CreateBooking(Guid PassengerId, Guid FlightId, string Description) : ICommand<CreateBookingResult>,
     IInternalCommand
@@ -122,7 +122,7 @@ internal class CreateBookingCommandHandler : ICommandHandler<CreateBooking, Crea
             throw new BookingAlreadyExistException();
         }
 
-        var aggrigate = Models.Booking.Create(command.Id, new PassengerInfo(passenger.PassengerDto?.Name), new Trip(
+        var aggrigate = Models.Booking.Create(command.Id, PassengerInfo.Of(passenger.PassengerDto?.Name), Trip.Of(
                 flight.FlightDto.FlightNumber, new Guid(flight.FlightDto.AircraftId),
                 new Guid(flight.FlightDto.DepartureAirportId),
                 new Guid(flight.FlightDto.ArriveAirportId), flight.FlightDto.FlightDate.ToDateTime(),

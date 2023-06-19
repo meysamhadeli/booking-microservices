@@ -2,9 +2,9 @@ namespace Flight.Flights.Exceptions;
 using System;
 using BuildingBlocks.Exception;
 
-public class InvalidArriveDateExceptions : BadRequestException
+public class InvalidArriveDateException : BadRequestException
 {
-    public InvalidArriveDateExceptions(DateTime arriveDate)
+    public InvalidArriveDateException(DateTime arriveDate)
         : base($"Arrive Date: '{arriveDate}' is invalid.")
     {
     }

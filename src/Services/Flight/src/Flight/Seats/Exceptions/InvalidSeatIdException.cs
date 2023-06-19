@@ -3,9 +3,9 @@ using System;
 using BuildingBlocks.Exception;
 
 
-public class InvalidSeatIdExceptions : BadRequestException
+public class InvalidSeatIdException : BadRequestException
 {
-    public InvalidSeatIdExceptions(Guid seatId)
+    public InvalidSeatIdException(Guid seatId)
         : base($"seatId: '{seatId}' is invalid.")
     {
     }

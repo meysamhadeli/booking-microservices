@@ -16,9 +16,9 @@ public record DepartureDate
     {
         if (value == default)
         {
-            throw new InvalidDepartureDateExceptions(value);
+            throw new InvalidDepartureDateException(value);
         }
-        
+
         return new DepartureDate(value);
     }
 

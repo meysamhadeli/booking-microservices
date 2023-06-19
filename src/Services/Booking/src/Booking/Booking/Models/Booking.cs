@@ -1,9 +1,9 @@
-using Booking.Booking.Models.ValueObjects;
 using BuildingBlocks.EventStoreDB.Events;
 
 namespace Booking.Booking.Models;
 
 using Features.CreatingBook.Commands.V1;
+using ValueObjects;
 
 public record Booking : AggregateEventSourcing<Guid>
 {

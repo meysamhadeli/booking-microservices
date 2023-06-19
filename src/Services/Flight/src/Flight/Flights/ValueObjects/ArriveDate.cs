@@ -15,7 +15,7 @@ public record ArriveDate
     {
         if (value == default)
         {
-            throw new InvalidArriveDateExceptions(value);
+            throw new InvalidArriveDateException(value);
         }
 
         return new ArriveDate(value);
