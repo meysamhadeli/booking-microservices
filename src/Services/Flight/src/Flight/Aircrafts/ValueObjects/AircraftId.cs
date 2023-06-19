@@ -16,9 +16,9 @@ public record AircraftId
     {
         if (value == Guid.Empty)
         {
-            throw new InvalidAircraftIdExceptions(value);
+            throw new InvalidAircraftIdException(value);
         }
-        
+
         return new AircraftId(value);
     }
 

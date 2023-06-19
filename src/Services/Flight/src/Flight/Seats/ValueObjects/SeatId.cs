@@ -16,7 +16,7 @@ public record SeatId
     {
         if (value == Guid.Empty)
         {
-            throw new InvalidSeatIdExceptions(value);
+            throw new InvalidSeatIdException(value);
         }
 
         return new SeatId(value);

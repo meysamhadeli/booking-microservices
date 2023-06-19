@@ -3,9 +3,9 @@ using System;
 using BuildingBlocks.Exception;
 
 
-public class InvalidAircraftIdExceptions : BadRequestException
+public class InvalidAircraftIdException : BadRequestException
 {
-    public InvalidAircraftIdExceptions(Guid aircraftId)
+    public InvalidAircraftIdException(Guid aircraftId)
         : base($"AircraftId: '{aircraftId}' is invalid.")
     {
     }

@@ -16,7 +16,7 @@ public record PassengerId
     {
         if (value == Guid.Empty)
         {
-            throw new InvalidPassengerIdExceptions(value);
+            throw new InvalidPassengerIdException(value);
         }
 
         return new PassengerId(value);

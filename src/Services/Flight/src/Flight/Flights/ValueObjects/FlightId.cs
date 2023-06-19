@@ -16,7 +16,7 @@ public record FlightId
     {
         if (value == Guid.Empty)
         {
-            throw new InvalidFlightIdExceptions(value);
+            throw new InvalidFlightIdException(value);
         }
 
         return new FlightId(value);

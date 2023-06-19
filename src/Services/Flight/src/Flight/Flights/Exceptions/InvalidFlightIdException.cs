@@ -2,9 +2,9 @@ namespace Flight.Flights.Exceptions;
 using System;
 using BuildingBlocks.Exception;
 
-public class InvalidFlightIdExceptions : BadRequestException
+public class InvalidFlightIdException : BadRequestException
 {
-    public InvalidFlightIdExceptions(Guid flightId)
+    public InvalidFlightIdException(Guid flightId)
         : base($"flightId: '{flightId}' is invalid.")
     {
     }

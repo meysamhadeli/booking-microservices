@@ -15,9 +15,9 @@ public record FlightDate
     {
         if (value == default)
         {
-            throw new InvalidFlightDateExceptions(value);
+            throw new InvalidFlightDateException(value);
         }
-        
+
         return new FlightDate(value);
     }
 

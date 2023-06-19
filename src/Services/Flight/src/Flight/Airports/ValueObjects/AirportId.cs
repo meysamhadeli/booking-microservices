@@ -16,7 +16,7 @@ public record AirportId
     {
         if (value == Guid.Empty)
         {
-            throw new InvalidAirportIdExceptions(value);
+            throw new InvalidAirportIdException(value);
         }
 
         return new AirportId(value);
