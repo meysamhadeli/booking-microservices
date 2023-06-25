@@ -44,14 +44,11 @@ public static class Config
             new()
             {
                 ClientId = "client",
-
                 AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-
                 ClientSecrets =
                 {
                     new Secret("secret".Sha256())
                 },
-
                 AllowedScopes =
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
@@ -60,7 +57,9 @@ public static class Config
                     Constants.StandardScopes.PassengerApi,
                     Constants.StandardScopes.BookingApi,
                     Constants.StandardScopes.IdentityApi
-                }
+                },
+                AccessTokenLifetime = 3600,  // authorize the client to access protected resources
+                IdentityTokenLifetime = 3600 // authenticate the user
             }
         };
 }

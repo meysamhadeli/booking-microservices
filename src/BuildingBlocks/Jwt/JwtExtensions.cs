@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace BuildingBlocks.Jwt;
 
 using Duende.IdentityServer.EntityFramework.Entities;
+using Microsoft.IdentityModel.Tokens;
 
 public static class JwtExtensions
 {
@@ -20,7 +21,11 @@ public static class JwtExtensions
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                 options.Authority = jwtOptions.Authority;
-                options.TokenValidationParameters.ValidateAudience = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.FromSeconds(2) // For prevent add default value (5min) to life time token!
+                };
                 options.RequireHttpsMetadata = jwtOptions.RequireHttpsMetadata;
                 options.MetadataAddress= jwtOptions.MetadataAddress;
             });
