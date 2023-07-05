@@ -12,6 +12,7 @@ using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using Flights.ValueObjects;
 using FluentValidation;
+using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -52,11 +53,11 @@ public class ReserveSeatEndpoint : IMinimalEndpoint
     private async Task<IResult> ReserveSeat(ReserveSeatRequestDto request, IMediator mediator, IMapper mapper,
         CancellationToken cancellationToken)
     {
-        var command = mapper.Map<V1.ReserveSeat>(request);
+        var command = mapper.Map<ReserveSeat>(request);
 
         var result = await mediator.Send(command, cancellationToken);
 
-        var response = new ReserveSeatResponseDto(result.Id);
+        var response = result.Adapt<ReserveSeatResponseDto>();
 
         return Results.Ok(response);
     }

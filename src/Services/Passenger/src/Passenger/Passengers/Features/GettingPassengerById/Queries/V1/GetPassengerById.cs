@@ -8,6 +8,7 @@ using Dtos;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using FluentValidation;
+using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -32,7 +33,7 @@ public class GetPassengerByIdEndpoint : IMinimalEndpoint
                 {
                     var result = await mediator.Send(new GetPassengerById(id), cancellationToken);
 
-                    var response = new GetPassengerByIdResponseDto(result?.PassengerDto);
+                    var response = result.Adapt<GetPassengerByIdResponseDto>();
 
                     return Results.Ok(response);
                 })

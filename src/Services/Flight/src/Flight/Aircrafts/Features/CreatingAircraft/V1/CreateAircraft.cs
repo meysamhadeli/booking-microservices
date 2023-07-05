@@ -13,6 +13,7 @@ using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using Flight.Aircrafts.ValueObjects;
 using FluentValidation;
+using Mapster;
 using MapsterMapper;
 using MassTransit;
 using MediatR;
@@ -49,11 +50,11 @@ public class CreateAircraftEndpoint : IMinimalEndpoint
 
                 var result = await mediator.Send(command, cancellationToken);
 
-                var response = new CreateAircraftResponseDto(result.Id);
+                var response = result.Adapt<CreateAircraftResponseDto>();
 
                 return Results.Ok(response);
             })
-            //.RequireAuthorization(nameof(ApiScope))
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("CreateAircraft")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<CreateAircraftResponseDto>()

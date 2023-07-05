@@ -11,6 +11,7 @@ using Dtos;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using FluentValidation;
+using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -30,11 +31,11 @@ public class GetFlightByIdEndpoint : IMinimalEndpoint
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder.MapGet($"{EndpointConfig.BaseApiPath}/flight/{{id}}",
-                async (Guid id, IMediator mediator, CancellationToken cancellationToken) =>
+                async (Guid id, IMediator mediator, IMapper mapper, CancellationToken cancellationToken) =>
                 {
                     var result = await mediator.Send(new GetFlightById(id), cancellationToken);
 
-                    var response = new GetFlightByIdResponseDto(result?.FlightDto);
+                    var response = result.Adapt<GetFlightByIdResponseDto>();
 
                     return Results.Ok(response);
                 })

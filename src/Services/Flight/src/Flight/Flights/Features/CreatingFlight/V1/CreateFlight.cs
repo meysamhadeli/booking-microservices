@@ -13,6 +13,7 @@ using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using Flight.Airports.ValueObjects;
 using FluentValidation;
+using Mapster;
 using MapsterMapper;
 using MassTransit;
 using MediatR;
@@ -54,7 +55,7 @@ public class CreateFlightEndpoint : IMinimalEndpoint
 
                 var result = await mediator.Send(command, cancellationToken);
 
-                var response = new CreateFlightResponseDto(result.Id);
+                var response = result.Adapt<CreateFlightResponseDto>();
 
                 return Results.CreatedAtRoute("GetFlightById", new { id = result.Id }, response);
             })

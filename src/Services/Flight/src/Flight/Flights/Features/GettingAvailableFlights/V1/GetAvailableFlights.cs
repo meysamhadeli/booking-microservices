@@ -13,6 +13,7 @@ using Data;
 using Dtos;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
+using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -39,7 +40,7 @@ public class GetAvailableFlightsEndpoint : IMinimalEndpoint
                 {
                     var result = await mediator.Send(new GetAvailableFlights(), cancellationToken);
 
-                    var response = new GetAvailableFlightsResponseDto(result?.FlightDtos);
+                    var response = result.Adapt<GetAvailableFlightsResponseDto>();
 
                     return Results.Ok(response);
                 })

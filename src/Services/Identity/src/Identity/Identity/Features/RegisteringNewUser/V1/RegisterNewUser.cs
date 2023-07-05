@@ -12,6 +12,7 @@ using BuildingBlocks.Web;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using FluentValidation;
+using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -43,7 +44,7 @@ public class RegisterNewUserEndpoint : IMinimalEndpoint
 
                 var result = await mediator.Send(command, cancellationToken);
 
-                var response = mapper.Map<RegisterNewUserResponseDto>(result);
+                var response = result.Adapt<RegisterNewUserResponseDto>();
 
                 return Results.Ok(response);
             })

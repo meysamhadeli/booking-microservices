@@ -12,6 +12,7 @@ using Elasticsearch.Net;
 using Exceptions;
 using Flight;
 using FluentValidation;
+using Mapster;
 using MapsterMapper;
 using MassTransit;
 using MediatR;
@@ -47,7 +48,7 @@ public class CreateBookingEndpoint : IMinimalEndpoint
 
                 var result = await mediator.Send(command, cancellationToken);
 
-                var response = new CreateBookingResponseDto(result.Id);
+                var response = result.Adapt<CreateBookingResponseDto>();
 
                 return Results.Ok(response);
             })

@@ -35,7 +35,7 @@ public class DeleteFlightEndpoint : IMinimalEndpoint
         builder.MapDelete($"{EndpointConfig.BaseApiPath}/flight/{{id}}",
                 async (Guid id, IMediator mediator, CancellationToken cancellationToken) =>
                 {
-                    var result = await mediator.Send(new DeleteFlight(id), cancellationToken);
+                    await mediator.Send(new DeleteFlight(id), cancellationToken);
 
                     return Results.NoContent();
                 })

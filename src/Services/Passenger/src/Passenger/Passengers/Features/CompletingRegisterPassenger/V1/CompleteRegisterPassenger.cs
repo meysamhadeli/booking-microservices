@@ -9,6 +9,7 @@ using Dtos;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using FluentValidation;
+using Mapster;
 using MapsterMapper;
 using MassTransit;
 using MediatR;
@@ -46,7 +47,7 @@ public class CompleteRegisterPassengerEndpoint : IMinimalEndpoint
 
                 var result = await mediator.Send(command, cancellationToken);
 
-                var response = new CompleteRegisterPassengerResponseDto(result?.PassengerDto);
+                var response = result.Adapt<CompleteRegisterPassengerResponseDto>();
 
                 return Results.Ok(response);
             })

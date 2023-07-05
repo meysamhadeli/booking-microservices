@@ -11,6 +11,7 @@ using Data;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using FluentValidation;
+using Mapster;
 using MapsterMapper;
 using MassTransit;
 using MediatR;
@@ -46,7 +47,7 @@ public class CreateAirportEndpoint : IMinimalEndpoint
 
                 var result = await mediator.Send(command, cancellationToken);
 
-                var response = new CreateAirportResponseDto(result.Id);
+                var response = result.Adapt<CreateAirportResponseDto>();
 
                 return Results.Ok(response);
             })
