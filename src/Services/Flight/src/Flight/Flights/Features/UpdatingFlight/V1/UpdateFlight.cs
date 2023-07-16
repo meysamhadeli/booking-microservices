@@ -70,7 +70,7 @@ public class UpdateFlightEndpoint : IMinimalEndpoint
     }
 }
 
-internal class UpdateFlightValidator : AbstractValidator<CreateFlight>
+public class UpdateFlightValidator : AbstractValidator<CreateFlight>
 {
     public UpdateFlightValidator()
     {

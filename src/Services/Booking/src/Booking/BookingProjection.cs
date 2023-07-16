@@ -7,7 +7,7 @@ using MongoDB.Driver.Linq;
 
 namespace Booking;
 
-using Booking.Features.CreatingBook.Commands.V1;
+using Booking.Features.CreatingBook.V1;
 using Booking.Models;
 using MassTransit;
 

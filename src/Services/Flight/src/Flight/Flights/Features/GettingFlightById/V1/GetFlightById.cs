@@ -61,7 +61,7 @@ public class GetFlightByIdValidator : AbstractValidator<GetFlightById>
     }
 }
 
-public class GetFlightByIdHandler : IQueryHandler<GetFlightById, GetFlightByIdResult>
+internal class GetFlightByIdHandler : IQueryHandler<GetFlightById, GetFlightByIdResult>
 {
     private readonly IMapper _mapper;
     private readonly FlightReadDbContext _flightReadDbContext;

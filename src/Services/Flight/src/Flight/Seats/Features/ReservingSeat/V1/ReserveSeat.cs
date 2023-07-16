@@ -1,4 +1,4 @@
-namespace Flight.Seats.Features.ReservingSeat.Commands.V1;
+namespace Flight.Seats.Features.ReservingSeat.V1;
 
 using System;
 using System.Threading;
@@ -7,10 +7,9 @@ using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Web;
-using Data;
 using Duende.IdentityServer.EntityFramework.Entities;
-using Exceptions;
-using Flights.ValueObjects;
+using Flight.Data;
+using Flight.Seats.Exceptions;
 using FluentValidation;
 using Mapster;
 using MapsterMapper;
@@ -19,7 +18,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
-using ValueObjects;
 
 public record ReserveSeat(Guid FlightId, string SeatNumber) : ICommand<ReserveSeatResult>, IInternalCommand;
 
@@ -63,7 +61,7 @@ public class ReserveSeatEndpoint : IMinimalEndpoint
     }
 }
 
-internal class ReserveSeatValidator : AbstractValidator<ReserveSeat>
+public class ReserveSeatValidator : AbstractValidator<ReserveSeat>
 {
     public ReserveSeatValidator()
     {

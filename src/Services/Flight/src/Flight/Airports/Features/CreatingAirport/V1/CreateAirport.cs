@@ -65,7 +65,7 @@ public class CreateAirportEndpoint : IMinimalEndpoint
     }
 }
 
-internal class CreateAirportValidator : AbstractValidator<CreateAirport>
+public class CreateAirportValidator : AbstractValidator<CreateAirport>
 {
     public CreateAirportValidator()
     {

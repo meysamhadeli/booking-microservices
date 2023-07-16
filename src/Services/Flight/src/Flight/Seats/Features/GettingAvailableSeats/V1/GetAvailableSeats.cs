@@ -55,7 +55,7 @@ public class GetAvailableSeatsEndpoint : IMinimalEndpoint
     }
 }
 
-internal class GetAvailableSeatsValidator : AbstractValidator<GetAvailableSeats>
+public class GetAvailableSeatsValidator : AbstractValidator<GetAvailableSeats>
 {
     public GetAvailableSeatsValidator()
     {

@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Integration.Test.Passenger.Features;
 
-using global::Passenger.Passengers.Features.GettingPassengerById.Queries.V1;
+using global::Passenger.Passengers.Features.GettingPassengerById.V1;
 using Humanizer;
 using Thrift.Protocol;
 

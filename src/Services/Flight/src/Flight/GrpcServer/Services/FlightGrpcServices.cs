@@ -8,7 +8,7 @@ namespace Flight.GrpcServer.Services;
 using System;
 using Flights.Features.GettingFlightById.V1;
 using Seats.Features.GettingAvailableSeats.V1;
-using Seats.Features.ReservingSeat.Commands.V1;
+using Seats.Features.ReservingSeat.V1;
 using GetAvailableSeatsResult = GetAvailableSeatsResult;
 using GetFlightByIdResult = GetFlightByIdResult;
 using ReserveSeatResult = ReserveSeatResult;

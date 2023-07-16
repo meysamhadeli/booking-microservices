@@ -4,7 +4,7 @@ using MediatR;
 namespace Passenger.GrpcServer.Services;
 
 using Mapster;
-using Passengers.Features.GettingPassengerById.Queries.V1;
+using Passengers.Features.GettingPassengerById.V1;
 using GetPassengerByIdResult = Passenger.GetPassengerByIdResult;
 
 public class PassengerGrpcServices : PassengerGrpcService.PassengerGrpcServiceBase

@@ -17,7 +17,7 @@ using ValueObjects;
 
 public record CreateAircraftMongo(Guid Id, string Name, string Model, int ManufacturingYear, bool IsDeleted = false) : InternalCommand;
 
-public class CreateAircraftMongoHandler : ICommandHandler<CreateAircraftMongo>
+internal class CreateAircraftMongoHandler : ICommandHandler<CreateAircraftMongo>
 {
     private readonly FlightReadDbContext _flightReadDbContext;
     private readonly IMapper _mapper;
