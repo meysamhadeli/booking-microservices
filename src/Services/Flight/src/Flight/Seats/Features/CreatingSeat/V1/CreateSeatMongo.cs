@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
-using Flight.Data;
-using Flight.Seats.Exceptions;
-using Flight.Seats.Models;
+using Data;
+using Exceptions;
+using Models;
 using MapsterMapper;
 using MediatR;
 using MongoDB.Driver;
@@ -17,7 +17,7 @@ using MongoDB.Driver.Linq;
 public record CreateSeatMongo(Guid Id, string SeatNumber, Enums.SeatType Type,
     Enums.SeatClass Class, Guid FlightId, bool IsDeleted = false) : InternalCommand;
 
-public class CreateSeatMongoHandler : ICommandHandler<CreateSeatMongo>
+internal class CreateSeatMongoHandler : ICommandHandler<CreateSeatMongo>
 {
     private readonly FlightReadDbContext _flightReadDbContext;
     private readonly IMapper _mapper;

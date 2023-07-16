@@ -1,4 +1,4 @@
-﻿namespace Flight.Seats.Features.ReservingSeat.Commands.V1;
+﻿namespace Flight.Seats.Features.ReservingSeat.V1;
 
 using System;
 using System.Threading;

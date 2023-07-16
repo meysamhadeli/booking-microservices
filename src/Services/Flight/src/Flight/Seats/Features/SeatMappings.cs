@@ -6,7 +6,7 @@ namespace Flight.Seats.Features;
 
 using CreatingSeat.V1;
 using MassTransit;
-using ReservingSeat.Commands.V1;
+using ReservingSeat.V1;
 
 public class SeatMappings : IRegister
 {

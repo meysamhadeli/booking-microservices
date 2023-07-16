@@ -65,7 +65,7 @@ public class CompleteRegisterPassengerEndpoint : IMinimalEndpoint
     }
 }
 
-internal class CompleteRegisterPassengerValidator : AbstractValidator<CompleteRegisterPassenger>
+public class CompleteRegisterPassengerValidator : AbstractValidator<CompleteRegisterPassenger>
 {
     public CompleteRegisterPassengerValidator()
     {

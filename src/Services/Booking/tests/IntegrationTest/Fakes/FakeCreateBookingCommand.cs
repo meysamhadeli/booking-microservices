@@ -3,7 +3,7 @@
 namespace Integration.Test.Fakes;
 
 using System;
-using global::Booking.Booking.Features.CreatingBook.Commands.V1;
+using global::Booking.Booking.Features.CreatingBook.V1;
 using MassTransit;
 
 public sealed class FakeCreateBookingCommand : AutoFaker<CreateBooking>

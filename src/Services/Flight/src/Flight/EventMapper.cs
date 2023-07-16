@@ -11,7 +11,7 @@ using Flights.Features.CreatingFlight.V1;
 using Flights.Features.DeletingFlight.V1;
 using Flights.Features.UpdatingFlight.V1;
 using Seats.Features.CreatingSeat.V1;
-using Seats.Features.ReservingSeat.Commands.V1;
+using Seats.Features.ReservingSeat.V1;
 
 // ref: https://www.ledjonbehluli.com/posts/domain_to_integration_event/
 public sealed class EventMapper : IEventMapper

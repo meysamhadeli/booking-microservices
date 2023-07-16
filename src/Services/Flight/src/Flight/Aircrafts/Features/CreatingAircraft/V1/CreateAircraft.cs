@@ -68,7 +68,7 @@ public class CreateAircraftEndpoint : IMinimalEndpoint
     }
 }
 
-internal class CreateAircraftValidator : AbstractValidator<CreateAircraft>
+public class CreateAircraftValidator : AbstractValidator<CreateAircraft>
 {
     public CreateAircraftValidator()
     {

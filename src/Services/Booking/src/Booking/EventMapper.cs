@@ -4,7 +4,7 @@ using BuildingBlocks.Core.Event;
 
 namespace Booking;
 
-using Booking.Features.CreatingBook.Commands.V1;
+using Booking.Features.CreatingBook.V1;
 
 public sealed class EventMapper : IEventMapper
 {

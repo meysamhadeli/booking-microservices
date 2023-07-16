@@ -4,7 +4,7 @@ using BuildingBlocks.Core.Model;
 namespace Flight.Seats.Models;
 
 using Features.CreatingSeat.V1;
-using Features.ReservingSeat.Commands.V1;
+using Features.ReservingSeat.V1;
 using Flight.Flights.ValueObjects;
 using ValueObjects;
 

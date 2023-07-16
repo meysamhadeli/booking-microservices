@@ -53,7 +53,7 @@ public class DeleteFlightEndpoint : IMinimalEndpoint
     }
 }
 
-internal class DeleteFlightValidator : AbstractValidator<DeleteFlight>
+public class DeleteFlightValidator : AbstractValidator<DeleteFlight>
 {
     public DeleteFlightValidator()
     {

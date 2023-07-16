@@ -1,4 +1,4 @@
-namespace Booking.Booking.Features.CreatingBook.Commands.V1;
+namespace Booking.Booking.Features.CreatingBook.V1;
 
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core;
@@ -8,7 +8,6 @@ using BuildingBlocks.Core.Model;
 using BuildingBlocks.EventStoreDB.Repository;
 using BuildingBlocks.Web;
 using Duende.IdentityServer.EntityFramework.Entities;
-using Elasticsearch.Net;
 using Exceptions;
 using Flight;
 using FluentValidation;
@@ -22,8 +21,7 @@ using Microsoft.AspNetCore.Routing;
 using Passenger;
 using ValueObjects;
 
-public record CreateBooking(Guid PassengerId, Guid FlightId, string Description) : ICommand<CreateBookingResult>,
-    IInternalCommand
+public record CreateBooking(Guid PassengerId, Guid FlightId, string Description) : ICommand<CreateBookingResult>
 {
     public Guid Id { get; init; } = NewId.NextGuid();
 }
@@ -66,7 +64,7 @@ public class CreateBookingEndpoint : IMinimalEndpoint
     }
 }
 
-internal class CreateBookingValidator : AbstractValidator<CreateBooking>
+public class CreateBookingValidator : AbstractValidator<CreateBooking>
 {
     public CreateBookingValidator()
     {

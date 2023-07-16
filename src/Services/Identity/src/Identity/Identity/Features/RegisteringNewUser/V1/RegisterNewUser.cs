@@ -62,7 +62,7 @@ public class RegisterNewUserEndpoint : IMinimalEndpoint
     }
 }
 
-internal class RegisterNewUserValidator : AbstractValidator<RegisterNewUser>
+public class RegisterNewUserValidator : AbstractValidator<RegisterNewUser>
 {
     public RegisterNewUserValidator()
     {

@@ -3,7 +3,7 @@ using Mapster;
 
 namespace Booking.Booking.Features;
 
-using CreatingBook.Commands.V1;
+using CreatingBook.V1;
 
 public class BookingMappings : IRegister
 {

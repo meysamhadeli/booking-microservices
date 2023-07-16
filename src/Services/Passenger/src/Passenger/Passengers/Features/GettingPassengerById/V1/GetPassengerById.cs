@@ -1,12 +1,9 @@
-namespace Passenger.Passengers.Features.GettingPassengerById.Queries.V1;
+namespace Passenger.Passengers.Features.GettingPassengerById.V1;
 
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Web;
-using Data;
-using Dtos;
 using Duende.IdentityServer.EntityFramework.Entities;
-using Exceptions;
 using FluentValidation;
 using Mapster;
 using MapsterMapper;
@@ -16,7 +13,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using ValueObjects;
+using Passenger.Data;
+using Passenger.Passengers.Dtos;
+using Passenger.Passengers.Exceptions;
 
 public record GetPassengerById(Guid Id) : IQuery<GetPassengerByIdResult>;
 
@@ -51,7 +50,7 @@ public class GetPassengerByIdEndpoint : IMinimalEndpoint
     }
 }
 
-internal class GetPassengerByIdValidator : AbstractValidator<GetPassengerById>
+public class GetPassengerByIdValidator : AbstractValidator<GetPassengerById>
 {
     public GetPassengerByIdValidator()
     {
