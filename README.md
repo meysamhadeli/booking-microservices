@@ -44,7 +44,7 @@
 - :sparkle: Using `IdentityServer` for authentication and authorization base on `OpenID-Connect` and `OAuth2`.
 - :sparkle: Using `Yarp` as a microservices `gateway`.
 - :sparkle: Using `Kubernetes` to achieve efficient `scaling` and ensure `high availability` for each of our microservices.
-- :sparkle: Using `Nginx Ingress Controller` for `load balancing` between our microservices to `control traffic` in top of `Kubernetes`.
+- :sparkle: Using `Nginx Ingress Controller` for `load balancing` between our microservices top of `Kubernetes`.
 - :sparkle: Using `cert-manager` to Configure `TLS` in `kubernetes cluster`.
 
 ## Plan
