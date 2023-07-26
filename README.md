@@ -25,10 +25,10 @@
 
 ## The Goals of This Project
 
-- :sparkle: Using `Vertical Slice Architecture` for architecture level.
-- :sparkle: Using `Domain Driven Design (DDD)` to implement all business processes in microservices.
+- :sparkle: Using `Vertical Slice Architecture` for `architecture` level.
+- :sparkle: Using `Domain Driven Design (DDD)` to implement all `business processes` in microservices.
 - :sparkle: Using `Rabbitmq` on top of `Masstransit` for `Event Driven Architecture` between our microservices.
-- :sparkle: Using `gRPC` for internal communication between our microservices.
+- :sparkle: Using `gRPC` for `internal communication` between our microservices.
 - :sparkle: Using `CQRS` implementation with `MediatR` library.
 - :sparkle: Using `Postgres` for `write side` of some microservices.
 - :sparkle: Using `MongoDB` for `read side` of some microservices.
@@ -38,11 +38,14 @@
 - :sparkle: Using `Unit Testing`, `Integration Testing`, `End To End Testing` for testing level.
 - :sparkle: Using `Fluent Validation` and a `Validation Pipeline Behaviour` on top of `MediatR`.
 - :sparkle: Using `Minimal API` for all endpoints.
-- :sparkle: Using `Health Check` for reporting the health of app infrastructure components.
+- :sparkle: Using `Health Check` for `reporting` the `health` of app infrastructure components.
 - :sparkle: Using `Docker-Compose` and `Kubernetes` for our deployment mechanism.
-- :sparkle: Using `OpenTelemetry` for distributed tracing.
+- :sparkle: Using `OpenTelemetry` for `logging`, `tracing` and `monitoring`.
 - :sparkle: Using `IdentityServer` for authentication and authorization base on `OpenID-Connect` and `OAuth2`.
-- :sparkle: Using `Yarp` as a microservices gateway.
+- :sparkle: Using `Yarp` as a microservices `gateway`.
+- :sparkle: Using `Kubernetes` to achieve efficient `scaling` and ensure `high availability` for each of our microservices.
+- :sparkle: Using `Nginx Ingress Controller` for `load balancing` between our microservices to `control traffic` in top of `Kubernetes`.
+- :sparkle: Using `cert-manager` to Configure `TLS` in `kubernetes cluster`.
 
 ## Plan
 
