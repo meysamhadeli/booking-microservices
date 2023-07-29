@@ -144,7 +144,46 @@ services:
     networks:
       - booking
 
+    #######################################################
+    # prometheus
+    #######################################################
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    environment:
+      - TZ=UTC
+    volumes:
+      - ./monitoring/prom/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - booking
 
+    #######################################################
+    # grafana
+    #######################################################
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/grafana-data/data:/var/lib/grafana
+    networks:
+      - booking        
+
+    #######################################################
+    # node_exporter
+    #######################################################
+  node_exporter:
+    image: prom/node-exporter
+    container_name: node_exporter
+    restart: unless-stopped
+    ports:
+      - 9101:9100
+    networks:
+      - booking
+      
   ######################################################
   #  Gateway
   ######################################################

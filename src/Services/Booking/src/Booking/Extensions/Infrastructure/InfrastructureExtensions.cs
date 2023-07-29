@@ -88,15 +88,15 @@ public static class InfrastructureExtensions
         var env = app.Environment;
         var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
+        app.MapPrometheusScrapingEndpoint();
+
         app.UseCustomProblemDetails();
         app.UseSerilogRequestLogging(options =>
         {
             options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest;
         });
         app.UseCorrelationId();
-        app.UseHttpMetrics();
         app.UseCustomHealthCheck();
-        app.MapMetrics();
         app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
 
         if (env.IsDevelopment())
