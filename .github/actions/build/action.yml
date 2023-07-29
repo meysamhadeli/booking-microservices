@@ -33,6 +33,9 @@ runs:
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: "8.0.x"
+        dotnet-quality: "preview"
 
       # https://learn.microsoft.com/en-us/dotnet/core/tools/global-tools
     - name: Restore .NET Tools
