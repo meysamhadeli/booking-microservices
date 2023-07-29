@@ -23,12 +23,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Prometheus;
 using Serilog;
 
 namespace Flight.Extensions.Infrastructure;
-
-using BuildingBlocks.PersistMessageProcessor.Data;
 
 public static class InfrastructureExtensions
 {
@@ -95,15 +92,15 @@ public static class InfrastructureExtensions
         var env = app.Environment;
         var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
+        app.MapPrometheusScrapingEndpoint();
+
         app.UseCustomProblemDetails();
         app.UseSerilogRequestLogging(options =>
         {
             options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest;
         });
         app.UseCorrelationId();
-        app.UseHttpMetrics();
         app.UseMigration<FlightDbContext>(env);
-        app.MapMetrics();
         app.UseCustomHealthCheck();
         app.MapGrpcService<FlightGrpcServices>();
         app.UseRateLimiter();

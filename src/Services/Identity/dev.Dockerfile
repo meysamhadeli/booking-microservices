@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS builder
+FROM mcr.microsoft.com/dotnet/sdk:8.0-preview AS builder
 
 # Setup working directory for the project
 WORKDIR /
@@ -29,7 +29,7 @@ WORKDIR /Services/Identity/src/Identity.Api
 RUN --mount=type=cache,id=identity_nuget,target=/root/.nuget/packages \
    dotnet publish -c Release --no-build -o out
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-preview
 
 # Setup working directory for the project
 WORKDIR /

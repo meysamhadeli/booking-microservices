@@ -21,7 +21,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Passenger.Data;
 using Passenger.GrpcServer.Services;
-using Prometheus;
 using Serilog;
 
 namespace Passenger.Extensions.Infrastructure;
@@ -87,6 +86,8 @@ public static class InfrastructureExtensions
         var env = app.Environment;
         var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
+        app.MapPrometheusScrapingEndpoint();
+
         app.UseCustomProblemDetails();
         app.UseSerilogRequestLogging(options =>
         {
@@ -94,9 +95,7 @@ public static class InfrastructureExtensions
         });
         app.UseMigration<PassengerDbContext>(env);
         app.UseCorrelationId();
-        app.UseHttpMetrics();
         app.UseCustomHealthCheck();
-        app.MapMetrics();
         app.MapGrpcService<PassengerGrpcServices>();
         app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
 
