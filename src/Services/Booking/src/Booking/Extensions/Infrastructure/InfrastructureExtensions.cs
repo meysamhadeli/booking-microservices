@@ -24,6 +24,8 @@ using Serilog;
 
 namespace Booking.Extensions.Infrastructure;
 
+using BuildingBlocks.ProblemDetails;
+
 public static class InfrastructureExtensions
 {
     public static WebApplicationBuilder AddInfrastructure(this WebApplicationBuilder builder)

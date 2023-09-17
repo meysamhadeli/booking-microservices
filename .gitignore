@@ -435,5 +435,5 @@ fabric.properties
 
 *.jwk
 
-**/keys
-/src/ApiGateway/back.txt
+# Monitoring
+*.db
