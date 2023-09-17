@@ -1,18 +1,16 @@
-using BuildingBlocks.Exception;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
+﻿namespace BuildingBlocks.ProblemDetails;
 
-namespace Flight.Extensions.Infrastructure;
-
+using Exception;
 using Grpc.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-public static class ProblemDetailsExtensions
+public static class Extensions
 {
     public static WebApplication UseCustomProblemDetails(this WebApplication app)
     {
@@ -127,3 +125,4 @@ public static class ProblemDetailsExtensions
         return app;
     }
 }
+

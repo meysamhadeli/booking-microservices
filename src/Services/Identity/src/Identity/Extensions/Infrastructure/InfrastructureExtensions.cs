@@ -24,7 +24,7 @@ using Serilog;
 
 namespace Identity.Extensions.Infrastructure;
 
-using BuildingBlocks.PersistMessageProcessor.Data;
+using BuildingBlocks.ProblemDetails;
 using Configurations;
 using Microsoft.AspNetCore.HttpOverrides;
 
