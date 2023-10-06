@@ -36,7 +36,7 @@
 - :sparkle: Using `Inbox Pattern` for ensuring message idempotency for receiver and `Exactly once Delivery`. 
 - :sparkle: Using `Outbox Pattern` for ensuring no message is lost and there is at `At Least One Delivery`.
 - :sparkle: Using `Unit Testing` for testing small units and mocking our dependencies with `Nsubstitute`.
-- :sparkle: Using `End To End Testing` and `Integration Testing` for testing features with all dependencies with `testcontainers`.
+- :sparkle: Using `End-To-End Testing` and `Integration Testing` for testing `features` with all dependencies using docker container with `testcontainers`.
 - :sparkle: Using `Fluent Validation` and a `Validation Pipeline Behaviour` on top of `MediatR`.
 - :sparkle: Using `Minimal API` for all endpoints.
 - :sparkle: Using `Health Check` for `reporting` the `health` of app infrastructure components.
