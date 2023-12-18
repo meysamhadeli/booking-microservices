@@ -18,8 +18,13 @@
 - [The Domain and Bounded Context - Service Boundary](#the-domain-and-bounded-context---service-boundary)
 - [Structure of Project](#structure-of-project)
 - [How to Run](#how-to-run)
+  - [Config Certificate](#config-certificate)
   - [Docker Compose](#docker-compose)
   - [Kubernetes](#kubernetes)
+  - [Build](#build)
+  - [Run](#run)
+  - [Test](#test)
+- [Documentation Apis](#documentation-apis)
 - [Support](#support)
 - [Contribution](#contribution)
 
@@ -144,9 +149,7 @@ Using the CQRS pattern, we cut each business functionality into vertical slices,
 
 ## How to Run
 
-> ### Docker
-
-#### Config Certificate
+> ### Config Certificate
 Run the following commands to [Config SSL](https://docs.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-6.0) in your system
 
 #### Windows using Linux containers
@@ -161,7 +164,7 @@ dotnet dev-certs https --trust
 dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p $CREDENTIAL_PLACEHOLDER$
 dotnet dev-certs https --trust
 ```
-#### Docker Compose
+> ### Docker Compose
 
 Run this app in docker using the [docker-compose.yaml](./deployments/docker-compose/docker-compose.yaml) file with the below command at the root of the application:
 
@@ -181,10 +184,30 @@ Run the following command to apply all deployments, pods, services, ingress and 
 kubectl apply -f ./deployments/kubernetes/booking-microservices.yml
 ```
 
-### Documentation Apis
+> ### Build
+For `building` all microservices, Run this command in `root` of project:
+```bash
+dotnet build
+```
 
-Each microservice uses swagger open api, navigate to /swagger for a list of every endpoint.
-For testing apis I used the [REST Client](https://github.com/Huachao/vscode-restclient) plugin for VS Code running this file [booking.rest](./booking.rest).
+> ### Run
+For `runing` each microservice, Run this command in root of `Api` folder of each microservice where `csproj` located:
+```bash
+dotnet run
+```
+
+> ### Test
+
+For `testing` all microservices, Run this command in `root` of project:
+```bash
+dotnet test
+```
+
+> ### Documentation Apis
+
+Each microservice uses swagger open api, navigate to `/swagger` for getting the list endpoints.
+
+Also, to test apis, I created the [booking.rest](./booking.rest) file. This file run with [REST Client](https://github.com/Huachao/vscode-restclient) `VSCode plugin`.
 
 # Support
 
