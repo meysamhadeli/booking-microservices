@@ -47,8 +47,8 @@
 - :sparkle: Using `Health Check` for `reporting` the `health` of app infrastructure components.
 - :sparkle: Using `Docker-Compose` and `Kubernetes` for our deployment mechanism.
 - :sparkle: Using `Kibana` on top of `Serilog` for `logging`.
-- :sparkle: Using `OpenTelemetry` for distributed tracing top of `Jaeger`.
-- :sparkle: Using `OpenTelemetry` for monitoring top of `Prometteuse` and `Grafana`.
+- :sparkle: Using `OpenTelemetry` for distributed tracing on top of `Jaeger`.
+- :sparkle: Using `OpenTelemetry` for monitoring on top of `Prometheus` and `Grafana`.
 - :sparkle: Using `IdentityServer` for authentication and authorization base on `OpenID-Connect` and `OAuth2`.
 - :sparkle: Using `Yarp` as a microservices `gateway`.
 - :sparkle: Using `Kubernetes` to achieve efficient `scaling` and ensure `high availability` for each of our microservices.
