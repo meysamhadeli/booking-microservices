@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Identity\Identity.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="keys\is-signing-key-C01EF7C986B61650360AFA59291E65BC.json" />
+    <ProjectReference Include="..\Identity\Identity.csproj"/>
   </ItemGroup>
 
 </Project>

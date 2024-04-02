@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0-preview AS builder
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS builder
 WORKDIR /
 
 # Setup working directory for the project
@@ -30,7 +30,7 @@ WORKDIR /Services/Booking/src/Booking.Api
 RUN --mount=type=cache,id=booking_nuget,target=/root/.nuget/packages\
     dotnet publish -c Release --no-build -o out
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-preview
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
 # Setup working directory for the project
 WORKDIR /
