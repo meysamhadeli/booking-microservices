@@ -8,7 +8,12 @@
            
 > **The main idea of creating this project is implementing an infrastructure for up and running distributed system with the latest technology and architecture like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq, Masstransit in .Net 8, and we will not deal mainly with business.** 🚀
 
-<a href="https://gitpod.io/#https://github.com/meysamhadeli/booking-microservices"><img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg"/></a>
+<div>
+  <a href="https://gitpod.io/#https://github.com/meysamhadeli/booking-microservices"><img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg"/></a>
+</div>
+<div>
+  <a href='https://codespaces.new/meysamhadeli/booking-microservices?quickstart=1'><img alt='Open in GitHub Codespaces' src='https://github.com/codespaces/badge.svg'></a>
+</div>
 
 # Table of Contents
 
