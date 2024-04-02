@@ -436,4 +436,4 @@ fabric.properties
 *.jwk
 
 # Monitoring
-.grafana-data
+**/grafana-data

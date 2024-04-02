@@ -9,13 +9,4 @@
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="AsyncFixer" Version="1.6.0" />
-    <PackageReference Update="Meziantou.Analyzer" Version="1.0.747" />
-    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.4.27" />
-    <PackageReference Update="Roslynator.Analyzers" Version="4.1.2" />
-    <PackageReference Update="Roslynator.Formatting.Analyzers" Version="4.2.0" />
-    <PackageReference Update="Roslynator.CodeAnalysis.Analyzers" Version="4.1.2" />
-  </ItemGroup>
-
 </Project>
