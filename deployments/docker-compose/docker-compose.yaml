@@ -43,7 +43,7 @@ services:
     #######################################################
   rabbitmq:
     container_name: rabbitmq
-    image: rabbitmq:3-management
+    image: rabbitmq:management
     restart: unless-stopped
     ports:
       - 5672:5672
@@ -76,7 +76,7 @@ services:
     #######################################################
   eventstore:
     container_name: eventstore
-    image: eventstore/eventstore:21.2.0-buster-slim
+    image: eventstore/eventstore:latest
     restart: unless-stopped
     environment:
       - EVENTSTORE_CLUSTER_SIZE=1
@@ -98,7 +98,7 @@ services:
     #  Mongo
     #######################################################
   mongo:
-    image: mongo:5
+    image: mongo:latest
     container_name: mongo
     restart: unless-stopped
     # environment:
@@ -114,7 +114,7 @@ services:
     #######################################################
   elasticsearch:
     container_name: elasticsearch
-    image: elasticsearch:7.17.9
+    image: elasticsearch:latest
     restart: unless-stopped
     ports:
       - 9200:9200
@@ -133,7 +133,7 @@ services:
     #######################################################
   kibana:
     container_name: kibana
-    image: kibana:7.17.9
+    image: kibana:latest
     restart: unless-stopped
     ports:
       - 5601:5601

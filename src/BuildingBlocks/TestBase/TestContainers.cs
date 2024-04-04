@@ -114,7 +114,7 @@ public static class TestContainers
         public string Name { get; set; } = "rabbitmq_" + Guid.NewGuid();
         public int Port { get; set; } = 5672;
         public int ApiPort { get; set; } = 15672;
-        public string ImageName { get; set; } = "rabbitmq:3-management";
+        public string ImageName { get; set; } = "rabbitmq:management";
         public string UserName { get; set; } = "guest";
         public string Password { get; set; } = "guest";
     }
@@ -141,7 +141,7 @@ public static class TestContainers
     {
         public string Name { get; set; } = "mongo_" + Guid.NewGuid().ToString("D");
         public int Port { get; set; } = 27017;
-        public string ImageName { get; set; } = "mongo:5";
+        public string ImageName { get; set; } = "mongo:latest";
         public string UserName { get; set; } = Guid.NewGuid().ToString("D");
         public string Password { get; set; } = Guid.NewGuid().ToString("D");
     }
@@ -150,6 +150,6 @@ public static class TestContainers
     {
         public string Name { get; set; } = "event_store_" + Guid.NewGuid().ToString("D");
         public int Port { get; set; } = 2113;
-        public string ImageName { get; set; } = "eventstore/eventstore:21.2.0-buster-slim";
+        public string ImageName { get; set; } = "eventstore/eventstore:latest";
     }
 }
