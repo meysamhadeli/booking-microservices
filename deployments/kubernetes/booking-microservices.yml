@@ -202,7 +202,7 @@ spec:
           value: All
         - name: EVENTSTORE_START_STANDARD_PROJECTIONS
           value: "true"
-      image: eventstore/eventstore:21.2.0-buster-slim
+      image: eventstore/eventstore:latest
       name: eventstore
       ports:
         - containerPort: 1113
@@ -751,7 +751,7 @@ spec:
         io.kompose.service: mongo
     spec:
       containers:
-        - image: mongo:5
+        - image: mongo:latest
           name: mongo
           ports:
             - containerPort: 27017
@@ -851,7 +851,7 @@ spec:
         io.kompose.service: rabbitmq
     spec:
       containers:
-        - image: rabbitmq:3-management
+        - image: rabbitmq:management
           name: rabbitmq
           ports:
             - containerPort: 5672
