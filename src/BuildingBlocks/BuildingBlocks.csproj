@@ -12,20 +12,24 @@
     <PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
     <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="8.0.3" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="8.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="8.0.1" />
     <PackageReference Include="AspNetCore.HealthChecks.Elasticsearch" Version="8.0.1" />
     <PackageReference Include="AspNetCore.HealthChecks.EventStore" Version="8.0.1" />
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.1" />
     <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="8.0.1" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.SQLite.Storage" Version="8.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="8.0.1" />
+    <PackageReference Include="Grpc.Core.Testing" Version="2.46.6" />
     <PackageReference Include="EasyCaching.Core" Version="1.9.2" />
     <PackageReference Include="EasyCaching.InMemory" Version="1.9.2" />
     <PackageReference Include="EasyNetQ.Management.Client" Version="2.0.0" />
     <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
-    <PackageReference Include="EntityFrameworkCore.Triggered" Version="3.2.2" />
     <PackageReference Include="Figgle" Version="0.5.1" />
     <PackageReference Include="FluentValidation" Version="11.9.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
-    <PackageReference Include="Grpc.Core.Testing" Version="2.46.6" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.3" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="8.0.0" />
@@ -34,18 +38,12 @@
     <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.8.0-rc.1" />
     <PackageReference Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.7.0-beta.1" />
     <PackageReference Include="Polly" Version="8.3.1" />
-    <PackageReference Include="protobuf-net.BuildTools" Version="3.2.33">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Humanizer.Core" Version="2.14.1" />
     <PackageReference Include="IdGen" Version="3.0.5" />
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
     <PackageReference Include="MediatR" Version="12.2.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
@@ -55,12 +53,11 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="8.0.3" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
-    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.24.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OpenTelemetry.Contrib.Instrumentation.MassTransit" Version="1.0.0-beta2" />
     <PackageReference Include="Scrutor" Version="4.2.2" />
-    <PackageReference Include="Scrutor.AspNetCore" Version="3.3.0" />
     <PackageReference Include="Sentry.Serilog" Version="4.2.1" />
     <PackageReference Include="Serilog" Version="3.1.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
@@ -76,12 +73,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="8.0.1" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="8.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="8.0.3" />
-    <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="8.0.1" />
-    <PackageReference Include="System.Interactive.Async" Version="6.0.1" />
     <PackageReference Include="MassTransit" Version="8.2.0" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.0" />
     <PackageReference Include="Duende.IdentityServer" Version="7.0.3" />
@@ -97,12 +88,8 @@
     <PackageReference Include="Testcontainers.PostgreSql" Version="3.8.0" />
     <PackageReference Include="Testcontainers.RabbitMq" Version="3.8.0" />
     <PackageReference Include="Unchase.Swashbuckle.AspNetCore.Extensions" Version="2.7.1" />
-    <PackageReference Include="WebMotions.Fake.Authentication.JwtBearer" Version="8.0.1" />
     <PackageReference Include="Yarp.ReverseProxy" Version="2.1.0" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="2.17.4" />
 
-    <PackageReference Include="Jaeger" Version="1.0.3" />
-    <PackageReference Include="OpenTracing" Version="0.12.1" />
     <PackageReference Include="prometheus-net" Version="8.2.1" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
 
@@ -112,40 +99,27 @@
     <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.7.1" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.7.1" />
 
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.9.28">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-
     <PackageReference Include="EventStore.Client.Grpc.Streams" Version="23.2.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
 
-    <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
     <PackageReference Include="AutoBogus" Version="2.13.1" />
     <PackageReference Include="Bogus" Version="35.5.0" />
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="Respawn" Version="6.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.3" />
+    <PackageReference Include="WebMotions.Fake.Authentication.JwtBearer" Version="8.0.1" />
 
     <PackageReference Include="Google.Protobuf" Version="3.26.1" />
     <PackageReference Include="Grpc.Net.ClientFactory" Version="2.62.0" />
 
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.9.28" />
     <PackageReference Update="Meziantou.Analyzer" Version="2.0.146" />
     <PackageReference Update="AsyncFixer" Version="1.6.0" />
     <PackageReference Update="Roslynator.Analyzers" Version="4.12.0" />
     <PackageReference Update="Roslynator.CodeAnalysis.Analyzers" Version="4.11.0" />
     <PackageReference Update="Roslynator.Formatting.Analyzers" Version="4.12.0" />
 
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="Contracts" />
-    <Folder Include="Core\Pagination" />
-    <Folder Include="EventStoreDB\BackgroundWorkers" />
-    <Folder Include="PersistMessageProcessor\Data\Configurations" />
   </ItemGroup>
 
 </Project>
