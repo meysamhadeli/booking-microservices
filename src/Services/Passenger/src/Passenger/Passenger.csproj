@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations" />
-    <Folder Include="Identity\Consumers" />
   </ItemGroup>
 
   <ItemGroup>
