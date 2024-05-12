@@ -119,7 +119,7 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
 
     public virtual void RegisterServices(Action<IServiceCollection> services)
     {
-        TestRegistrationServices = services;
+        TestRegistrationServices += services;
     }
 
     // ref: https://github.com/trbenning/serilog-sinks-xunit
