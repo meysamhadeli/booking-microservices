@@ -78,19 +78,15 @@ services:
   eventstore:
       container_name: eventstore
       image: eventstore/eventstore:latest
-      restart: unless-stopped
       environment:
-          - EVENTSTORE_CLUSTER_SIZE=1
-          - EVENTSTORE_RUN_PROJECTIONS=All
-          - EVENTSTORE_START_STANDARD_PROJECTIONS=true
-          - EVENTSTORE_EXT_TCP_PORT=1113
-          - EVENTSTORE_EXT_HTTP_PORT=2113
-          - EVENTSTORE_INSECURE=true
-          - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
-          - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+         - EVENTSTORE_CLUSTER_SIZE=1
+         - EVENTSTORE_RUN_PROJECTIONS=All
+         - EVENTSTORE_START_STANDARD_PROJECTIONS=True
+         - EVENTSTORE_HTTP_PORT=2113
+         - EVENTSTORE_INSECURE=True
+         - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=True
       ports:
-          - '1113:1113'
-          - '2113:2113'
+          - "2113:2113"
       networks:
           - booking
 
@@ -186,7 +182,7 @@ services:
     volumes:
       - ./monitoring/grafana-data/data:/var/lib/grafana
     networks:
-      - booking        
+      - booking
 
     #######################################################
     # node_exporter
@@ -199,9 +195,11 @@ services:
       - '--path.rootfs=/host'
     pid: host
     volumes:
-      - '/:/host:ro,rslave'
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
     networks:
-      - booking   
+      - booking
 
     #######################################################
     # cadvisor
@@ -222,8 +220,8 @@ services:
       - /dev/kmsg
     networks:
       - booking
-      
-    
+
+
 networks:
   booking:
 
