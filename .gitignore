@@ -437,3 +437,6 @@ fabric.properties
 
 # Monitoring
 **/grafana-data
+
+# EventStore
+**/eventstore
