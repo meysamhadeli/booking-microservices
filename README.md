@@ -24,8 +24,8 @@
 - [Technologies - Libraries](#technologies---libraries)
 - [The Domain and Bounded Context - Service Boundary](#the-domain-and-bounded-context---service-boundary)
 - [Structure of Project](#structure-of-project)
-- [Development Setup](#development_setup)
-    - [Dotnet Tool Packages](#dotnet_tool_packages)
+- [Development Setup](#development-setup)
+    - [Dotnet Tools Packages](#dotnet-tools-packages)
 - [How to Run](#how-to-run)
   - [Config Certificate](#config-certificate)
   - [Docker Compose](#docker-compose)
@@ -158,12 +158,12 @@ Using the CQRS pattern, we cut each business functionality into vertical slices,
 
 ## Development Setup
 
-### Dotnet Tool Packages
+### Dotnet Tools Packages
 For installing our requirement package with .NET cli tools, we need to install `dotnet tool manifest`.
 ```bash
 dotnet new tool-manifest
 ```
-And after that we can restore our dotnet tool packages with .NET cli tools from `.config` folder and `dotnet-tools.json` file.
+And after that we can restore our dotnet tools packages with .NET cli tools from `.config` folder and `dotnet-tools.json` file.
 ```
 dotnet tool restore
 ```
