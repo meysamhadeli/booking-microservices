@@ -78,6 +78,7 @@ services:
   eventstore:
       container_name: eventstore
       image: eventstore/eventstore:latest
+      restart: unless-stopped
       environment:
          - EVENTSTORE_CLUSTER_SIZE=1
          - EVENTSTORE_RUN_PROJECTIONS=All
