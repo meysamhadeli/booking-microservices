@@ -24,6 +24,8 @@
 - [Technologies - Libraries](#technologies---libraries)
 - [The Domain and Bounded Context - Service Boundary](#the-domain-and-bounded-context---service-boundary)
 - [Structure of Project](#structure-of-project)
+- [Development Setup](#development_setup)
+    - [Dotnet Tool Packages](#dotnet_tool_packages)
 - [How to Run](#how-to-run)
   - [Config Certificate](#config-certificate)
   - [Docker Compose](#docker-compose)
@@ -153,6 +155,18 @@ I used CQRS to decompose my features into small parts that makes our application
 - It gives us better separation of concerns and cross-cutting concern (with help of mediatr behavior pipelines), instead of bloated service classes doing many things.
 
 Using the CQRS pattern, we cut each business functionality into vertical slices, for each of these slices we group classes (see [technical folders structure](http://www.kamilgrzybek.com/design/feature-folders)) specific to that feature together (command, handlers, infrastructure, repository, controllers, etc). In our CQRS pattern each command/query handler is a separate slice. This is where you can reduce coupling between layers. Each handler can be a separated code unit, even copy/pasted. Thanks to that, we can tune down the specific method to not follow general conventions (e.g. use custom SQL query or even different storage). In a traditional layered architecture, when we change the core generic mechanism in one layer, it can impact all methods.
+
+## Development Setup
+
+### Dotnet Tool Packages
+For installing our requirement package with .NET cli tools, we need to install `dotnet tool manifest`.
+```bash
+dotnet new tool-manifest
+```
+And after that we can restore our dotnet tool packages with .NET cli tools from `.config` folder and `dotnet-tools.json` file.
+```
+dotnet tool restore
+```
 
 ## How to Run
 
