@@ -27,7 +27,6 @@ public static class GrpcClientExtensions
         })
             .AddGrpcRetryPolicyHandler()
             .AddGrpcCircuitBreakerPolicyHandler();
-        ;
 
         return services;
     }

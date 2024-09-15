@@ -1,15 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  
+
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Grpc.Tools" Version="2.66.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
