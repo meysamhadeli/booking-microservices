@@ -83,7 +83,7 @@ public sealed class EventDispatcher : IEventDispatcher
     public async Task SendAsync<T>(T @event, Type type = null,
         CancellationToken cancellationToken = default)
         where T : IEvent =>
-        await SendAsync(new[] {@event}, type, cancellationToken);
+        await SendAsync(new[] { @event }, type, cancellationToken);
 
 
     private Task<IReadOnlyList<IIntegrationEvent>> MapDomainEventToIntegrationEventAsync(
@@ -104,7 +104,8 @@ public sealed class EventDispatcher : IEventDispatcher
 
             var integrationEvent = _eventMapper.MapToIntegrationEvent(@event);
 
-            if (integrationEvent is null) continue;
+            if (integrationEvent is null)
+                continue;
 
             integrationEvents.Add(integrationEvent);
         }
@@ -129,7 +130,8 @@ public sealed class EventDispatcher : IEventDispatcher
 
             var integrationEvent = _eventMapper.MapToInternalCommand(@event);
 
-            if (integrationEvent is null) continue;
+            if (integrationEvent is null)
+                continue;
 
             internalCommands.Add(integrationEvent);
         }

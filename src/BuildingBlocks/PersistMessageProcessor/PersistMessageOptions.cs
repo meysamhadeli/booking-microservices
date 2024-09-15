@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.PersistMessageProcessor;
+namespace BuildingBlocks.PersistMessageProcessor;
 
 public class PersistMessageOptions
 {

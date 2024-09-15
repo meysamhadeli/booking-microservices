@@ -1,4 +1,4 @@
-﻿namespace Identity.Configurations;
+namespace Identity.Configurations;
 
 public class AuthOptions
 {

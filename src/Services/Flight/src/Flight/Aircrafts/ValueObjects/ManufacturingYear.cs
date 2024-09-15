@@ -5,7 +5,7 @@ using Exceptions;
 public record ManufacturingYear
 {
     public int Value { get; }
-    
+
     private ManufacturingYear(int value)
     {
         Value = value;

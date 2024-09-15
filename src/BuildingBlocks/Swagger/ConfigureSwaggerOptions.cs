@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,8 +42,8 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
             Version = description.ApiVersion.ToString(),
             Title = _options?.Title ?? "APIs",
             Description = "An application with Swagger, Swashbuckle, and API versioning.",
-            Contact = new OpenApiContact {Name = "", Email = ""},
-            License = new OpenApiLicense {Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT")}
+            Contact = new OpenApiContact { Name = "", Email = "" },
+            License = new OpenApiLicense { Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT") }
         };
 
         if (description.IsDeprecated)

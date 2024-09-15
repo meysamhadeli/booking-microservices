@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.ProblemDetails;
+namespace BuildingBlocks.ProblemDetails;
 
 using Exception;
 using Grpc.Core;

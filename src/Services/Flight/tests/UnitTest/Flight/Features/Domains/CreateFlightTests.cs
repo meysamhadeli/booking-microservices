@@ -1,4 +1,4 @@
-﻿namespace Unit.Test.Flight.Features.Domains
+namespace Unit.Test.Flight.Features.Domains
 {
     using System.Linq;
     using FluentAssertions;

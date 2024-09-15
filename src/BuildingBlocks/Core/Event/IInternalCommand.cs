@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Core.Event;
+namespace BuildingBlocks.Core.Event;
 
 public interface IInternalCommand : IEvent
 {

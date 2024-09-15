@@ -1,4 +1,4 @@
-﻿namespace Unit.Test.Flight.Features.Handlers.CreateFlight;
+namespace Unit.Test.Flight.Features.Handlers.CreateFlight;
 
 using FluentAssertions;
 using FluentValidation.TestHelper;

@@ -1,4 +1,4 @@
-﻿namespace Flight.Flights.Features.DeletingFlight.V1;
+namespace Flight.Flights.Features.DeletingFlight.V1;
 
 using System;
 using System.Threading;

@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Json;
 using BuildingBlocks.TestBase;
 using EndToEnd.Test.Fakes;

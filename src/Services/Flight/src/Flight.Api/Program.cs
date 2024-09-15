@@ -12,7 +12,7 @@ builder.Host.UseDefaultServiceProvider((context, options) =>
     options.ValidateOnBuild = true;
 });
 
-builder.AddMinimalEndpoints(assemblies:typeof(FlightRoot).Assembly);
+builder.AddMinimalEndpoints(assemblies: typeof(FlightRoot).Assembly);
 builder.AddInfrastructure();
 
 var app = builder.Build();

@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.PersistMessageProcessor.Data;
+using BuildingBlocks.PersistMessageProcessor.Data;
 using BuildingBlocks.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

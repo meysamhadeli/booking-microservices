@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Logging;
+namespace BuildingBlocks.Logging;
 
 public class ElasticOptions
 {

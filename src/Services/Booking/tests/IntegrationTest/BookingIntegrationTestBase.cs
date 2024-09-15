@@ -1,4 +1,4 @@
-﻿using Booking.Api;
+using Booking.Api;
 using Booking.Data;
 using BuildingBlocks.TestBase;
 using Xunit;
@@ -6,7 +6,7 @@ using Xunit;
 namespace Integration.Test;
 
 [Collection(IntegrationTestCollection.Name)]
-public class BookingIntegrationTestBase: TestReadBase<Program, BookingReadDbContext>
+public class BookingIntegrationTestBase : TestReadBase<Program, BookingReadDbContext>
 {
     public BookingIntegrationTestBase(TestReadFixture<Program, BookingReadDbContext> integrationTestFixture) : base(integrationTestFixture)
     {

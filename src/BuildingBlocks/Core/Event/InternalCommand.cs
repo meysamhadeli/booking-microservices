@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Core.CQRS;
+using BuildingBlocks.Core.CQRS;
 
 namespace BuildingBlocks.Core.Event;
 

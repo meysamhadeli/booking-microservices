@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Humanizer;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
@@ -59,7 +59,7 @@ namespace BuildingBlocks.Swagger
                 {
                     // REF: https://github.com/Microsoft/aspnet-api-versioning/issues/429#issuecomment-605402330
                     var json = JsonConvert.SerializeObject(description.DefaultValue, description.ModelMetadata
-                        .ModelType, new JsonSerializerSettings {ReferenceLoopHandling = ReferenceLoopHandling.Ignore});
+                        .ModelType, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
                     parameter.Schema.Default = OpenApiAnyFactory.CreateFromJson(json);
                 }
 

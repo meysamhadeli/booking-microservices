@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Polly;
+namespace BuildingBlocks.Polly;
 
 using System.Net;
 using Ardalis.GuardClauses;

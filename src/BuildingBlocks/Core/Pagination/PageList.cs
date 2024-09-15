@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Core.Pagination;
+namespace BuildingBlocks.Core.Pagination;
 
 public record PageList<T>(IReadOnlyList<T> Items, int PageNumber, int PageSize, int TotalCount) : IPageList<T>
     where T : class

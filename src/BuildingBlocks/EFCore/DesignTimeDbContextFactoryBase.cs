@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BuildingBlocks.EFCore
 {
-  public abstract class DesignTimeDbContextFactoryBase<TContext> : IDesignTimeDbContextFactory<TContext> where TContext : DbContext
+    public abstract class DesignTimeDbContextFactoryBase<TContext> : IDesignTimeDbContextFactory<TContext> where TContext : DbContext
     {
         public TContext CreateDbContext(string[] args)
         {

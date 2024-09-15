@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Mongo;
+using BuildingBlocks.Mongo;
 using Humanizer;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;

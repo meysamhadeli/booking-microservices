@@ -1,4 +1,4 @@
-﻿namespace Flight.Flights.Features.UpdatingFlight.V1;
+namespace Flight.Flights.Features.UpdatingFlight.V1;
 
 using System;
 using System.Threading;

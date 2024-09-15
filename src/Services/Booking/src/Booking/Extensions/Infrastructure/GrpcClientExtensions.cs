@@ -1,4 +1,4 @@
-﻿using Booking.Configuration;
+using Booking.Configuration;
 using BuildingBlocks.Web;
 using Flight;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +26,7 @@ public static class GrpcClientExtensions
             o.Address = new Uri(grpcOptions.PassengerAddress);
         })
             .AddGrpcRetryPolicyHandler()
-            .AddGrpcCircuitBreakerPolicyHandler();;
+            .AddGrpcCircuitBreakerPolicyHandler();
 
         return services;
     }

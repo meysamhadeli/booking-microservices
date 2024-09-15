@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json.Serialization;
 
 namespace BuildingBlocks.EventStoreDB.Serialization;
 
-public class NonDefaultConstructorContractResolver: DefaultContractResolver
+public class NonDefaultConstructorContractResolver : DefaultContractResolver
 {
     protected override JsonObjectContract CreateObjectContract(Type objectType)
     {

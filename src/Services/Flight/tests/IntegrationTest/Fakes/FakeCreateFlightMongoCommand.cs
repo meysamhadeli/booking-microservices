@@ -1,4 +1,4 @@
-﻿namespace Integration.Test.Fakes;
+namespace Integration.Test.Fakes;
 
 using System.Linq;
 using AutoBogus;
@@ -13,7 +13,7 @@ public sealed class FakeCreateFlightMongoCommand : AutoFaker<CreateFlightMongo>
     {
         RuleFor(r => r.Id, _ => NewId.NextGuid());
         RuleFor(r => r.FlightNumber, r => "12FF");
-        RuleFor(r => r.DepartureAirportId, _ =>  InitialData.Airports.First().Id);
+        RuleFor(r => r.DepartureAirportId, _ => InitialData.Airports.First().Id);
         RuleFor(r => r.ArriveAirportId, _ => InitialData.Airports.Last().Id);
         RuleFor(r => r.Status, _ => FlightStatus.Flying);
         RuleFor(r => r.AircraftId, _ => InitialData.Aircrafts.First().Id);

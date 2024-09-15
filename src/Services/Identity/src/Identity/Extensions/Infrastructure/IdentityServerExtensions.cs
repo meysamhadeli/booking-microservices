@@ -1,9 +1,9 @@
+using BuildingBlocks.Web;
 using Identity.Data;
 using Identity.Identity.Models;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using BuildingBlocks.Web;
-using Microsoft.AspNetCore.Builder;
 
 namespace Identity.Extensions.Infrastructure;
 

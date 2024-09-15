@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -18,7 +18,8 @@ public static class JsonObjectContractProvider
         {
             var nonDefaultConstructor = GetNonDefaultConstructor(objectType);
 
-            if (nonDefaultConstructor == null) return contract;
+            if (nonDefaultConstructor == null)
+                return contract;
 
             contract.OverrideCreator = GetObjectConstructor(nonDefaultConstructor);
             contract.CreatorParameters.Clear();

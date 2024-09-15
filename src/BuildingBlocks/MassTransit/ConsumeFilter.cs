@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Core.Event;
+using BuildingBlocks.Core.Event;
 using BuildingBlocks.PersistMessageProcessor;
 using MassTransit;
 

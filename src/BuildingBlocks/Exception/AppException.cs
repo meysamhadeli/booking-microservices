@@ -17,7 +17,7 @@ public class AppException : CustomException
     {
     }
 
-    public AppException(string message,  System.Exception innerException, int? code = null) : base(message, innerException, code: code)
+    public AppException(string message, System.Exception innerException, int? code = null) : base(message, innerException, code: code)
     {
     }
 }

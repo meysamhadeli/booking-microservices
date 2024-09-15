@@ -1,4 +1,4 @@
-﻿namespace Integration.Test.Fakes;
+namespace Integration.Test.Fakes;
 
 using MassTransit;
 using Passenger;

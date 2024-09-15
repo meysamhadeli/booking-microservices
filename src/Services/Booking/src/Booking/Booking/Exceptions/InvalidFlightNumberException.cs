@@ -1,4 +1,4 @@
-﻿namespace Booking.Booking.Exceptions;
+namespace Booking.Booking.Exceptions;
 
 using BuildingBlocks.Exception;
 public class InvalidFlightNumberException : BadRequestException

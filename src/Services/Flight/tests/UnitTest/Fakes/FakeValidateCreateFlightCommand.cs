@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using AutoBogus;
 using Flight.Flights.Enums;
 

@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Polly;
+namespace BuildingBlocks.Polly;
 
 public class PolicyOptions
 {
