@@ -1,4 +1,4 @@
-﻿namespace Flight.Airports.Features.CreatingAirport.V1;
+namespace Flight.Airports.Features.CreatingAirport.V1;
 
 using System;
 using System.Threading;
@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
-using Exceptions;
-using Models;
 using Data;
+using Exceptions;
 using MapsterMapper;
 using MediatR;
+using Models;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 

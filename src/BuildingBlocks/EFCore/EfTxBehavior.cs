@@ -50,9 +50,9 @@ public class EfTxBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TRe
             typeof(TRequest).FullName);
 
         //ref: https://learn.microsoft.com/en-us/ef/core/saving/transactions#using-systemtransactions
-         using var scope = new TransactionScope(TransactionScopeOption.Required,
-             new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
-             TransactionScopeAsyncFlowOption.Enabled);
+        using var scope = new TransactionScope(TransactionScopeOption.Required,
+            new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
+            TransactionScopeAsyncFlowOption.Enabled);
 
         var response = await next();
 

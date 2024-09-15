@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using BuildingBlocks.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;

@@ -1,4 +1,4 @@
-﻿using AutoBogus;
+using AutoBogus;
 using Flight.Flights.Enums;
 
 namespace Integration.Test.Fakes;
@@ -17,6 +17,6 @@ public sealed class FakeCreateFlightCommand : AutoFaker<CreateFlight>
         RuleFor(r => r.DepartureAirportId, _ => InitialData.Airports.First().Id);
         RuleFor(r => r.ArriveAirportId, _ => InitialData.Airports.Last().Id);
         RuleFor(r => r.Status, _ => FlightStatus.Flying);
-        RuleFor(r => r.AircraftId, _ =>  InitialData.Aircrafts.First().Id);
+        RuleFor(r => r.AircraftId, _ => InitialData.Aircrafts.First().Id);
     }
 }

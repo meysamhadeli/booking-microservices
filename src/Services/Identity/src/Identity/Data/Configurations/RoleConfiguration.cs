@@ -1,4 +1,4 @@
-﻿namespace Identity.Data.Configurations;
+namespace Identity.Data.Configurations;
 
 using Identity.Models;
 using Microsoft.EntityFrameworkCore;

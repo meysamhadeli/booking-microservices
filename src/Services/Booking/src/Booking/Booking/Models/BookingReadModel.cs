@@ -1,4 +1,4 @@
-﻿namespace Booking.Booking.Models;
+namespace Booking.Booking.Models;
 
 using ValueObjects;
 

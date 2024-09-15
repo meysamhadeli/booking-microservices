@@ -1,4 +1,4 @@
-﻿namespace Passenger.Identity.Consumers.RegisteringNewUser.V1;
+namespace Passenger.Identity.Consumers.RegisteringNewUser.V1;
 
 using BuildingBlocks.Core.Event;
 

@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.HealthCheck;
+namespace BuildingBlocks.HealthCheck;
 
 public class HealthOptions
 {

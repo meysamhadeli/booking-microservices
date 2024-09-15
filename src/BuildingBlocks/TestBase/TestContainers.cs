@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.TestBase;
+namespace BuildingBlocks.TestBase;
 
 using Testcontainers.EventStoreDb;
 using Testcontainers.MongoDb;

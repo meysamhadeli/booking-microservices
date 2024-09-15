@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using BuildingBlocks.TestBase;
 using EndToEnd.Test.Fakes;
 using EndToEnd.Test.Routes;
@@ -9,7 +9,7 @@ using Xunit;
 
 namespace EndToEnd.Test.Flight.Features;
 
-public class GetFlightByIdTests: FlightEndToEndTestBase
+public class GetFlightByIdTests : FlightEndToEndTestBase
 {
     public GetFlightByIdTests(TestFixture<Program, FlightDbContext, FlightReadDbContext> integrationTestFixture) : base(integrationTestFixture)
     {

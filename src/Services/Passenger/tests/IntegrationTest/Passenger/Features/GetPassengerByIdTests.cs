@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using BuildingBlocks.TestBase;
 using FluentAssertions;
 using Integration.Test.Fakes;
@@ -49,7 +49,7 @@ public class GetPassengerByIdTests : PassengerIntegrationTestBase
         var passengerGrpcClient = new PassengerGrpcService.PassengerGrpcServiceClient(Fixture.Channel);
 
         // Act
-        var response = await passengerGrpcClient.GetByIdAsync(new GetByIdRequest {Id = command.Id.ToString()});
+        var response = await passengerGrpcClient.GetByIdAsync(new GetByIdRequest { Id = command.Id.ToString() });
 
         // Assert
         response?.Should().NotBeNull();

@@ -1,4 +1,4 @@
-﻿namespace Flight.Airports.Models;
+namespace Flight.Airports.Models;
 
 using System;
 

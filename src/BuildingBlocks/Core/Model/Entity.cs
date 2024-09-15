@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Core.Model;
+namespace BuildingBlocks.Core.Model;
 
 public abstract record Entity<T> : IEntity<T>
 {

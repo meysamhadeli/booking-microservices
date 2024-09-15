@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Core.Event;
+using BuildingBlocks.Core.Event;
 
 namespace BuildingBlocks.Core.Model;
 

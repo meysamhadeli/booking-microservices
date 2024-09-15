@@ -1,4 +1,4 @@
-﻿using Flight;
+using Flight;
 using Mapster;
 using MapsterMapper;
 

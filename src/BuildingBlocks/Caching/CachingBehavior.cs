@@ -1,4 +1,4 @@
-﻿using EasyCaching.Core;
+using EasyCaching.Core;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

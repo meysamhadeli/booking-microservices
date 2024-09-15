@@ -79,7 +79,8 @@ public class EventStoreDBSubscriptionToAll
     {
         try
         {
-            if (IsEventWithEmptyData(resolvedEvent) || IsCheckpointEvent(resolvedEvent)) return;
+            if (IsEventWithEmptyData(resolvedEvent) || IsCheckpointEvent(resolvedEvent))
+                return;
 
             var streamEvent = resolvedEvent.ToStreamEvent();
 
@@ -123,7 +124,7 @@ public class EventStoreDBSubscriptionToAll
             reason
         );
 
-        if (exception is RpcException {StatusCode: StatusCode.Cancelled})
+        if (exception is RpcException { StatusCode: StatusCode.Cancelled })
             return;
 
         Resubscribe();
@@ -172,7 +173,8 @@ public class EventStoreDBSubscriptionToAll
 
     private bool IsEventWithEmptyData(ResolvedEvent resolvedEvent)
     {
-        if (resolvedEvent.Event.Data.Length != 0) return false;
+        if (resolvedEvent.Event.Data.Length != 0)
+            return false;
 
         logger.LogInformation("Event without data received");
         return true;
@@ -180,7 +182,8 @@ public class EventStoreDBSubscriptionToAll
 
     private bool IsCheckpointEvent(ResolvedEvent resolvedEvent)
     {
-        if (resolvedEvent.Event.EventType != EventTypeMapper.ToName<CheckpointStored>()) return false;
+        if (resolvedEvent.Event.EventType != EventTypeMapper.ToName<CheckpointStored>())
+            return false;
 
         logger.LogInformation("Checkpoint event - ignoring");
         return true;

@@ -13,10 +13,11 @@ public static class JwtExtensions
     {
         var jwtOptions = services.GetOptions<JwtBearerOptions>("Jwt");
 
-        services.AddAuthentication(o => {
-                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
+        services.AddAuthentication(o =>
+        {
+            o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
             .AddCookie(cfg => cfg.SlidingExpiration = true)
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
@@ -27,7 +28,7 @@ public static class JwtExtensions
                     ClockSkew = TimeSpan.FromSeconds(2) // For prevent add default value (5min) to life time token!
                 };
                 options.RequireHttpsMetadata = jwtOptions.RequireHttpsMetadata;
-                options.MetadataAddress= jwtOptions.MetadataAddress;
+                options.MetadataAddress = jwtOptions.MetadataAddress;
             });
 
         if (!string.IsNullOrEmpty(jwtOptions.Audience))

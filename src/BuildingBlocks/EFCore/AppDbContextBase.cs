@@ -32,7 +32,8 @@ public abstract class AppDbContextBase : DbContext, IDbContext
 
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
-        if (_currentTransaction != null) return;
+        if (_currentTransaction != null)
+            return;
 
         _currentTransaction = await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
     }

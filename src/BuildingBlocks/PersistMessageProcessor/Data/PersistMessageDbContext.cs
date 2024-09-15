@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.EFCore;
+using BuildingBlocks.EFCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BuildingBlocks.PersistMessageProcessor.Data;

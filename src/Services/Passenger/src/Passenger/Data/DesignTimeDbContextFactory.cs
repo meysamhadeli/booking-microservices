@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Passenger.Data;
 
-public class DesignTimeDbContextFactory: IDesignTimeDbContextFactory<PassengerDbContext>
+public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<PassengerDbContext>
 {
     public PassengerDbContext CreateDbContext(string[] args)
     {

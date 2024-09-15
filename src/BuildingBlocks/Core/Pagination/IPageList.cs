@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Core.Pagination;
+namespace BuildingBlocks.Core.Pagination;
 
 public interface IPageList<T>
     where T : class

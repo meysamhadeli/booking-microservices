@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using System.Text.Json;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Event;
@@ -145,7 +145,8 @@ public class PersistMessageProcessor : IPersistMessageProcessor
 
         await _publishEndpoint.Publish(data, context =>
         {
-            foreach (var header in messageEnvelope.Headers) context.Headers.Set(header.Key, header.Value);
+            foreach (var header in messageEnvelope.Headers)
+                context.Headers.Set(header.Key, header.Value);
         }, cancellationToken);
 
         _logger.LogInformation(

@@ -29,7 +29,7 @@ public static class EventStoreDBConfigExtensions
     {
 
         services
-            .AddSingleton(x=>
+            .AddSingleton(x =>
             {
                 var eventStoreOptions = services.GetOptions<EventStoreOptions>(nameof(EventStoreOptions));
                 return new EventStoreClient(EventStoreClientSettings.Create(eventStoreOptions.ConnectionString));

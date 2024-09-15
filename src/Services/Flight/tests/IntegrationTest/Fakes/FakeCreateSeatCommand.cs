@@ -1,4 +1,4 @@
-﻿using AutoBogus;
+using AutoBogus;
 using Flight.Seats.Enums;
 
 namespace Integration.Test.Fakes;
