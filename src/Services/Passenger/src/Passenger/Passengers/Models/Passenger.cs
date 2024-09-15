@@ -3,8 +3,8 @@ using BuildingBlocks.Core.Model;
 namespace Passenger.Passengers.Models;
 
 using Features.CompletingRegisterPassenger.V1;
-using ValueObjects;
 using Identity.Consumers.RegisteringNewUser.V1;
+using ValueObjects;
 
 public record Passenger : Aggregate<PassengerId>
 {

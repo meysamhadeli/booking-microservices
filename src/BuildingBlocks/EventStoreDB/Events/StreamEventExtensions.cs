@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.Eventing.Reader;
+using System.Diagnostics.Eventing.Reader;
 using BuildingBlocks.EventStoreDB.Serialization;
 using EventStore.Client;
 

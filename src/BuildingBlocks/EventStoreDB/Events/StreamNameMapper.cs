@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 
 namespace BuildingBlocks.EventStoreDB.Events;
 
@@ -20,7 +20,7 @@ public class StreamNameMapper
 
     public static string ToStreamId(Type streamType, object aggregateId, object? tenantId = null)
     {
-        var tenantPrefix = tenantId != null ? $"{tenantId}_"  : "";
+        var tenantPrefix = tenantId != null ? $"{tenantId}_" : "";
 
         return $"{tenantPrefix}{streamType.Name}-{aggregateId}";
     }

@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.EFCore;
+using BuildingBlocks.EFCore;
 using BuildingBlocks.Logging;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
@@ -18,7 +18,8 @@ public static class Extensions
     {
         var healthOptions = services.GetOptions<HealthOptions>(nameof(HealthOptions));
 
-        if (!healthOptions.Enabled) return services;
+        if (!healthOptions.Enabled)
+            return services;
 
         var appOptions = services.GetOptions<AppOptions>(nameof(AppOptions));
         var postgresOptions = services.GetOptions<PostgresOptions>(nameof(PostgresOptions));
@@ -51,7 +52,8 @@ public static class Extensions
     {
         var healthOptions = app.Configuration.GetOptions<HealthOptions>(nameof(HealthOptions));
 
-        if (!healthOptions.Enabled) return app;
+        if (!healthOptions.Enabled)
+            return app;
 
         app.UseHealthChecks("/healthz",
                 new HealthCheckOptions

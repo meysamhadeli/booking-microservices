@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using BuildingBlocks.EventStoreDB.Events;
 using EventStore.Client;
 using Newtonsoft.Json;

@@ -1,4 +1,4 @@
-﻿using AutoBogus;
+using AutoBogus;
 using Passenger.Passengers.Enums;
 
 namespace Integration.Test.Fakes;

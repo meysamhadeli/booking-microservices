@@ -7,10 +7,9 @@ using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Web;
-using Duende.IdentityServer.EntityFramework.Entities;
 using Data;
+using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
-using Models;
 using Flights.ValueObjects;
 using FluentValidation;
 using Mapster;
@@ -21,6 +20,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Models;
 using ValueObjects;
 
 public record CreateSeat

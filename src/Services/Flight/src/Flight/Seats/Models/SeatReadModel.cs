@@ -1,4 +1,4 @@
-﻿namespace Flight.Seats.Models;
+namespace Flight.Seats.Models;
 
 using System;
 

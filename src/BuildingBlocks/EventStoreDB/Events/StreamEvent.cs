@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Core.Event;
+using BuildingBlocks.Core.Event;
 
 namespace BuildingBlocks.EventStoreDB.Events;
 
@@ -7,7 +7,7 @@ public record EventMetadata(
     ulong LogPosition
 );
 
-public class StreamEvent: IEvent
+public class StreamEvent : IEvent
 {
     public object Data { get; }
     public EventMetadata Metadata { get; }
@@ -19,7 +19,7 @@ public class StreamEvent: IEvent
     }
 }
 
-public class StreamEvent<T>: StreamEvent where T: notnull
+public class StreamEvent<T> : StreamEvent where T : notnull
 {
     public new T Data => (T)base.Data;
 

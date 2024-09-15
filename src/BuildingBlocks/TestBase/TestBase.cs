@@ -1,4 +1,6 @@
-﻿using Ardalis.GuardClauses;
+using System.Net;
+using System.Security.Claims;
+using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
@@ -20,12 +22,10 @@ using MongoDB.Driver;
 using NSubstitute;
 using Respawn;
 using Serilog;
+using WebMotions.Fake.Authentication.JwtBearer;
 using Xunit;
 using Xunit.Abstractions;
 using ILogger = Serilog.ILogger;
-using System.Net;
-using System.Security.Claims;
-using WebMotions.Fake.Authentication.JwtBearer;
 
 namespace BuildingBlocks.TestBase;
 

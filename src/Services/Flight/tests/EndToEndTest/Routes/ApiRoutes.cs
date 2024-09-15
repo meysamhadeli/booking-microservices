@@ -1,4 +1,4 @@
-﻿namespace EndToEnd.Test.Routes;
+namespace EndToEnd.Test.Routes;
 
 public static class ApiRoutes
 {

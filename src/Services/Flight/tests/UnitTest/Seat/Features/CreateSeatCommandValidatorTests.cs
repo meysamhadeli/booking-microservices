@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using FluentValidation.TestHelper;
 using Unit.Test.Common;
 using Unit.Test.Fakes;

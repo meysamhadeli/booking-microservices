@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.EventStoreDB.Subscriptions;
+namespace BuildingBlocks.EventStoreDB.Subscriptions;
 
 public interface ISubscriptionCheckpointRepository
 {

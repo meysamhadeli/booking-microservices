@@ -54,7 +54,8 @@ public record Trip
             throw new InvalidFlightDateException(flightDate);
         }
 
-        if(price < 0){
+        if (price < 0)
+        {
             throw new InvalidPriceException(price);
         }
 

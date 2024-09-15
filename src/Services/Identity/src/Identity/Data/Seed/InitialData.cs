@@ -1,4 +1,4 @@
-﻿namespace Identity.Data.Seed;
+namespace Identity.Data.Seed;
 
 using System;
 using System.Collections.Generic;

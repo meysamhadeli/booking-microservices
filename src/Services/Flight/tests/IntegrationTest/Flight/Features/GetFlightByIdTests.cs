@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using BuildingBlocks.TestBase;
 using Flight;
 using Flight.Api;
@@ -49,7 +49,7 @@ public class GetFlightByIdTests : FlightIntegrationTestBase
         var flightGrpcClient = new FlightGrpcService.FlightGrpcServiceClient(Fixture.Channel);
 
         // Act
-        var response = await flightGrpcClient.GetByIdAsync(new GetByIdRequest {Id = command.Id.ToString()}).ResponseAsync;
+        var response = await flightGrpcClient.GetByIdAsync(new GetByIdRequest { Id = command.Id.ToString() }).ResponseAsync;
 
         // Assert
         response?.Should().NotBeNull();

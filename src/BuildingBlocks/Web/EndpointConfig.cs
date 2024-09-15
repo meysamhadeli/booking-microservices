@@ -1,4 +1,4 @@
-﻿using Asp.Versioning.Builder;
+using Asp.Versioning.Builder;
 
 namespace BuildingBlocks.Web;
 

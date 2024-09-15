@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Core.Pagination;
+namespace BuildingBlocks.Core.Pagination;
 
 using Sieve.Models;
 using Sieve.Services;

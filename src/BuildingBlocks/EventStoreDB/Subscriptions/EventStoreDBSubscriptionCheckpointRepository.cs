@@ -1,13 +1,13 @@
-﻿using BuildingBlocks.Core.Event;
+using BuildingBlocks.Core.Event;
 using BuildingBlocks.EventStoreDB.Events;
 using BuildingBlocks.EventStoreDB.Serialization;
 using EventStore.Client;
 
 namespace BuildingBlocks.EventStoreDB.Subscriptions;
 
-public record CheckpointStored(string SubscriptionId, ulong? Position, DateTime CheckpointedAt): IEvent;
+public record CheckpointStored(string SubscriptionId, ulong? Position, DateTime CheckpointedAt) : IEvent;
 
-public class EventStoreDBSubscriptionCheckpointRepository: ISubscriptionCheckpointRepository
+public class EventStoreDBSubscriptionCheckpointRepository : ISubscriptionCheckpointRepository
 {
     private readonly EventStoreClient eventStoreClient;
 
@@ -37,7 +37,7 @@ public class EventStoreDBSubscriptionCheckpointRepository: ISubscriptionCheckpoi
     public async ValueTask Store(string subscriptionId, ulong position, CancellationToken ct)
     {
         var @event = new CheckpointStored(subscriptionId, position, DateTime.UtcNow);
-        var eventToAppend = new[] {@event.ToJsonEventData()};
+        var eventToAppend = new[] { @event.ToJsonEventData() };
         var streamName = GetCheckpointStreamName(subscriptionId);
 
         try

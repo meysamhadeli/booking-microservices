@@ -1,4 +1,4 @@
-﻿using AutoBogus;
+using AutoBogus;
 
 namespace Unit.Test.Fakes;
 

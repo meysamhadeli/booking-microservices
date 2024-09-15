@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,7 +33,8 @@ public static class ServiceCollectionExtensions
                 {
                     var xmlFile = XmlCommentsFilePath(assembly);
 
-                    if (File.Exists(xmlFile)) options.IncludeXmlComments(xmlFile);
+                    if (File.Exists(xmlFile))
+                        options.IncludeXmlComments(xmlFile);
                 }
 
                 options.AddEnumsWithValuesFixFilters();

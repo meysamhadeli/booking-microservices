@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.TestBase;
+using BuildingBlocks.TestBase;
 using Passenger.Api;
 using Passenger.Data;
 using Xunit;
@@ -6,7 +6,7 @@ using Xunit;
 namespace Integration.Test;
 
 [Collection(IntegrationTestCollection.Name)]
-public class PassengerIntegrationTestBase: TestBase<Program, PassengerDbContext, PassengerReadDbContext>
+public class PassengerIntegrationTestBase : TestBase<Program, PassengerDbContext, PassengerReadDbContext>
 {
     public PassengerIntegrationTestBase(TestFixture<Program, PassengerDbContext, PassengerReadDbContext> integrationTestFactory)
         : base(integrationTestFactory)

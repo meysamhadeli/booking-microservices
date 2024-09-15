@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using BuildingBlocks.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -49,7 +49,7 @@ namespace BuildingBlocks.Logging
                 }
 
 
-                if (logOptions?.Sentry is {Enabled: true})
+                if (logOptions?.Sentry is { Enabled: true })
                 {
                     var minimumBreadcrumbLevel = Enum.TryParse<LogEventLevel>(logOptions.Level, true, out var minBreadcrumbLevel)
                         ? minBreadcrumbLevel

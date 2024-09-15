@@ -133,7 +133,8 @@ internal class CreateBookingCommandHandler : ICommandHandler<CreateBooking, Crea
 
         await _flightGrpcServiceClient.ReserveSeatAsync(new ReserveSeatRequest
         {
-            FlightId = flight.FlightDto.Id, SeatNumber = emptySeat?.SeatNumber
+            FlightId = flight.FlightDto.Id,
+            SeatNumber = emptySeat?.SeatNumber
         }, cancellationToken: cancellationToken);
 
         var result = await _eventStoreDbRepository.Add(

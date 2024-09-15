@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Utils;
+namespace BuildingBlocks.Utils;
 
 public static class NoSynchronizationContextScope
 {
@@ -9,7 +9,7 @@ public static class NoSynchronizationContextScope
         return new Disposable(context);
     }
 
-    public struct Disposable: IDisposable
+    public struct Disposable : IDisposable
     {
         private readonly SynchronizationContext? synchronizationContext;
 

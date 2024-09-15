@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.TestBase;
+using BuildingBlocks.TestBase;
 using Identity.Api;
 using Identity.Data;
 using Xunit;
@@ -6,7 +6,7 @@ using Xunit;
 namespace Integration.Test;
 
 [Collection(IntegrationTestCollection.Name)]
-public class IdentityIntegrationTestBase: TestWriteBase<Program, IdentityContext>
+public class IdentityIntegrationTestBase : TestWriteBase<Program, IdentityContext>
 {
     public IdentityIntegrationTestBase(TestWriteFixture<Program, IdentityContext> integrationTestFactory)
         : base(integrationTestFactory)
