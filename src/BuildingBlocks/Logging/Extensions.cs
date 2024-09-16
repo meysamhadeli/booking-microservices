@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using BuildingBlocks.Web;
 using Microsoft.AspNetCore.Builder;
@@ -44,7 +45,7 @@ namespace BuildingBlocks.Logging
                         new ElasticsearchSinkOptions(new Uri(logOptions.Elastic.ElasticServiceUrl))
                         {
                             AutoRegisterTemplate = true,
-                            IndexFormat = $"{appOptions.Name}-{environment?.ToLower()}"
+                            IndexFormat = $"{appOptions.Name}-{environment?.ToLower(CultureInfo.CurrentCulture)}"
                         });
                 }
 

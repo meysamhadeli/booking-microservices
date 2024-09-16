@@ -16,36 +16,40 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 public static class Extensions
 {
-    public static IServiceCollection AddCustomDbContext<TContext>(
-        this IServiceCollection services)
-        where TContext : DbContext, IDbContext
+    public static IServiceCollection AddCustomDbContext<TContext>(this IServiceCollection services)
+    where TContext : DbContext, IDbContext
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
         services.AddValidateOptions<PostgresOptions>();
 
-        services.AddDbContext<TContext>((sp, options) =>
-        {
-            var postgresOptions = sp.GetRequiredService<PostgresOptions>();
+        services.AddDbContext<TContext>(
+            (sp, options) =>
+            {
+                var postgresOptions = sp.GetRequiredService<PostgresOptions>();
 
-            Guard.Against.Null(options, nameof(postgresOptions));
+                Guard.Against.Null(options, nameof(postgresOptions));
 
-            options.UseNpgsql(postgresOptions?.ConnectionString,
-                    dbOptions =>
-                    {
-                        dbOptions.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name);
-                    })
-                // https://github.com/efcore/EFCore.NamingConventions
-                .UseSnakeCaseNamingConvention();
-        });
+                options.UseNpgsql(
+                        postgresOptions?.ConnectionString,
+                        dbOptions =>
+                        {
+                            dbOptions.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name);
+                        })
+                    // https://github.com/efcore/EFCore.NamingConventions
+                    .UseSnakeCaseNamingConvention();
+            });
 
         services.AddScoped<IDbContext>(provider => provider.GetService<TContext>());
 
         return services;
     }
 
-    public static IApplicationBuilder UseMigration<TContext>(this IApplicationBuilder app, IWebHostEnvironment env)
-        where TContext : DbContext, IDbContext
+    public static IApplicationBuilder UseMigration<TContext>(
+        this IApplicationBuilder app,
+        IWebHostEnvironment env
+    )
+    where TContext : DbContext, IDbContext
     {
         MigrateDatabaseAsync<TContext>(app.ApplicationServices).GetAwaiter().GetResult();
 
@@ -62,13 +66,16 @@ public static class Extensions
     public static void FilterSoftDeletedProperties(this ModelBuilder modelBuilder)
     {
         Expression<Func<IAggregate, bool>> filterExpr = e => !e.IsDeleted;
+
         foreach (var mutableEntityType in modelBuilder.Model.GetEntityTypes()
                      .Where(m => m.ClrType.IsAssignableTo(typeof(IEntity))))
         {
             // modify expression to handle correct child type
             var parameter = Expression.Parameter(mutableEntityType.ClrType);
+
             var body = ReplacingExpressionVisitor
                 .Replace(filterExpr.Parameters.First(), parameter, filterExpr.Body);
+
             var lambdaExpression = Expression.Lambda(body, parameter);
 
             // set filter
@@ -76,8 +83,7 @@ public static class Extensions
         }
     }
 
-
-    //ref: https://andrewlock.net/customising-asp-net-core-identity-ef-core-naming-conventions-for-postgresql/
+    // ref: https://andrewlock.net/customising-asp-net-core-identity-ef-core-naming-conventions-for-postgresql/
     public static void ToSnakeCaseTables(this ModelBuilder modelBuilder)
     {
         foreach (var entity in modelBuilder.Model.GetEntityTypes())
@@ -86,7 +92,9 @@ public static class Extensions
             entity.SetTableName(entity.GetTableName()?.Underscore());
 
             var tableObjectIdentifier =
-                StoreObjectIdentifier.Table(entity.GetTableName()?.Underscore()!, entity.GetSchema());
+                StoreObjectIdentifier.Table(
+                    entity.GetTableName()?.Underscore()!,
+                    entity.GetSchema());
 
             // Replace column names
             foreach (var property in entity.GetProperties())
@@ -107,7 +115,7 @@ public static class Extensions
     }
 
     private static async Task MigrateDatabaseAsync<TContext>(IServiceProvider serviceProvider)
-        where TContext : DbContext, IDbContext
+    where TContext : DbContext, IDbContext
     {
         using var scope = serviceProvider.CreateScope();
 
@@ -119,6 +127,7 @@ public static class Extensions
     {
         using var scope = serviceProvider.CreateScope();
         var seeders = scope.ServiceProvider.GetServices<IDataSeeder>();
+
         foreach (var seeder in seeders)
         {
             await seeder.SeedAllAsync();

@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
@@ -42,7 +43,7 @@ public class MongoDbContext : IMongoDbContext
 
     public IMongoCollection<T> GetCollection<T>(string? name = null)
     {
-        return Database.GetCollection<T>(name ?? typeof(T).Name.ToLower());
+        return Database.GetCollection<T>(name ?? typeof(T).Name.ToLower(CultureInfo.CurrentCulture));
     }
 
     public void Dispose()
