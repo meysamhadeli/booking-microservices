@@ -1,6 +1,10 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS builder
 WORKDIR /
 
+COPY ./.editorconfig ./
+COPY ./global.json ./
+COPY ./Directory.Build.props ./
+
 # Setup working directory for the project
 COPY ./src/BuildingBlocks/BuildingBlocks.csproj ./BuildingBlocks/
 COPY ./src/Services/Booking/src/Booking/Booking.csproj ./Services/Booking/src/Booking/
@@ -14,10 +18,6 @@ RUN  dotnet restore ./Services/Booking/src/Booking.Api/Booking.Api.csproj
 COPY ./src/BuildingBlocks ./BuildingBlocks/
 COPY ./src/Services/Booking/src/Booking/  ./Services/Booking/src/Booking/
 COPY ./src/Services/Booking/src/Booking.Api/  ./Services/Booking/src/Booking.Api/
-
-COPY ./.editorconfig ./
-COPY ./global.json ./
-COPY ./Directory.Build.props ./
 
 # Build project with Release configuration
 # and no restore, as we did it already

@@ -1,8 +1,11 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS builder
-WORKDIR /src
+WORKDIR /
+
+COPY ./.editorconfig ./
+COPY ./global.json ./
+COPY ./Directory.Build.props ./
 
 # Setup working directory for the project
-WORKDIR /src
 COPY ./src/BuildingBlocks/BuildingBlocks.csproj ./BuildingBlocks/
 COPY ./src/ApiGateway/src/ApiGateway.csproj ./ApiGateway/src/
 
@@ -15,10 +18,6 @@ RUN --mount=type=cache,id=gateway_nuget,target=/root/.nuget/packages \
 COPY ./src/BuildingBlocks ./BuildingBlocks/
 COPY ./src/ApiGateway/src  ./ApiGateway/src/
 
-COPY ./.editorconfig ./
-COPY ./global.json ./
-COPY ./Directory.Build.props ./
-
 # Build project with Release configuration
 # and no restore, as we did it already
 
@@ -26,7 +25,7 @@ RUN ls
 RUN --mount=type=cache,id=gateway_nuget,target=/root/.nuget/packages \
     dotnet build  -c Release --no-restore ./ApiGateway/src/ApiGateway.csproj
 
-WORKDIR /src/ApiGateway/src
+WORKDIR /ApiGateway/src
 
 # Publish project to output folder
 # and no build, as we did it already
@@ -36,7 +35,7 @@ RUN --mount=type=cache,id=gateway_nuget,target=/root/.nuget/packages \
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
 # Setup working directory for the project
-WORKDIR /app
+WORKDIR /
 COPY --from=builder /src/ApiGateway/src/out  .
 
 ENV ASPNETCORE_URLS https://*:443, http://*:80
