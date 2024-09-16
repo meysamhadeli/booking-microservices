@@ -65,7 +65,7 @@ public static class DbContextFactory
                 ArriveDate.Of( new DateTime(2022, 1, 31, 14, 0, 0)),
                 AirportId.Of( _airportId2), DurationMinutes.Of(120m),
                 FlightDate.Of( new DateTime(2022, 1, 31)), FlightStatus.Completed,
-                Price.Of((decimal)8000))
+                Price.Of(8000))
         };
         context.Flights.AddRange(flights);
 

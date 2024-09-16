@@ -45,7 +45,7 @@ public static class InitialData
                ArriveDate.Of(new DateTime(2022, 1, 31, 14, 0, 0)),
                AirportId.Of(Airports.Last().Id), DurationMinutes.Of(120m),
                 FlightDate.Of(new DateTime(2022, 1, 31, 13, 0, 0)), global::Flight.Flights.Enums.FlightStatus.Completed,
-                Price.Of((decimal)8000))
+                Price.Of(8000))
         };
 
         Seats = new List<Seat>
