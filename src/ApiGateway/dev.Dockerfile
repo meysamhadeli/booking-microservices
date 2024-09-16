@@ -15,6 +15,10 @@ RUN --mount=type=cache,id=gateway_nuget,target=/root/.nuget/packages \
 COPY ./src/BuildingBlocks ./BuildingBlocks/
 COPY ./src/ApiGateway/src  ./ApiGateway/src/
 
+COPY ./.editorconfig ./
+COPY ./global.json ./
+COPY ./Directory.Build.props ./
+
 # Build project with Release configuration
 # and no restore, as we did it already
 

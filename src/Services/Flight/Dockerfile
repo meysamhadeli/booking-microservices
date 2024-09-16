@@ -15,6 +15,10 @@ COPY ./src/BuildingBlocks ./BuildingBlocks/
 COPY ./src/Services/Flight/src/Flight/  ./Services/Flight/src/Flight/
 COPY ./src/Services/Flight/src/Flight.Api/  ./Services/Flight/src/Flight.Api/
 
+COPY ./.editorconfig ./
+COPY ./global.json ./
+COPY ./Directory.Build.props ./
+
 # Build project with Release configuration
 # and no restore, as we did it already
 
