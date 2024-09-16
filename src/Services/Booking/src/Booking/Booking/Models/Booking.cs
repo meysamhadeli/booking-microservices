@@ -32,10 +32,10 @@ public record Booking : AggregateEventSourcing<Guid>
         switch (@event)
         {
             case BookingCreatedDomainEvent bookingCreated:
-            {
-                Apply(bookingCreated);
-                return;
-            }
+                {
+                    Apply(bookingCreated);
+                    return;
+                }
         }
     }
 
