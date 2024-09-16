@@ -1,6 +1,10 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS builder
 WORKDIR /
 
+COPY ./.editorconfig ./
+COPY ./global.json ./
+COPY ./Directory.Build.props ./
+
 # Setup working directory for the project
 COPY ./src/BuildingBlocks/BuildingBlocks.csproj ./BuildingBlocks/
 COPY ./src/Services/Passenger/src/Passenger/Passenger.csproj ./Services/Passenger/src/Passenger/
@@ -15,10 +19,6 @@ RUN --mount=type=cache,id=passenger_nuget,target=/root/.nuget/packages \
 COPY ./src/BuildingBlocks ./BuildingBlocks/
 COPY ./src/Services/Passenger/src/Passenger/  ./Services/Passenger/src/Passenger/
 COPY ./src/Services/Passenger/src/Passenger.Api/  ./Services/Passenger/src/Passenger.Api/
-
-COPY ./.editorconfig ./
-COPY ./global.json ./
-COPY ./Directory.Build.props ./
 
 # Build project with Release configuration
 # and no restore, as we did it already
