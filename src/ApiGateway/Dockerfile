@@ -14,6 +14,10 @@ RUN dotnet restore ./ApiGateway/src/ApiGateway.csproj
 COPY ./src/BuildingBlocks ./BuildingBlocks/
 COPY ./src/ApiGateway/src  ./ApiGateway/src/
 
+COPY ./.editorconfig ./
+COPY ./global.json ./
+COPY ./Directory.Build.props ./
+
 # Build project with Release configuration
 # and no restore, as we did it already
 

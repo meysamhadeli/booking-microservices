@@ -16,6 +16,10 @@ COPY ./src/BuildingBlocks ./BuildingBlocks/
 COPY ./src/Services/Booking/src/Booking/  ./Services/Booking/src/Booking/
 COPY ./src/Services/Booking/src/Booking.Api/  ./Services/Booking/src/Booking.Api/
 
+COPY ./.editorconfig ./
+COPY ./global.json ./
+COPY ./Directory.Build.props ./
+
 # Build project with Release configuration
 # and no restore, as we did it already
 

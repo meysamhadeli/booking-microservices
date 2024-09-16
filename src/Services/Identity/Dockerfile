@@ -14,6 +14,10 @@ COPY ./src/BuildingBlocks ./BuildingBlocks/
 COPY ./src/Services/Identity/src/Identity/  ./Services/Identity/src/Identity/
 COPY ./src/Services/Identity/src/Identity.Api/  ./Services/Identity/src/Identity.Api/
 
+COPY ./.editorconfig ./
+COPY ./global.json ./
+COPY ./Directory.Build.props ./
+
 # Build project with Release configuration
 # and no restore, as we did it already
 
