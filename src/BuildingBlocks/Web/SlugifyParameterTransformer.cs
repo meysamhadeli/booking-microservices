@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Routing;
 
@@ -10,6 +11,6 @@ public class SlugifyParameterTransformer : IOutboundParameterTransformer
         // Slugify value
         return value == null
             ? null
-            : Regex.Replace(value.ToString() ?? string.Empty, "([a-z])([A-Z])", "$1-$2").ToLower();
+            : Regex.Replace(value.ToString() ?? string.Empty, "([a-z])([A-Z])", "$1-$2").ToLower(CultureInfo.CurrentCulture);
     }
 }

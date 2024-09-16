@@ -50,6 +50,18 @@ runs:
       # restore root solution
       run: dotnet restore
 
+    # npm install, runs `prepare` script automatically in the initialize step
+    - name: Install NPM Dependencies
+      shell: bash
+      if: success()
+      run: npm install
+
+    - name: Format Service
+      shell: bash
+      if: ${{ success()}}
+      run: |
+        npm run ci-format
+
     - name: Build Service
       shell: bash
       if: ${{ success()}}

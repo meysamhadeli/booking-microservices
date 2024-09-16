@@ -26,6 +26,8 @@
 - [Structure of Project](#structure-of-project)
 - [Development Setup](#development-setup)
     - [Dotnet Tools Packages](#dotnet-tools-packages)
+    - [Husky](#husky)
+    - [Upgrade Nuget Packages](#upgrade-nuget-packages)
 - [How to Run](#how-to-run)
   - [Config Certificate](#config-certificate)
   - [Docker Compose](#docker-compose)
@@ -47,7 +49,7 @@
 - :sparkle: Using `Postgres` for `write side` of some microservices.
 - :sparkle: Using `MongoDB` for `read side` of some microservices.
 - :sparkle: Using `Event Store` for `write side` of Booking-Microservice to store all `historical state` of aggregate.
-- :sparkle: Using `Inbox Pattern` for ensuring message idempotency for receiver and `Exactly once Delivery`. 
+- :sparkle: Using `Inbox Pattern` for ensuring message idempotency for receiver and `Exactly once Delivery`.
 - :sparkle: Using `Outbox Pattern` for ensuring no message is lost and there is at `At Least One Delivery`.
 - :sparkle: Using `Unit Testing` for testing small units and mocking our dependencies with `Nsubstitute`.
 - :sparkle: Using `End-To-End Testing` and `Integration Testing` for testing `features` with all dependencies using `testcontainers`.
@@ -159,13 +161,31 @@ Using the CQRS pattern, we cut each business functionality into vertical slices,
 ## Development Setup
 
 ### Dotnet Tools Packages
-For installing our requirement package with .NET cli tools, we need to install `dotnet tool manifest`.
+For installing our requirement packages with .NET cli tools, we need to install `dotnet tool manifest`.
 ```bash
 dotnet new tool-manifest
 ```
 And after that we can restore our dotnet tools packages with .NET cli tools from `.config` folder and `dotnet-tools.json` file.
 ```
 dotnet tool restore
+```
+
+### Husky
+Here we use `husky` to handel some pre commit rules and we used `conventional commits` rules and `formatting` as pre commit rules, here in [package.json](./package.json). of course, we can add more rules for pre commit in future. (find more about husky in the [documentation](https://typicode.github.io/husky/get-started.html))
+We need to install `husky` package for `manage` `pre commits hooks` and also I add two packages `@commitlint/cli` and `@commitlint/config-conventional` for handling conventional commits rules in [package.json](./package.json).
+Run the command bellow in the root of project to install all npm dependencies related to husky:
+
+```bash
+npm install
+```
+
+> Note: In the root of project we have `.husky` folder and it has `commit-msg` file for handling conventional commits rules with provide user friendly message and `pre-commit` file that we can run our `scripts` as a `pre-commit` hooks. that here we call `format` script from [package.json](./package.json) for formatting purpose.
+
+### Upgrade Nuget Packages
+For upgrading our nuget packages to last version, we use the great package [dotnet-outdated](https://github.com/dotnet-outdated/dotnet-outdated).
+Run the command below in the root of project to upgrade all of packages to last version:
+```bash
+dotnet outdated -u
 ```
 
 ## How to Run

@@ -25,7 +25,7 @@ public class GetFlightByIdTests : FlightEndToEndTestBase
         await Fixture.SendAsync(command);
 
         // Act
-        var route = ApiRoutes.Flight.GetFlightById.Replace(ApiRoutes.Flight.Id, command.Id.ToString());
+        var route = ApiRoutes.Flight.GetFlightById.Replace(ApiRoutes.Flight.Id, command.Id.ToString(), StringComparison.CurrentCulture);
         var result = await Fixture.HttpClient.GetAsync(route);
 
         // Assert

@@ -54,13 +54,13 @@ public sealed class EventDispatcher : IEventDispatcher
             switch (events)
             {
                 case IReadOnlyList<IDomainEvent> domainEvents:
-                {
-                    var integrationEvents = await MapDomainEventToIntegrationEventAsync(domainEvents)
+                    {
+                        var integrationEvents = await MapDomainEventToIntegrationEventAsync(domainEvents)
                         .ConfigureAwait(false);
 
-                    await PublishIntegrationEvent(integrationEvents);
-                    break;
-                }
+                        await PublishIntegrationEvent(integrationEvents);
+                        break;
+                    }
 
                 case IReadOnlyList<IIntegrationEvent> integrationEvents:
                     await PublishIntegrationEvent(integrationEvents);
