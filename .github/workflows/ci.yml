@@ -2,11 +2,11 @@ name: CI
 
 on:
   push:
-    branches: [ "main" , "develop" ]
+    branches: [ "main"]
     paths-ignore:
       - "README.md"
   pull_request:
-    branches: [ "main" , "develop" ]
+    branches: [ "main"]
     paths-ignore:
       - "README.md"
 concurrency:
