@@ -51,7 +51,10 @@ public static class Extensions
 
         services.AddScoped<IPersistMessageProcessor, PersistMessageProcessor>();
 
-        services.AddHostedService<PersistMessageBackgroundService>();
+        if (env.EnvironmentName != "test")
+        {
+            services.AddHostedService<PersistMessageBackgroundService>();
+        }
 
         return services;
     }

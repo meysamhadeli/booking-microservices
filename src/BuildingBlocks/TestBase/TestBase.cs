@@ -95,8 +95,7 @@ where TEntryPoint : class
                         {
                             TestRegistrationServices?.Invoke(services);
                             services.ReplaceSingleton(AddHttpContextAccessorMock);
-                            services.RemoveAll<IHostedService>();
-
+                            // services.RemoveAll<IHostedService>();
                             services.AddSingleton<PersistMessageBackgroundService>();
 
                             // Register all ITestDataSeeder implementations dynamically

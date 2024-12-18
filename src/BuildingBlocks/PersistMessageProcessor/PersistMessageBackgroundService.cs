@@ -14,15 +14,12 @@ public class PersistMessageBackgroundService(
 {
     private PersistMessageOptions _options = options.Value;
 
-    private Task? _executingTask;
-
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         logger.LogInformation("PersistMessage Background Service Start");
 
-        _executingTask = ProcessAsync(stoppingToken);
+        await ProcessAsync(stoppingToken);
 
-        return _executingTask;
     }
 
     public override Task StopAsync(CancellationToken cancellationToken)
