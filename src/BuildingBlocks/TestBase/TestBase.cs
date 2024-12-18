@@ -52,6 +52,7 @@ where TEntryPoint : class
     public CancellationTokenSource CancellationTokenSource;
 
     public PersistMessageBackgroundService PersistMessageBackgroundService => ServiceProvider.GetRequiredService<PersistMessageBackgroundService>();
+    public ISeedManager SeedManager => ServiceProvider.GetRequiredService<ISeedManager>();
 
     public HttpClient HttpClient
     {
@@ -95,7 +96,7 @@ where TEntryPoint : class
                         {
                             TestRegistrationServices?.Invoke(services);
                             services.ReplaceSingleton(AddHttpContextAccessorMock);
-                            // services.RemoveAll<IHostedService>();
+                            services.RemoveAll<IHostedService>();
                             services.AddSingleton<PersistMessageBackgroundService>();
 
                             // Register all ITestDataSeeder implementations dynamically
@@ -609,6 +610,8 @@ where TEntryPoint : class
             _reSpawnerDefaultDb = await Respawner.CreateAsync(
                                       DefaultDbConnection,
                                       new RespawnerOptions { DbAdapter = DbAdapter.Postgres });
+
+            await Fixture.SeedManager.ExecuteTestSeedAsync();
         }
     }
 

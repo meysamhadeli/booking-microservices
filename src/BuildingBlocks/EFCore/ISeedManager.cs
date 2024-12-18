@@ -2,5 +2,6 @@ namespace BuildingBlocks.EFCore;
 
 public interface ISeedManager
 {
-    Task ExecuteAsync();
+    Task ExecuteSeedAsync();
+    Task ExecuteTestSeedAsync();
 }
