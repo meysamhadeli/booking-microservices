@@ -1,7 +1,5 @@
 using System.Reflection;
-using BuildingBlocks.Core.Event;
 using BuildingBlocks.Web;
-using Humanizer;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;

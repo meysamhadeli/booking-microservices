@@ -1,13 +1,10 @@
+using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
 using Microsoft.EntityFrameworkCore;
-
-namespace BuildingBlocks.PersistMessageProcessor.Data;
-
-using Configurations;
-using Core.Model;
 using Microsoft.Extensions.Logging;
-using Exception = System.Exception;
 using IsolationLevel = System.Data.IsolationLevel;
+
+namespace BuildingBlocks.PersistMessageProcessor;
 
 public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
 {
@@ -20,11 +17,10 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
         _logger = logger;
     }
 
-    public DbSet<PersistMessage> PersistMessages => Set<PersistMessage>();
+    public DbSet<PersistMessage> PersistMessage => Set<PersistMessage>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.ApplyConfiguration(new PersistMessageConfiguration());
         base.OnModelCreating(builder);
         builder.ToSnakeCaseTables();
     }
@@ -79,13 +75,8 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
         }
     }
 
-    public void CreatePersistMessageTable()
+    public void CreatePersistMessageTableIfNotExists()
     {
-        if (Database.GetPendingMigrations().Any())
-        {
-            throw new InvalidOperationException("Cannot create table if there are pending migrations.");
-        }
-
         string createTableSql = @"
             create table if not exists persist_message (
             id uuid not null,
@@ -120,9 +111,9 @@ public class PersistMessageDbContext : DbContext, IPersistMessageDbContext
                 }
             }
         }
-        catch (Exception ex)
+        catch (System.Exception ex)
         {
-            throw new Exception("try for find IVersion", ex);
+            throw new System.Exception("try for find IVersion", ex);
         }
     }
 }

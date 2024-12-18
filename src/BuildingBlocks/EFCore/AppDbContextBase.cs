@@ -1,14 +1,13 @@
-namespace BuildingBlocks.EFCore;
-
 using System.Collections.Immutable;
-using Core.Event;
-using Core.Model;
+using BuildingBlocks.Core.Event;
+using BuildingBlocks.Core.Model;
+using BuildingBlocks.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
-using Web;
-using Exception = System.Exception;
 using IsolationLevel = System.Data.IsolationLevel;
+
+namespace BuildingBlocks.EFCore;
 
 public abstract class AppDbContextBase : DbContext, IDbContext
 {
@@ -174,9 +173,9 @@ public abstract class AppDbContextBase : DbContext, IDbContext
                 }
             }
         }
-        catch (Exception ex)
+        catch (System.Exception ex)
         {
-            throw new Exception("try for find IAggregate", ex);
+            throw new System.Exception("try for find IAggregate", ex);
         }
     }
 }

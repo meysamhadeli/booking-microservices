@@ -1,6 +1,8 @@
 using BuildingBlocks.EFCore;
 using Flight.Aircrafts.Models;
 using Flight.Airports.Models;
+using Flight.Data;
+using Flight.Data.Seed;
 using Flight.Flights.Models;
 using Flight.Seats.Models;
 using MapsterMapper;
@@ -8,13 +10,13 @@ using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-namespace Flight.Data.Seed;
+namespace EndToEnd.Test;
 
-public class FlightDataSeeder(
+public class FlightTestDataSeeder(
     FlightDbContext flightDbContext,
     FlightReadDbContext flightReadDbContext,
     IMapper mapper
-) : IDataSeeder
+) : ITestDataSeeder
 {
     public async Task SeedAllAsync()
     {

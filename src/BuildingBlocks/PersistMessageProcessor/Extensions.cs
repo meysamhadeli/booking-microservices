@@ -1,51 +1,57 @@
-using BuildingBlocks.PersistMessageProcessor.Data;
 using BuildingBlocks.Web;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.PersistMessageProcessor;
 
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-
 public static class Extensions
 {
-    public static IServiceCollection AddPersistMessageProcessor(this IServiceCollection services,
-        IWebHostEnvironment env)
+    public static IServiceCollection AddPersistMessageProcessor(
+        this IServiceCollection services,
+        IWebHostEnvironment env
+    )
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
         services.AddValidateOptions<PersistMessageOptions>();
 
-        services.AddDbContext<PersistMessageDbContext>((sp, options) =>
-        {
-            var persistMessageOptions = sp.GetRequiredService<PersistMessageOptions>();
+        services.AddDbContext<PersistMessageDbContext>(
+            (sp, options) =>
+            {
+                var persistMessageOptions = sp.GetRequiredService<PersistMessageOptions>();
 
-            options.UseNpgsql(persistMessageOptions.ConnectionString,
-                    dbOptions =>
-                    {
-                        dbOptions.MigrationsAssembly(typeof(PersistMessageDbContext).Assembly.GetName().Name);
-                    })
-                // https://github.com/efcore/EFCore.NamingConventions
-                .UseSnakeCaseNamingConvention();
-        });
+                options.UseNpgsql(
+                        persistMessageOptions.ConnectionString,
+                        dbOptions =>
+                        {
+                            dbOptions.MigrationsAssembly(
+                                typeof(PersistMessageDbContext).Assembly.GetName().Name);
+                        })
+                    // https://github.com/efcore/EFCore.NamingConventions
+                    .UseSnakeCaseNamingConvention();
 
-        services.AddScoped<IPersistMessageDbContext>(provider =>
-        {
-            var persistMessageDbContext = provider.GetRequiredService<PersistMessageDbContext>();
+                // Todo: follow up the issues of .net 9 to use better approach taht will provide by .net!
+                options.ConfigureWarnings(
+                    w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
+            });
 
-            persistMessageDbContext.Database.EnsureCreated();
-            persistMessageDbContext.CreatePersistMessageTable();
+        services.AddScoped<IPersistMessageDbContext>(
+            provider =>
+            {
+                var persistMessageDbContext =
+                    provider.GetRequiredService<PersistMessageDbContext>();
 
-            return persistMessageDbContext;
-        });
+                persistMessageDbContext.Database.EnsureCreated();
+                persistMessageDbContext.CreatePersistMessageTableIfNotExists();
+
+                return persistMessageDbContext;
+            });
 
         services.AddScoped<IPersistMessageProcessor, PersistMessageProcessor>();
 
-        if (env.EnvironmentName != "test")
-        {
-            services.AddHostedService<PersistMessageBackgroundService>();
-        }
+        services.AddHostedService<PersistMessageBackgroundService>();
 
         return services;
     }

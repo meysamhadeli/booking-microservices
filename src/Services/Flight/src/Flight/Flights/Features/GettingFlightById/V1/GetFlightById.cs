@@ -76,9 +76,9 @@ internal class GetFlightByIdHandler : IQueryHandler<GetFlightById, GetFlightById
     {
         Guard.Against.Null(request, nameof(request));
 
-        var flight =
-            await _flightReadDbContext.Flight.AsQueryable().SingleOrDefaultAsync(x => x.FlightId == request.Id &&
-                !x.IsDeleted, cancellationToken);
+        var flight = await _flightReadDbContext.Flight.AsQueryable().SingleOrDefaultAsync(
+            x => x.FlightId == request.Id &&
+                             !x.IsDeleted, cancellationToken);
 
         if (flight is null)
         {

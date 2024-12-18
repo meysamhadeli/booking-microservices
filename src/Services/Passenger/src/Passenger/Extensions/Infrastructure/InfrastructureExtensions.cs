@@ -8,9 +8,10 @@ using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
+using BuildingBlocks.OpenApi;
 using BuildingBlocks.OpenTelemetry;
 using BuildingBlocks.PersistMessageProcessor;
-using BuildingBlocks.Swagger;
+using BuildingBlocks.ProblemDetails;
 using BuildingBlocks.Web;
 using Figgle;
 using FluentValidation;
@@ -25,7 +26,6 @@ using Serilog;
 
 namespace Passenger.Extensions.Infrastructure;
 
-using BuildingBlocks.ProblemDetails;
 
 public static class InfrastructureExtensions
 {
@@ -67,7 +67,7 @@ public static class InfrastructureExtensions
         builder.AddCustomSerilog(env);
         builder.Services.AddJwt();
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddCustomSwagger(configuration, typeof(PassengerRoot).Assembly);
+        builder.Services.AddAspnetOpenApi();
         builder.Services.AddCustomVersioning();
         builder.Services.AddCustomMediatR();
         builder.Services.AddValidatorsFromAssembly(typeof(PassengerRoot).Assembly);
@@ -98,15 +98,15 @@ public static class InfrastructureExtensions
         {
             options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest;
         });
-        app.UseMigration<PassengerDbContext>(env);
         app.UseCorrelationId();
+        app.UseMigration<PassengerDbContext>();
         app.UseCustomHealthCheck();
         app.MapGrpcService<PassengerGrpcServices>();
         app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
 
         if (env.IsDevelopment())
         {
-            app.UseCustomSwagger();
+            app.UseAspnetOpenApi();
         }
 
         return app;

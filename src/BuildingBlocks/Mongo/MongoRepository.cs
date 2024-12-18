@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using BuildingBlocks.Core.Model;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace BuildingBlocks.Mongo;
 

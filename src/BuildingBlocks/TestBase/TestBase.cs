@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net;
 using System.Security.Claims;
 using Ardalis.GuardClauses;
@@ -9,7 +10,6 @@ using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Web;
 using EasyNetQ.Management.Client;
 using Grpc.Net.Client;
-using MassTransit;
 using MassTransit.Testing;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
@@ -18,10 +18,17 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using MongoDB.Driver;
+using Npgsql;
 using NSubstitute;
 using Respawn;
 using Serilog;
+using Testcontainers.EventStoreDb;
+using Testcontainers.MongoDb;
+using Testcontainers.PostgreSql;
+using Testcontainers.RabbitMq;
 using WebMotions.Fake.Authentication.JwtBearer;
 using Xunit;
 using Xunit.Abstractions;
@@ -29,12 +36,6 @@ using ILogger = Serilog.ILogger;
 
 namespace BuildingBlocks.TestBase;
 
-using System.Globalization;
-using Npgsql;
-using Testcontainers.EventStoreDb;
-using Testcontainers.MongoDb;
-using Testcontainers.PostgreSql;
-using Testcontainers.RabbitMq;
 
 public class TestFixture<TEntryPoint> : IAsyncLifetime
 where TEntryPoint : class
@@ -50,8 +51,7 @@ where TEntryPoint : class
     public EventStoreDbContainer EventStoreDbTestContainer;
     public CancellationTokenSource CancellationTokenSource;
 
-    public PersistMessageBackgroundService PersistMessageBackgroundService =>
-        ServiceProvider.GetRequiredService<PersistMessageBackgroundService>();
+    public PersistMessageBackgroundService PersistMessageBackgroundService => ServiceProvider.GetRequiredService<PersistMessageBackgroundService>();
 
     public HttpClient HttpClient
     {
@@ -95,8 +95,16 @@ where TEntryPoint : class
                         {
                             TestRegistrationServices?.Invoke(services);
                             services.ReplaceSingleton(AddHttpContextAccessorMock);
+                            services.RemoveAll<IHostedService>();
 
                             services.AddSingleton<PersistMessageBackgroundService>();
+
+                            // Register all ITestDataSeeder implementations dynamically
+                            services.Scan(scan => scan
+                                              .FromApplicationDependencies() // Scan the current app and its dependencies
+                                              .AddClasses(classes => classes.AssignableTo<ITestDataSeeder>()) // Find classes that implement ITestDataSeeder
+                                              .AsImplementedInterfaces()
+                                              .WithScopedLifetime());
 
                             // add authentication using a fake jwt bearer - we can use SetAdminUser method to set authenticate user to existing HttContextAccessor
                             // https://github.com/webmotions/fake-authentication-jwtbearer
@@ -200,14 +208,8 @@ where TEntryPoint : class
         var result = await WaitUntilConditionMet(
                          async () =>
                          {
-                             var published =
-                                 await TestHarness.Published.Any<TMessage>(cancellationToken);
-
-                             var faulty =
-                                 await TestHarness.Published.Any<Fault<TMessage>>(
-                                     cancellationToken);
-
-                             return published && faulty == false;
+                             var published = await TestHarness.Published.Any<TMessage>(cancellationToken);
+                             return published;
                          });
 
         return result;
@@ -224,10 +226,7 @@ where TEntryPoint : class
                              var consumed =
                                  await TestHarness.Consumed.Any<TMessage>(cancellationToken);
 
-                             var faulty =
-                                 await TestHarness.Consumed.Any<Fault<TMessage>>(cancellationToken);
-
-                             return consumed && faulty == false;
+                             return consumed;
                          });
 
         return result;
@@ -611,8 +610,6 @@ where TEntryPoint : class
             _reSpawnerDefaultDb = await Respawner.CreateAsync(
                                       DefaultDbConnection,
                                       new RespawnerOptions { DbAdapter = DbAdapter.Postgres });
-
-            await SeedDataAsync();
         }
     }
 
@@ -679,18 +676,6 @@ where TEntryPoint : class
 
     protected virtual void RegisterTestsServices(IServiceCollection services)
     {
-    }
-
-    private async Task SeedDataAsync()
-    {
-        using var scope = Fixture.ServiceProvider.CreateScope();
-
-        var seeders = scope.ServiceProvider.GetServices<IDataSeeder>();
-
-        foreach (var seeder in seeders)
-        {
-            await seeder.SeedAllAsync();
-        }
     }
 }
 

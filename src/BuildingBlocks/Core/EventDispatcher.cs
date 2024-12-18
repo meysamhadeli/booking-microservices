@@ -9,30 +9,17 @@ using MessageEnvelope = BuildingBlocks.Core.Event.MessageEnvelope;
 
 namespace BuildingBlocks.Core;
 
-public sealed class EventDispatcher : IEventDispatcher
+public sealed class EventDispatcher(
+    IServiceScopeFactory serviceScopeFactory,
+    IEventMapper eventMapper,
+    ILogger<EventDispatcher> logger,
+    IPersistMessageProcessor persistMessageProcessor,
+    IHttpContextAccessor httpContextAccessor
+)
+    : IEventDispatcher
 {
-    private readonly IEventMapper _eventMapper;
-    private readonly ILogger<EventDispatcher> _logger;
-    private readonly IPersistMessageProcessor _persistMessageProcessor;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-
-    public EventDispatcher(IServiceScopeFactory serviceScopeFactory,
-        IEventMapper eventMapper,
-        ILogger<EventDispatcher> logger,
-        IPersistMessageProcessor persistMessageProcessor,
-        IHttpContextAccessor httpContextAccessor)
-    {
-        _serviceScopeFactory = serviceScopeFactory;
-        _eventMapper = eventMapper;
-        _logger = logger;
-        _persistMessageProcessor = persistMessageProcessor;
-        _httpContextAccessor = httpContextAccessor;
-    }
-
-
     public async Task SendAsync<T>(IReadOnlyList<T> events, Type type = null,
-        CancellationToken cancellationToken = default)
+                                   CancellationToken cancellationToken = default)
         where T : IEvent
     {
         if (events.Count > 0)
@@ -45,7 +32,7 @@ public sealed class EventDispatcher : IEventDispatcher
             {
                 foreach (var integrationEvent in integrationEvents)
                 {
-                    await _persistMessageProcessor.PublishMessageAsync(
+                    await persistMessageProcessor.PublishMessageAsync(
                         new MessageEnvelope(integrationEvent, SetHeaders()),
                         cancellationToken);
                 }
@@ -74,7 +61,7 @@ public sealed class EventDispatcher : IEventDispatcher
 
                 foreach (var internalMessage in internalMessages)
                 {
-                    await _persistMessageProcessor.AddInternalMessageAsync(internalMessage, cancellationToken);
+                    await persistMessageProcessor.AddInternalMessageAsync(internalMessage, cancellationToken);
                 }
             }
         }
@@ -89,20 +76,20 @@ public sealed class EventDispatcher : IEventDispatcher
     private Task<IReadOnlyList<IIntegrationEvent>> MapDomainEventToIntegrationEventAsync(
         IReadOnlyList<IDomainEvent> events)
     {
-        _logger.LogTrace("Processing integration events start...");
+        logger.LogTrace("Processing integration events start...");
 
         var wrappedIntegrationEvents = GetWrappedIntegrationEvents(events.ToList())?.ToList();
         if (wrappedIntegrationEvents?.Count > 0)
             return Task.FromResult<IReadOnlyList<IIntegrationEvent>>(wrappedIntegrationEvents);
 
         var integrationEvents = new List<IIntegrationEvent>();
-        using var scope = _serviceScopeFactory.CreateScope();
+        using var scope = serviceScopeFactory.CreateScope();
         foreach (var @event in events)
         {
             var eventType = @event.GetType();
-            _logger.LogTrace($"Handling domain event: {eventType.Name}");
+            logger.LogTrace($"Handling domain event: {eventType.Name}");
 
-            var integrationEvent = _eventMapper.MapToIntegrationEvent(@event);
+            var integrationEvent = eventMapper.MapToIntegrationEvent(@event);
 
             if (integrationEvent is null)
                 continue;
@@ -110,7 +97,7 @@ public sealed class EventDispatcher : IEventDispatcher
             integrationEvents.Add(integrationEvent);
         }
 
-        _logger.LogTrace("Processing integration events done...");
+        logger.LogTrace("Processing integration events done...");
 
         return Task.FromResult<IReadOnlyList<IIntegrationEvent>>(integrationEvents);
     }
@@ -119,16 +106,16 @@ public sealed class EventDispatcher : IEventDispatcher
     private Task<IReadOnlyList<IInternalCommand>> MapDomainEventToInternalCommandAsync(
         IReadOnlyList<IDomainEvent> events)
     {
-        _logger.LogTrace("Processing internal message start...");
+        logger.LogTrace("Processing internal message start...");
 
         var internalCommands = new List<IInternalCommand>();
-        using var scope = _serviceScopeFactory.CreateScope();
+        using var scope = serviceScopeFactory.CreateScope();
         foreach (var @event in events)
         {
             var eventType = @event.GetType();
-            _logger.LogTrace($"Handling domain event: {eventType.Name}");
+            logger.LogTrace($"Handling domain event: {eventType.Name}");
 
-            var integrationEvent = _eventMapper.MapToInternalCommand(@event);
+            var integrationEvent = eventMapper.MapToInternalCommand(@event);
 
             if (integrationEvent is null)
                 continue;
@@ -136,7 +123,7 @@ public sealed class EventDispatcher : IEventDispatcher
             internalCommands.Add(integrationEvent);
         }
 
-        _logger.LogTrace("Processing internal message done...");
+        logger.LogTrace("Processing internal message done...");
 
         return Task.FromResult<IReadOnlyList<IInternalCommand>>(internalCommands);
     }
@@ -159,9 +146,9 @@ public sealed class EventDispatcher : IEventDispatcher
     private IDictionary<string, object> SetHeaders()
     {
         var headers = new Dictionary<string, object>();
-        headers.Add("CorrelationId", _httpContextAccessor?.HttpContext?.GetCorrelationId());
-        headers.Add("UserId", _httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier));
-        headers.Add("UserName", _httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.Name));
+        headers.Add("CorrelationId", httpContextAccessor?.HttpContext?.GetCorrelationId());
+        headers.Add("UserId", httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier));
+        headers.Add("UserName", httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.Name));
 
         return headers;
     }

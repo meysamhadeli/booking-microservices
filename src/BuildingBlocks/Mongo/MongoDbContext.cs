@@ -1,7 +1,9 @@
 using System.Globalization;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 
 namespace BuildingBlocks.Mongo;
@@ -14,6 +16,12 @@ public class MongoDbContext : IMongoDbContext
     public IMongoDatabase Database { get; }
     public IMongoClient MongoClient { get; }
     protected readonly IList<Func<Task>> _commands;
+    private static readonly bool _isSerializerRegisterd;
+
+    static MongoDbContext()
+    {
+        BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
+    }
 
     public MongoDbContext(IOptions<MongoOptions> options)
     {

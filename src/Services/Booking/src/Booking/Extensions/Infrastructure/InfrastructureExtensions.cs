@@ -8,9 +8,10 @@ using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
+using BuildingBlocks.OpenApi;
 using BuildingBlocks.OpenTelemetry;
 using BuildingBlocks.PersistMessageProcessor;
-using BuildingBlocks.Swagger;
+using BuildingBlocks.ProblemDetails;
 using BuildingBlocks.Web;
 using Figgle;
 using FluentValidation;
@@ -19,12 +20,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Prometheus;
 using Serilog;
 
 namespace Booking.Extensions.Infrastructure;
-
-using BuildingBlocks.ProblemDetails;
 
 public static class InfrastructureExtensions
 {
@@ -67,7 +65,7 @@ public static class InfrastructureExtensions
         builder.AddCustomSerilog(env);
         builder.Services.AddJwt();
         builder.Services.AddHttpContextAccessor();
-        builder.Services.AddCustomSwagger(configuration, typeof(BookingRoot).Assembly);
+        builder.Services.AddAspnetOpenApi();
         builder.Services.AddCustomVersioning();
         builder.Services.AddCustomMediatR();
         builder.Services.AddValidatorsFromAssembly(typeof(BookingRoot).Assembly);
@@ -106,7 +104,7 @@ public static class InfrastructureExtensions
 
         if (env.IsDevelopment())
         {
-            app.UseCustomSwagger();
+            app.UseAspnetOpenApi();
         }
 
         return app;

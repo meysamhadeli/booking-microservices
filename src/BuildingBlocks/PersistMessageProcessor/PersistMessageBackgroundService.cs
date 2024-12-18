@@ -5,27 +5,20 @@ using Microsoft.Extensions.Options;
 
 namespace BuildingBlocks.PersistMessageProcessor;
 
-public class PersistMessageBackgroundService : BackgroundService
+public class PersistMessageBackgroundService(
+    ILogger<PersistMessageBackgroundService> logger,
+    IServiceProvider serviceProvider,
+    IOptions<PersistMessageOptions> options
+)
+    : BackgroundService
 {
-    private readonly ILogger<PersistMessageBackgroundService> _logger;
-    private readonly IServiceProvider _serviceProvider;
-    private PersistMessageOptions _options;
+    private PersistMessageOptions _options = options.Value;
 
     private Task? _executingTask;
 
-    public PersistMessageBackgroundService(
-        ILogger<PersistMessageBackgroundService> logger,
-        IServiceProvider serviceProvider,
-        IOptions<PersistMessageOptions> options)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-        _options = options.Value;
-    }
-
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("PersistMessage Background Service Start");
+        logger.LogInformation("PersistMessage Background Service Start");
 
         _executingTask = ProcessAsync(stoppingToken);
 
@@ -34,7 +27,7 @@ public class PersistMessageBackgroundService : BackgroundService
 
     public override Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("PersistMessage Background Service Stop");
+        logger.LogInformation("PersistMessage Background Service Stop");
 
         return base.StopAsync(cancellationToken);
     }
@@ -43,15 +36,15 @@ public class PersistMessageBackgroundService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await using (var scope = _serviceProvider.CreateAsyncScope())
+            await using (var scope = serviceProvider.CreateAsyncScope())
             {
                 var service = scope.ServiceProvider.GetRequiredService<IPersistMessageProcessor>();
                 await service.ProcessAllAsync(stoppingToken);
             }
 
             var delay = _options.Interval is { }
-                ? TimeSpan.FromSeconds((int)_options.Interval)
-                : TimeSpan.FromSeconds(30);
+                            ? TimeSpan.FromSeconds((int)_options.Interval)
+                            : TimeSpan.FromSeconds(30);
 
             await Task.Delay(delay, stoppingToken);
         }
