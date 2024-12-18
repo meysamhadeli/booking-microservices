@@ -25,14 +25,16 @@ runs:
     # https://devblogs.microsoft.com/dotnet/dotnet-loves-github-actions/
     # https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net#caching-dependencies
     - name: Cache NuGet Packages
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       if: success()
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-dotnet-nuget
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
+      with:
+         dotnet-version: '9.x.x'      
 
       # https://learn.microsoft.com/en-us/dotnet/core/tools/global-tools
     - name: Restore .NET Tools
