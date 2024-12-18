@@ -1,10 +1,10 @@
 using System.Text.Json;
-using BuildingBlocks.Core;
-using MediatR;
-using Microsoft.Extensions.Logging;
 using System.Transactions;
+using BuildingBlocks.Core;
 using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Polly;
+using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.EFCore;
 
