@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS builder
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS builder
 WORKDIR /
 
 COPY ./.editorconfig ./
@@ -32,7 +32,7 @@ WORKDIR /ApiGateway/src
 RUN --mount=type=cache,id=gateway_nuget,target=/root/.nuget/packages \
     dotnet publish -c Release --no-build -o out
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 
 # Setup working directory for the project
 WORKDIR /
