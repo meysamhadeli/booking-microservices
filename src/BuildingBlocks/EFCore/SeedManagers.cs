@@ -13,11 +13,11 @@ public class SeedManager(
 {
     public async Task ExecuteSeedAsync()
     {
-        await using var scope = serviceProvider.CreateAsyncScope();
-        var dataSeeders = scope.ServiceProvider.GetServices<IDataSeeder>();
-
         if (!env.IsEnvironment("test"))
         {
+            await using var scope = serviceProvider.CreateAsyncScope();
+            var dataSeeders = scope.ServiceProvider.GetServices<IDataSeeder>();
+
             foreach (var seeder in dataSeeders)
             {
                 logger.LogInformation("Seed {SeederName} is started.", seeder.GetType().Name);
@@ -30,13 +30,13 @@ public class SeedManager(
     public async Task ExecuteTestSeedAsync()
     {
         await using var scope = serviceProvider.CreateAsyncScope();
-        var dataSeeders = scope.ServiceProvider.GetServices<ITestDataSeeder>();
+        var testDataSeeders = scope.ServiceProvider.GetServices<ITestDataSeeder>();
 
-        foreach (var seeder in dataSeeders)
+        foreach (var testSeeder in testDataSeeders)
         {
-            logger.LogInformation("Seed {SeederName} is started.", seeder.GetType().Name);
-            await seeder.SeedAllAsync();
-            logger.LogInformation("Seed {SeederName} is completed.", seeder.GetType().Name);
+            logger.LogInformation("Seed {SeederName} is started.", testSeeder.GetType().Name);
+            await testSeeder.SeedAllAsync();
+            logger.LogInformation("Seed {SeederName} is completed.", testSeeder.GetType().Name);
         }
     }
 }

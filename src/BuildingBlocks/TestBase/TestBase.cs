@@ -1,12 +1,9 @@
-using System.Globalization;
 using System.Net;
-using System.Reflection;
 using System.Security.Claims;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
-using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Web;
@@ -21,17 +18,10 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
 using MongoDB.Driver;
-using Npgsql;
 using NSubstitute;
 using Respawn;
 using Serilog;
-using Testcontainers.EventStoreDb;
-using Testcontainers.MongoDb;
-using Testcontainers.PostgreSql;
-using Testcontainers.RabbitMq;
 using WebMotions.Fake.Authentication.JwtBearer;
 using Xunit;
 using Xunit.Abstractions;
@@ -39,6 +29,12 @@ using ILogger = Serilog.ILogger;
 
 namespace BuildingBlocks.TestBase;
 
+using System.Globalization;
+using Npgsql;
+using Testcontainers.EventStoreDb;
+using Testcontainers.MongoDb;
+using Testcontainers.PostgreSql;
+using Testcontainers.RabbitMq;
 
 public class TestFixture<TEntryPoint> : IAsyncLifetime
 where TEntryPoint : class
@@ -54,8 +50,8 @@ where TEntryPoint : class
     public EventStoreDbContainer EventStoreDbTestContainer;
     public CancellationTokenSource CancellationTokenSource;
 
-    public PersistMessageBackgroundService PersistMessageBackgroundService => ServiceProvider.GetRequiredService<PersistMessageBackgroundService>();
-    public ISeedManager SeedManager => ServiceProvider.GetRequiredService<ISeedManager>();
+    public PersistMessageBackgroundService PersistMessageBackgroundService =>
+        ServiceProvider.GetRequiredService<PersistMessageBackgroundService>();
 
     public HttpClient HttpClient
     {
@@ -100,10 +96,8 @@ where TEntryPoint : class
                             TestRegistrationServices?.Invoke(services);
                             services.ReplaceSingleton(AddHttpContextAccessorMock);
 
+                            services.AddSingleton<PersistMessageBackgroundService>();
                             services.RemoveHostedService<PersistMessageBackgroundService>();
-                            services.AddSingleton<PersistMessageBackgroundService>(); // Register as a singleton
-                            services.AddHostedService(provider => provider.GetRequiredService<PersistMessageBackgroundService>()); // Use the same instance for hosted service
-
 
                             // Register all ITestDataSeeder implementations dynamically
                             services.Scan(scan => scan
@@ -214,7 +208,9 @@ where TEntryPoint : class
         var result = await WaitUntilConditionMet(
                          async () =>
                          {
-                             var published = await TestHarness.Published.Any<TMessage>(cancellationToken);
+                             var published =
+                                 await TestHarness.Published.Any<TMessage>(cancellationToken);
+
                              return published;
                          });
 
@@ -617,7 +613,7 @@ where TEntryPoint : class
                                       DefaultDbConnection,
                                       new RespawnerOptions { DbAdapter = DbAdapter.Postgres });
 
-            await Fixture.SeedManager.ExecuteTestSeedAsync();
+            await SeedDataAsync();
         }
     }
 
@@ -684,6 +680,14 @@ where TEntryPoint : class
 
     protected virtual void RegisterTestsServices(IServiceCollection services)
     {
+    }
+
+    private async Task SeedDataAsync()
+    {
+        using var scope = Fixture.ServiceProvider.CreateScope();
+
+        var seedManager = scope.ServiceProvider.GetService<ISeedManager>();
+        await seedManager.ExecuteTestSeedAsync();
     }
 }
 
