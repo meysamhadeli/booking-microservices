@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.EFCore;
@@ -15,11 +16,14 @@ public class SeedManager(
         await using var scope = serviceProvider.CreateAsyncScope();
         var dataSeeders = scope.ServiceProvider.GetServices<IDataSeeder>();
 
-        foreach (var seeder in dataSeeders.Where(x => x is not ITestDataSeeder))
+        if (!env.IsEnvironment("test"))
         {
-            logger.LogInformation("Seed {SeederName} is started.", seeder.GetType().Name);
-            await seeder.SeedAllAsync();
-            logger.LogInformation("Seed {SeederName} is completed.", seeder.GetType().Name);
+            foreach (var seeder in dataSeeders.Where(x => x is not ITestDataSeeder))
+            {
+                logger.LogInformation("Seed {SeederName} is started.", seeder.GetType().Name);
+                await seeder.SeedAllAsync();
+                logger.LogInformation("Seed {SeederName} is completed.", seeder.GetType().Name);
+            }
         }
     }
 
@@ -28,7 +32,7 @@ public class SeedManager(
         await using var scope = serviceProvider.CreateAsyncScope();
         var dataSeeders = scope.ServiceProvider.GetServices<IDataSeeder>();
 
-        foreach (var seeder in dataSeeders.Where(x => x is not ITestDataSeeder))
+        foreach (var seeder in dataSeeders.Where(x => x is ITestDataSeeder))
         {
             logger.LogInformation("Seed {SeederName} is started.", seeder.GetType().Name);
             await seeder.SeedAllAsync();

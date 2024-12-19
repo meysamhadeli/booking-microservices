@@ -8,12 +8,12 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Integration.Test;
 
-public class IdentityDataSeeder(
+public class IdentityTestDataSeeder(
     UserManager<User> userManager,
     RoleManager<Role> roleManager,
     IEventDispatcher eventDispatcher
 )
-    : IDataSeeder
+    : ITestDataSeeder
 {
     public async Task SeedAllAsync()
     {
