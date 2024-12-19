@@ -1,3 +1,5 @@
+using MongoDB.Driver.Linq;
+
 namespace Flight.Flights.Features.GettingAvailableFlights.V1;
 
 using System;

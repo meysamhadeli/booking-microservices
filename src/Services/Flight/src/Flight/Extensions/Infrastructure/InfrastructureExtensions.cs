@@ -1,4 +1,3 @@
-using System;
 using System.Threading.RateLimiting;
 using BuildingBlocks.Core;
 using BuildingBlocks.EFCore;
@@ -9,9 +8,10 @@ using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
+using BuildingBlocks.OpenApi;
 using BuildingBlocks.OpenTelemetry;
 using BuildingBlocks.PersistMessageProcessor;
-using BuildingBlocks.Swagger;
+using BuildingBlocks.ProblemDetails;
 using BuildingBlocks.Web;
 using Figgle;
 using Flight.Data;
@@ -27,7 +27,6 @@ using Serilog;
 
 namespace Flight.Extensions.Infrastructure;
 
-using BuildingBlocks.ProblemDetails;
 
 public static class InfrastructureExtensions
 {
@@ -38,6 +37,7 @@ public static class InfrastructureExtensions
 
         builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
         builder.Services.AddScoped<IEventMapper, EventMapper>();
+
         builder.Services.AddScoped<IEventDispatcher, EventDispatcher>();
         builder.Services.Configure<ApiBehaviorOptions>(options =>
         {
@@ -67,12 +67,12 @@ public static class InfrastructureExtensions
         builder.Services.AddCustomDbContext<FlightDbContext>();
         builder.Services.AddScoped<IDataSeeder, FlightDataSeeder>();
         builder.Services.AddMongoDbContext<FlightReadDbContext>(configuration);
-        builder.Services.AddPersistMessageProcessor(env);
+        builder.Services.AddPersistMessageProcessor();
 
         builder.Services.AddEndpointsApiExplorer();
         builder.AddCustomSerilog(env);
         builder.Services.AddJwt();
-        builder.Services.AddCustomSwagger(configuration, typeof(FlightRoot).Assembly);
+        builder.Services.AddAspnetOpenApi();
         builder.Services.AddCustomVersioning();
         builder.Services.AddValidatorsFromAssembly(typeof(FlightRoot).Assembly);
         builder.Services.AddCustomMapster(typeof(FlightRoot).Assembly);
@@ -105,7 +105,7 @@ public static class InfrastructureExtensions
             options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest;
         });
         app.UseCorrelationId();
-        app.UseMigration<FlightDbContext>(env);
+        app.UseMigration<FlightDbContext>();
         app.UseCustomHealthCheck();
         app.MapGrpcService<FlightGrpcServices>();
         app.UseRateLimiter();
@@ -113,7 +113,7 @@ public static class InfrastructureExtensions
 
         if (env.IsDevelopment())
         {
-            app.UseCustomSwagger();
+            app.UseAspnetOpenApi();
         }
 
         return app;

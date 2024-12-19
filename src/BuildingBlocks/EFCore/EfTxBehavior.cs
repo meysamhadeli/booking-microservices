@@ -1,50 +1,39 @@
 using System.Text.Json;
+using System.Transactions;
 using BuildingBlocks.Core;
+using BuildingBlocks.PersistMessageProcessor;
+using BuildingBlocks.Polly;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.EFCore;
 
-using System.Transactions;
-using PersistMessageProcessor;
-using Polly;
 
-public class EfTxBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : notnull, IRequest<TResponse>
-    where TResponse : notnull
+public class EfTxBehavior<TRequest, TResponse>(
+    ILogger<EfTxBehavior<TRequest, TResponse>> logger,
+    IDbContext dbContextBase,
+    IPersistMessageDbContext persistMessageDbContext,
+    IEventDispatcher eventDispatcher
+)
+    : IPipelineBehavior<TRequest, TResponse>
+where TRequest : notnull, IRequest<TResponse>
+where TResponse : notnull
 {
-    private readonly ILogger<EfTxBehavior<TRequest, TResponse>> _logger;
-    private readonly IDbContext _dbContextBase;
-    private readonly IPersistMessageDbContext _persistMessageDbContext;
-    private readonly IEventDispatcher _eventDispatcher;
-
-    public EfTxBehavior(
-        ILogger<EfTxBehavior<TRequest, TResponse>> logger,
-        IDbContext dbContextBase,
-        IPersistMessageDbContext persistMessageDbContext,
-        IEventDispatcher eventDispatcher)
-    {
-        _logger = logger;
-        _dbContextBase = dbContextBase;
-        _persistMessageDbContext = persistMessageDbContext;
-        _eventDispatcher = eventDispatcher;
-    }
-
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
-        CancellationToken cancellationToken)
+                                        CancellationToken cancellationToken)
     {
-        _logger.LogInformation(
+        logger.LogInformation(
             "{Prefix} Handled command {MediatrRequest}",
             nameof(EfTxBehavior<TRequest, TResponse>),
             typeof(TRequest).FullName);
 
-        _logger.LogDebug(
+        logger.LogDebug(
             "{Prefix} Handled command {MediatrRequest} with content {RequestContent}",
             nameof(EfTxBehavior<TRequest, TResponse>),
             typeof(TRequest).FullName,
             JsonSerializer.Serialize(request));
 
-        _logger.LogInformation(
+        logger.LogInformation(
             "{Prefix} Open the transaction for {MediatrRequest}",
             nameof(EfTxBehavior<TRequest, TResponse>),
             typeof(TRequest).FullName);
@@ -56,32 +45,32 @@ public class EfTxBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TRe
 
         var response = await next();
 
-        _logger.LogInformation(
+        logger.LogInformation(
             "{Prefix} Executed the {MediatrRequest} request",
             nameof(EfTxBehavior<TRequest, TResponse>),
             typeof(TRequest).FullName);
 
         while (true)
         {
-            var domainEvents = _dbContextBase.GetDomainEvents();
+            var domainEvents = dbContextBase.GetDomainEvents();
 
             if (domainEvents is null || !domainEvents.Any())
             {
                 return response;
             }
 
-            await _eventDispatcher.SendAsync(domainEvents.ToArray(), typeof(TRequest), cancellationToken);
+            await eventDispatcher.SendAsync(domainEvents.ToArray(), typeof(TRequest), cancellationToken);
 
             // Save data to database with some retry policy in distributed transaction
-            await _dbContextBase.RetryOnFailure(async () =>
+            await dbContextBase.RetryOnFailure(async () =>
             {
-                await _dbContextBase.SaveChangesAsync(cancellationToken);
+                await dbContextBase.SaveChangesAsync(cancellationToken);
             });
 
             // Save data to database with some retry policy in distributed transaction
-            await _persistMessageDbContext.RetryOnFailure(async () =>
+            await persistMessageDbContext.RetryOnFailure(async () =>
             {
-                await _persistMessageDbContext.SaveChangesAsync(cancellationToken);
+                await persistMessageDbContext.SaveChangesAsync(cancellationToken);
             });
 
             scope.Complete();

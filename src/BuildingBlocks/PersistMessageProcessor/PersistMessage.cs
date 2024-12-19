@@ -1,6 +1,6 @@
+using BuildingBlocks.Core.Model;
 namespace BuildingBlocks.PersistMessageProcessor;
 
-using Core.Model;
 
 public class PersistMessage : IVersion
 {

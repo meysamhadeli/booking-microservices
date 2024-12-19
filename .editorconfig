@@ -241,6 +241,11 @@ dotnet_diagnostic.IDE0055.severity = suggestion
 # CS1574: XML comment on 'construct' has syntactically incorrect cref attribute 'name'
 dotnet_diagnostic.CS1574.severity = error
 
+# IDE0160, IDE0161: Report violations when block-scoped namespaces are used
+dotnet_diagnostic.IDE0160.severity = none
+dotnet_diagnostic.IDE0161.severity = none
+
+
 ##################################################################################
 # https://jetbrains.com.xy2401.com/help/resharper/EditorConfig_Index.html
 # https://jetbrains.com.xy2401.com/help/resharper/Reference__Code_Inspections_CSHARP.html

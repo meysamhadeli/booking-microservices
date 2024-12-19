@@ -1,38 +1,44 @@
-namespace Flight.Flights.Features.DeletingFlight.V1;
-
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Web;
-using Data;
 using Duende.IdentityServer.EntityFramework.Entities;
-using Exceptions;
+using Flight.Data;
+using Flight.Flights.Exceptions;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Driver.Linq;
-using ValueObjects;
+
+namespace Flight.Flights.Features.DeletingFlight.V1;
 
 public record DeleteFlight(Guid Id) : ICommand<DeleteFlightResult>, IInternalCommand;
 
 public record DeleteFlightResult(Guid Id);
 
-public record FlightDeletedDomainEvent(Guid Id, string FlightNumber, Guid AircraftId, DateTime DepartureDate,
-    Guid DepartureAirportId, DateTime ArriveDate, Guid ArriveAirportId, decimal DurationMinutes,
-    DateTime FlightDate, Enums.FlightStatus Status, decimal Price, bool IsDeleted) : IDomainEvent;
+public record FlightDeletedDomainEvent(
+    Guid Id,
+    string FlightNumber,
+    Guid AircraftId,
+    DateTime DepartureDate,
+    Guid DepartureAirportId,
+    DateTime ArriveDate,
+    Guid ArriveAirportId,
+    decimal DurationMinutes,
+    DateTime FlightDate,
+    Enums.FlightStatus Status,
+    decimal Price,
+    bool IsDeleted
+) : IDomainEvent;
 
 public class DeleteFlightEndpoint : IMinimalEndpoint
 {
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
-        builder.MapDelete($"{EndpointConfig.BaseApiPath}/flight/{{id}}",
+        builder.MapDelete(
+                $"{EndpointConfig.BaseApiPath}/flight/{{id}}",
                 async (Guid id, IMediator mediator, CancellationToken cancellationToken) =>
                 {
                     await mediator.Send(new DeleteFlight(id), cancellationToken);
@@ -70,7 +76,10 @@ internal class DeleteFlightHandler : ICommandHandler<DeleteFlight, DeleteFlightR
         _flightDbContext = flightDbContext;
     }
 
-    public async Task<DeleteFlightResult> Handle(DeleteFlight request, CancellationToken cancellationToken)
+    public async Task<DeleteFlightResult> Handle(
+        DeleteFlight request,
+        CancellationToken cancellationToken
+    )
     {
         Guard.Against.Null(request, nameof(request));
 
@@ -81,9 +90,18 @@ internal class DeleteFlightHandler : ICommandHandler<DeleteFlight, DeleteFlightR
             throw new FlightNotFountException();
         }
 
-        flight.Delete(flight.Id, flight.FlightNumber, flight.AircraftId, flight.DepartureAirportId,
-            flight.DepartureDate, flight.ArriveDate, flight.ArriveAirportId, flight.DurationMinutes,
-            flight.FlightDate, flight.Status, flight.Price);
+        flight.Delete(
+            flight.Id,
+            flight.FlightNumber,
+            flight.AircraftId,
+            flight.DepartureAirportId,
+            flight.DepartureDate,
+            flight.ArriveDate,
+            flight.ArriveAirportId,
+            flight.DurationMinutes,
+            flight.FlightDate,
+            flight.Status,
+            flight.Price);
 
         var deleteFlight = _flightDbContext.Flights.Update(flight).Entity;
 

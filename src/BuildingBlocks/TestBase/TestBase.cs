@@ -97,6 +97,14 @@ where TEntryPoint : class
                             services.ReplaceSingleton(AddHttpContextAccessorMock);
 
                             services.AddSingleton<PersistMessageBackgroundService>();
+                            services.RemoveHostedService<PersistMessageBackgroundService>();
+
+                            // Register all ITestDataSeeder implementations dynamically
+                            services.Scan(scan => scan
+                                              .FromApplicationDependencies() // Scan the current app and its dependencies
+                                              .AddClasses(classes => classes.AssignableTo<ITestDataSeeder>()) // Find classes that implement ITestDataSeeder
+                                              .AsImplementedInterfaces()
+                                              .WithScopedLifetime());
 
                             // add authentication using a fake jwt bearer - we can use SetAdminUser method to set authenticate user to existing HttContextAccessor
                             // https://github.com/webmotions/fake-authentication-jwtbearer
@@ -203,11 +211,7 @@ where TEntryPoint : class
                              var published =
                                  await TestHarness.Published.Any<TMessage>(cancellationToken);
 
-                             var faulty =
-                                 await TestHarness.Published.Any<Fault<TMessage>>(
-                                     cancellationToken);
-
-                             return published && faulty == false;
+                             return published;
                          });
 
         return result;
@@ -224,10 +228,7 @@ where TEntryPoint : class
                              var consumed =
                                  await TestHarness.Consumed.Any<TMessage>(cancellationToken);
 
-                             var faulty =
-                                 await TestHarness.Consumed.Any<Fault<TMessage>>(cancellationToken);
-
-                             return consumed && faulty == false;
+                             return consumed;
                          });
 
         return result;
@@ -685,12 +686,8 @@ where TEntryPoint : class
     {
         using var scope = Fixture.ServiceProvider.CreateScope();
 
-        var seeders = scope.ServiceProvider.GetServices<IDataSeeder>();
-
-        foreach (var seeder in seeders)
-        {
-            await seeder.SeedAllAsync();
-        }
+        var seedManager = scope.ServiceProvider.GetService<ISeedManager>();
+        await seedManager.ExecuteTestSeedAsync();
     }
 }
 

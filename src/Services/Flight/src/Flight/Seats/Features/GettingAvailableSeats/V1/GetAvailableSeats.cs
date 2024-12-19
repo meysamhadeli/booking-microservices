@@ -1,3 +1,5 @@
+using MongoDB.Driver.Linq;
+
 namespace Flight.Seats.Features.GettingAvailableSeats.V1;
 
 using System;

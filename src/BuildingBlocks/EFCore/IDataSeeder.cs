@@ -4,4 +4,9 @@ namespace BuildingBlocks.EFCore
     {
         Task SeedAllAsync();
     }
+
+    public interface ITestDataSeeder
+    {
+        Task SeedAllAsync();
+    }
 }

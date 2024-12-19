@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 namespace BuildingBlocks.PersistMessageProcessor;
 
 using Microsoft.EntityFrameworkCore;
-using Polly;
 
 public class PersistMessageProcessor : IPersistMessageProcessor
 {
@@ -54,13 +53,13 @@ public class PersistMessageProcessor : IPersistMessageProcessor
     public async Task<IReadOnlyList<PersistMessage>> GetByFilterAsync(Expression<Func<PersistMessage, bool>> predicate,
         CancellationToken cancellationToken = default)
     {
-        return (await _persistMessageDbContext.PersistMessages.Where(predicate).ToListAsync(cancellationToken))
+        return (await _persistMessageDbContext.PersistMessage.Where(predicate).ToListAsync(cancellationToken))
             .AsReadOnly();
     }
 
     public Task<PersistMessage> ExistMessageAsync(Guid messageId, CancellationToken cancellationToken = default)
     {
-        return _persistMessageDbContext.PersistMessages.FirstOrDefaultAsync(x =>
+        return _persistMessageDbContext.PersistMessage.FirstOrDefaultAsync(x =>
                 x.Id == messageId &&
                 x.DeliveryType == MessageDeliveryType.Inbox &&
                 x.MessageStatus == MessageStatus.Processed,
@@ -73,7 +72,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
         CancellationToken cancellationToken = default)
     {
         var message =
-            await _persistMessageDbContext.PersistMessages.FirstOrDefaultAsync(
+            await _persistMessageDbContext.PersistMessage.FirstOrDefaultAsync(
                 x => x.Id == messageId && x.DeliveryType == deliveryType, cancellationToken);
 
         if (message is null)
@@ -109,7 +108,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
 
     public async Task ProcessAllAsync(CancellationToken cancellationToken = default)
     {
-        var messages = await _persistMessageDbContext.PersistMessages
+        var messages = await _persistMessageDbContext.PersistMessage
             .Where(x => x.MessageStatus != MessageStatus.Processed)
             .ToListAsync(cancellationToken);
 
@@ -121,7 +120,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
 
     public async Task ProcessInboxAsync(Guid messageId, CancellationToken cancellationToken = default)
     {
-        var message = await _persistMessageDbContext.PersistMessages.FirstOrDefaultAsync(
+        var message = await _persistMessageDbContext.PersistMessage.FirstOrDefaultAsync(
             x => x.Id == messageId &&
                  x.DeliveryType == MessageDeliveryType.Inbox &&
                  x.MessageStatus == MessageStatus.InProgress,
@@ -193,7 +192,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
         else
             id = NewId.NextGuid();
 
-        await _persistMessageDbContext.PersistMessages.AddAsync(
+        await _persistMessageDbContext.PersistMessage.AddAsync(
             new PersistMessage(
                 id,
                 messageEnvelope.Message.GetType().ToString(),
@@ -215,7 +214,7 @@ public class PersistMessageProcessor : IPersistMessageProcessor
     {
         message.ChangeState(MessageStatus.Processed);
 
-        _persistMessageDbContext.PersistMessages.Update(message);
+        _persistMessageDbContext.PersistMessage.Update(message);
 
         await _persistMessageDbContext.SaveChangesAsync(cancellationToken);
     }
