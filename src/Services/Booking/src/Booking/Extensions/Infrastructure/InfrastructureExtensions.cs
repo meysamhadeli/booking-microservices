@@ -58,7 +58,7 @@ public static class InfrastructureExtensions
                     }));
         });
 
-        builder.Services.AddPersistMessageProcessor(env);
+        builder.Services.AddPersistMessageProcessor();
         builder.Services.AddMongoDbContext<BookingReadDbContext>(configuration);
 
         builder.Services.AddEndpointsApiExplorer();

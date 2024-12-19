@@ -18,7 +18,7 @@ public class SeedManager(
 
         if (!env.IsEnvironment("test"))
         {
-            foreach (var seeder in dataSeeders.Where(x => x is not ITestDataSeeder))
+            foreach (var seeder in dataSeeders)
             {
                 logger.LogInformation("Seed {SeederName} is started.", seeder.GetType().Name);
                 await seeder.SeedAllAsync();
@@ -30,9 +30,9 @@ public class SeedManager(
     public async Task ExecuteTestSeedAsync()
     {
         await using var scope = serviceProvider.CreateAsyncScope();
-        var dataSeeders = scope.ServiceProvider.GetServices<IDataSeeder>();
+        var dataSeeders = scope.ServiceProvider.GetServices<ITestDataSeeder>();
 
-        foreach (var seeder in dataSeeders.Where(x => x is ITestDataSeeder))
+        foreach (var seeder in dataSeeders)
         {
             logger.LogInformation("Seed {SeederName} is started.", seeder.GetType().Name);
             await seeder.SeedAllAsync();

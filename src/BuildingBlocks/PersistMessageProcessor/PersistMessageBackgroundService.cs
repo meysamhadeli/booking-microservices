@@ -19,7 +19,6 @@ public class PersistMessageBackgroundService(
         logger.LogInformation("PersistMessage Background Service Start");
 
         await ProcessAsync(stoppingToken);
-
     }
 
     public override Task StopAsync(CancellationToken cancellationToken)

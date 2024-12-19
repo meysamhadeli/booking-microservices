@@ -1,15 +1,18 @@
 using System.Globalization;
 using System.Net;
+using System.Reflection;
 using System.Security.Claims;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
+using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Web;
 using EasyNetQ.Management.Client;
 using Grpc.Net.Client;
+using MassTransit;
 using MassTransit.Testing;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
@@ -96,8 +99,11 @@ where TEntryPoint : class
                         {
                             TestRegistrationServices?.Invoke(services);
                             services.ReplaceSingleton(AddHttpContextAccessorMock);
-                            services.RemoveAll<IHostedService>();
-                            services.AddSingleton<PersistMessageBackgroundService>();
+
+                            services.RemoveHostedService<PersistMessageBackgroundService>();
+                            services.AddSingleton<PersistMessageBackgroundService>(); // Register as a singleton
+                            services.AddHostedService(provider => provider.GetRequiredService<PersistMessageBackgroundService>()); // Use the same instance for hosted service
+
 
                             // Register all ITestDataSeeder implementations dynamically
                             services.Scan(scan => scan

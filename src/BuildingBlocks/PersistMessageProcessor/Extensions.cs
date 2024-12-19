@@ -8,10 +8,7 @@ namespace BuildingBlocks.PersistMessageProcessor;
 
 public static class Extensions
 {
-    public static IServiceCollection AddPersistMessageProcessor(
-        this IServiceCollection services,
-        IWebHostEnvironment env
-    )
+    public static IServiceCollection AddPersistMessageProcessor(this IServiceCollection services)
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 

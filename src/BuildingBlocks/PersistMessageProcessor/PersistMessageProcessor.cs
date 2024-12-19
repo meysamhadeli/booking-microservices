@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 namespace BuildingBlocks.PersistMessageProcessor;
 
 using Microsoft.EntityFrameworkCore;
-using Polly;
 
 public class PersistMessageProcessor : IPersistMessageProcessor
 {

@@ -67,7 +67,7 @@ public static class InfrastructureExtensions
         builder.Services.AddCustomDbContext<FlightDbContext>();
         builder.Services.AddScoped<IDataSeeder, FlightDataSeeder>();
         builder.Services.AddMongoDbContext<FlightReadDbContext>(configuration);
-        builder.Services.AddPersistMessageProcessor(env);
+        builder.Services.AddPersistMessageProcessor();
 
         builder.Services.AddEndpointsApiExplorer();
         builder.AddCustomSerilog(env);

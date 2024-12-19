@@ -12,7 +12,7 @@ using Exception;
 public static class Extensions
 {
     public static IServiceCollection AddCustomMassTransit(this IServiceCollection services,
-        IWebHostEnvironment env, Assembly assembly)
+        IWebHostEnvironment env, params Assembly[] assembly)
     {
         services.AddValidateOptions<RabbitMqOptions>();
 
@@ -32,7 +32,7 @@ public static class Extensions
     }
 
     private static void SetupMasstransitConfigurations(IServiceCollection services,
-        IBusRegistrationConfigurator configure, Assembly assembly)
+        IBusRegistrationConfigurator configure, params Assembly[] assembly)
     {
         configure.AddConsumers(assembly);
         configure.AddSagaStateMachines(assembly);
