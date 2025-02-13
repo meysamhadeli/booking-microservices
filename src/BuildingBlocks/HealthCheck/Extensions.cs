@@ -2,6 +2,7 @@ using BuildingBlocks.EFCore;
 using BuildingBlocks.Logging;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
+using BuildingBlocks.OpenTelemetryCollector;
 using BuildingBlocks.Web;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
@@ -25,13 +26,11 @@ public static class Extensions
         var postgresOptions = services.GetOptions<PostgresOptions>(nameof(PostgresOptions));
         var rabbitMqOptions = services.GetOptions<RabbitMqOptions>(nameof(RabbitMqOptions));
         var mongoOptions = services.GetOptions<MongoOptions>(nameof(MongoOptions));
-        var logOptions = services.GetOptions<LogOptions>(nameof(LogOptions));
 
         var healthChecksBuilder = services.AddHealthChecks()
             .AddRabbitMQ(
                 rabbitConnectionString:
-                $"amqp://{rabbitMqOptions.UserName}:{rabbitMqOptions.Password}@{rabbitMqOptions.HostName}")
-            .AddElasticsearch(logOptions.Elastic.ElasticServiceUrl);
+                $"amqp://{rabbitMqOptions.UserName}:{rabbitMqOptions.Password}@{rabbitMqOptions.HostName}");
 
         if (mongoOptions.ConnectionString is not null)
             healthChecksBuilder.AddMongoDb(mongoOptions.ConnectionString);

@@ -6,7 +6,7 @@ using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.OpenApi;
-using BuildingBlocks.OpenTelemetry;
+using BuildingBlocks.OpenTelemetryCollector;
 using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.ProblemDetails;
 using BuildingBlocks.Web;
@@ -74,7 +74,7 @@ public static class InfrastructureExtensions
         builder.Services.AddCustomHealthCheck();
 
         builder.Services.AddCustomMassTransit(env, typeof(IdentityRoot).Assembly);
-        builder.Services.AddCustomOpenTelemetry();
+        builder.AddCustomObservability();
 
         builder.AddCustomIdentityServer();
 
@@ -93,7 +93,7 @@ public static class InfrastructureExtensions
         var env = app.Environment;
         var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
-        app.MapPrometheusScrapingEndpoint();
+        app.UseCustomObservability();
 
         app.UseForwardedHeaders();
 

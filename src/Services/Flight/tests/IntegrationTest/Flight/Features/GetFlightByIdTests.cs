@@ -9,9 +9,7 @@ using Xunit;
 
 namespace Integration.Test.Flight.Features;
 
-using global::Flight.Flights.Features.CreatingFlight.V1;
 using global::Flight.Flights.Features.GettingFlightById.V1;
-using Thrift.Protocol;
 
 public class GetFlightByIdTests : FlightIntegrationTestBase
 {

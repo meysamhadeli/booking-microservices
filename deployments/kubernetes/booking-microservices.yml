@@ -24,89 +24,95 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -f infrastracture.yaml
-    kompose.version: 1.26.0 (40646f47)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: elasticsearch
   name: elasticsearch
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: elasticsearch
-  strategy:
-    type: Recreate
+      app: elasticsearch
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert -f infrastracture.yaml
-        kompose.version: 1.26.0 (40646f47)
-      creationTimestamp: null
       labels:
-        io.kompose.network/booking: "true"
-        io.kompose.service: elasticsearch
+        app: elasticsearch
     spec:
       containers:
-        - env:
-            - name: ES_JAVA_OPTS
-              value: -Xms512m -Xmx512m
-            - name: discovery.type
-              value: single-node
-            - name: xpack.monitoring.enabled
-              value: "true"
-            - name: xpack.watcher.enabled
-              value: "false"
-          image: elasticsearch:7.17.9
-          name: elasticsearch
-          ports:
-            - containerPort: 9200
-          resources: {}
-          volumeMounts:
-            - mountPath: /usr/share/elasticsearch/data
-              name: elasticsearch-data
-      restartPolicy: Always
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
+        env:
+        - name: discovery.type
+          value: "single-node"
+        - name: cluster.name
+          value: "docker-cluster"
+        - name: node.name
+          value: "docker-node"
+        - name: ES_JAVA_OPTS
+          value: "-Xms512m -Xmx512m"
+        - name: xpack.security.enabled
+          value: "false"
+        - name: xpack.security.http.ssl.enabled
+          value: "false"
+        - name: xpack.security.transport.ssl.enabled
+          value: "false"
+        - name: network.host
+          value: "0.0.0.0"
+        - name: http.port
+          value: "9200"
+        - name: transport.host
+          value: "localhost"
+        - name: bootstrap.memory_lock
+          value: "true"
+        - name: cluster.routing.allocation.disk.threshold_enabled
+          value: "false"
+        ports:
+        - containerPort: 9200
+        - containerPort: 9300
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: elastic-data
       volumes:
-        - name: elasticsearch-data
-          persistentVolumeClaim:
-            claimName: elasticsearch-data
-status: {}
----
-apiVersion: v1
-kind: Service
-metadata:
-  annotations:
-    kompose.cmd: kompose convert -f infrastracture.yaml
-    kompose.version: 1.26.0 (40646f47)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: elasticsearch
-  name: elasticsearch
-spec:
-  ports:
-    - name: "9200"
-      port: 9200
-      targetPort: 9200
-  selector:
-    io.kompose.service: elasticsearch
-status:
-  loadBalancer: {}
+      - name: elastic-data
+        persistentVolumeClaim:
+          claimName: elasticsearch-pvc
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  creationTimestamp: null
-  labels:
-    io.kompose.service: elasticsearch-data
-  name: elasticsearch-data
+  name: elasticsearch-pvc
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
-status: {}
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+spec:
+  selector:
+    app: elasticsearch
+  ports:
+  - port: 9200
+    targetPort: 9200
+  - port: 9300
+    targetPort: 9300
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: elasticsearch-pv
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
 ---
 #######################################################
 #  Kibana
@@ -114,211 +120,380 @@ status: {}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -f infrastracture.yaml
-    kompose.version: 1.26.0 (40646f47)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: kibana
   name: kibana
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: kibana
-  strategy: {}
+      app: kibana
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert -f infrastracture.yaml
-        kompose.version: 1.26.0 (40646f47)
-      creationTimestamp: null
       labels:
-        io.kompose.network/booking: "true"
-        io.kompose.service: kibana
+        app: kibana
     spec:
       containers:
-        - env:
-            - name: ELASTICSEARCH_URL
-              value: elasticsearch:9200
-          image: kibana:7.17.9
-          name: kibana
-          ports:
-            - containerPort: 5601
-          resources: {}
-      restartPolicy: Always
-status: {}
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:8.17.0
+        env:
+        - name: ELASTICSEARCH_HOSTS
+          value: "http://elasticsearch:9200"
+        ports:
+        - containerPort: 5601
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -f infrastracture.yaml
-    kompose.version: 1.26.0 (40646f47)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: kibana
   name: kibana
 spec:
-  ports:
-    - name: "5601"
-      port: 5601
-      targetPort: 5601
   selector:
-    io.kompose.service: kibana
-status:
-  loadBalancer: {}
+    app: kibana
+  ports:
+  - port: 5601
+    targetPort: 5601
+  type: ClusterIP
 ---  
+#######################################################
+#  Tempo
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tempo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tempo
+  template:
+    metadata:
+      labels:
+        app: tempo
+    spec:
+      containers:
+      - name: tempo
+        image: grafana/tempo:latest
+        args:
+        - "-config.file=/etc/tempo.yaml"
+        ports:
+        - containerPort: 3200
+        - containerPort: 4317
+        - containerPort: 4318
+        volumeMounts:
+        - mountPath: /etc/tempo.yaml
+          name: tempo-config
+          subPath: tempo.yaml
+      volumes:
+      - name: tempo-config
+        configMap:
+          name: tempo-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tempo-config
+data:
+  tempo.yaml: |
+    # Your Tempo configuration here
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tempo
+spec:
+  selector:
+    app: tempo
+  ports:
+  - port: 3200
+    targetPort: 3200
+  - port: 4317
+    targetPort: 4317
+  - port: 4318
+    targetPort: 4318
+  type: ClusterIP
+---
+#######################################################
+#  Looki
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loki
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loki
+  template:
+    metadata:
+      labels:
+        app: loki
+    spec:
+      containers:
+      - name: loki
+        image: grafana/loki:latest
+        args:
+        - "-config.file=/etc/loki/local-config.yaml"
+        ports:
+        - containerPort: 3100
+        volumeMounts:
+        - mountPath: /etc/loki/local-config.yaml
+          name: loki-config
+          subPath: local-config.yaml
+      volumes:
+      - name: loki-config
+        configMap:
+          name: loki-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loki-config
+data:
+  local-config.yaml: |
+    # Your Loki configuration here
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki
+spec:
+  selector:
+    app: loki
+  ports:
+  - port: 3100
+    targetPort: 3100
+  type: ClusterIP
+---
 #######################################################
 #  Event Store
 #######################################################
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f infrastructure.yaml
-    kompose.version: 1.34.0 (cbf2835db)
-  labels:
-    io.kompose.service: eventstore
   name: eventstore
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: eventstore
+      app: eventstore
   template:
     metadata:
-      annotations:
-        kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f infrastructure.yaml
-        kompose.version: 1.34.0 (cbf2835db)
       labels:
-        io.kompose.service: eventstore
+        app: eventstore
     spec:
       containers:
-        - env:
-            - name: EVENTSTORE_CLUSTER_SIZE
-              value: "1"
-            - name: EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP
-              value: "True"
-            - name: EVENTSTORE_HTTP_PORT
-              value: "2113"
-            - name: EVENTSTORE_INSECURE
-              value: "True"
-            - name: EVENTSTORE_RUN_PROJECTIONS
-              value: All
-            - name: EVENTSTORE_START_STANDARD_PROJECTIONS
-              value: "True"
-          image: eventstore/eventstore:latest
-          name: eventstore
-          ports:
-            - containerPort: 2113
-              protocol: TCP
-      restartPolicy: Always
+      - name: eventstore
+        image: eventstore/eventstore:latest
+        env:
+        - name: EVENTSTORE_CLUSTER_SIZE
+          value: "1"
+        - name: EVENTSTORE_RUN_PROJECTIONS
+          value: "All"
+        - name: EVENTSTORE_START_STANDARD_PROJECTIONS
+          value: "True"
+        - name: EVENTSTORE_HTTP_PORT
+          value: "2113"
+        - name: EVENTSTORE_INSECURE
+          value: "True"
+        - name: EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP
+          value: "True"
+        ports:
+        - containerPort: 2113
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f infrastructure.yaml
-    kompose.version: 1.34.0 (cbf2835db)
-  labels:
-    io.kompose.service: eventstore
   name: eventstore
 spec:
-  ports:
-    - name: "2113"
-      port: 2113
-      targetPort: 2113
   selector:
-    io.kompose.service: eventstore
+    app: eventstore
+  ports:
+  - port: 2113
+    targetPort: 2113
+  type: ClusterIP
 ---
-# #######################################################
-# #  Jaeger
-# #######################################################
+#######################################################
+#  Jaeger
+#######################################################
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe -f infrastracture.yaml convert
-    kompose.version: 1.28.0 (c4137012e)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: jaeger
   name: jaeger
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: jaeger
-  strategy: {}
+      app: jaeger
   template:
     metadata:
-      annotations:
-        kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe -f infrastracture.yaml convert
-        kompose.version: 1.28.0 (c4137012e)
-      creationTimestamp: null
       labels:
-        io.kompose.network/booking: "true"
-        io.kompose.service: jaeger
+        app: jaeger
     spec:
       containers:
-        - image: jaegertracing/all-in-one
-          name: jaeger
-          ports:
-            - containerPort: 5775
-              protocol: UDP
-            - containerPort: 5778
-            - containerPort: 6831
-              protocol: UDP
-            - containerPort: 6832
-              protocol: UDP
-            - containerPort: 9411
-            - containerPort: 14268
-            - containerPort: 16686
-          resources: {}
-      restartPolicy: Always
-status: {}
+      - name: jaeger
+        image: jaegertracing/all-in-one:latest
+        ports:
+        - containerPort: 6831
+          protocol: UDP
+        - containerPort: 16686
+        - containerPort: 14268
+        - containerPort: 4317
+        - containerPort: 4318
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe -f infrastracture.yaml convert
-    kompose.version: 1.28.0 (c4137012e)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: jaeger
   name: jaeger
 spec:
-  ports:
-    - name: "5775"
-      port: 5775
-      protocol: UDP
-      targetPort: 5775
-    - name: "5778"
-      port: 5778
-      targetPort: 5778
-    - name: "6831"
-      port: 6831
-      protocol: UDP
-      targetPort: 6831
-    - name: "6832"
-      port: 6832
-      protocol: UDP
-      targetPort: 6832
-    - name: "9411"
-      port: 9411
-      targetPort: 9411
-    - name: "14268"
-      port: 14268
-      targetPort: 14268
-    - name: "16686"
-      port: 16686
-      targetPort: 16686
   selector:
-    io.kompose.service: jaeger
-status:
-  loadBalancer: {}
+    app: jaeger
+  ports:
+  - port: 6831
+    targetPort: 6831
+    protocol: UDP
+  - port: 16686
+    targetPort: 16686
+  - port: 14268
+    targetPort: 14268
+  - port: 4317
+    targetPort: 4317
+  - port: 4318
+    targetPort: 4318
+  type: ClusterIP
+---
+#######################################################
+#  Zipkin
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zipkin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zipkin
+  template:
+    metadata:
+      labels:
+        app: zipkin
+    spec:
+      containers:
+      - name: zipkin
+        image: openzipkin/zipkin:latest
+        ports:
+        - containerPort: 9411
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin
+spec:
+  selector:
+    app: zipkin
+  ports:
+  - port: 9411
+    targetPort: 9411
+  type: ClusterIP
+
+---
+#######################################################
+#  OpenTelemetry Collector
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otel-collector
+  template:
+    metadata:
+      labels:
+        app: otel-collector
+    spec:
+      containers:
+      - name: otel-collector
+        image: otel/opentelemetry-collector-contrib:latest
+        args: ["--config=/etc/otelcol-contrib/config.yaml"]
+        ports:
+        - containerPort: 11888
+        - containerPort: 8888
+        - containerPort: 8889
+        - containerPort: 13133
+        - containerPort: 4317
+        - containerPort: 4318
+        - containerPort: 55679
+        volumeMounts:
+        - mountPath: /etc/otelcol-contrib/config.yaml
+          name: otel-config
+          subPath: config.yaml
+      volumes:
+      - name: otel-config
+        configMap:
+          name: otel-collector-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-config
+data:
+  config.yaml: |
+    # Your OpenTelemetry Collector configuration here
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-collector
+spec:
+  selector:
+    app: otel-collector
+  ports:
+  - port: 11888
+    targetPort: 11888
+  - port: 8888
+    targetPort: 8888
+  - port: 8889
+    targetPort: 8889
+  - port: 13133
+    targetPort: 13133
+  - port: 4317
+    targetPort: 4317
+  - port: 4318
+    targetPort: 4318
+  - port: 55679
+    targetPort: 55679
+  type: ClusterIP
 ---
 #######################################################
 #  Prometheus
@@ -326,83 +501,56 @@ status:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f infrastracture.yaml
-    kompose.version: 1.28.0 (c4137012e)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: prometheus
   name: prometheus
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: prometheus
-  strategy:
-    type: Recreate
+      app: prometheus
   template:
     metadata:
-      annotations:
-        kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f infrastracture.yaml
-        kompose.version: 1.28.0 (c4137012e)
-      creationTimestamp: null
       labels:
-        io.kompose.network/newfolder-booking: "true"
-        io.kompose.service: prometheus
+        app: prometheus
     spec:
       containers:
-        - env:
-            - name: TZ
-              value: UTC
-          image: prom/prometheus:latest
-          name: prometheus
-          ports:
-            - containerPort: 9090
-          resources: {}
-          volumeMounts:
-            - mountPath: /etc/prometheus/prometheus.yml
-              name: prometheus-claim0
-      restartPolicy: Always
+      - name: prometheus
+        image: prom/prometheus:latest
+        args:
+        - "--config.file=/etc/prometheus/prometheus.yml"
+        - "--storage.tsdb.path=/prometheus"
+        - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+        - "--web.console.templates=/usr/share/prometheus/consoles"
+        - "--web.enable-remote-write-receiver"
+        ports:
+        - containerPort: 9090
+        volumeMounts:
+        - mountPath: /etc/prometheus/prometheus.yml
+          name: prometheus-config
+          subPath: prometheus.yml
       volumes:
-        - name: prometheus-claim0
-          persistentVolumeClaim:
-            claimName: prometheus-claim0
-status: {}
+      - name: prometheus-config
+        configMap:
+          name: prometheus-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+data:
+  prometheus.yml: |
+    # Your Prometheus configuration here
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f infrastracture.yaml
-    kompose.version: 1.28.0 (c4137012e)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: prometheus
   name: prometheus
 spec:
-  ports:
-    - name: "9090"
-      port: 9090
-      targetPort: 9090
   selector:
-    io.kompose.service: prometheus
-status:
-  loadBalancer: {}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  creationTimestamp: null
-  labels:
-    io.kompose.service: prometheus-claim0
-  name: prometheus-claim0
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Mi
-status: {}
+    app: prometheus
+  ports:
+  - port: 9090
+    targetPort: 9090
+  type: ClusterIP
 ---
 #######################################################
 #  Grafana
@@ -410,551 +558,386 @@ status: {}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f infrastracture.yaml
-    kompose.version: 1.28.0 (c4137012e)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: grafana
   name: grafana
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: grafana
-  strategy:
-    type: Recreate
+      app: grafana
   template:
     metadata:
-      annotations:
-        kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f infrastracture.yaml
-        kompose.version: 1.28.0 (c4137012e)
-      creationTimestamp: null
       labels:
-        io.kompose.network/newfolder-booking: "true"
-        io.kompose.service: grafana
+        app: grafana
     spec:
       containers:
-        - image: grafana/grafana
-          name: grafana
-          ports:
-            - containerPort: 3000
-          resources: {}
-          volumeMounts:
-            - mountPath: /var/lib/grafana
-              name: grafana-claim0
-      restartPolicy: Always
+      - name: grafana
+        image: grafana/grafana:latest
+        env:
+        - name: GF_INSTALL_PLUGINS
+          value: "grafana-clock-panel,grafana-simple-json-datasource"
+        - name: GF_SECURITY_ADMIN_USER
+          value: "admin"
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          value: "admin"
+        - name: GF_FEATURE_TOGGLES_ENABLE
+          value: "traceqlEditor"
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - mountPath: /etc/grafana/provisioning
+          name: grafana-provisioning
+        - mountPath: /var/lib/grafana/dashboards
+          name: grafana-dashboards
       volumes:
-        - name: grafana-claim0
-          persistentVolumeClaim:
-            claimName: grafana-claim0
-status: {}
+      - name: grafana-provisioning
+        configMap:
+          name: grafana-provisioning
+      - name: grafana-dashboards
+        configMap:
+          name: grafana-dashboards
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-provisioning
+data:
+  # Your Grafana provisioning configuration here
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+data:
+  # Your Grafana dashboards configuration here
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f infrastracture.yaml
-    kompose.version: 1.28.0 (c4137012e)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: grafana
   name: grafana
 spec:
-  ports:
-    - name: "3000"
-      port: 3000
-      targetPort: 3000
   selector:
-    io.kompose.service: grafana
-status:
-  loadBalancer: {}
+    app: grafana
+  ports:
+  - port: 3000
+    targetPort: 3000
+  type: ClusterIP
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  creationTimestamp: null
-  labels:
-    io.kompose.service: grafana-claim0
-  name: grafana-claim0
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Mi
-status: {}
----
-# #######################################################
-# #  Node Exporter
-# #######################################################
+#######################################################
+#  Node Exporter
+#######################################################
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f infrastructure.yaml
-    kompose.version: 1.34.0 (cbf2835db)
-  labels:
-    io.kompose.service: node-exporter
   name: node-exporter
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: node-exporter
-  strategy:
-    type: Recreate
+      app: node-exporter
   template:
     metadata:
-      annotations:
-        kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f infrastructure.yaml
-        kompose.version: 1.34.0 (cbf2835db)
       labels:
-        io.kompose.service: node-exporter
+        app: node-exporter
     spec:
       containers:
-        - args:
-            - --path.rootfs=/host
-          image: quay.io/prometheus/node-exporter:latest
-          name: node-exporter
-          volumeMounts:
-            - mountPath: /host/proc
-              name: node-exporter-claim0
-              readOnly: true
-            - mountPath: /host/sys
-              name: node-exporter-claim1
-              readOnly: true
-      restartPolicy: Always
+      - name: node-exporter
+        image: prom/node-exporter:latest
+        args:
+        - "--path.procfs=/host/proc"
+        - "--path.rootfs=/rootfs"
+        - "--path.sysfs=/host/sys"
+        ports:
+        - containerPort: 9100
+        volumeMounts:
+        - mountPath: /host/proc
+          name: proc
+          readOnly: true
+        - mountPath: /host/sys
+          name: sys
+          readOnly: true
+        - mountPath: /rootfs
+          name: rootfs
+          readOnly: true
       volumes:
-        - name: node-exporter-claim0
-          persistentVolumeClaim:
-            claimName: node-exporter-claim0
-            readOnly: true
-        - name: node-exporter-claim1
-          persistentVolumeClaim:
-            claimName: node-exporter-claim1
-            readOnly: true
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: sys
+        hostPath:
+          path: /sys
+      - name: rootfs
+        hostPath:
+          path: /
 ---
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: Service
 metadata:
-  labels:
-    io.kompose.service: node-exporter-claim0
-  name: node-exporter-claim0
+  name: node-exporter
 spec:
-  accessModes:
-    - ReadOnlyMany
-  resources:
-    requests:
-      storage: 100Mi
+  selector:
+    app: node-exporter
+  ports:
+  - port: 9100
+    targetPort: 9100
+  type: ClusterIP
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  labels:
-    io.kompose.service: node-exporter-claim1
-  name: node-exporter-claim1
-spec:
-  accessModes:
-    - ReadOnlyMany
-  resources:
-    requests:
-      storage: 100Mi
----
-# #######################################################
-# #  Cadvisor
-# #######################################################
+#######################################################
+#  Cadvisor
+#######################################################
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f infrastracture.yaml
-    kompose.version: 1.28.0 (c4137012e)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: cadvisor
   name: cadvisor
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: cadvisor
-  strategy:
-    type: Recreate
+      app: cadvisor
   template:
     metadata:
-      annotations:
-        kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f infrastracture.yaml
-        kompose.version: 1.28.0 (c4137012e)
-      creationTimestamp: null
       labels:
-        io.kompose.network/newfolder-booking: "true"
-        io.kompose.service: cadvisor
+        app: cadvisor
     spec:
       containers:
-        - image: gcr.io/cadvisor/cadvisor:latest
-          name: cadvisor
-          ports:
-            - containerPort: 8080
-          resources: {}
-          volumeMounts:
-            - mountPath: /rootfs
-              name: cadvisor-claim0
-              readOnly: true
-            - mountPath: /var/run
-              name: cadvisor-claim1
-              readOnly: true
-            - mountPath: /sys
-              name: cadvisor-claim2
-              readOnly: true
-            - mountPath: /var/lib/docker
-              name: cadvisor-claim3
-              readOnly: true
-            - mountPath: /dev/disk
-              name: cadvisor-claim4
-              readOnly: true
-      restartPolicy: Always
+      - name: cadvisor
+        image: gcr.io/cadvisor/cadvisor:latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /rootfs
+          name: rootfs
+          readOnly: true
+        - mountPath: /var/run
+          name: var-run
+          readOnly: true
+        - mountPath: /sys
+          name: sys
+          readOnly: true
+        - mountPath: /var/lib/docker
+          name: var-lib-docker
+          readOnly: true
+        - mountPath: /dev/disk
+          name: dev-disk
+          readOnly: true
       volumes:
-        - name: cadvisor-claim0
-          persistentVolumeClaim:
-            claimName: cadvisor-claim0
-            readOnly: true
-        - name: cadvisor-claim1
-          persistentVolumeClaim:
-            claimName: cadvisor-claim1
-            readOnly: true
-        - name: cadvisor-claim2
-          persistentVolumeClaim:
-            claimName: cadvisor-claim2
-            readOnly: true
-        - name: cadvisor-claim3
-          persistentVolumeClaim:
-            claimName: cadvisor-claim3
-            readOnly: true
-        - name: cadvisor-claim4
-          persistentVolumeClaim:
-            claimName: cadvisor-claim4
-            readOnly: true
-status: {}
+      - name: rootfs
+        hostPath:
+          path: /
+      - name: var-run
+        hostPath:
+          path: /var/run
+      - name: sys
+        hostPath:
+          path: /sys
+      - name: var-lib-docker
+        hostPath:
+          path: /var/lib/docker
+      - name: dev-disk
+        hostPath:
+          path: /dev/disk
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f infrastracture.yaml
-    kompose.version: 1.28.0 (c4137012e)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: cadvisor
   name: cadvisor
 spec:
-  ports:
-    - name: "8080"
-      port: 8080
-      targetPort: 8080
   selector:
-    io.kompose.service: cadvisor
-status:
-  loadBalancer: {}
+    app: cadvisor
+  ports:
+  - port: 8080
+    targetPort: 8080
+  type: ClusterIP
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  creationTimestamp: null
-  labels:
-    io.kompose.service: cadvisor-claim0
-  name: cadvisor-claim0
-spec:
-  accessModes:
-    - ReadOnlyMany
-  resources:
-    requests:
-      storage: 100Mi
-status: {}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  creationTimestamp: null
-  labels:
-    io.kompose.service: cadvisor-claim1
-  name: cadvisor-claim1
-spec:
-  accessModes:
-    - ReadOnlyMany
-  resources:
-    requests:
-      storage: 100Mi
-status: {}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  creationTimestamp: null
-  labels:
-    io.kompose.service: cadvisor-claim2
-  name: cadvisor-claim2
-spec:
-  accessModes:
-    - ReadOnlyMany
-  resources:
-    requests:
-      storage: 100Mi
-status: {}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  creationTimestamp: null
-  labels:
-    io.kompose.service: cadvisor-claim3
-  name: cadvisor-claim3
-spec:
-  accessModes:
-    - ReadOnlyMany
-  resources:
-    requests:
-      storage: 100Mi
-status: {}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  creationTimestamp: null
-  labels:
-    io.kompose.service: cadvisor-claim4
-  name: cadvisor-claim4
-spec:
-  accessModes:
-    - ReadOnlyMany
-  resources:
-    requests:
-      storage: 100Mi
-status: {}
----
-# #######################################################
-# #  Mongo
-# #######################################################
+#######################################################
+#  Mongo
+#######################################################
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe -f infrastracture.yaml convert
-    kompose.version: 1.28.0 (c4137012e)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: mongo
   name: mongo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: mongo
-  strategy: {}
+      app: mongo
   template:
     metadata:
-      annotations:
-        kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe -f infrastracture.yaml convert
-        kompose.version: 1.28.0 (c4137012e)
-      creationTimestamp: null
       labels:
-        io.kompose.network/booking: "true"
-        io.kompose.service: mongo
+        app: mongo
     spec:
       containers:
-        - image: mongo:latest
-          name: mongo
-          ports:
-            - containerPort: 27017
-          resources: {}
-      restartPolicy: Always
-status: {}
+      - name: mongo
+        image: mongo:latest
+        ports:
+        - containerPort: 27017
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe -f infrastracture.yaml convert
-    kompose.version: 1.28.0 (c4137012e)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: mongo
   name: mongo
 spec:
-  ports:
-    - name: "27017"
-      port: 27017
-      targetPort: 27017
   selector:
-    io.kompose.service: mongo
-status:
-  loadBalancer: {}
+    app: mongo
+  ports:
+  - port: 27017
+    targetPort: 27017
+  type: ClusterIP
 ---
-# #######################################################
-# #  Postgres
-# #######################################################
-apiVersion: v1
-kind: Pod
+#######################################################
+#  Postgres
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  labels:
-    app: postgres
   name: postgres
 spec:
-  containers:
-    - args:
-        - postgres
-        - -c
-        - wal_level=logical
-        - -c
-        - max_prepared_transactions=10  
-      env:
-        - name: POSTGRES_PASSWORD
-          value: postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:latest
+        env:
         - name: POSTGRES_USER
           value: postgres
-      image: postgres:latest
-      name: postgres
-      ports:
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        ports:
         - containerPort: 5432
-  restartPolicy: Always
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgres-data
+      volumes:
+      - name: postgres-data
+        persistentVolumeClaim:
+          claimName: postgres-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: postgres
   name: postgres
 spec:
-  ports:
-    - name: "5432"
-      port: 5432
-      targetPort: 5432
   selector:
     app: postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+  type: ClusterIP
 ---
-# #######################################################
-# #  Rabbitmq
-# #######################################################
+#######################################################
+#  Rabbitmq
+#######################################################
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe -f infrastracture.yaml convert
-    kompose.version: 1.28.0 (c4137012e)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: rabbitmq
   name: rabbitmq
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: rabbitmq
-  strategy: {}
+      app: rabbitmq
   template:
     metadata:
-      annotations:
-        kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe -f infrastracture.yaml convert
-        kompose.version: 1.28.0 (c4137012e)
-      creationTimestamp: null
       labels:
-        io.kompose.network/booking: "true"
-        io.kompose.service: rabbitmq
+        app: rabbitmq
     spec:
       containers:
-        - image: rabbitmq:management
-          name: rabbitmq
-          ports:
-            - containerPort: 5672
-            - containerPort: 15672
-          resources: {}
-      restartPolicy: Always
-status: {}
+      - name: rabbitmq
+        image: rabbitmq:management
+        ports:
+        - containerPort: 5672
+        - containerPort: 15672
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe -f infrastracture.yaml convert
-    kompose.version: 1.28.0 (c4137012e)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: rabbitmq
   name: rabbitmq
 spec:
-  ports:
-    - name: "5672"
-      port: 5672
-      targetPort: 5672
-    - name: "15672"
-      port: 15672
-      targetPort: 15672
   selector:
-    io.kompose.service: rabbitmq
-status:
-  loadBalancer: {}
+    app: rabbitmq
+  ports:
+  - port: 5672
+    targetPort: 5672
+  - port: 15672
+    targetPort: 15672
+  type: ClusterIP
 ---
-# #######################################################
-# #  Redis
-# #######################################################
+#######################################################
+#  Redis
+#######################################################
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe -f infrastracture.yaml convert
-    kompose.version: 1.28.0 (c4137012e)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: redis
   name: redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: redis
-  strategy: {}
+      app: redis
   template:
     metadata:
-      annotations:
-        kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe -f infrastracture.yaml convert
-        kompose.version: 1.28.0 (c4137012e)
-      creationTimestamp: null
       labels:
-        io.kompose.network/booking: "true"
-        io.kompose.service: redis
+        app: redis
     spec:
       containers:
-        - image: redis
-          name: redis
-          ports:
-            - containerPort: 6379
-          resources: {}
-      restartPolicy: Always
-status: {}
+      - name: redis
+        image: redis
+        ports:
+        - containerPort: 6379
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe -f infrastracture.yaml convert
-    kompose.version: 1.28.0 (c4137012e)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: redis
   name: redis
 spec:
-  ports:
-    - name: "6379"
-      port: 6379
-      targetPort: 6379
   selector:
-    io.kompose.service: redis
-status:
-  loadBalancer: {}
+    app: redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+  type: ClusterIP
 ---
-# #######################################################
+#######################################################
 #   ConfigMap AppSettings
-# #######################################################
+#######################################################
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -966,9 +949,9 @@ data:
     }
 #ref: https://www.mrjamiebowman.com/software-development/dotnet/kubernetes-configmaps-with-net-core/    
 ---
-# #######################################################
+#######################################################
 #   Flight
-# #######################################################
+#######################################################
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1017,9 +1000,9 @@ spec:
     targetPort: 80
   type: ClusterIP
 ---
-# #######################################################
+#######################################################
 #   Identity
-# #######################################################
+#######################################################
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1068,9 +1051,9 @@ spec:
     targetPort: 80
   type: ClusterIP
 ---
-# #######################################################
+#######################################################
 #   Booking
-# #######################################################
+#######################################################
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1119,9 +1102,9 @@ spec:
     targetPort: 80
   type: ClusterIP  
 ---
-# #######################################################
+#######################################################
 #   Passenger
-# #######################################################
+#######################################################
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1156,9 +1139,9 @@ spec:
         configMap:
           name: appsettings
 ---
-# #######################################################
+#######################################################
 #   Ingress Controller
-# #######################################################
+#######################################################
 apiVersion: v1
 kind: Service
 metadata:

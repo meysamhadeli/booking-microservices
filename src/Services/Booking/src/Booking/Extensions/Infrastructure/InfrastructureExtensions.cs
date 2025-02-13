@@ -9,7 +9,7 @@ using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.OpenApi;
-using BuildingBlocks.OpenTelemetry;
+using BuildingBlocks.OpenTelemetryCollector;
 using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.ProblemDetails;
 using BuildingBlocks.Web;
@@ -73,7 +73,7 @@ public static class InfrastructureExtensions
         builder.Services.AddCustomMapster(typeof(BookingRoot).Assembly);
         builder.Services.AddCustomHealthCheck();
         builder.Services.AddCustomMassTransit(env, typeof(BookingRoot).Assembly);
-        builder.Services.AddCustomOpenTelemetry();
+        builder.AddCustomObservability();
         builder.Services.AddTransient<AuthHeaderHandler>();
 
         // ref: https://github.com/oskardudycz/EventSourcing.NetCore/tree/main/Sample/EventStoreDB/ECommerce
@@ -91,7 +91,7 @@ public static class InfrastructureExtensions
         var env = app.Environment;
         var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
-        app.MapPrometheusScrapingEndpoint();
+        app.UseCustomObservability();
 
         app.UseCustomProblemDetails();
         app.UseSerilogRequestLogging(options =>

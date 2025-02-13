@@ -9,7 +9,7 @@ using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.OpenApi;
-using BuildingBlocks.OpenTelemetry;
+using BuildingBlocks.OpenTelemetryCollector;
 using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.ProblemDetails;
 using BuildingBlocks.Web;
@@ -26,7 +26,6 @@ using Serilog;
 
 namespace Passenger.Extensions.Infrastructure;
 
-
 public static class InfrastructureExtensions
 {
     public static WebApplicationBuilder AddInfrastructure(this WebApplicationBuilder builder)
@@ -38,27 +37,31 @@ public static class InfrastructureExtensions
         builder.Services.AddScoped<IEventMapper, EventMapper>();
         builder.Services.AddScoped<IEventDispatcher, EventDispatcher>();
 
-        builder.Services.Configure<ApiBehaviorOptions>(options =>
-        {
-            options.SuppressModelStateInvalidFilter = true;
-        });
+        builder.Services.Configure<ApiBehaviorOptions>(
+            options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
 
         var appOptions = builder.Services.GetOptions<AppOptions>(nameof(AppOptions));
         Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
-        builder.Services.AddRateLimiter(options =>
-        {
-            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
-                RateLimitPartition.GetFixedWindowLimiter(
-                    partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
-                    factory: partition => new FixedWindowRateLimiterOptions
-                    {
-                        AutoReplenishment = true,
-                        PermitLimit = 10,
-                        QueueLimit = 0,
-                        Window = TimeSpan.FromMinutes(1)
-                    }));
-        });
+        builder.Services.AddRateLimiter(
+            options =>
+            {
+                options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(
+                    httpContext =>
+                        RateLimitPartition.GetFixedWindowLimiter(
+                            partitionKey: httpContext.User.Identity?.Name ??
+                                          httpContext.Request.Headers.Host.ToString(),
+                            factory: partition => new FixedWindowRateLimiterOptions
+                                                  {
+                                                      AutoReplenishment = true,
+                                                      PermitLimit = 10,
+                                                      QueueLimit = 0,
+                                                      Window = TimeSpan.FromMinutes(1)
+                                                  }));
+            });
 
         builder.Services.AddPersistMessageProcessor();
         builder.Services.AddCustomDbContext<PassengerDbContext>();
@@ -76,11 +79,13 @@ public static class InfrastructureExtensions
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddCustomHealthCheck();
         builder.Services.AddCustomMassTransit(env, typeof(PassengerRoot).Assembly);
-        builder.Services.AddCustomOpenTelemetry();
-        builder.Services.AddGrpc(options =>
-        {
-            options.Interceptors.Add<GrpcExceptionInterceptor>();
-        });
+        builder.AddCustomObservability();
+
+        builder.Services.AddGrpc(
+            options =>
+            {
+                options.Interceptors.Add<GrpcExceptionInterceptor>();
+            });
 
         return builder;
     }
@@ -91,13 +96,16 @@ public static class InfrastructureExtensions
         var env = app.Environment;
         var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
-        app.MapPrometheusScrapingEndpoint();
+        app.UseCustomObservability();
 
         app.UseCustomProblemDetails();
-        app.UseSerilogRequestLogging(options =>
-        {
-            options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest;
-        });
+
+        app.UseSerilogRequestLogging(
+            options =>
+            {
+                options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest;
+            });
+
         app.UseCorrelationId();
         app.UseMigration<PassengerDbContext>();
         app.UseCustomHealthCheck();
