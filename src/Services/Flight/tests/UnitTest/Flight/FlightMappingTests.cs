@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Flight.Flights.Dtos;
 using MapsterMapper;
 using Unit.Test.Common;
@@ -10,12 +8,10 @@ namespace Unit.Test.Flight;
 [Collection(nameof(UnitTestFixture))]
 public class FlightMappingTests
 {
-    private readonly UnitTestFixture _fixture;
     private readonly IMapper _mapper;
 
     public FlightMappingTests(UnitTestFixture fixture)
     {
-        _fixture = fixture;
         _mapper = fixture.Mapper;
     }
 
