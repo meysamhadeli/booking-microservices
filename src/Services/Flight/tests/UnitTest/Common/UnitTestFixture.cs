@@ -1,4 +1,3 @@
-using System;
 using Flight.Data;
 using MapsterMapper;
 using Xunit;

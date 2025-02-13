@@ -1,0 +1,44 @@
+# https://grafana.com/docs/loki/latest/configure/examples/configuration-examples/
+# https://github.com/grafana/loki/issues/2018#issuecomment-970789233
+# https://grafana.com/docs/opentelemetry/collector/send-logs-to-loki/
+# https://github.com/grafana/loki/blob/main/examples/getting-started/loki-config.yaml
+# https://github.com/grafana/loki/blob/main/cmd/loki/loki-local-config.yaml
+# https://grafana.com/docs/loki/latest/configure/examples/configuration-examples/#1-local-configuration-exampleyaml
+
+---
+# https://grafana.com/docs/loki/latest/configure/examples/configuration-examples/#1-local-configuration-exampleyaml
+auth_enabled: false
+
+# This is a complete configuration to deploy Loki backed by the filesystem.
+# The index will be shipped to the storage via tsdb-shipper.
+server:
+  http_listen_port: 3100
+
+common:
+  ring:
+    instance_addr: 127.0.0.1
+    kvstore:
+      store: inmemory
+  replication_factor: 1
+  path_prefix: /tmp/loki
+
+schema_config:
+  configs:
+    - from: 2020-05-15
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+storage_config:
+  filesystem:
+    directory: /tmp/loki/chunks
+
+# https://grafana.com/docs/loki/latest/send-data/otel/
+# https://grafana.com/docs/loki/latest/send-data/otel/#changing-the-default-mapping-of-otlp-to-loki-format
+limits_config:
+  # this attribute should be `true` when we use `otlphttp/loki`, but if we want to use `loki component` from `opentelemetry-collector-contrib` it should be false.
+  allow_structured_metadata: true
+

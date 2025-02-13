@@ -9,7 +9,7 @@ using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.OpenApi;
-using BuildingBlocks.OpenTelemetry;
+using BuildingBlocks.OpenTelemetryCollector;
 using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.ProblemDetails;
 using BuildingBlocks.Web;
@@ -78,7 +78,7 @@ public static class InfrastructureExtensions
         builder.Services.AddCustomMapster(typeof(FlightRoot).Assembly);
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddCustomMassTransit(env, typeof(FlightRoot).Assembly);
-        builder.Services.AddCustomOpenTelemetry();
+        builder.AddCustomObservability();
         builder.Services.AddCustomHealthCheck();
 
         builder.Services.AddGrpc(options =>
@@ -97,7 +97,7 @@ public static class InfrastructureExtensions
         var env = app.Environment;
         var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
-        app.MapPrometheusScrapingEndpoint();
+        app.UseCustomObservability();
 
         app.UseCustomProblemDetails();
         app.UseSerilogRequestLogging(options =>

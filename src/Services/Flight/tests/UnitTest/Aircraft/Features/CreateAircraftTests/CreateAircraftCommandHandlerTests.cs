@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Unit.Test.Common;
 using Unit.Test.Fakes;
@@ -8,7 +5,6 @@ using Xunit;
 
 namespace Unit.Test.Aircraft.Features.CreateAircraftTests;
 
-using global::Flight.Aircrafts.Dtos;
 using global::Flight.Aircrafts.Features.CreatingAircraft.V1;
 
 [Collection(nameof(UnitTestFixture))]

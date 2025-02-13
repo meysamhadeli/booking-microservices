@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Flight.Seats.Dtos;
 using MapsterMapper;
 using Unit.Test.Common;
