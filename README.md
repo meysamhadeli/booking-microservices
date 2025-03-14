@@ -3,10 +3,10 @@
 > **A practical architecture styles for migrating from legacy monolith to modern cloud native application with the latest technologies and architectures like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq, and Masstransit in .Net 9.**
 
 <div>
-  <a href="https://gitpod.io/#https://github.com/meysamhadeli/booking-microservices"><img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg"/></a>
+  <a href="https://gitpod.io/#https://github.com/meysamhadeli/legacy-to-modern-architecture-styles"><img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg"/></a>
 </div>
 <div>
-  <a href='https://codespaces.new/meysamhadeli/booking-microservices?quickstart=1'><img alt='Open in GitHub Codespaces' src='https://github.com/codespaces/badge.svg'></a>
+  <a href='https://codespaces.new/meysamhadeli/legacy-to-modern-architecture-styles?quickstart=1'><img alt='Open in GitHub Codespaces' src='https://github.com/codespaces/badge.svg'></a>
 </div>
 
 # Table of Contents
