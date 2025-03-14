@@ -1,14 +1,6 @@
-<div align="center" style="margin-bottom:20px">
-  <img src="assets/logo.png" alt="booking-microservices" />
-    <div align="center">
-           <a href="https://github.com/meysamhadeli/booking-microservices/actions/workflows/ci.yml"><img alt="ci-status" src="https://github.com/meysamhadeli/booking-microservices/actions/workflows/ci.yml/badge.svg?branch=main&style=flat-square"/></a>
-                 <a href="https://github.com/meysamhadeli/booking-microservices/blob/main/LICENSE"><img alt="build-status"          src="https://img.shields.io/github/license/meysamhadeli/booking-microservices?color=%234275f5&style=flat-square"/></a>
-    </div>
-</div>
+# 🪁 Legacy To Modern Architecture Styles
 
-> 🚀 **A practical and imaginary microservices for implementing an infrastructure for up and running distributed system with the latest technology and architecture like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq, Masstransit in .Net 9.**
-
-> 💡 **This project is not business-oriented and most of my focus was in the thechnical part for implement a distributed system with a sample project. In this project I implemented some concept in microservices like Messaging, Tracing, Event Driven Architecture, Vertical Slice Architecture, Event Sourcing, CQRS, DDD and gRpc.**
+> **A practical architecture styles for migrating from lagacy monolith to modern cloud native application with the latest technology and architecture like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq, Masstransit in .Net 9.**
 
 <div>
   <a href="https://gitpod.io/#https://github.com/meysamhadeli/booking-microservices"><img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg"/></a>
