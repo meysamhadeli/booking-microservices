@@ -12,7 +12,7 @@ COPY ./3-Microservices-Architecture-Style/src/Services/Flight/src/Flight.Api/Fli
 
 
 # Restore nuget packages
-RUN dotnet restore ./Services/Flight/src/Flight.Api/Flight.Api.csproj
+RUN dotnet restore ./3-Microservices-Architecture-Style/src/Services/Flight/src/Flight.Api/Flight.Api.csproj
 
 # Copy project files
 COPY ./BuildingBlocks ./BuildingBlocks/
