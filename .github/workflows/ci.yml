@@ -20,13 +20,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build and Test Flight
+      - name: Build and Test Flight Microservice
         uses: ./.github/actions/build-test
         if: success()
         id: build-test-flight-step
         with:
-          project-path: 'src/Services/Flight/src/Flight.Api'
-          tests-path: 'src/Services/Flight/tests/'
+          project-path: '3-Microservices-Architecture-Style/src/Services/Flight/src/Flight.Api'
+          tests-path: '3-Microservices-Architecture-Style/src/Services/Flight/tests/'
           # wildcard search for files with the ".cobertura.xml" extension in all subdirectories of the current directory
           # https://www.jamescroft.co.uk/combining-multiple-code-coverage-results-in-azure-devops/
           # https://stackoverflow.com/questions/53255065/dotnet-unit-test-with-coverlet-how-to-get-coverage-for-entire-solution-and-not
@@ -35,13 +35,13 @@ jobs:
           service-name: 'Flight'
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Test Identity
+      - name: Build and Test Identity Microservice
         uses: ./.github/actions/build-test
         if: success()
         id: build-test-identity-step
         with:
-          project-path: 'src/Services/Identity/src/Identity.Api'
-          tests-path: 'src/Services/Identity/tests/'
+          project-path: '3-Microservices-Architecture-Style/src/Services/Identity/src/Identity.Api'
+          tests-path: '3-Microservices-Architecture-Style/src/Services/Identity/tests/'
           # wildcard search for files with the ".cobertura.xml" extension in all subdirectories of the current directory
           # https://www.jamescroft.co.uk/combining-multiple-code-coverage-results-in-azure-devops/
           # https://stackoverflow.com/questions/53255065/dotnet-unit-test-with-coverlet-how-to-get-coverage-for-entire-solution-and-not
@@ -50,13 +50,13 @@ jobs:
           service-name: 'Identity'
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Test Passenger
+      - name: Build and Test Passenger Microservice
         uses: ./.github/actions/build-test
         if: success()
         id: build-test-passenger-step
         with:
-          project-path: 'src/Services/Passenger/src/Passenger.Api'
-          tests-path: 'src/Services/Passenger/tests/'
+          project-path: '3-Microservices-Architecture-Style/src/Services/Passenger/src/Passenger.Api'
+          tests-path: '3-Microservices-Architecture-Style/src/Services/Passenger/tests/'
           # wildcard search for files with the ".cobertura.xml" extension in all subdirectories of the current directory
           # https://www.jamescroft.co.uk/combining-multiple-code-coverage-results-in-azure-devops/
           # https://stackoverflow.com/questions/53255065/dotnet-unit-test-with-coverlet-how-to-get-coverage-for-entire-solution-and-not
@@ -65,13 +65,13 @@ jobs:
           service-name: 'Passenger'
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Test Booking
+      - name: Build and Test Booking Microservice
         uses: ./.github/actions/build-test
         if: success()
         id: build-test-booking-step
         with:
-          project-path: 'src/Services/Booking/src/Booking.Api'
-          tests-path: 'src/Services/Booking/tests/'
+          project-path: '3-Microservices-Architecture-Style/src/Services/Booking/src/Booking.Api'
+          tests-path: '3-Microservices-Architecture-Style/src/Services/Booking/tests/'
           # wildcard search for files with the ".cobertura.xml" extension in all subdirectories of the current directory
           # https://www.jamescroft.co.uk/combining-multiple-code-coverage-results-in-azure-devops/
           # https://stackoverflow.com/questions/53255065/dotnet-unit-test-with-coverlet-how-to-get-coverage-for-entire-solution-and-not
@@ -91,42 +91,42 @@ jobs:
         run:
           echo "Release version is:" ${{ steps.last_release.outputs.tag_name }}
 
-      - name: Build and Publish Identity to Docker
+      - name: Build and Publish Identity Microservice to Docker
         if: ${{ github.ref == 'refs/heads/main' && success() }}
         uses: ./.github/actions/docker-build-publish
         with:
           tag-name: ${{ steps.last_release.outputs.tag_name }}
           registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
           registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          dockerfile-path: 'src/Services/Identity/Dockerfile'
+          dockerfile-path: '3-Microservices-Architecture-Style/src/Services/Identity/Dockerfile'
           image-name: 'booking-microservices-identity'
 
-      - name: Build and Publish Flight to Docker
+      - name: Build and Publish Flight Microservice to Docker
         if: ${{ github.ref == 'refs/heads/main' && success() }}
         uses: ./.github/actions/docker-build-publish
         with:
           tag-name: ${{ steps.last_release.outputs.tag_name }}
           registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
           registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          dockerfile-path: 'src/Services/Flight/Dockerfile'
+          dockerfile-path: '3-Microservices-Architecture-Style/src/Services/Flight/Dockerfile'
           image-name: 'booking-microservices-flight'
 
-      - name: Build and Publish Passenger to Docker
+      - name: Build and Publish Passenger Microservice to Docker
         if: ${{ github.ref == 'refs/heads/main' && success() }}
         uses: ./.github/actions/docker-build-publish
         with:
           tag-name: ${{ steps.last_release.outputs.tag_name }}
           registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
           registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          dockerfile-path: 'src/Services/Passenger/Dockerfile'
+          dockerfile-path: '3-Microservices-Architecture-Style/src/Services/Passenger/Dockerfile'
           image-name: 'booking-microservices-passenger'
 
-      - name: Build and Publish Booking to Docker
+      - name: Build and Publish Booking Microservice to Docker
         if: ${{ github.ref == 'refs/heads/main' && success() }}
         uses: ./.github/actions/docker-build-publish
         with:
           tag-name: ${{ steps.last_release.outputs.tag_name }}
           registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
           registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          dockerfile-path: 'src/Services/Booking/Dockerfile'
+          dockerfile-path: '3-Microservices-Architecture-Style/src/Services/Booking/Dockerfile'
           image-name: 'booking-microservices-booking'

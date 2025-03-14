@@ -1,14 +1,14 @@
 {
-  "name": "booking-microservices",
+  "name": "legacy-to-modern-architecture-styles",
   "version": "1.0.0",
-  "description": "booking-microservices",
+  "description": "legacy-to-modern-architecture-styles",
   "author": "Meysam Hadeli",
   "license": "MIT",
   "main": "index.js",
   "scripts": {
     "prepare": "husky && dotnet tool restore",
-    "format": "dotnet format booking-microservices-sample.sln --severity error --verbosity detailed",
-    "ci-format": "dotnet format booking-microservices-sample.sln --verify-no-changes --severity error --verbosity detailed",
+    "format": "dotnet format legacy-to-modern-architecture-styles.sln --severity error --verbosity detailed",
+    "ci-format": "dotnet format legacy-to-modern-architecture-styles.sln --verify-no-changes --severity error --verbosity detailed",
     "upgrade-packages": "dotnet outdated --upgrade"
   },
   "devDependencies": {
