@@ -1,5 +1,12 @@
 # 🪁 Legacy To Modern Architecture Styles
 
+<div align="center" style="margin-bottom:20px">
+    <div align="left">
+           <a href="https://github.com/meysamhadeli/legacy-to-modern-architecture-styles/actions/workflows/ci.yml"><img alt="ci-status" src="https://github.com/meysamhadeli/legacy-to-modern-architecture-styles/actions/workflows/ci.yml/badge.svg?branch=main&style=flat-square"/></a>
+                 <a href="https://github.com/meysamhadeli/legacy-to-modern-architecture-styles/blob/main/LICENSE"><img alt="build-status"          src="https://img.shields.io/github/license/meysamhadeli/legacy-to-modern-architecture-styles?color=%234275f5&style=flat-square"/></a>
+    </div>
+</div>
+
 > **A practical architecture styles for migrating from legacy monolith to modern cloud native application with the latest technologies and architectures like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq, and Masstransit in .Net 9.**
 
 <div>
