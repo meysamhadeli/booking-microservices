@@ -3,15 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{B85B39B5-B341-4117-8626-C5DD4F375569}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "building-blocks", "building-blocks", "{B85B39B5-B341-4117-8626-C5DD4F375569}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Monolith", "Monolith", "{96913068-5EFE-4D13-8B00-924AFED16439}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "monolith", "monolith", "{96913068-5EFE-4D13-8B00-924AFED16439}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ModularMonolith", "ModularMonolith", "{F1BEC66C-B321-45D8-95C1-8DCD4743275D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modular-monolith", "modular-monolith", "{F1BEC66C-B321-45D8-95C1-8DCD4743275D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservices", "Microservices", "{33F5E6F6-FACB-4D34-8E48-B80E0497D239}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks", "BuildingBlocks\BuildingBlocks.csproj", "{BBB3F565-9EDF-45B7-B547-60AA4609E453}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "microservices", "microservices", "{33F5E6F6-FACB-4D34-8E48-B80E0497D239}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{57366225-A26A-4715-A690-DA641B0C0450}"
 EndProject
@@ -73,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Test", "3-Micro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Test", "3-Microservices-Architecture-Style\src\Services\Passenger\tests\IntegrationTest\Integration.Test.csproj", "{6D17EFCC-63DB-4E51-8073-25D5E59B2170}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks", "building-blocks\BuildingBlocks.csproj", "{5ED78466-4114-48ED-9A6E-02143984E7A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,7 +82,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{BBB3F565-9EDF-45B7-B547-60AA4609E453} = {B85B39B5-B341-4117-8626-C5DD4F375569}
 		{57366225-A26A-4715-A690-DA641B0C0450} = {33F5E6F6-FACB-4D34-8E48-B80E0497D239}
 		{39BAB0A0-3C16-49B1-B817-9EC5C600BF5E} = {33F5E6F6-FACB-4D34-8E48-B80E0497D239}
 		{570274DD-E84A-4F22-9079-D60B59EC9ED2} = {F1BEC66C-B321-45D8-95C1-8DCD4743275D}
@@ -113,12 +112,9 @@ Global
 		{FDA41108-8194-49B2-8F78-9F8AECABB7BC} = {7D81CAA6-6DEF-43C1-AE1B-D0F0B7B09CE7}
 		{B6D11E8B-CAAE-4452-B3AE-A49DA7E68FE0} = {3FD37B50-3C7D-49E9-9456-A3E82675227D}
 		{6D17EFCC-63DB-4E51-8073-25D5E59B2170} = {D2F19D7F-A9DA-47D2-A445-F9ED8D4479C1}
+		{5ED78466-4114-48ED-9A6E-02143984E7A1} = {B85B39B5-B341-4117-8626-C5DD4F375569}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BBB3F565-9EDF-45B7-B547-60AA4609E453}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BBB3F565-9EDF-45B7-B547-60AA4609E453}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BBB3F565-9EDF-45B7-B547-60AA4609E453}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BBB3F565-9EDF-45B7-B547-60AA4609E453}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6538BDF3-A741-46E9-8988-C859ABB2FBB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6538BDF3-A741-46E9-8988-C859ABB2FBB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6538BDF3-A741-46E9-8988-C859ABB2FBB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -179,5 +175,9 @@ Global
 		{6D17EFCC-63DB-4E51-8073-25D5E59B2170}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D17EFCC-63DB-4E51-8073-25D5E59B2170}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D17EFCC-63DB-4E51-8073-25D5E59B2170}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ED78466-4114-48ED-9A6E-02143984E7A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ED78466-4114-48ED-9A6E-02143984E7A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ED78466-4114-48ED-9A6E-02143984E7A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ED78466-4114-48ED-9A6E-02143984E7A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
