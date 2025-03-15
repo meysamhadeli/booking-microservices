@@ -33,23 +33,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{A1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateway", "ApiGateway", "{A5E49049-0DFF-4D87-9188-2B0ACBC0D59B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "3-Microservices-Architecture-Style\src\ApiGateway\src\ApiGateway.csproj", "{6538BDF3-A741-46E9-8988-C859ABB2FBB2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "3-microservices-architecture-style\src\ApiGateway\src\ApiGateway.csproj", "{6538BDF3-A741-46E9-8988-C859ABB2FBB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Booking.Api", "3-Microservices-Architecture-Style\src\Services\Booking\src\Booking.Api\Booking.Api.csproj", "{B851799B-A328-4E40-9095-C56C11A6235E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Booking.Api", "3-microservices-architecture-style\src\Services\Booking\src\Booking.Api\Booking.Api.csproj", "{B851799B-A328-4E40-9095-C56C11A6235E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Booking", "3-Microservices-Architecture-Style\src\Services\Booking\src\Booking\Booking.csproj", "{674C0974-11C4-4BF7-B2DF-8ED753919224}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Booking", "3-microservices-architecture-style\src\Services\Booking\src\Booking\Booking.csproj", "{674C0974-11C4-4BF7-B2DF-8ED753919224}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flight.Api", "3-Microservices-Architecture-Style\src\Services\Flight\src\Flight.Api\Flight.Api.csproj", "{FB8AA20B-0D31-4241-A126-07992BCF7E2A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flight.Api", "3-microservices-architecture-style\src\Services\Flight\src\Flight.Api\Flight.Api.csproj", "{FB8AA20B-0D31-4241-A126-07992BCF7E2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flight", "3-Microservices-Architecture-Style\src\Services\Flight\src\Flight\Flight.csproj", "{0EB6B262-197D-450C-A56E-634D2D428FCB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flight", "3-microservices-architecture-style\src\Services\Flight\src\Flight\Flight.csproj", "{0EB6B262-197D-450C-A56E-634D2D428FCB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Api", "3-Microservices-Architecture-Style\src\Services\Identity\src\Identity.Api\Identity.Api.csproj", "{694E763C-E076-4F36-A3CE-3A55D794C871}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Api", "3-microservices-architecture-style\src\Services\Identity\src\Identity.Api\Identity.Api.csproj", "{694E763C-E076-4F36-A3CE-3A55D794C871}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity", "3-Microservices-Architecture-Style\src\Services\Identity\src\Identity\Identity.csproj", "{E18BC5D2-5A32-469A-9E0B-5ACFE3B6639B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity", "3-microservices-architecture-style\src\Services\Identity\src\Identity\Identity.csproj", "{E18BC5D2-5A32-469A-9E0B-5ACFE3B6639B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Passenger.Api", "3-Microservices-Architecture-Style\src\Services\Passenger\src\Passenger.Api\Passenger.Api.csproj", "{1F2CE508-42D0-437B-83AB-0D5FEBE324F8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Passenger.Api", "3-microservices-architecture-style\src\Services\Passenger\src\Passenger.Api\Passenger.Api.csproj", "{1F2CE508-42D0-437B-83AB-0D5FEBE324F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Passenger", "3-Microservices-Architecture-Style\src\Services\Passenger\src\Passenger\Passenger.csproj", "{77410EA7-739C-475B-B460-CCEF5CEE1AD1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Passenger", "3-microservices-architecture-style\src\Services\Passenger\src\Passenger\Passenger.csproj", "{77410EA7-739C-475B-B460-CCEF5CEE1AD1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Flight", "Flight", "{7D81CAA6-6DEF-43C1-AE1B-D0F0B7B09CE7}"
 EndProject
@@ -59,17 +59,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Booking", "Booking", "{51EE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{3FD37B50-3C7D-49E9-9456-A3E82675227D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Test", "3-Microservices-Architecture-Style\src\Services\Booking\tests\IntegrationTest\Integration.Test.csproj", "{5D3D2499-0732-4545-87F5-C26AF1FE827B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Test", "3-microservices-architecture-style\src\Services\Booking\tests\IntegrationTest\Integration.Test.csproj", "{5D3D2499-0732-4545-87F5-C26AF1FE827B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndToEnd.Test", "3-Microservices-Architecture-Style\src\Services\Flight\tests\EndToEndTest\EndToEnd.Test.csproj", "{EE5ECF6A-0D4F-4737-BAD3-AE66D1B53D83}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndToEnd.Test", "3-microservices-architecture-style\src\Services\Flight\tests\EndToEndTest\EndToEnd.Test.csproj", "{EE5ECF6A-0D4F-4737-BAD3-AE66D1B53D83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Test", "3-Microservices-Architecture-Style\src\Services\Flight\tests\IntegrationTest\Integration.Test.csproj", "{0A74D3F2-7814-4FB4-890D-4899749B67A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Test", "3-microservices-architecture-style\src\Services\Flight\tests\IntegrationTest\Integration.Test.csproj", "{0A74D3F2-7814-4FB4-890D-4899749B67A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unit.Test", "3-Microservices-Architecture-Style\src\Services\Flight\tests\UnitTest\Unit.Test.csproj", "{FDA41108-8194-49B2-8F78-9F8AECABB7BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unit.Test", "3-microservices-architecture-style\src\Services\Flight\tests\UnitTest\Unit.Test.csproj", "{FDA41108-8194-49B2-8F78-9F8AECABB7BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Test", "3-Microservices-Architecture-Style\src\Services\Identity\tests\IntegrationTest\Integration.Test.csproj", "{B6D11E8B-CAAE-4452-B3AE-A49DA7E68FE0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Test", "3-microservices-architecture-style\src\Services\Identity\tests\IntegrationTest\Integration.Test.csproj", "{B6D11E8B-CAAE-4452-B3AE-A49DA7E68FE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Test", "3-Microservices-Architecture-Style\src\Services\Passenger\tests\IntegrationTest\Integration.Test.csproj", "{6D17EFCC-63DB-4E51-8073-25D5E59B2170}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Test", "3-microservices-architecture-style\src\Services\Passenger\tests\IntegrationTest\Integration.Test.csproj", "{6D17EFCC-63DB-4E51-8073-25D5E59B2170}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks", "building-blocks\BuildingBlocks.csproj", "{5ED78466-4114-48ED-9A6E-02143984E7A1}"
 EndProject
