@@ -12,35 +12,27 @@
 # Table of Contents
 
 - [The Goals of This Project](#the-goals-of-this-project)
-- [Plan](#plan)
 - [Technologies - Libraries](#technologies---libraries)
+- [Architectural Style](#architectural-style)
+  - [How to Choose the Right Architecture](#how-to-choose-the-right-architecture)
+     - [1. Monolithic Architecture](#1-monolithic-architecture)
+     - [2. Modular Monolith Architecture](#2-modular-monolith-architecture)
+     - [3. Microservices Architecture](#3-microservices-architecture)
 - [The Domain and Bounded Context - Service Boundary](#the-domain-and-bounded-context---service-boundary)
 - [Structure of Project](#structure-of-project)
-- [Development Setup](#development-setup)
-    - [Dotnet Tools Packages](#dotnet-tools-packages)
-    - [Husky](#husky)
-    - [Upgrade Nuget Packages](#upgrade-nuget-packages)
-- [How to Run](#how-to-run)
-  - [Config Certificate](#config-certificate)
-  - [Docker Compose](#docker-compose)
-  - [Kubernetes](#kubernetes)
-  - [Build](#build)
-  - [Run](#run)
-  - [Test](#test)
-- [Documentation Apis](#documentation-apis)
 - [Support](#support)
 - [Contribution](#contribution)
 
 ## The Goals of This Project
 
 - :sparkle: Using `Vertical Slice Architecture` for `architecture` level.
-- :sparkle: Using `Domain Driven Design (DDD)` to implement all `business processes` in microservices.
-- :sparkle: Using `Rabbitmq` on top of `Masstransit` for `Event Driven Architecture` between our microservices.
-- :sparkle: Using `gRPC` for `internal communication` between our microservices.
+- :sparkle: Using `Domain Driven Design (DDD)` to implement all `business logic`.
+- :sparkle: Using `Rabbitmq` on top of `Masstransit` for `Event Driven Architecture`.
+- :sparkle: Using `gRPC` for `internal communication`.
 - :sparkle: Using `CQRS` implementation with `MediatR` library.
-- :sparkle: Using `Postgres` for `write side` of some microservices.
-- :sparkle: Using `MongoDB` for `read side` of some microservices.
-- :sparkle: Using `Event Store` for `write side` of Booking-Microservice to store all `historical state` of aggregate.
+- :sparkle: Using `Postgres` for `write side` database.
+- :sparkle: Using `MongoDB` for `read side` database.
+- :sparkle: Using `Event Store` for `write side` of Booking Microservice/Module to store all `historical change` of aggregate.
 - :sparkle: Using `Inbox Pattern` for ensuring message idempotency for receiver and `Exactly once Delivery`.
 - :sparkle: Using `Outbox Pattern` for ensuring no message is lost and there is at `At Least One Delivery`.
 - :sparkle: Using `Unit Testing` for testing small units and mocking our dependencies with `Nsubstitute`.
@@ -59,22 +51,6 @@
 - :sparkle: Using `Nginx Ingress Controller` for `load balancing` between our microservices top of `Kubernetes`.
 - :sparkle: Using `cert-manager` to Configure `TLS` in `kubernetes cluster`.
 
-## Plan
-
-> 🌀This project is a work in progress, new features will be added over time.🌀
-
-I will try to register future goals and additions in the [Issues](https://github.com/meysamhadeli/booking-microservices/issues) section of this repository.
-
-High-level plan is represented in the table
-
-| Feature           | Status         |
-| ----------------- | -------------- |
-| API Gateway       | Completed ✔️   |
-| Identity Service  | Completed ✔️   |
-| Flight Service    | Completed ✔️   |
-| Passenger Service | Completed ✔️   |
-| Booking Service   | Completed ✔️   |
-| Building Blocks   | Completed ✔️   |
 
 ## Technologies - Libraries
 
@@ -106,6 +82,67 @@ High-level plan is represented in the table
 - ✔️ **[`Testcontainers`](https://github.com/testcontainers/testcontainers-dotnet)** - Testcontainers for .NET is a library to support tests with throwaway instances of Docker containers.
 - ✔️ **[`K6`](https://github.com/grafana/k6)** - Modern load testing for developers and testers in the DevOps era.
 
+## Architectural Style
+
+The repository is organized into three folders, each representing a different `architectural style`:
+
+1. **1-monolith-architecture-style**: A traditional monolithic architecture where all components of the application are tightly coupled and deployed as a single unit.
+2. **2-modular-monolith-architecture-style**: A modular monolith architecture where the application is divided into modules, but still deployed as a single unit. This approach promotes better separation of concerns and maintainability.
+3. **3-microservices-architecture-style**: A microservices architecture where the application is broken down into small, independent services that can be developed, deployed, and scaled independently.
+
+## How to Choose the Right Architecture
+
+The choice of architecture depends on your project requirements, team size, scalability needs, and long-term maintenance goals. Below is a guide to help you decide which architecture to choose:
+
+### 1. Monolithic Architecture
+- **When to Choose**:
+  - Your project is small or medium-sized.
+  - You have a small development team.
+  - You need to develop and deploy the application quickly.
+  - The application has relatively simple functionality.
+  - You don’t anticipate significant scaling needs in the near future.
+- **Pros**:
+  - Simple to develop, test, and deploy.
+  - Easier to manage for small teams.
+  - Lower operational overhead.
+- **Cons**:
+  - Tight coupling makes it harder to maintain as the codebase grows.
+  - Scaling is limited to scaling the entire application.
+  - Difficult to adopt new technologies or frameworks incrementally.
+
+### 2. Modular Monolith Architecture
+- **When to Choose**:
+  - Your project is medium to large-sized.
+  - You want better separation of concerns and maintainability than a traditional monolith.
+  - You plan to scale the application in the future but want to avoid the complexity of microservices.
+  - Your team is growing, and you need a more organized codebase.
+- **Pros**:
+  - Better separation of concerns compared to a traditional monolith.
+  - Easier to maintain and extend as the application grows.
+  - Can be a stepping stone toward a microservices architecture.
+  - Simpler deployment than microservices.
+- **Cons**:
+  - Still a single deployment unit, so scaling is limited.
+  - Requires careful design to avoid tight coupling between modules.
+
+### 3. Microservices Architecture
+- **When to Choose**:
+  - Your project is large and complex.
+  - You need to scale different parts of the application independently.
+  - Your team is large and can handle the complexity of distributed systems.
+  - You need to adopt different technologies or frameworks for different parts of the application.
+  - You require high availability and fault tolerance.
+- **Pros**:
+  - Independent development, deployment, and scaling of services.
+  - Better fault isolation.
+  - Flexibility to use different technologies for different services.
+  - Easier to maintain and update individual services.
+- **Cons**:
+  - Higher complexity in development, testing, and deployment.
+  - Requires robust DevOps practices and infrastructure.
+  - Increased operational overhead (e.g., monitoring, logging, service discovery).
+
+
 ## The Domain And Bounded Context - Service Boundary
 
 - `Identity Service`: The Identity Service is a bounded context for the authentication and authorization of users using [Identity Server](https://github.com/DuendeSoftware/IdentityServer). This service is responsible for creating new users and their corresponding roles and permissions using [.Net Core Identity](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity) and Jwt authentication and authorization.
@@ -116,21 +153,10 @@ High-level plan is represented in the table
 
 - `Booking Service`: The Booking Service is a bounded context for managing all operation related to booking ticket.
 
-![](./assets/booking-microservices.png)
 
 ## Structure of Project
 
 In this project I used a mix of [clean architecture](https://jasontaylor.dev/clean-architecture-getting-started/), [vertical slice architecture](https://jimmybogard.com/vertical-slice-architecture/) and I used [feature folder structure](http://www.kamilgrzybek.com/design/feature-folders/) to structure my files.
-
-I used [yarp reverse proxy](https://microsoft.github.io/reverse-proxy/articles/index.html) to route synchronous and asynchronous requests to the corresponding microservice. Each microservice has its dependencies such as databases, files etc. Each microservice is decoupled from other microservices and developed and deployed separately. Microservices talk to each other with Rest or gRPC for synchronous calls and use RabbitMq or Kafka for asynchronous calls.
-
-We have a separate microservice ([IdentityServer](https://github.com/DuendeSoftware/IdentityServer)) for authentication and authorization of each request. Once signed-in users are issued a JWT token. This token is used by other microservices to validate the user, read claims and allow access to authorized/role specific endpoints.
-
-I used [RabbitMQ](https://github.com/rabbitmq) as my MessageBroker for async communication between microservices using the eventual consistency mechanism. Each microservice uses [MassTransit](https://github.com/MassTransit/MassTransit) to interface with [RabbitMQ](https://github.com/rabbitmq) providing, messaging, availability, reliability, etc.
-
-Microservices are `event based` which means they can publish and/or subscribe to any events occurring in the setup. By using this approach for communicating between services, each microservice does not need to know about the other services or handle errors occurred in other microservices.
-
-After saving data in write side, I save a [Internal Command](https://github.com/kgrzybek/modular-monolith-with-ddd#38-internal-processing) record in my Persist Messages storage (like something we do in outbox pattern) and after committing transaction in write side, trigger our command handler in read side  and this handler could save their read models in our MongoDB database.
 
 I treat each request as a distinct use case or slice, encapsulating and grouping all concerns from front-end to back.
 When adding or changing a feature in an application in n-tire architecture, we are typically touching many "layers" in an application. We are changing the user interface, adding fields to models, modifying validation, and so on. Instead of coupling across a layer, we couple vertically along a slice. We `minimize coupling` `between slices`, and `maximize coupling` `in a slice`.
@@ -153,99 +179,6 @@ I used CQRS to decompose my features into small parts that makes our application
 
 Using the CQRS pattern, we cut each business functionality into vertical slices, for each of these slices we group classes (see [technical folders structure](http://www.kamilgrzybek.com/design/feature-folders)) specific to that feature together (command, handlers, infrastructure, repository, controllers, etc). In our CQRS pattern each command/query handler is a separate slice. This is where you can reduce coupling between layers. Each handler can be a separated code unit, even copy/pasted. Thanks to that, we can tune down the specific method to not follow general conventions (e.g. use custom SQL query or even different storage). In a traditional layered architecture, when we change the core generic mechanism in one layer, it can impact all methods.
 
-## Development Setup
-
-### Dotnet Tools Packages
-For installing our requirement packages with .NET cli tools, we need to install `dotnet tool manifest`.
-```bash
-dotnet new tool-manifest
-```
-And after that we can restore our dotnet tools packages with .NET cli tools from `.config` folder and `dotnet-tools.json` file.
-```
-dotnet tool restore
-```
-
-### Husky
-Here we use `husky` to handel some pre commit rules and we used `conventional commits` rules and `formatting` as pre commit rules, here in [package.json](./package.json). of course, we can add more rules for pre commit in future. (find more about husky in the [documentation](https://typicode.github.io/husky/get-started.html))
-We need to install `husky` package for `manage` `pre commits hooks` and also I add two packages `@commitlint/cli` and `@commitlint/config-conventional` for handling conventional commits rules in [package.json](./package.json).
-Run the command bellow in the root of project to install all npm dependencies related to husky:
-
-```bash
-npm install
-```
-
-> Note: In the root of project we have `.husky` folder and it has `commit-msg` file for handling conventional commits rules with provide user friendly message and `pre-commit` file that we can run our `scripts` as a `pre-commit` hooks. that here we call `format` script from [package.json](./package.json) for formatting purpose.
-
-### Upgrade Nuget Packages
-For upgrading our nuget packages to last version, we use the great package [dotnet-outdated](https://github.com/dotnet-outdated/dotnet-outdated).
-Run the command below in the root of project to upgrade all of packages to last version:
-```bash
-dotnet outdated -u
-```
-
-## How to Run
-
-> ### Config Certificate
-Run the following commands to [Config SSL](https://docs.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-6.0) in your system:
-
-#### Windows using Linux containers
-```bash
-dotnet dev-certs https -ep %USERPROFILE%\.aspnet\https\aspnetapp.pfx -p password
-dotnet dev-certs https --trust
-```
-***Note:** for running this command in `powershell` use `$env:USERPROFILE` instead of `%USERPROFILE%`*
-
-#### macOS or Linux
-```bash
-dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p $CREDENTIAL_PLACEHOLDER$
-dotnet dev-certs https --trust
-```
-> ### Docker Compose
-
-
-To run this app in `Docker`, use the [docker-compose.yaml](./deployments/docker-compose/docker-compose.yaml) and execute the below command at the `root` of the application:
-
-```bash
-docker-compose -f ./deployments/docker-compose/docker-compose.yaml up -d
-```
-
-> ### Kubernetes
-To `configure TLS` in the `Kubernetes cluster`, we need to install `cert-manager` based on the [docs](https://cert-manager.io/docs/installation) and run the following commands to apply TLS in our application. Here, we use [Let's Encrypt](https://letsencrypt.org/) to encrypt our certificate.
-
-```bash
-kubectl apply -f ./deployments/kubernetes/booking-cert-manager.yml
-```
-
-To apply all necessary `deployments`, `pods`, `services`, `ingress`, and `config maps`, please run the following command:
-
-```bash
-kubectl apply -f ./deployments/kubernetes/booking-microservices.yml
-```
-
-> ### Build
-To `build` all microservices, run this command in the `root` of the project:
-```bash
-dotnet build
-```
-
-> ### Run
-To `run` each microservice, run this command in the root of the `Api` folder of each microservice where the `csproj` file is located:
-```bash
-dotnet run
-```
-
-> ### Test
-
-To `test` all microservices, run this command in the `root` of the project:
-```bash
-dotnet test
-```
-
-> ### Documentation Apis
-
-Each microservice provides `API documentation` and navigate to `/swagger` for `Swagger OpenAPI` or `/scalar/v1` for `Scalar OpenAPI` to visit list of endpoints.
-
-As part of API testing, I created the [booking.rest](./booking.rest) file which can be run with the [REST Client](https://github.com/Huachao/vscode-restclient) `VSCode plugin`.
 
 # Support
 
@@ -257,7 +190,7 @@ Thanks a bunch for supporting me!
 
 ## Contribution
 
-Thanks to all [contributors](https://github.com/meysamhadeli/booking-microservices/graphs/contributors), you're awesome and this wouldn't be possible without you! The goal is to build a categorized, community-driven collection of very well-known resources.
+Thanks to all [contributors](https://github.com/meysamhadeli/legacy-to-modern-architecture-styles/graphs/contributors), you're awesome and this wouldn't be possible without you! The goal is to build a categorized, community-driven collection of very well-known resources.
 
 Please follow this [contribution guideline](./CONTRIBUTION.md) to submit a pull request or create the issue.
 
@@ -270,4 +203,4 @@ Please follow this [contribution guideline](./CONTRIBUTION.md) to submit a pull 
 - [https://github.com/pdevito3/MessageBusTestingInMemHarness](https://github.com/pdevito3/MessageBusTestingInMemHarness)
 
 ## License
-This project is made available under the MIT license. See [LICENSE](https://github.com/meysamhadeli/booking-microservices/blob/main/LICENSE) for details.
+This project is made available under the MIT license. See [LICENSE](https://github.com/meysamhadeli/legacy-to-modern-architecture-styles/blob/main/LICENSE) for details.
