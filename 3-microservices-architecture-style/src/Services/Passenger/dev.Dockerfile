@@ -6,7 +6,7 @@ COPY ./global.json ./
 COPY ./Directory.Build.props ./
 
 # Setup working directory for the project
-COPY ./BuildingBlocks/BuildingBlocks.csproj ./BuildingBlocks/
+COPY ./building-blocks/BuildingBlocks.csproj ./building-blocks/
 COPY ./3-microservices-architecture-style/src/Services/Passenger/src/Passenger/Passenger.csproj ./3-microservices-architecture-style/src/Services/Passenger/src/Passenger/
 COPY ./3-microservices-architecture-style/src/Services/Passenger/src/Passenger.Api/Passenger.Api.csproj ./3-microservices-architecture-style/src/Services/Passenger/src/Passenger.Api/
 
@@ -16,7 +16,7 @@ RUN --mount=type=cache,id=passenger_nuget,target=/root/.nuget/packages \
     dotnet restore ./3-microservices-architecture-style/src/Services/Passenger/src/Passenger.Api/Passenger.Api.csproj
 
 # Copy project files
-COPY ./BuildingBlocks ./BuildingBlocks/
+COPY ./building-blocks ./building-blocks/
 COPY ./3-microservices-architecture-style/src/Services/Passenger/src/Passenger/  ./3-microservices-architecture-style/src/Services/Passenger/src/Passenger/
 COPY ./3-microservices-architecture-style/src/Services/Passenger/src/Passenger.Api/  ./3-microservices-architecture-style/src/Services/Passenger/src/Passenger.Api/
 

@@ -7,7 +7,7 @@ COPY ./.editorconfig ./
 COPY ./global.json ./
 COPY ./Directory.Build.props ./
 
-COPY ./BuildingBlocks/BuildingBlocks.csproj ./BuildingBlocks/
+COPY ./building-blocks/BuildingBlocks.csproj ./building-blocks/
 COPY ./3-microservices-architecture-style/src/Services/Identity/src/Identity/Identity.csproj ./3-microservices-architecture-style/src/Services/Identity/src/Identity/
 COPY ./3-microservices-architecture-style/src/Services/Identity/src/Identity.Api/Identity.Api.csproj ./3-microservices-architecture-style/src/Services/Identity/src/Identity.Api/
 
@@ -16,7 +16,7 @@ RUN --mount=type=cache,id=identity_nuget,target=/root/.nuget/packages \
     dotnet restore .3-microservices-architecture-style/src/Services/Identity/src/Identity.Api/Identity.Api.csproj
 
 # Copy project files
-COPY ./BuildingBlocks ./BuildingBlocks/
+COPY ./building-blocks ./building-blocks/
 COPY ./3-microservices-architecture-style/src/Services/Identity/src/Identity/  ./3-microservices-architecture-style/src/Services/Identity/src/Identity/
 COPY ./3-microservices-architecture-style/src/Services/Identity/src/Identity.Api/  ./3-microservices-architecture-style/src/Services/Identity/src/Identity.Api/
 

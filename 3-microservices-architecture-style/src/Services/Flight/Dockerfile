@@ -6,7 +6,7 @@ COPY ./global.json ./
 COPY ./Directory.Build.props ./
 
 # Setup working directory for the project
-COPY ./BuildingBlocks/BuildingBlocks.csproj ./BuildingBlocks/
+COPY ./building-blocks/BuildingBlocks.csproj ./building-blocks/
 COPY ./3-microservices-architecture-style/src/Services/Flight/src/Flight/Flight.csproj ./3-microservices-architecture-style/src/Services/Flight/src/Flight/
 COPY ./3-microservices-architecture-style/src/Services/Flight/src/Flight.Api/Flight.Api.csproj ./3-microservices-architecture-style/src/Services/Flight/src/Flight.Api/
 
@@ -15,7 +15,7 @@ COPY ./3-microservices-architecture-style/src/Services/Flight/src/Flight.Api/Fli
 RUN dotnet restore ./3-microservices-architecture-style/src/Services/Flight/src/Flight.Api/Flight.Api.csproj
 
 # Copy project files
-COPY ./BuildingBlocks ./BuildingBlocks/
+COPY ./building-blocks ./building-blocks/
 COPY ./3-microservices-architecture-style/src/Services/Flight/src/Flight/  ./3-microservices-architecture-style/src/Services/Flight/src/Flight/
 COPY ./3-microservices-architecture-style/src/Services/Flight/src/Flight.Api/  ./3-microservices-architecture-style/src/Services/Flight/src/Flight.Api/
 

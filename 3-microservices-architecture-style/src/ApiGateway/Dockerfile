@@ -6,7 +6,7 @@ COPY ./global.json ./
 COPY ./Directory.Build.props ./
 
 # Setup working directory for the project
-COPY ./BuildingBlocks/BuildingBlocks.csproj ./BuildingBlocks/
+COPY ./building-blocks/BuildingBlocks.csproj ./building-blocks/
 COPY ./3-microservices-architecture-style/src/ApiGateway/src/ApiGateway.csproj ./3-microservices-architecture-style/src/ApiGateway/src/
 
 
@@ -14,7 +14,7 @@ COPY ./3-microservices-architecture-style/src/ApiGateway/src/ApiGateway.csproj .
 RUN dotnet restore ./3-microservices-architecture-style/src/ApiGateway/src/ApiGateway.csproj
 
 # Copy project files
-COPY ./BuildingBlocks ./BuildingBlocks/
+COPY ./building-blocks ./building-blocks/
 COPY ./3-microservices-architecture-style/src/ApiGateway/src  ./3-microservices-architecture-style/src/ApiGateway/src/
 
 # Build project with Release configuration
