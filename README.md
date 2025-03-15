@@ -13,11 +13,10 @@
 
 - [The Goals of This Project](#the-goals-of-this-project)
 - [Technologies - Libraries](#technologies---libraries)
-- [Architectural Style](#architectural-style)
-  - [How to Choose the Right Architecture](#how-to-choose-the-right-architecture)
-     - [1. Monolithic Architecture](#1-monolithic-architecture)
-     - [2. Modular Monolith Architecture](#2-modular-monolith-architecture)
-     - [3. Microservices Architecture](#3-microservices-architecture)
+- [Architectural Styles and How to Choose the Right One](#architectural-styles-and-how-to-choose-the-right-one)
+  - [1. Monolithic Architecture](#1-monolithic-architecture-style)
+  - [2. Modular Monolith Architecture](#2-modular-monolith-architecture-style)
+  - [3. Microservices Architecture](#3-microservices-architecture-style)
 - [The Domain and Bounded Context - Service Boundary](#the-domain-and-bounded-context---service-boundary)
 - [Structure of Project](#structure-of-project)
 - [Support](#support)
@@ -82,19 +81,12 @@
 - ✔️ **[`Testcontainers`](https://github.com/testcontainers/testcontainers-dotnet)** - Testcontainers for .NET is a library to support tests with throwaway instances of Docker containers.
 - ✔️ **[`K6`](https://github.com/grafana/k6)** - Modern load testing for developers and testers in the DevOps era.
 
-## Architectural Style
+## Architectural Styles and How to Choose the Right One
 
-The repository is organized into three folders, each representing a different `architectural style`:
+The repository is organized into `three folders`, each representing a different `architectural style`. Below is an overview of each style, along with guidance on when to choose it based on your `project requirements`, `team size`, `scalability needs`, and `long-term maintenance` goals.
 
-1. **1-monolith-architecture-style**: A traditional monolithic architecture where all components of the application are tightly coupled and deployed as a single unit.
-2. **2-modular-monolith-architecture-style**: A modular monolith architecture where the application is divided into modules, but still deployed as a single unit. This approach promotes better separation of concerns and maintainability.
-3. **3-microservices-architecture-style**: A microservices architecture where the application is broken down into small, independent services that can be developed, deployed, and scaled independently.
-
-## How to Choose the Right Architecture
-
-The choice of architecture depends on your project requirements, team size, scalability needs, and long-term maintenance goals. Below is a guide to help you decide which architecture to choose:
-
-### 1. Monolithic Architecture
+### 1. Monolithic Architecture Style
+> A traditional **monolithic architecture** where all components of the application are tightly coupled and deployed as a single unit.
 - **When to Choose**:
   - Your project is small or medium-sized.
   - You have a small development team.
@@ -110,7 +102,8 @@ The choice of architecture depends on your project requirements, team size, scal
   - Scaling is limited to scaling the entire application.
   - Difficult to adopt new technologies or frameworks incrementally.
 
-### 2. Modular Monolith Architecture
+### 2. Modular Monolith Architecture Style
+> A **modular monolith architecture** where the application is divided into modules, but still deployed as a single unit. This approach promotes better separation of concerns and maintainability.
 - **When to Choose**:
   - Your project is medium to large-sized.
   - You want better separation of concerns and maintainability than a traditional monolith.
@@ -125,7 +118,8 @@ The choice of architecture depends on your project requirements, team size, scal
   - Still a single deployment unit, so scaling is limited.
   - Requires careful design to avoid tight coupling between modules.
 
-### 3. Microservices Architecture
+### 3. Microservices Architecture Style
+> A **microservices architecture** where the application is broken down into small, independent services that can be developed, deployed, and scaled independently.
 - **When to Choose**:
   - Your project is large and complex.
   - You need to scale different parts of the application independently.

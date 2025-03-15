@@ -25,8 +25,8 @@ jobs:
         if: success()
         id: build-test-flight-step
         with:
-          project-path: '3-Microservices-Architecture-Style/src/Services/Flight/src/Flight.Api'
-          tests-path: '3-Microservices-Architecture-Style/src/Services/Flight/tests/'
+          project-path: '3-microservices-architecture-style/src/Services/Flight/src/Flight.Api'
+          tests-path: '3-microservices-architecture-style/src/Services/Flight/tests/'
           # wildcard search for files with the ".cobertura.xml" extension in all subdirectories of the current directory
           # https://www.jamescroft.co.uk/combining-multiple-code-coverage-results-in-azure-devops/
           # https://stackoverflow.com/questions/53255065/dotnet-unit-test-with-coverlet-how-to-get-coverage-for-entire-solution-and-not
@@ -40,8 +40,8 @@ jobs:
         if: success()
         id: build-test-identity-step
         with:
-          project-path: '3-Microservices-Architecture-Style/src/Services/Identity/src/Identity.Api'
-          tests-path: '3-Microservices-Architecture-Style/src/Services/Identity/tests/'
+          project-path: '3-microservices-architecture-style/src/Services/Identity/src/Identity.Api'
+          tests-path: '3-microservices-architecture-style/src/Services/Identity/tests/'
           # wildcard search for files with the ".cobertura.xml" extension in all subdirectories of the current directory
           # https://www.jamescroft.co.uk/combining-multiple-code-coverage-results-in-azure-devops/
           # https://stackoverflow.com/questions/53255065/dotnet-unit-test-with-coverlet-how-to-get-coverage-for-entire-solution-and-not
@@ -55,8 +55,8 @@ jobs:
         if: success()
         id: build-test-passenger-step
         with:
-          project-path: '3-Microservices-Architecture-Style/src/Services/Passenger/src/Passenger.Api'
-          tests-path: '3-Microservices-Architecture-Style/src/Services/Passenger/tests/'
+          project-path: '3-microservices-architecture-style/src/Services/Passenger/src/Passenger.Api'
+          tests-path: '3-microservices-architecture-style/src/Services/Passenger/tests/'
           # wildcard search for files with the ".cobertura.xml" extension in all subdirectories of the current directory
           # https://www.jamescroft.co.uk/combining-multiple-code-coverage-results-in-azure-devops/
           # https://stackoverflow.com/questions/53255065/dotnet-unit-test-with-coverlet-how-to-get-coverage-for-entire-solution-and-not
@@ -70,8 +70,8 @@ jobs:
         if: success()
         id: build-test-booking-step
         with:
-          project-path: '3-Microservices-Architecture-Style/src/Services/Booking/src/Booking.Api'
-          tests-path: '3-Microservices-Architecture-Style/src/Services/Booking/tests/'
+          project-path: '3-microservices-architecture-style/src/Services/Booking/src/Booking.Api'
+          tests-path: '3-microservices-architecture-style/src/Services/Booking/tests/'
           # wildcard search for files with the ".cobertura.xml" extension in all subdirectories of the current directory
           # https://www.jamescroft.co.uk/combining-multiple-code-coverage-results-in-azure-devops/
           # https://stackoverflow.com/questions/53255065/dotnet-unit-test-with-coverlet-how-to-get-coverage-for-entire-solution-and-not
@@ -98,7 +98,7 @@ jobs:
           tag-name: ${{ steps.last_release.outputs.tag_name }}
           registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
           registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          dockerfile-path: '3-Microservices-Architecture-Style/src/Services/Identity/Dockerfile'
+          dockerfile-path: '3-microservices-architecture-style/src/Services/Identity/Dockerfile'
           image-name: 'booking-microservices-identity'
 
       - name: Build and Publish Flight Microservice to Docker
@@ -108,7 +108,7 @@ jobs:
           tag-name: ${{ steps.last_release.outputs.tag_name }}
           registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
           registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          dockerfile-path: '3-Microservices-Architecture-Style/src/Services/Flight/Dockerfile'
+          dockerfile-path: '3-microservices-architecture-style/src/Services/Flight/Dockerfile'
           image-name: 'booking-microservices-flight'
 
       - name: Build and Publish Passenger Microservice to Docker
@@ -118,7 +118,7 @@ jobs:
           tag-name: ${{ steps.last_release.outputs.tag_name }}
           registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
           registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          dockerfile-path: '3-Microservices-Architecture-Style/src/Services/Passenger/Dockerfile'
+          dockerfile-path: '3-microservices-architecture-style/src/Services/Passenger/Dockerfile'
           image-name: 'booking-microservices-passenger'
 
       - name: Build and Publish Booking Microservice to Docker
@@ -128,5 +128,5 @@ jobs:
           tag-name: ${{ steps.last_release.outputs.tag_name }}
           registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
           registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          dockerfile-path: '3-Microservices-Architecture-Style/src/Services/Booking/Dockerfile'
+          dockerfile-path: '3-microservices-architecture-style/src/Services/Booking/Dockerfile'
           image-name: 'booking-microservices-booking'
