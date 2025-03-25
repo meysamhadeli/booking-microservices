@@ -87,6 +87,11 @@ The repository is organized into `three folders`, each representing a different 
 
 ### 1. Monolithic Architecture Style
 > A traditional **monolithic architecture** where all components of the application are tightly coupled and deployed as a single unit.
+
+<div align="center">
+  <img src="./assets/monolith.png" />
+</div>
+
 - **When to Choose**:
   - Your project is small or medium-sized.
   - You have a small development team.
@@ -104,6 +109,11 @@ The repository is organized into `three folders`, each representing a different 
 
 ### 2. Modular Monolith Architecture Style
 > A **modular monolith architecture** where the application is divided into modules, but still deployed as a single unit. This approach promotes better separation of concerns and maintainability.
+
+<div align="center">
+  <img src="./assets/modular-monolith.png" />
+</div>
+
 - **When to Choose**:
   - Your project is medium to large-sized.
   - You want better separation of concerns and maintainability than a traditional monolith.
@@ -120,6 +130,11 @@ The repository is organized into `three folders`, each representing a different 
 
 ### 3. Microservices Architecture Style
 > A **microservices architecture** where the application is broken down into small, independent services that can be developed, deployed, and scaled independently.
+
+<div align="center">
+  <img src="./assets/microservices.png" />
+</div>
+
 - **When to Choose**:
   - Your project is large and complex.
   - You need to scale different parts of the application independently.
