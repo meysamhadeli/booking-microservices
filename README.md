@@ -172,7 +172,7 @@ The repository is organized into `three folders`, each representing a different 
 
 ## Structure of Project
 
-In this project I used a mix of [clean architecture](https://jasontaylor.dev/clean-architecture-getting-started/), [vertical slice architecture](https://jimmybogard.com/vertical-slice-architecture/) and I used [feature folder structure](http://www.kamilgrzybek.com/design/feature-folders/) to structure my files.
+In this project, I used [vertical slice architecture](https://jimmybogard.com/vertical-slice-architecture/) at the architectural level and [feature folder structure](http://www.kamilgrzybek.com/design/feature-folders/) to structure my files.
 
 I treat each request as a distinct use case or slice, encapsulating and grouping all concerns from front-end to back.
 When adding or changing a feature in an application in n-tire architecture, we are typically touching many "layers" in an application. We are changing the user interface, adding fields to models, modifying validation, and so on. Instead of coupling across a layer, we couple vertically along a slice. We `minimize coupling` `between slices`, and `maximize coupling` `in a slice`.
