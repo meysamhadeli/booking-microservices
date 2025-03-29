@@ -1,14 +1,14 @@
 {
-  "name": "legacy-to-modern-architecture-styles",
+  "name": "monolith-to-cloud-architecture",
   "version": "1.0.0",
-  "description": "legacy-to-modern-architecture-styles",
+  "description": "monolith-to-cloud-architecture",
   "author": "Meysam Hadeli",
   "license": "MIT",
   "main": "index.js",
   "scripts": {
     "prepare": "husky && dotnet tool restore",
-    "format": "dotnet format legacy-to-modern-architecture-styles.sln --severity error --verbosity detailed",
-    "ci-format": "dotnet format legacy-to-modern-architecture-styles.sln --verify-no-changes --severity error --verbosity detailed",
+    "format": "dotnet format monolith-to-cloud-architecture.sln --severity error --verbosity detailed",
+    "ci-format": "dotnet format monolith-to-cloud-architecture.sln --verify-no-changes --severity error --verbosity detailed",
     "upgrade-packages": "dotnet outdated --upgrade"
   },
   "devDependencies": {
