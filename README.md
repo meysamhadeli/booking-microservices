@@ -1,19 +1,19 @@
-# 🪁 Legacy To Modern Architecture Styles
+# 🪁 Monolith To Cloud Architecture
 
 <div align="center" style="margin-bottom:20px">
     <div align="left">
-           <a href="https://github.com/meysamhadeli/legacy-to-modern-architecture-styles/actions/workflows/ci.yml"><img alt="ci-status" src="https://github.com/meysamhadeli/legacy-to-modern-architecture-styles/actions/workflows/ci.yml/badge.svg?branch=main&style=flat-square"/></a>
-                 <a href="https://github.com/meysamhadeli/legacy-to-modern-architecture-styles/blob/main/LICENSE"><img alt="build-status"          src="https://img.shields.io/github/license/meysamhadeli/legacy-to-modern-architecture-styles?color=%234275f5&style=flat-square"/></a>
+           <a href="https://github.com/meysamhadeli/monolith-to-cloud-architecture/actions/workflows/ci.yml"><img alt="ci-status" src="https://github.com/meysamhadeli/monolith-to-cloud-architecture/actions/workflows/ci.yml/badge.svg?branch=main&style=flat-square"/></a>
+                 <a href="https://github.com/meysamhadeli/monolith-to-cloud-architecture/blob/main/LICENSE"><img alt="build-status"          src="https://img.shields.io/github/license/meysamhadeli/monolith-to-cloud-architecture?color=%234275f5&style=flat-square"/></a>
     </div>
 </div>
 
-> **A practical architecture styles for migrating from legacy monolith to modern cloud native application with the latest technologies and architectures like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq, and Masstransit in .Net 9.**
+> **A practical architecture styles for migrating from monolith to modern cloud native application with the latest technologies and architectures like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq, and Masstransit in .Net 9.**
 
 <div>
-  <a href="https://gitpod.io/#https://github.com/meysamhadeli/legacy-to-modern-architecture-styles"><img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg"/></a>
+  <a href="https://gitpod.io/#https://github.com/meysamhadeli/monolith-to-cloud-architecture"><img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg"/></a>
 </div>
 <div>
-  <a href='https://codespaces.new/meysamhadeli/legacy-to-modern-architecture-styles?quickstart=1'><img alt='Open in GitHub Codespaces' src='https://github.com/codespaces/badge.svg'></a>
+  <a href='https://codespaces.new/meysamhadeli/monolith-to-cloud-architecture?quickstart=1'><img alt='Open in GitHub Codespaces' src='https://github.com/codespaces/badge.svg'></a>
 </div>
 
 # Table of Contents
@@ -206,7 +206,7 @@ Thanks a bunch for supporting me!
 
 ## Contribution
 
-Thanks to all [contributors](https://github.com/meysamhadeli/legacy-to-modern-architecture-styles/graphs/contributors), you're awesome and this wouldn't be possible without you! The goal is to build a categorized, community-driven collection of very well-known resources.
+Thanks to all [contributors](https://github.com/meysamhadeli/monolith-to-cloud-architecture/graphs/contributors), you're awesome and this wouldn't be possible without you! The goal is to build a categorized, community-driven collection of very well-known resources.
 
 Please follow this [contribution guideline](./CONTRIBUTION.md) to submit a pull request or create the issue.
 
@@ -219,4 +219,4 @@ Please follow this [contribution guideline](./CONTRIBUTION.md) to submit a pull 
 - [https://github.com/pdevito3/MessageBusTestingInMemHarness](https://github.com/pdevito3/MessageBusTestingInMemHarness)
 
 ## License
-This project is made available under the MIT license. See [LICENSE](https://github.com/meysamhadeli/legacy-to-modern-architecture-styles/blob/main/LICENSE) for details.
+This project is made available under the MIT license. See [LICENSE](https://github.com/meysamhadeli/monolith-to-cloud-architecture/blob/main/LICENSE) for details.
