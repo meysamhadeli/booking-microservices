@@ -1,11 +1,5 @@
 
-## uncommnet this line for use kubernetes ingress controller instead of Yarp
-//@api-gateway=https://booking-microservices.com  
-@api-gateway=https://localhost:5000  
-@identity-api=http://localhost:6005
-@flight-api=http://localhost:5004
-@passenger-api=http://localhost:6012
-@booking-api=http://localhost:6010
+@booking-modular-monolith-api=https://localhost:5000  
 
 @contentType = application/json
 @flightid = "3c5c0000-97c6-fc34-2eb9-08db322230c9"
@@ -14,14 +8,8 @@
 ################################# Identity API #################################
 
 ###
-# @name ApiRoot_Identity
-GET {{identity-api}}
-###
-
-
-###
 # @name Authenticate
-POST {{api-gateway}}/identity/connect/token
+POST {{booking-modular-monolith-api}}/connect/token
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=password
@@ -29,14 +17,14 @@ grant_type=password
 &client_secret=secret
 &username=samh
 &password=Admin@123456
-&scope=flight-api
+&scope=booking-modular-monolith
 ###
 
 
 
 ###
 # @name Register_New_User
-POST {{api-gateway}}/identity/api/v1/identity/register-user
+POST {{booking-modular-monolith-api}}/api/v1/identity/register-user
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -55,13 +43,8 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 ################################# Flight API #################################
 
 ###
-# @name ApiRoot_Flight
-GET {{flight-api}}
-###
-
-###
 # @name Create_Seat
-Post {{api-gateway}}/flight/api/v1/flight/seat
+Post {{booking-modular-monolith-api}}/api/v1/flight/seat
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -77,7 +60,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Reserve_Seat
-Post {{api-gateway}}/flight/api/v1/flight/reserve-seat
+Post {{booking-modular-monolith-api}}/api/v1/flight/reserve-seat
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -91,7 +74,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Get_Available_Seats
-GET {{api-gateway}}/flight/api/v1/flight/get-available-seats/{{flightid}}
+GET {{booking-modular-monolith-api}}/api/v1/flight/get-available-seats/{{flightid}}
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -100,7 +83,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Get_Flight_By_Id
-GET {{api-gateway}}/flight/api/v1/flight/{{flightid}}
+GET {{booking-modular-monolith-api}}/api/v1/flight/{{flightid}}
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -109,7 +92,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Get_Available_Flights
-GET {{api-gateway}}/flight/api/v1/flight/get-available-flights
+GET {{booking-modular-monolith-api}}/api/v1/flight/get-available-flights
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -118,7 +101,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Create_Flights
-POST {{api-gateway}}/flight/api/v1/flight
+POST {{booking-modular-monolith-api}}/api/v1/flight
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -140,7 +123,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Update_Flights
-PUT  {{api-gateway}}/flight/api/v1/flight
+PUT  {{booking-modular-monolith-api}}/api/v1/flight
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -164,7 +147,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Delete_Flights
-DELETE   {{api-gateway}}/flight/api/v1/flight/{{flightid}}
+DELETE   {{booking-modular-monolith-api}}/api/v1/flight/{{flightid}}
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -173,7 +156,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Create_Airport
-POST {{api-gateway}}/flight/api/v1/flight/airport
+POST {{booking-modular-monolith-api}}/api/v1/flight/airport
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -189,7 +172,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Create_Aircraft
-POST {{api-gateway}}/flight/api/v1/flight/aircraft
+POST {{booking-modular-monolith-api}}/api/v1/flight/aircraft
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -204,15 +187,10 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ################################# Passenger API #################################
 
-###
-# @name ApiRoot_Passenger
-GET {{passenger-api}}
-###
-
 
 ###
 # @name Complete_Registration_Passenger
-POST {{api-gateway}}/passenger/api/v1/passenger/complete-registration
+POST {{booking-modular-monolith-api}}/api/v1/passenger/complete-registration
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -227,7 +205,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ###
 # @name Get_Passenger_By_Id
-GET  {{api-gateway}}/passenger/api/v1/passenger/{{passengerId}}
+GET  {{booking-modular-monolith-api}}/api/v1/passenger/{{passengerId}}
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
@@ -236,15 +214,10 @@ authorization: bearer {{Authenticate.response.body.access_token}}
 
 ################################# Booking API #################################
 
-###
-# @name ApiRoot_Booking
-GET {{booking-api}}
-###
-
 
 ###
 # @name Create_Booking
-POST {{api-gateway}}/booking/api/v1/booking
+POST {{booking-modular-monolith-api}}/api/v1/booking
 accept: application/json
 Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}

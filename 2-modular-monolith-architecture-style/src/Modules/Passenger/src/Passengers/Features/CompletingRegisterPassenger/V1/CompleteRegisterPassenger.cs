@@ -51,7 +51,7 @@ public class CompleteRegisterPassengerEndpoint : IMinimalEndpoint
 
                 return Results.Ok(response);
             })
-            .RequireAuthorization(nameof(ApiScope))
+            .RequireAuthorization()
             .WithName("CompleteRegisterPassenger")
             .WithApiVersionSet(builder.NewApiVersionSet("Passenger").Build())
             .Produces<CompleteRegisterPassengerResponseDto>()

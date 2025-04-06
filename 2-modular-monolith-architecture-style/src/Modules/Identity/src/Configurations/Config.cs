@@ -25,7 +25,8 @@ public static class Config
             new(Constants.StandardScopes.FlightApi),
             new(Constants.StandardScopes.PassengerApi),
             new(Constants.StandardScopes.BookingApi),
-            new(Constants.StandardScopes.IdentityApi)
+            new(Constants.StandardScopes.IdentityApi),
+            new(Constants.StandardScopes.BookingModularMonolith),
         };
 
 
@@ -35,7 +36,8 @@ public static class Config
             new(Constants.StandardScopes.FlightApi),
             new(Constants.StandardScopes.PassengerApi),
             new(Constants.StandardScopes.BookingApi),
-            new(Constants.StandardScopes.IdentityApi)
+            new(Constants.StandardScopes.IdentityApi),
+            new(Constants.StandardScopes.BookingModularMonolith),
         };
 
     public static IEnumerable<Client> Clients =>
@@ -56,7 +58,8 @@ public static class Config
                     Constants.StandardScopes.FlightApi,
                     Constants.StandardScopes.PassengerApi,
                     Constants.StandardScopes.BookingApi,
-                    Constants.StandardScopes.IdentityApi
+                    Constants.StandardScopes.IdentityApi,
+                    Constants.StandardScopes.BookingModularMonolith,
                 },
                 AccessTokenLifetime = 3600,  // authorize the client to access protected resources
                 IdentityTokenLifetime = 3600 // authenticate the user

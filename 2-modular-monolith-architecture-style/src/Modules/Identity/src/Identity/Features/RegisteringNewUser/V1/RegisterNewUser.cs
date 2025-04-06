@@ -9,7 +9,6 @@ using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Web;
-using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using FluentValidation;
 using Mapster;
@@ -48,7 +47,7 @@ public class RegisterNewUserEndpoint : IMinimalEndpoint
 
                 return Results.Ok(response);
             })
-            // .RequireAuthorization()
+            .RequireAuthorization()
             .WithName("RegisterUser")
             .WithApiVersionSet(builder.NewApiVersionSet("Identity").Build())
             .Produces<RegisterNewUserResponseDto>()

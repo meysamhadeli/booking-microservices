@@ -1,5 +1,8 @@
 using BuildingBlocks.Core;
 using BuildingBlocks.EFCore;
+using BuildingBlocks.Mapster;
+using BuildingBlocks.Web;
+using FluentValidation;
 using Identity.Configurations;
 using Identity.Data;
 using Identity.Data.Seed;
@@ -15,6 +18,9 @@ public static class InfrastructureExtensions
     public static WebApplicationBuilder AddIdentityModules(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<IEventMapper, EventMapper>();
+        builder.AddMinimalEndpoints(assemblies: typeof(IdentityRoot).Assembly);
+        builder.Services.AddValidatorsFromAssembly(typeof(IdentityRoot).Assembly);
+        builder.Services.AddCustomMapster(typeof(IdentityRoot).Assembly);
         builder.AddCustomDbContext<IdentityContext>(nameof(Identity));
         builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
         builder.AddCustomIdentityServer();

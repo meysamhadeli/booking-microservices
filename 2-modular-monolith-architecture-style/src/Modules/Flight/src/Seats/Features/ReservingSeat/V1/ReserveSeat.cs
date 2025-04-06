@@ -35,7 +35,7 @@ public class ReserveSeatEndpoint : IMinimalEndpoint
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/flight/reserve-seat", ReserveSeat)
-            .RequireAuthorization(nameof(ApiScope))
+            .RequireAuthorization()
             .WithName("ReserveSeat")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<ReserveSeatResponseDto>()

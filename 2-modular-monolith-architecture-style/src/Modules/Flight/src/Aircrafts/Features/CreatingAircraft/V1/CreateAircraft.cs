@@ -54,7 +54,7 @@ public class CreateAircraftEndpoint : IMinimalEndpoint
 
                 return Results.Ok(response);
             })
-            .RequireAuthorization(nameof(ApiScope))
+            .RequireAuthorization()
             .WithName("CreateAircraft")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<CreateAircraftResponseDto>()

@@ -59,7 +59,7 @@ public class CreateFlightEndpoint : IMinimalEndpoint
 
                 return Results.CreatedAtRoute("GetFlightById", new { id = result.Id }, response);
             })
-            .RequireAuthorization(nameof(ApiScope))
+            .RequireAuthorization()
             .WithName("CreateFlight")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<CreateFlightResponseDto>(StatusCodes.Status201Created)
