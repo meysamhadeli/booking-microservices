@@ -39,7 +39,7 @@ public class GetFlightByIdEndpoint : IMinimalEndpoint
 
                     return Results.Ok(response);
                 })
-            .RequireAuthorization(nameof(ApiScope))
+            .RequireAuthorization()
             .WithName("GetFlightById")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<GetFlightByIdResponseDto>()

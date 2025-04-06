@@ -4,7 +4,6 @@ using BuildingBlocks.Exception;
 using BuildingBlocks.HealthCheck;
 using BuildingBlocks.Jwt;
 using BuildingBlocks.Logging;
-using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.OpenApi;
 using BuildingBlocks.OpenTelemetryCollector;
@@ -12,7 +11,6 @@ using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.ProblemDetails;
 using BuildingBlocks.Web;
 using Figgle;
-using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -38,8 +36,8 @@ public static class SharedInfrastructureExtensions
         Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
         builder.AddCustomSerilog(builder.Environment);
-        builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
         builder.Services.AddJwt();
+        builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
         builder.Services.AddTransient<AuthHeaderHandler>();
         builder.Services.AddPersistMessageProcessor();
 
@@ -85,9 +83,6 @@ public static class SharedInfrastructureExtensions
             });
 
         builder.Services.AddEasyCaching(options => { options.UseInMemory(builder.Configuration, "mem"); });
-
-        builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
-        builder.Services.AddCustomMapster(AppDomain.CurrentDomain.GetAssemblies());
         builder.Services.AddProblemDetails();
 
         return builder;

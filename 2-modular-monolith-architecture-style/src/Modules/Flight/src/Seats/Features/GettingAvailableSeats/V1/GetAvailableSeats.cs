@@ -34,7 +34,7 @@ public class GetAvailableSeatsEndpoint : IMinimalEndpoint
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder.MapGet($"{EndpointConfig.BaseApiPath}/flight/get-available-seats/{{id}}", GetAvailableSeats)
-            .RequireAuthorization(nameof(ApiScope))
+            .RequireAuthorization()
             .WithName("GetAvailableSeats")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<GetAvailableSeatsResponseDto>()
