@@ -49,12 +49,12 @@ public class IdentityDataSeeder : IDataSeeder
         {
             if (await _roleManager.RoleExistsAsync(Constants.Role.Admin) == false)
             {
-                await _roleManager.CreateAsync(new Role {Name = Constants.Role.Admin});
+                await _roleManager.CreateAsync(new Role { Name = Constants.Role.Admin });
             }
 
             if (await _roleManager.RoleExistsAsync(Constants.Role.User) == false)
             {
-                await _roleManager.CreateAsync(new Role {Name = Constants.Role.User});
+                await _roleManager.CreateAsync(new Role { Name = Constants.Role.User });
             }
         }
     }

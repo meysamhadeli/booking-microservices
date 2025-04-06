@@ -70,7 +70,7 @@ where TResponse : notnull
 
             using var scope = new TransactionScope(
                 TransactionScopeOption.Required,
-                new TransactionOptions {IsolationLevel = IsolationLevel.ReadCommitted},
+                new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
                 TransactionScopeAsyncFlowOption.Enabled);
 
             await _eventDispatcher.SendAsync(

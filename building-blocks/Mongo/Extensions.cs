@@ -9,7 +9,7 @@ namespace BuildingBlocks.Mongo
     public static class Extensions
     {
         public static IServiceCollection AddMongoDbContext<TContext>(
-            this  WebApplicationBuilder builder, Action<MongoOptions>? configurator = null)
+            this WebApplicationBuilder builder, Action<MongoOptions>? configurator = null)
         where TContext : MongoDbContext
         {
             return builder.Services.AddMongoDbContext<TContext, TContext>(builder.Configuration, configurator);
