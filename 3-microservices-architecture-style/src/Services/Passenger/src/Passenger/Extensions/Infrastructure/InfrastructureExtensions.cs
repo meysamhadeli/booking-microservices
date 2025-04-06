@@ -64,8 +64,8 @@ public static class InfrastructureExtensions
             });
 
         builder.Services.AddPersistMessageProcessor();
-        builder.Services.AddCustomDbContext<PassengerDbContext>();
-        builder.Services.AddMongoDbContext<PassengerReadDbContext>(configuration);
+        builder.AddCustomDbContext<PassengerDbContext>();
+        builder.AddMongoDbContext<PassengerReadDbContext>();
 
         builder.AddCustomSerilog(env);
         builder.Services.AddJwt();
@@ -78,7 +78,7 @@ public static class InfrastructureExtensions
         builder.Services.AddCustomMapster(typeof(PassengerRoot).Assembly);
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddCustomHealthCheck();
-        builder.Services.AddCustomMassTransit(env, typeof(PassengerRoot).Assembly);
+        builder.Services.AddCustomMassTransit(env, TransportType.RabbitMq, typeof(PassengerRoot).Assembly);
         builder.AddCustomObservability();
 
         builder.Services.AddGrpc(

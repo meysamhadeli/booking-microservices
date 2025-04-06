@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,16 +9,16 @@ namespace BuildingBlocks.Mongo
     public static class Extensions
     {
         public static IServiceCollection AddMongoDbContext<TContext>(
-            this IServiceCollection services, IConfiguration configuration, Action<MongoOptions>? configurator = null)
-            where TContext : MongoDbContext
+            this  WebApplicationBuilder builder, Action<MongoOptions>? configurator = null)
+        where TContext : MongoDbContext
         {
-            return services.AddMongoDbContext<TContext, TContext>(configuration, configurator);
+            return builder.Services.AddMongoDbContext<TContext, TContext>(builder.Configuration, configurator);
         }
 
         public static IServiceCollection AddMongoDbContext<TContextService, TContextImplementation>(
             this IServiceCollection services, IConfiguration configuration, Action<MongoOptions>? configurator = null)
-            where TContextService : IMongoDbContext
-            where TContextImplementation : MongoDbContext, TContextService
+        where TContextService : IMongoDbContext
+        where TContextImplementation : MongoDbContext, TContextService
         {
             services.Configure<MongoOptions>(configuration.GetSection(nameof(MongoOptions)));
 

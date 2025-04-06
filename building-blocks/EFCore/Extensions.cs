@@ -1,38 +1,37 @@
 using System.Linq.Expressions;
-using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.Web;
 using Humanizer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.EFCore;
 
 public static class Extensions
 {
-    public static IServiceCollection AddCustomDbContext<TContext>(this IServiceCollection services)
+    public static IServiceCollection AddCustomDbContext<TContext>(this WebApplicationBuilder builder, string connectionName = "")
     where TContext : DbContext, IDbContext
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-        services.AddValidateOptions<PostgresOptions>();
+        builder.Services.AddValidateOptions<PostgresOptions>();
 
-        services.AddDbContext<TContext>(
+        builder.Services.AddDbContext<TContext>(
             (sp, options) =>
             {
-                var postgresOptions = sp.GetRequiredService<PostgresOptions>();
+                string? connectionString = string.IsNullOrEmpty(connectionName) ?
+                                               sp.GetRequiredService<PostgresOptions>().ConnectionString :
+                                               builder.Configuration?.GetSection("PostgresOptions:ConnectionString")[connectionName];
 
-                Guard.Against.Null(options, nameof(postgresOptions));
+                ArgumentException.ThrowIfNullOrEmpty(connectionString);
 
                 options.UseNpgsql(
-                        postgresOptions?.ConnectionString,
+                        connectionString,
                         dbOptions =>
                         {
                             dbOptions.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name);
@@ -44,10 +43,10 @@ public static class Extensions
                     w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
             });
 
-        services.AddScoped<ISeedManager, SeedManager>();
-        services.AddScoped<IDbContext>(sp => sp.GetRequiredService<TContext>());
+        builder.Services.AddScoped<ISeedManager, SeedManager>();
+        builder.Services.AddScoped<IDbContext>(sp => sp.GetRequiredService<TContext>());
 
-        return services;
+        return builder.Services;
     }
 
 

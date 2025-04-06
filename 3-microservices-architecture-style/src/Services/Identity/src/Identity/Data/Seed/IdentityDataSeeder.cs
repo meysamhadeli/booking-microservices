@@ -6,6 +6,7 @@ using BuildingBlocks.EFCore;
 using Identity.Identity.Constants;
 using Identity.Identity.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Data.Seed;
 
@@ -16,20 +17,28 @@ public class IdentityDataSeeder : IDataSeeder
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
     private readonly IEventDispatcher _eventDispatcher;
+    private readonly IdentityContext _identityContext;
 
     public IdentityDataSeeder(UserManager<User> userManager,
-        RoleManager<Role> roleManager,
-        IEventDispatcher eventDispatcher)
+                              RoleManager<Role> roleManager,
+                              IEventDispatcher eventDispatcher,
+                              IdentityContext identityContext)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _eventDispatcher = eventDispatcher;
+        _identityContext = identityContext;
     }
 
     public async Task SeedAllAsync()
     {
-        await SeedRoles();
-        await SeedUsers();
+        var pendingMigrations = await _identityContext.Database.GetPendingMigrationsAsync();
+
+        if (!pendingMigrations.Any())
+        {
+            await SeedRoles();
+            await SeedUsers();
+        }
     }
 
     private async Task SeedRoles()
