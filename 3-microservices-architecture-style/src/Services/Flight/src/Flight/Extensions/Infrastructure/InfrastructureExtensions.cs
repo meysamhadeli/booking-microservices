@@ -64,9 +64,9 @@ public static class InfrastructureExtensions
                     }));
         });
 
-        builder.Services.AddCustomDbContext<FlightDbContext>();
+        builder.AddCustomDbContext<FlightDbContext>();
         builder.Services.AddScoped<IDataSeeder, FlightDataSeeder>();
-        builder.Services.AddMongoDbContext<FlightReadDbContext>(configuration);
+        builder.AddMongoDbContext<FlightReadDbContext>();
         builder.Services.AddPersistMessageProcessor();
 
         builder.Services.AddEndpointsApiExplorer();
@@ -77,7 +77,7 @@ public static class InfrastructureExtensions
         builder.Services.AddValidatorsFromAssembly(typeof(FlightRoot).Assembly);
         builder.Services.AddCustomMapster(typeof(FlightRoot).Assembly);
         builder.Services.AddHttpContextAccessor();
-        builder.Services.AddCustomMassTransit(env, typeof(FlightRoot).Assembly);
+        builder.Services.AddCustomMassTransit(env, TransportType.RabbitMq, typeof(FlightRoot).Assembly);
         builder.AddCustomObservability();
         builder.Services.AddCustomHealthCheck();
 

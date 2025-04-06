@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package flight;
+import "google/protobuf/timestamp.proto";
+
+service FlightGrpcService {
+
+  rpc GetById (GetByIdRequest) returns (GetFlightByIdResult);
+  rpc GetAvailableSeats (GetAvailableSeatsRequest) returns (GetAvailableSeatsResult);
+  rpc ReserveSeat (ReserveSeatRequest) returns (ReserveSeatResult);
+}
+
+message GetByIdRequest {
+  string Id = 1;
+}
+
+message GetFlightByIdResult{
+  FlightResponse FlightDto = 1;
+}
+
+message GetAvailableSeatsResult{
+repeated SeatDtoResponse SeatDtos = 1;
+}
+
+message ReserveSeatResult{
+    string Id = 1;
+}
+
+message FlightResponse {
+  string Id = 1;
+  string FlightNumber = 2;
+  string AircraftId = 3;
+  string DepartureAirportId = 4;
+  google.protobuf.Timestamp DepartureDate = 5;
+  google.protobuf.Timestamp ArriveDate = 6;
+  string ArriveAirportId = 7;
+  double DurationMinutes = 8;
+  google.protobuf.Timestamp FlightDate = 9;
+  FlightStatus Status = 10;
+  double Price = 11;
+  string FlightId = 12;
+}
+
+message GetAvailableSeatsRequest {
+  string FlightId = 1;
+}
+
+message SeatDtoResponse {
+  string Id = 1;
+  string SeatNumber = 2;
+  SeatType Type = 3;
+  SeatClass Class = 4;
+  string FlightId = 5;
+}
+
+
+message ReserveSeatRequest {
+  string FlightId = 1;
+  string SeatNumber = 2;
+}
+
+
+    enum FlightStatus {
+      FLIGHT_STATUS_UNKNOWN = 0;
+      FLIGHT_STATUS_FLYING = 1;
+      FLIGHT_STATUS_DELAY = 2;
+      FLIGHT_STATUS_CANCELED = 3;
+      FLIGHT_STATUS_COMPLETED = 4;
+    }
+
+
+    enum SeatType {
+        SEAT_TYPE_UNKNOWN = 0;
+        SEAT_TYPE_WINDOW = 1;
+        SEAT_TYPE_MIDDLE = 2;
+        SEAT_TYPE_AISLE = 3;
+    }
+
+
+    enum SeatClass {
+        SEAT_CLASS_UNKNOWN = 0;
+        SEAT_CLASS_FIRST_CLASS = 1;
+        SEAT_CLASS_BUSINESS = 2;
+        SEAT_CLASS_ECONOMY = 3;
+    }

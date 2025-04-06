@@ -62,7 +62,7 @@ public static class InfrastructureExtensions
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddControllers();
         builder.Services.AddPersistMessageProcessor();
-        builder.Services.AddCustomDbContext<IdentityContext>();
+        builder.AddCustomDbContext<IdentityContext>();
         builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
         builder.AddCustomSerilog(env);
         builder.Services.AddAspnetOpenApi();
@@ -73,7 +73,7 @@ public static class InfrastructureExtensions
         builder.Services.AddCustomMapster(typeof(IdentityRoot).Assembly);
         builder.Services.AddCustomHealthCheck();
 
-        builder.Services.AddCustomMassTransit(env, typeof(IdentityRoot).Assembly);
+        builder.Services.AddCustomMassTransit(env, TransportType.RabbitMq, typeof(IdentityRoot).Assembly);
         builder.AddCustomObservability();
 
         builder.AddCustomIdentityServer();

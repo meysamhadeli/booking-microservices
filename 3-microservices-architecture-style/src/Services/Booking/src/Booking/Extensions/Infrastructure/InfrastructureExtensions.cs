@@ -59,7 +59,7 @@ public static class InfrastructureExtensions
         });
 
         builder.Services.AddPersistMessageProcessor();
-        builder.Services.AddMongoDbContext<BookingReadDbContext>(configuration);
+        builder.AddMongoDbContext<BookingReadDbContext>();
 
         builder.Services.AddEndpointsApiExplorer();
         builder.AddCustomSerilog(env);
@@ -72,7 +72,7 @@ public static class InfrastructureExtensions
         builder.Services.AddProblemDetails();
         builder.Services.AddCustomMapster(typeof(BookingRoot).Assembly);
         builder.Services.AddCustomHealthCheck();
-        builder.Services.AddCustomMassTransit(env, typeof(BookingRoot).Assembly);
+        builder.Services.AddCustomMassTransit(env, TransportType.RabbitMq, typeof(BookingRoot).Assembly);
         builder.AddCustomObservability();
         builder.Services.AddTransient<AuthHeaderHandler>();
 
