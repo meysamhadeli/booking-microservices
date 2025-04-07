@@ -1,14 +1,14 @@
 using System.Reflection;
+using BookingMonolith.Flight.Aircrafts.Models;
+using BookingMonolith.Flight.Airports.Models;
+using BookingMonolith.Flight.Seats.Models;
 using BuildingBlocks.EFCore;
-using Flight.Aircrafts.Models;
-using Flight.Airports.Models;
-using Flight.Seats.Models;
-using Microsoft.EntityFrameworkCore;
-
-namespace Flight.Data;
-
 using BuildingBlocks.Web;
+using Humanizer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
+namespace BookingMonolith.Flight.Data;
 
 public sealed class FlightDbContext : AppDbContextBase
 {
@@ -26,7 +26,18 @@ public sealed class FlightDbContext : AppDbContextBase
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        var types = typeof(FlightRoot).Assembly.GetTypes()
+            .Where(t => t.GetCustomAttribute<RegisterFlightConfigurationAttribute>() != null)
+            .ToList();
+
+        foreach (var type in types)
+        {
+            dynamic configuration = Activator.CreateInstance(type)!;
+            builder.ApplyConfiguration(configuration);
+        }
+
+        builder.HasDefaultSchema(nameof(Flight).Underscore());
         builder.FilterSoftDeletedProperties();
         builder.ToSnakeCaseTables();
     }

@@ -1,0 +1,230 @@
+
+@booking-monolith-api=https://localhost:5000  
+
+@contentType = application/json
+@flightid = "3c5c0000-97c6-fc34-2eb9-08db322230c9"
+@passengerId = "8c9c0000-97c6-fc34-2eb9-66db322230c9"
+
+################################# Identity API #################################
+
+###
+# @name Authenticate
+POST {{booking-monolith-api}}/connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password
+&client_id=client
+&client_secret=secret
+&username=samh
+&password=Admin@123456
+&scope=booking-monolith
+###
+
+
+
+###
+# @name Register_New_User
+POST {{booking-monolith-api}}/api/v1/identity/register-user
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+
+{
+  "firstName": "John",
+  "lastName": "Do",
+  "username": "admin",
+  "passportNumber": "412900000",
+  "email": "admin@admin.com",
+  "password": "Admin@12345",
+  "confirmPassword": "Admin@12345"
+}
+###
+
+################################# Flight API #################################
+
+###
+# @name Create_Seat
+Post {{booking-monolith-api}}/api/v1/flight/seat
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+
+{
+  "seatNumber": "1255",
+  "type": 1,
+  "class": 1,
+  "flightId": "3c5c0000-97c6-fc34-2eb9-08db322230c9"
+}
+###
+
+
+###
+# @name Reserve_Seat
+Post {{booking-monolith-api}}/api/v1/flight/reserve-seat
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+
+{
+  "flightId": "3c5c0000-97c6-fc34-2eb9-08db322230c9",
+  "seatNumber": "1255"
+}
+###
+
+
+###
+# @name Get_Available_Seats
+GET {{booking-monolith-api}}/api/v1/flight/get-available-seats/{{flightid}}
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+###
+
+
+###
+# @name Get_Flight_By_Id
+GET {{booking-monolith-api}}/api/v1/flight/{{flightid}}
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+###
+
+
+###
+# @name Get_Available_Flights
+GET {{booking-monolith-api}}/api/v1/flight/get-available-flights
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+###
+
+
+###
+# @name Create_Flights
+POST {{booking-monolith-api}}/api/v1/flight
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+
+{
+  "flightNumber": "12BB",
+  "aircraftId": "3c5c0000-97c6-fc34-fcd3-08db322230c8",
+  "departureAirportId": "3c5c0000-97c6-fc34-a0cb-08db322230c8",
+  "departureDate": "2022-03-01T14:55:41.255Z",
+  "arriveDate": "2022-03-01T14:55:41.255Z",
+  "arriveAirportId": "3c5c0000-97c6-fc34-fc3c-08db322230c8",
+  "durationMinutes": 120,
+  "flightDate": "2022-03-01T14:55:41.255Z",
+  "status": 1,
+  "price": 8000
+}
+###
+
+
+###
+# @name Update_Flights
+PUT  {{booking-monolith-api}}/api/v1/flight
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+
+{
+  "id": 1,
+  "flightNumber": "BD467",
+  "aircraftId": "3c5c0000-97c6-fc34-fcd3-08db322230c8",
+  "departureAirportId": "3c5c0000-97c6-fc34-a0cb-08db322230c8",
+  "departureDate": "2022-04-23T12:17:45.140Z",
+  "arriveDate": "2022-04-23T12:17:45.140Z",
+  "arriveAirportId": "3c5c0000-97c6-fc34-fc3c-08db322230c8",
+  "durationMinutes": 120,
+  "flightDate": "2022-04-23T12:17:45.140Z",
+  "status": 4,
+  "isDeleted": false,
+  "price": 99000
+}
+###
+
+
+###
+# @name Delete_Flights
+DELETE   {{booking-monolith-api}}/api/v1/flight/{{flightid}}
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+###
+
+
+###
+# @name Create_Airport
+POST {{booking-monolith-api}}/api/v1/flight/airport
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+
+{
+  "name": "mehrabad",
+  "address": "tehran",
+  "code": "12YD"
+}
+###
+
+
+
+###
+# @name Create_Aircraft
+POST {{booking-monolith-api}}/api/v1/flight/aircraft
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+
+{
+  "name": "airbus2",
+  "model": "322",
+  "manufacturingYear": 2012
+}
+###
+
+
+################################# Passenger API #################################
+
+
+###
+# @name Complete_Registration_Passenger
+POST {{booking-monolith-api}}/api/v1/passenger/complete-registration
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+
+{
+  "passportNumber": "412900000000",
+  "passengerType": 1,
+  "age": 30
+}
+###
+
+
+###
+# @name Get_Passenger_By_Id
+GET  {{booking-monolith-api}}/api/v1/passenger/{{passengerId}}
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+###
+
+
+################################# Booking API #################################
+
+
+###
+# @name Create_Booking
+POST {{booking-monolith-api}}/api/v1/booking
+accept: application/json
+Content-Type: application/json
+authorization: bearer {{Authenticate.response.body.access_token}}
+
+{
+  "passengerId": "8c9c0000-97c6-fc34-2eb9-66db322230c9",
+  "flightId": "3c5c0000-97c6-fc34-2eb9-08db322230c9",
+  "description": "I want to fly to iran"
+}
+###
