@@ -14,7 +14,7 @@ public static class InfrastructureExtensions
 {
     public static WebApplicationBuilder AddBookingModules(this WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<IEventMapper, EventMapper>();
+        builder.Services.AddScoped<IEventMapper, BookingEventMapper>();
         builder.AddMinimalEndpoints(assemblies: typeof(BookingRoot).Assembly);
         builder.Services.AddValidatorsFromAssembly(typeof(BookingRoot).Assembly);
         builder.Services.AddCustomMapster(typeof(BookingRoot).Assembly);

@@ -1,18 +1,14 @@
-using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.Event;
 
-namespace Booking;
+namespace Identity;
 
-using Booking.Features.CreatingBook.V1;
-
-public sealed class EventMapper : IEventMapper
+public sealed class IdentityEventMapper : IEventMapper
 {
     public IIntegrationEvent? MapToIntegrationEvent(IDomainEvent @event)
     {
         return @event switch
         {
-            BookingCreatedDomainEvent e => new BookingCreated(e.Id),
             _ => null
         };
     }
