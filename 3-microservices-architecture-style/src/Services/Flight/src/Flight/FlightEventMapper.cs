@@ -14,7 +14,7 @@ using Seats.Features.CreatingSeat.V1;
 using Seats.Features.ReservingSeat.V1;
 
 // ref: https://www.ledjonbehluli.com/posts/domain_to_integration_event/
-public sealed class EventMapper : IEventMapper
+public sealed class FlightEventMapper : IEventMapper
 {
     public IIntegrationEvent? MapToIntegrationEvent(IDomainEvent @event)
     {

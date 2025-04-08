@@ -32,7 +32,7 @@ public static class InfrastructureExtensions
         var env = builder.Environment;
 
         builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
-        builder.Services.AddScoped<IEventMapper, EventMapper>();
+        builder.Services.AddScoped<IEventMapper, BookingEventMapper>();
         builder.Services.AddScoped<IEventDispatcher, EventDispatcher>();
 
         builder.Services.Configure<ApiBehaviorOptions>(options =>

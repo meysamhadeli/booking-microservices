@@ -7,7 +7,7 @@ namespace Passenger;
 using Identity.Consumers.RegisteringNewUser.V1;
 using Passengers.Features.CompletingRegisterPassenger.V1;
 
-public sealed class EventMapper : IEventMapper
+public sealed class PassengerEventMapper : IEventMapper
 {
     public IIntegrationEvent? MapToIntegrationEvent(IDomainEvent @event)
     {

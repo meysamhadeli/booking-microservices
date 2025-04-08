@@ -17,7 +17,7 @@ public static class InfrastructureExtensions
 {
     public static WebApplicationBuilder AddIdentityModules(this WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<IEventMapper, EventMapper>();
+        builder.Services.AddScoped<IEventMapper, IdentityEventMapper>();
         builder.AddMinimalEndpoints(assemblies: typeof(IdentityRoot).Assembly);
         builder.Services.AddValidatorsFromAssembly(typeof(IdentityRoot).Assembly);
         builder.Services.AddCustomMapster(typeof(IdentityRoot).Assembly);

@@ -17,7 +17,7 @@ public static class InfrastructureExtensions
 {
     public static WebApplicationBuilder AddFlightModules(this WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<IEventMapper, EventMapper>();
+        builder.Services.AddScoped<IEventMapper, FlightEventMapper>();
         builder.AddMinimalEndpoints(assemblies: typeof(FlightRoot).Assembly);
         builder.Services.AddValidatorsFromAssembly(typeof(FlightRoot).Assembly);
         builder.Services.AddCustomMapster(typeof(FlightRoot).Assembly);

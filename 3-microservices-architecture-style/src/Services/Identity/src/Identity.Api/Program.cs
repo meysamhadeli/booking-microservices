@@ -1,4 +1,5 @@
 using BuildingBlocks.Web;
+using Identity;
 using Identity.Configurations;
 using Identity.Extensions.Infrastructure;
 
