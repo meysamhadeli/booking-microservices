@@ -17,7 +17,7 @@ public static class InitialData
                 FirstName = "Sam",
                 LastName = "H",
                 UserName = "samh",
-                PassPortNumber = "123456789",
+                PassPortNumber = "12345678",
                 Email = "sam@test.com",
                 SecurityStamp = Guid.NewGuid().ToString()
             },
@@ -27,7 +27,7 @@ public static class InitialData
                 FirstName = "Sam2",
                 LastName = "H2",
                 UserName = "samh2",
-                PassPortNumber = "987654321",
+                PassPortNumber = "87654321",
                 Email = "sam2@test.com",
                 SecurityStamp = Guid.NewGuid().ToString()
             }
