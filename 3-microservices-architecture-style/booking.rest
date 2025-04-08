@@ -30,6 +30,8 @@ grant_type=password
 &username=samh
 &password=Admin@123456
 &scope=flight-api
+
+### change scope base on microservices scope (eg. passenger-api, ...)
 ###
 
 
@@ -45,7 +47,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
   "firstName": "John",
   "lastName": "Do",
   "username": "admin",
-  "passportNumber": "412900000",
+  "passportNumber": "41290000",
   "email": "admin@admin.com",
   "password": "Admin@12345",
   "confirmPassword": "Admin@12345"
@@ -218,7 +220,7 @@ Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
-  "passportNumber": "412900000000",
+  "passportNumber": "41290000",
   "passengerType": 1,
   "age": 30
 }

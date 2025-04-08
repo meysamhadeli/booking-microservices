@@ -1,5 +1,5 @@
 
-@booking-modular-monolith-api=https://localhost:5000  
+@booking-modular-monolith-api=https://localhost:3000  
 
 @contentType = application/json
 @flightid = "3c5c0000-97c6-fc34-2eb9-08db322230c9"
@@ -33,7 +33,7 @@ authorization: bearer {{Authenticate.response.body.access_token}}
   "firstName": "John",
   "lastName": "Do",
   "username": "admin",
-  "passportNumber": "412900000",
+  "passportNumber": "41290000",
   "email": "admin@admin.com",
   "password": "Admin@12345",
   "confirmPassword": "Admin@12345"
@@ -196,7 +196,7 @@ Content-Type: application/json
 authorization: bearer {{Authenticate.response.body.access_token}}
 
 {
-  "passportNumber": "412900000000",
+  "passportNumber": "41290000",
   "passengerType": 1,
   "age": 30
 }
