@@ -5,6 +5,7 @@ using BookingMonolith.Flight.Flights.Exceptions;
 using BuildingBlocks.Caching;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Web;
+using Duende.IdentityServer.EntityFramework.Entities;
 using Mapster;
 using MapsterMapper;
 using MediatR;
@@ -39,7 +40,7 @@ public class GetAvailableFlightsEndpoint : IMinimalEndpoint
 
                     return Results.Ok(response);
                 })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("GetAvailableFlights")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<GetAvailableFlightsResponseDto>()

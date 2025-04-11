@@ -4,6 +4,7 @@ using BookingMonolith.Flight.Seats.Exceptions;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Web;
+using Duende.IdentityServer.EntityFramework.Entities;
 using FluentValidation;
 using Mapster;
 using MapsterMapper;
@@ -31,7 +32,7 @@ public class ReserveSeatEndpoint : IMinimalEndpoint
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/flight/reserve-seat", ReserveSeat)
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("ReserveSeat")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<ReserveSeatResponseDto>()

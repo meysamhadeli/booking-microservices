@@ -56,7 +56,7 @@ public class UpdateFlightEndpoint : IMinimalEndpoint
 
                 return Results.NoContent();
             })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("UpdateFlight")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces(StatusCodes.Status204NoContent)

@@ -51,7 +51,7 @@ public class CreateAirportEndpoint : IMinimalEndpoint
 
                 return Results.Ok(response);
             })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("CreateAirport")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<CreateAirportResponseDto>()

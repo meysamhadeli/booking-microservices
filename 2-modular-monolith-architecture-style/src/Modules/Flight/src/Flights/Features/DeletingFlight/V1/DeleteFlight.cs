@@ -45,7 +45,7 @@ public class DeleteFlightEndpoint : IMinimalEndpoint
 
                     return Results.NoContent();
                 })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("DeleteFlight")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces(StatusCodes.Status204NoContent)

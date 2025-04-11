@@ -1,3 +1,5 @@
+using Duende.IdentityServer.EntityFramework.Entities;
+
 namespace Identity.Identity.Features.RegisteringNewUser.V1;
 
 using System;
@@ -47,7 +49,7 @@ public class RegisterNewUserEndpoint : IMinimalEndpoint
 
                 return Results.Ok(response);
             })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("RegisterUser")
             .WithApiVersionSet(builder.NewApiVersionSet("Identity").Build())
             .Produces<RegisterNewUserResponseDto>()

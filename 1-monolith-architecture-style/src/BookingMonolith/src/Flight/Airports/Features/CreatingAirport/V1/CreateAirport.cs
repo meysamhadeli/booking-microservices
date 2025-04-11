@@ -5,6 +5,7 @@ using BookingMonolith.Flight.Data;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Web;
+using Duende.IdentityServer.EntityFramework.Entities;
 using FluentValidation;
 using Mapster;
 using MapsterMapper;
@@ -47,7 +48,7 @@ public class CreateAirportEndpoint : IMinimalEndpoint
 
                 return Results.Ok(response);
             })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("CreateAirport")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<CreateAirportResponseDto>()
