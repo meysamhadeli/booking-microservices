@@ -7,11 +7,13 @@ using BuildingBlocks.EFCore;
 using BuildingBlocks.Mongo;
 using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.Web;
+using Duende.IdentityServer.EntityFramework.Entities;
 using EasyNetQ.Management.Client;
 using Grpc.Net.Client;
 using MassTransit;
 using MassTransit.Testing;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -57,16 +59,15 @@ where TEntryPoint : class
     {
         get
         {
-            var claims =
-                new Dictionary<string, object>
-                {
-                    {ClaimTypes.Name, "test@sample.com"},
-                    {ClaimTypes.Role, "admin"},
-                    {"scope", "flight-api"}
-                };
+            var claims = new Dictionary<string, object>
+                         {
+                             { ClaimTypes.Name, "test@sample.com" },
+                             { ClaimTypes.Role, "admin" },
+                             { "scope", "flight-api" }
+                         };
 
-            var httpClient = _factory?.CreateClient();
-            httpClient.SetFakeBearerToken(claims);
+            var httpClient = _factory.CreateClient();
+            httpClient.SetFakeBearerToken(claims); // Uses FakeJwtBearer
             return httpClient;
         }
     }
@@ -106,19 +107,28 @@ where TEntryPoint : class
                                               .AsImplementedInterfaces()
                                               .WithScopedLifetime());
 
-                            // add authentication using a fake jwt bearer - we can use SetAdminUser method to set authenticate user to existing HttContextAccessor
+                            // Add Fake JWT Authentication - we can use SetAdminUser method to set authenticate user to existing HttContextAccessor
                             // https://github.com/webmotions/fake-authentication-jwtbearer
                             // https://github.com/webmotions/fake-authentication-jwtbearer/issues/14
                             services.AddAuthentication(
                                     options =>
                                     {
-                                        options.DefaultAuthenticateScheme =
-                                            FakeJwtBearerDefaults.AuthenticationScheme;
+                                        options.DefaultAuthenticateScheme = FakeJwtBearerDefaults.AuthenticationScheme;
 
-                                        options.DefaultChallengeScheme =
-                                            FakeJwtBearerDefaults.AuthenticationScheme;
+                                        options.DefaultChallengeScheme = FakeJwtBearerDefaults.AuthenticationScheme;
                                     })
                                 .AddFakeJwtBearer();
+
+                            // Mock Authorization Policies
+                            services.AddAuthorization(options =>
+                                   {
+                                       options.AddPolicy(nameof(ApiScope), policy =>
+                                       {
+                                           policy.AddAuthenticationSchemes(FakeJwtBearerDefaults.AuthenticationScheme);
+                                           policy.RequireAuthenticatedUser();
+                                           policy.RequireClaim("scope", "flight-api"); // Test-specific scope
+                                       });
+                                   });
                         });
                 });
     }
