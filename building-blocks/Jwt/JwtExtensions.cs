@@ -30,7 +30,8 @@ public static class JwtExtensions
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false,
-                        ClockSkew = TimeSpan.FromSeconds(2) // For prevent add default value (5min) to life time token!
+                        ClockSkew = TimeSpan.FromSeconds(2), // For prevent add default value (5min) to life time token!
+                        ValidateLifetime = true,       // Enforce token expiry
                     };
 
                     options.RequireHttpsMetadata = jwtOptions.RequireHttpsMetadata;
@@ -52,6 +53,7 @@ public static class JwtExtensions
                         nameof(ApiScope),
                         policy =>
                         {
+                            policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
                             policy.RequireAuthenticatedUser();
                             policy.RequireClaim("scope", jwtOptions.Audience);
                         });
