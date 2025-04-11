@@ -11,6 +11,7 @@ using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EventStoreDB.Repository;
 using BuildingBlocks.Web;
+using Duende.IdentityServer.EntityFramework.Entities;
 using FluentValidation;
 using Mapster;
 using MapsterMapper;
@@ -51,7 +52,7 @@ public class CreateBookingEndpoint : IMinimalEndpoint
 
                 return Results.Ok(response);
             })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("CreateBooking")
             .WithApiVersionSet(builder.NewApiVersionSet("Booking").Build())
             .Produces<CreateBookingResponseDto>()

@@ -4,6 +4,7 @@ using BookingMonolith.Flight.Seats.Dtos;
 using BookingMonolith.Flight.Seats.Exceptions;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Web;
+using Duende.IdentityServer.EntityFramework.Entities;
 using FluentValidation;
 using Mapster;
 using MapsterMapper;
@@ -27,7 +28,7 @@ public class GetAvailableSeatsEndpoint : IMinimalEndpoint
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder.MapGet($"{EndpointConfig.BaseApiPath}/flight/get-available-seats/{{id}}", GetAvailableSeats)
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("GetAvailableSeats")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<GetAvailableSeatsResponseDto>()

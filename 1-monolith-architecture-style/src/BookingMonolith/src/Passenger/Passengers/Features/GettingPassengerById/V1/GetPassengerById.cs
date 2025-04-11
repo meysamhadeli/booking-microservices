@@ -4,6 +4,7 @@ using BookingMonolith.Passenger.Passengers.Dtos;
 using BookingMonolith.Passenger.Passengers.Exceptions;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Web;
+using Duende.IdentityServer.EntityFramework.Entities;
 using FluentValidation;
 using Mapster;
 using MapsterMapper;
@@ -35,7 +36,7 @@ public class GetPassengerByIdEndpoint : IMinimalEndpoint
 
                     return Results.Ok(response);
                 })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("GetPassengerById")
             .WithApiVersionSet(builder.NewApiVersionSet("Passenger").Build())
             .Produces<GetPassengerByIdResponseDto>()

@@ -50,7 +50,7 @@ public class CreateBookingEndpoint : IMinimalEndpoint
 
                 return Results.Ok(response);
             })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("CreateBooking")
             .WithApiVersionSet(builder.NewApiVersionSet("Booking").Build())
             .Produces<CreateBookingResponseDto>()

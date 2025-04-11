@@ -44,7 +44,7 @@ public class CreateSeatEndpoint : IMinimalEndpoint
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/flight/seat", CreateSeat)
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("CreateSeat")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<CreateSeatResponseDto>()

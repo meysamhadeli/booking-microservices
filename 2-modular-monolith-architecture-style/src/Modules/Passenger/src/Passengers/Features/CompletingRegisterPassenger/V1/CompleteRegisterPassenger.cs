@@ -41,7 +41,7 @@ public class CompleteRegisterPassengerEndpoint : IMinimalEndpoint
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/passenger/complete-registration", async (
                 CompleteRegisterPassengerRequestDto request, IMapper mapper,
-                IMediator mediator, CancellationToken cancellationToken) =>
+                IMediator mediator, CancellationToken cancellationToken, IHttpContextAccessor httpContextAccessor) =>
             {
                 var command = mapper.Map<CompleteRegisterPassenger>(request);
 
@@ -51,7 +51,7 @@ public class CompleteRegisterPassengerEndpoint : IMinimalEndpoint
 
                 return Results.Ok(response);
             })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("CompleteRegisterPassenger")
             .WithApiVersionSet(builder.NewApiVersionSet("Passenger").Build())
             .Produces<CompleteRegisterPassengerResponseDto>()

@@ -46,7 +46,7 @@ public class GetAvailableFlightsEndpoint : IMinimalEndpoint
 
                     return Results.Ok(response);
                 })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("GetAvailableFlights")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<GetAvailableFlightsResponseDto>()

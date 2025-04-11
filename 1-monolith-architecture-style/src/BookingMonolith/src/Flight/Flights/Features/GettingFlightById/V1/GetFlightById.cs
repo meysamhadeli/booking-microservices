@@ -4,6 +4,7 @@ using BookingMonolith.Flight.Flights.Dtos;
 using BookingMonolith.Flight.Flights.Exceptions;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Web;
+using Duende.IdentityServer.EntityFramework.Entities;
 using FluentValidation;
 using Mapster;
 using MapsterMapper;
@@ -35,7 +36,7 @@ public class GetFlightByIdEndpoint : IMinimalEndpoint
 
                     return Results.Ok(response);
                 })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("GetFlightById")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<GetFlightByIdResponseDto>()

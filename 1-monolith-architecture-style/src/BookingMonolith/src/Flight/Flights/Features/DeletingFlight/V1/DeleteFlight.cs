@@ -4,6 +4,7 @@ using BookingMonolith.Flight.Flights.Exceptions;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Web;
+using Duende.IdentityServer.EntityFramework.Entities;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -44,7 +45,7 @@ public class DeleteFlightEndpoint : IMinimalEndpoint
 
                     return Results.NoContent();
                 })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("DeleteFlight")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces(StatusCodes.Status204NoContent)

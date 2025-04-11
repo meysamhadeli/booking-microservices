@@ -36,7 +36,7 @@ public class GetPassengerByIdEndpoint : IMinimalEndpoint
 
                     return Results.Ok(response);
                 })
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("GetPassengerById")
             .WithApiVersionSet(builder.NewApiVersionSet("Passenger").Build())
             .Produces<GetPassengerByIdResponseDto>()

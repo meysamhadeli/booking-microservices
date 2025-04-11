@@ -7,6 +7,7 @@ using BookingMonolith.Flight.Seats.ValueObjects;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Web;
+using Duende.IdentityServer.EntityFramework.Entities;
 using FluentValidation;
 using Mapster;
 using MapsterMapper;
@@ -40,7 +41,7 @@ public class CreateSeatEndpoint : IMinimalEndpoint
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/flight/seat", CreateSeat)
-            .RequireAuthorization()
+            .RequireAuthorization(nameof(ApiScope))
             .WithName("CreateSeat")
             .WithApiVersionSet(builder.NewApiVersionSet("Flight").Build())
             .Produces<CreateSeatResponseDto>()
