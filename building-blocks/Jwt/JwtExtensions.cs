@@ -48,20 +48,13 @@ public static class JwtExtensions
                             .RequireAuthenticatedUser()
                             .Build();
 
-                    // Add your scope policy (optional)
-                    if (!string.IsNullOrEmpty(jwtOptions.Audience))
-                    {
-                        options.AddPolicy(
-                            nameof(ApiScope),
-                            policy =>
-                            {
-                                policy.AuthenticationSchemes.Add(
-                                    JwtBearerDefaults.AuthenticationScheme);
-
-                                policy.RequireAuthenticatedUser();
-                                policy.RequireClaim("scope", jwtOptions.Audience);
-                            });
-                    }
+                    options.AddPolicy(
+                        nameof(ApiScope),
+                        policy =>
+                        {
+                            policy.RequireAuthenticatedUser();
+                            policy.RequireClaim("scope", jwtOptions.Audience);
+                        });
                 });
         }
 
