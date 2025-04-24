@@ -1,178 +1,365 @@
-  name: booking-monolith
+name: booking-monolith
 
-  services:
+services:
   
-    #######################################################
-    #  EventStoreDB
-    #######################################################
-    eventstore:
-        container_name: eventstore
-        image: eventstore/eventstore:latest
-        restart: unless-stopped
-        environment:
-           - EVENTSTORE_CLUSTER_SIZE=1
-           - EVENTSTORE_RUN_PROJECTIONS=All
-           - EVENTSTORE_START_STANDARD_PROJECTIONS=True
-           - EVENTSTORE_HTTP_PORT=2113
-           - EVENTSTORE_INSECURE=True
-           - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=True
-        ports:
-            - "2113:2113"
-        networks:
-            - booking   
-  
-    #######################################################
-    #  postgres
-    #######################################################
-    postgres:
-      image: postgres:latest
-      container_name: postgres
+  #######################################################
+  #  EventStoreDB
+  #######################################################
+  eventstore:
+      container_name: eventstore
+      image: eventstore/eventstore:latest
       restart: unless-stopped
-      ports:
-        - '5432:5432'
       environment:
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=postgres
-      command:
-        - "postgres"
-        - "-c"
-        - "wal_level=logical"
-        - "-c"
-        - "max_prepared_transactions=10"
-      volumes:
-        - postgres-data:/var/lib/postgresql/data
+         - EVENTSTORE_CLUSTER_SIZE=1
+         - EVENTSTORE_RUN_PROJECTIONS=All
+         - EVENTSTORE_START_STANDARD_PROJECTIONS=True
+         - EVENTSTORE_HTTP_PORT=2113
+         - EVENTSTORE_INSECURE=True
+         - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=True
+      ports:
+          - "2113:2113"
       networks:
-        - booking
+          - booking   
 
-    #######################################################
-    #  Mongo
-    #######################################################
-    mongo:
-      image: mongo:latest
-      container_name: mongo
-      restart: unless-stopped
-      # environment:
-      #   - MONGO_INITDB_ROOT_USERNAME=root
-      #   - MONGO_INITDB_ROOT_PASSWORD=secret
-      ports:
-        - 27017:27017
-      networks:
-        - booking
+  #######################################################
+  #  postgres
+  #######################################################
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
+      - "-c"
+      - "max_prepared_transactions=10"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - booking
 
-    #######################################################
-    #  jaeger 
-    # https://www.jaegertracing.io/docs/1.64/deployment/
-    # https://www.jaegertracing.io/docs/1.6/deployment/
-    #######################################################     
-    jaeger-all-in-one:
-      image: jaegertracing/all-in-one:latest
-      container_name: jaeger-all-in-one
-      restart: unless-stopped
-      ports:
-        - "6831:6831/udp" # UDP port for Jaeger agent
-        - "16686:16686" # endpoints and Jaeger UI
-        - "14268:14268" # HTTP port for accept trace spans directly from clients 
-        - "14317:4317" # OTLP gRPC receiver for jaeger
-        - "14318:4318" # OTLP http receiver for jaeger
-        # - "9411" # Accepts Zipkin spans - /api/v2/spans
-      networks:
-        - booking
-  
-    #######################################################
-    #  zipkin 
-    # https://zipkin.io/pages/quickstart
-    #######################################################  
-    zipkin-all-in-one:
-      image: openzipkin/zipkin:latest
-      container_name: zipkin-all-in-one
-      restart: unless-stopped
-      ports:
-        - "9411:9411"
-      networks:
-        - booking
-  
-    #######################################################
-    #  prometheus
-    # https://prometheus.io/docs/introduction/first_steps/
-    # https://prometheus.io/docs/prometheus/3.1/installation/
-    # https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/prometheus-config-examples/docker-compose-linux/
-    #######################################################  
-    prometheus:
-      image: prom/prometheus:latest
-      restart: unless-stopped
-      ports:
-        - "9090:9090"
-      volumes:
-        - ./../configs/prometheus.yaml:/etc/prometheus/prometheus.yml
-      # to passe one flag, such as "--log.level=debug" or "--web.enable-remote-write-receiver", we need to override the whole command, as we can't just pass one extra argument
-      command:
-        - "--config.file=/etc/prometheus/prometheus.yml"
-        - "--storage.tsdb.path=/prometheus"
-        - "--web.console.libraries=/usr/share/prometheus/console_libraries"
-        - "--web.console.templates=/usr/share/prometheus/consoles"
-        # need this for the OpenTelemetry collector to be able to put metrics into Prometheus
-        - "--web.enable-remote-write-receiver"
-      #   - "--log.level=debug"
-      networks:
-        - booking
+  #######################################################
+  #  Mongo
+  #######################################################
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    restart: unless-stopped
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=root
+    #   - MONGO_INITDB_ROOT_PASSWORD=secret
+    ports:
+      - 27017:27017
+    networks:
+      - booking
 
-    #######################################################
-    #  otel-collector 
-    # https://opentelemetry.io/docs/collector/installation/
-    # https://github.com/open-telemetry/opentelemetry-collector
-    # https://github.com/open-telemetry/opentelemetry-collector-contrib
-    # we can use none contrib docker `otel/opentelemetry-collector` version from `https://github.com/open-telemetry/opentelemetry-collector` repository but,
-    # if we need more components like `elasticsearch` we should use `otel/opentelemetry-collector-contrib` image of `https://github.com/open-telemetry/opentelemetry-collector-contrib` repository.  
-    #######################################################  
-    otel-collector:
-      image: otel/opentelemetry-collector-contrib:latest
-      container_name: otel-collector
-      restart: unless-stopped
-      command: ["--config=/etc/otelcol-contrib/config.yaml"]
-      volumes:
-        - ./../configs/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
-      ports:
-        - "11888:1888" # pprof extension
-        - "8888:8888" # Prometheus metrics exposed by the Collector
-        - "8889:8889" # Prometheus exporter metrics
-        - "13133:13133" # health_check extension
-        - "4317:4317" # OTLP gRPC receiver
-        - "4318:4318" # OTLP http receiver
-        - "55679:55679" # zpages extension
-      networks:
-        - booking
-  
-    #######################################################
-    #  booking-monolith
-    #######################################################
-    bookingmonolith:
-      image: booking-monolith
-      build:
-        args:
-          Version: "1"
-        context: ../../../
-        dockerfile: 1-monolith-architecture-style/src/BookingMonolith/dev.Dockerfile
-      container_name: bookingmonolith
-      ports:
-        - 4000:80
-        - 4001:443
-      volumes:
-        - ~/.aspnet/https:/https:ro
-      environment:
-        - ASPNETCORE_ENVIRONMENT=docker
-        - ASPNETCORE_URLS=https://+;http://+
-        - ASPNETCORE_HTTPS_PORT=4001
-        - ASPNETCORE_HTTP_PORT=4000
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-      networks:
-        - booking
+  #######################################################
+  #  jaeger 
+  # https://www.jaegertracing.io/docs/1.64/deployment/
+  # https://www.jaegertracing.io/docs/1.6/deployment/
+  #######################################################     
+  jaeger-all-in-one:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger-all-in-one
+    restart: unless-stopped
+    ports:
+      - "6831:6831/udp" # UDP port for Jaeger agent
+      - "16686:16686" # endpoints and Jaeger UI
+      - "14268:14268" # HTTP port for accept trace spans directly from clients 
+      - "14317:4317" # OTLP gRPC receiver for jaeger
+      - "14318:4318" # OTLP http receiver for jaeger
+      # - "9411" # Accepts Zipkin spans - /api/v2/spans
+    networks:
+      - booking
 
-  networks:
-    booking:
-      name: booking
-      driver: bridge
+  #######################################################
+  #  zipkin 
+  # https://zipkin.io/pages/quickstart
+  #######################################################  
+  zipkin-all-in-one:
+    image: openzipkin/zipkin:latest
+    container_name: zipkin-all-in-one
+    restart: unless-stopped
+    ports:
+      - "9411:9411"
+    networks:
+      - booking
 
-  volumes:
-    elastic-data:
-    postgres-data:
+  #######################################################
+  #  prometheus
+  # https://prometheus.io/docs/introduction/first_steps/
+  # https://prometheus.io/docs/prometheus/3.1/installation/
+  # https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/prometheus-config-examples/docker-compose-linux/
+  #######################################################  
+  prometheus:
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./../configs/prometheus.yaml:/etc/prometheus/prometheus.yml
+    # to passe one flag, such as "--log.level=debug" or "--web.enable-remote-write-receiver", we need to override the whole command, as we can't just pass one extra argument
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+      # need this for the OpenTelemetry collector to be able to put metrics into Prometheus
+      - "--web.enable-remote-write-receiver"
+    #   - "--log.level=debug"
+    networks:
+      - booking
+
+  #######################################################
+  #  otel-collector 
+  # https://opentelemetry.io/docs/collector/installation/
+  # https://github.com/open-telemetry/opentelemetry-collector
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib
+  # we can use none contrib docker `otel/opentelemetry-collector` version from `https://github.com/open-telemetry/opentelemetry-collector` repository but,
+  # if we need more components like `elasticsearch` we should use `otel/opentelemetry-collector-contrib` image of `https://github.com/open-telemetry/opentelemetry-collector-contrib` repository.  
+  #######################################################  
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector
+    restart: unless-stopped
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    volumes:
+      - ./../configs/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
+    ports:
+      - "11888:1888" # pprof extension
+      - "8888:8888" # Prometheus metrics exposed by the Collector
+      - "8889:8889" # Prometheus exporter metrics
+      - "13133:13133" # health_check extension
+      - "4317:4317" # OTLP gRPC receiver
+      - "4318:4318" # OTLP http receiver
+      - "55679:55679" # zpages extension
+    networks:
+      - booking
+
+  #######################################################
+  #  rabbitmq
+  #######################################################
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    # volumes:
+    #   - rabbitmq:/var/lib/rabbitmq
+    networks:
+      - booking
+
+  #######################################################
+  #  Redis
+  #######################################################
+  redis:
+    image: redis
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - 6379:6379    
+    networks:
+      - booking
+
+  #######################################################
+  # node-exporter
+  # https://prometheus.io/docs/guides/node-exporter/
+  # https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/prometheus-config-examples/docker-compose-linux/
+  #######################################################     
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+    ports:
+       - "9101:9100"
+    networks:
+      - booking
+
+  #######################################################
+  #  grafana
+  # https://grafana.com/docs/grafana/latest/administration/provisioning/
+  # https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/
+  # https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/
+  # https://github.com/grafana/intro-to-mltp/blob/main/grafana/provisioning/datasources/datasources.yaml
+  #######################################################   
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
+      #      - GF_AUTH_ANONYMOUS_ENABLED=true
+      #      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      #      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./../configs/grafana/provisioning:/etc/grafana/provisioning
+      - ./../configs/grafana/dashboards:/var/lib/grafana/dashboards
+    networks:
+      - booking
+
+  #######################################################
+  # tempo
+  # https://github.com/grafana/tempo/blob/main/example/docker-compose/otel-collector/docker-compose.yaml
+  # https://github.com/grafana/tempo/blob/main/example/docker-compose/shared
+  # https://github.com/grafana/tempo/blob/main/example/docker-compose/local
+  # https://github.com/grafana/tempo/tree/main/example/docker-compose
+  #######################################################     
+  tempo:
+    image: grafana/tempo:latest
+    container_name: tempo
+    restart: unless-stopped
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./../configs/tempo.yaml:/etc/tempo.yaml
+    ports:
+      - "3200" # tempo
+      - "24317:4317" # otlp grpc
+      - "24318:4318" # otlp http
+    networks:
+      - booking
+
+  #######################################################
+  # loki
+  # https://grafana.com/docs/opentelemetry/collector/send-logs-to-loki/
+  # https://github.com/grafana/loki/blob/main/production/docker-compose.yaml
+  # https://github.com/grafana/loki/blob/main/examples/getting-started/docker-compose.yaml
+  #######################################################
+  loki:
+    image: grafana/loki:latest
+    hostname: loki
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./../configs/loki-config.yaml:/etc/loki/local-config.yaml
+    networks:
+      - booking
+
+  #######################################################
+  # elasticsearch
+  # https://www.elastic.co/guide/en/elasticsearch/reference/7.17/docker.html#docker-compose-file
+  #######################################################
+  elasticsearch:
+    container_name: elasticsearch
+    restart: unless-stopped
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
+    environment:
+      - discovery.type=single-node
+      - cluster.name=docker-cluster
+      - node.name=docker-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      - network.host=0.0.0.0
+      - http.port=9200
+      - transport.host=localhost
+      - bootstrap.memory_lock=true
+      - cluster.routing.allocation.disk.threshold_enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elastic-data:/usr/share/elasticsearch/data
+    ports:
+      - ${ELASTIC_HOST_PORT:-9200}:${ELASTIC_PORT:-9200}
+      - 9300:9300
+    networks:
+      - booking
+
+  #######################################################
+  # kibana
+  # https://www.elastic.co/guide/en/kibana/current/docker.html
+  #######################################################
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.17.0
+    container_name: kibana
+    restart: unless-stopped
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - ${KIBANA_HOST_PORT:-5601}:${KIBANA_PORT:-5601}
+    depends_on:
+      - elasticsearch
+    networks:
+      - booking
+      
+  #######################################################
+  # cadvisor
+  #######################################################
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    networks:
+      - booking
+
+  #######################################################
+  #  booking-monolith
+  #######################################################
+  bookingmonolith:
+    image: booking-monolith
+    build:
+      args:
+        Version: "1"
+      context: ../../../
+      dockerfile: 1-monolith-architecture-style/src/BookingMonolith/dev.Dockerfile
+    container_name: bookingmonolith
+    ports:
+      - 4001:80
+      - 4000:443
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    environment:
+      - ASPNETCORE_ENVIRONMENT=docker
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_HTTPS_PORT=4000
+      - ASPNETCORE_HTTP_PORT=4001
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    networks:
+      - booking
+
+networks:
+  booking:
+    name: booking
+    driver: bridge
+
+volumes:
+  elastic-data:
+  postgres-data:
