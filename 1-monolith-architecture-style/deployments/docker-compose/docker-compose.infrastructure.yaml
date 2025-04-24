@@ -5,7 +5,7 @@
 # https://stackoverflow.com/questions/65272764/ports-are-not-available-listen-tcp-0-0-0-0-50070-bind-an-attempt-was-made-to
 
 
-name: booking-microservices-infrastructure
+name: booking-monolith-infrastructure
 
 services:
   #######################################################
