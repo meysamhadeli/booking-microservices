@@ -1,0 +1,131 @@
+# ref: https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/examples/demo/otel-collector-config.yaml
+# https://opentelemetry.io/docs/collector/configuration/
+# https://opentelemetry.io/docs/collector/architecture/
+# https://betterstack.com/community/guides/observability/opentelemetry-collector/
+# https://signoz.io/blog/opentelemetry-collector-complete-guide/
+
+# This configuration sets up an OpenTelemetry Collector that receives trace data via the OTLP protocol over HTTP on port 4318, applies batch processing, and then exports the processed traces 
+# to exporter components like `Jaeger` endpoint located at `jaeger-all-in-one:4317`. It also includes a health_check extension for monitoring the collector's status.
+
+# Receivers in the OpenTelemetry Collector are components that collect telemetry data (traces, metrics, and logs) from various sources, such as instrumented applications or agents. 
+# They act as entry points, converting incoming data into OpenTelemetry's internal format for processing and export.
+# https://betterstack.com/community/guides/observability/opentelemetry-collector/#exploring-the-opentelemetry-collector-components
+# https://opentelemetry.io/docs/collector/architecture/#receivers
+# https://github.com/open-telemetry/opentelemetry-collector/blob/main/receiver/README.md
+# https://opentelemetry.io/docs/collector/configuration/#receivers
+receivers:
+  # supported receivers
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver
+  # instead of specifying details explicitly we can just use `otlp` and it uses both grpc and http
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+#  prometheus:
+#    config:
+#      scrape_configs:
+#        - job_name: 'node-exporter'
+#          scrape_interval: 10s
+#          static_configs:
+#            - targets: [ 'node-exporter:9100' ] 
+
+
+# Processors in the OpenTelemetry Collector modify and enhance telemetry data by filtering, transforming, enriching, or batching it to prepare it for export.
+# https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor
+processors:
+  batch: # Batches logs for better performance
+
+# - Exporters in the OpenTelemetry Collector send processed telemetry data to backend systems like observability platforms, databases, or cloud services for storage, visualization, and analysis.
+# - The `key` follows the `type/name` format, where `type` specifies the exporter `type` (e.g., otlp, kafka, prometheus), and `name` (optional) can be appended to provide a unique name for multiple instance of the same type
+# https://betterstack.com/community/guides/observability/opentelemetry-collector/#exploring-the-opentelemetry-collector-components
+# https://opentelemetry.io/docs/collector/architecture/#exporters
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter 
+# https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter
+# https://opentelemetry.io/docs/collector/configuration/#exporters
+exporters:
+  
+  # valid values: [prometheusremotewrite zipkin otlphttp file kafka prometheus debug nop otlp opencensus]
+  
+  # Prometheus exporter metrics
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+
+  prometheusremotewrite:
+    endpoint: "http://prometheus:9090/api/v1/write"
+
+  # https://grafana.com/docs/loki/latest/send-data/otel/
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/lokiexporter/README.md
+  otlphttp/loki:
+    endpoint: "http://loki:3100/otlp"
+    tls:
+      insecure: true
+      
+      #  # we can also use `loki component` from `opentelemetry-collector-contrib` if we don't want to use builtin `otlphttp` exporter type and `http://loki:3100/otlp` loki endpoint
+      #  loki:
+      #    endpoint: "http://loki:3100/loki/api/v1/push"
+      #    tls:
+      #      insecure: true
+  
+  debug:
+
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/elasticsearchexporter
+  # using `elasticsearch` from `opentelemetry-collector-contrib` components because it doesn't exist in `opentelemetry-collector`
+  elasticsearch:
+    endpoint: "http://elasticsearch:9200"
+  
+  zipkin:
+    endpoint: "http://zipkin-all-in-one:9411/api/v2/spans"
+    format: proto
+
+  # export collected telemetry traces to jaeger OTLP grpc port, we can send data to other available endpoints and ports on jaeger as well
+  otlp/jaeger:
+    endpoint: "http://jaeger-all-in-one:4317"
+    tls:
+      insecure: true
+
+  otlp/tempo:
+    endpoint: "http://tempo:4317"
+    tls:
+      insecure: true
+      
+      #  seq-otlp:
+      #    endpoint: "http://seq:5341/ingest/otlp"
+
+# https://opentelemetry.io/docs/collector/configuration/#extensions
+# https://github.com/open-telemetry/opentelemetry-collector/blob/main/extension/README.md
+extensions:
+  pprof:
+    endpoint: 0.0.0.0:1888
+  zpages:
+    endpoint: 0.0.0.0:55679
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+# - The service section is used to configure what components are enabled in the Collector based on the configuration found in the receivers, processors, exporters, and extensions sections. 
+# - If a component is configured, but not defined within the service section, then it’s not enabled.
+# https://betterstack.com/community/guides/observability/opentelemetry-collector/#exploring-the-opentelemetry-collector-components
+# https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/README.md
+# https://opentelemetry.io/docs/collector/architecture/
+# https://opentelemetry.io/docs/collector/configuration/#service
+service:
+  # The `service.extensions` subsection determines which of the configured extensions will be enabled
+  extensions: [pprof, zpages, health_check]
+  # The `service.pipeline` Each pipeline starts with one or more receivers collecting data, which is then processed sequentially by processors (applying transformations, filtering, or sampling). 
+  # The processed data is finally sent to all configured exporters, ensuring each receives a copy. Components must be pre-configured in their respective sections before being used in a pipeline.
+  # pipeline activate predefined components, defined components are disabled by default
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      # https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/#exporter-selection
+      exporters: [debug, zipkin, otlp/jaeger, otlp/tempo]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug, prometheusremotewrite, prometheus]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp/loki, elasticsearch]
