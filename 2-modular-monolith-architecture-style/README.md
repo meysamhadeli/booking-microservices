@@ -13,6 +13,7 @@
     - [Husky](#husky)
     - [Upgrade Nuget Packages](#upgrade-nuget-packages)
 - [How to Run](#how-to-run)
+  - [Docker Compose](#docker-compose)
   - [Build](#build)
   - [Run](#run)
   - [Test](#test)
@@ -75,6 +76,14 @@ dotnet outdated -u
 ```
 
 ## How to Run
+
+> ### Docker Compose
+
+To run this app in `Docker`, use the [docker-compose.yaml](./deployments/docker-compose/docker-compose.yaml) and execute the below command at the `root` of the application:
+
+```bash
+docker-compose -f ./deployments/docker-compose/docker-compose.yaml up -d
+```
 
 > ### Build
 To `build` all modules, run this command in the `root` of the project:
