@@ -19,7 +19,7 @@ services:
       ports:
           - "2113:2113"
       networks:
-          - booking_modular_monolith   
+          - booking   
 
   #######################################################
   #  postgres
@@ -42,7 +42,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
-      - booking_modular_monolith
+      - booking
 
   #######################################################
   #  Mongo
@@ -57,7 +57,7 @@ services:
     ports:
       - 27017:27017
     networks:
-      - booking_modular_monolith
+      - booking
 
   #######################################################
   #  jaeger 
@@ -76,7 +76,7 @@ services:
       - "14318:4318" # OTLP http receiver for jaeger
       # - "9411" # Accepts Zipkin spans - /api/v2/spans
     networks:
-      - booking_modular_monolith
+      - booking
 
   #######################################################
   #  zipkin 
@@ -89,7 +89,7 @@ services:
     ports:
       - "9411:9411"
     networks:
-      - booking_modular_monolith
+      - booking
 
   #######################################################
   #  prometheus
@@ -114,7 +114,7 @@ services:
       - "--web.enable-remote-write-receiver"
     #   - "--log.level=debug"
     networks:
-      - booking_modular_monolith
+      - booking
 
   #######################################################
   #  otel-collector 
@@ -140,7 +140,7 @@ services:
       - "4318:4318" # OTLP http receiver
       - "55679:55679" # zpages extension
     networks:
-      - booking_modular_monolith
+      - booking
 
   #######################################################
   #  rabbitmq
@@ -155,7 +155,7 @@ services:
     # volumes:
     #   - rabbitmq:/var/lib/rabbitmq
     networks:
-      - booking_modular_monolith
+      - booking
 
   #######################################################
   #  Redis
@@ -167,7 +167,7 @@ services:
     ports:
       - 6379:6379    
     networks:
-      - booking_modular_monolith
+      - booking
 
   #######################################################
   # node-exporter
@@ -189,7 +189,7 @@ services:
     ports:
        - "9101:9100"
     networks:
-      - booking_modular_monolith
+      - booking
 
   #######################################################
   #  grafana
@@ -218,7 +218,7 @@ services:
       - ./../configs/grafana/provisioning:/etc/grafana/provisioning
       - ./../configs/grafana/dashboards:/var/lib/grafana/dashboards
     networks:
-      - booking_modular_monolith
+      - booking
 
   #######################################################
   # tempo
@@ -239,7 +239,7 @@ services:
       - "24317:4317" # otlp grpc
       - "24318:4318" # otlp http
     networks:
-      - booking_modular_monolith
+      - booking
 
   #######################################################
   # loki
@@ -257,7 +257,7 @@ services:
     volumes:
       - ./../configs/loki-config.yaml:/etc/loki/local-config.yaml
     networks:
-      - booking_modular_monolith
+      - booking
 
   #######################################################
   # elasticsearch
@@ -290,7 +290,7 @@ services:
       - ${ELASTIC_HOST_PORT:-9200}:${ELASTIC_PORT:-9200}
       - 9300:9300
     networks:
-      - booking_modular_monolith
+      - booking
 
   #######################################################
   # kibana
@@ -307,7 +307,7 @@ services:
     depends_on:
       - elasticsearch
     networks:
-      - booking_modular_monolith
+      - booking
       
   #######################################################
   # cadvisor
@@ -327,7 +327,7 @@ services:
     devices:
       - /dev/kmsg
     networks:
-      - booking_modular_monolith
+      - booking
 
   #######################################################
   #  booking-modular-monolith
@@ -353,11 +353,11 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Password=password
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     networks:
-      - booking_modular_monolith
+      - booking
 
 networks:
-  booking_modular_monolith:
-    name: booking_modular_monolith
+  booking:
+    name: booking
     driver: bridge
 
 volumes:
