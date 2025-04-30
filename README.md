@@ -93,7 +93,7 @@
 The repository is organized into `three folders`, each representing a different `architectural style`. Below is an overview of each style, along with guidance on when to choose it based on your `project requirements`, `team size`, `scalability needs`, and `long-term maintenance` goals.
 
 ### 1. Monolithic Architecture Style
-> A traditional **monolithic architecture** where all components of the application are tightly coupled and deployed as a single unit.
+> A traditional **[monolithic architecture](https://github.com/meysamhadeli/monolith-to-cloud-architecture/tree/main/1-monolith-architecture-style)** where all components of the application are tightly coupled and deployed as a single unit.
 
 <div align="center">
   <img src="./assets/monolith.png" />
@@ -115,7 +115,7 @@ The repository is organized into `three folders`, each representing a different 
   - Difficult to adopt new technologies or frameworks incrementally.
 
 ### 2. Modular Monolith Architecture Style
-> A **modular monolith architecture** where the application is divided into modules, but still deployed as a single unit. This approach promotes better separation of concerns and maintainability.
+> A **[modular monolith architecture](https://github.com/meysamhadeli/monolith-to-cloud-architecture/tree/main/2-modular-monolith-architecture-style)** where the application is divided into modules, but still deployed as a single unit. This approach promotes better separation of concerns and maintainability.
 
 <div align="center">
   <img src="./assets/modular-monolith.png" />
@@ -136,7 +136,7 @@ The repository is organized into `three folders`, each representing a different 
   - Requires careful design to avoid tight coupling between modules.
 
 ### 3. Microservices Architecture Style
-> A **microservices architecture** where the application is broken down into small, independent services that can be developed, deployed, and scaled independently.
+> A **[microservices architecture](https://github.com/meysamhadeli/monolith-to-cloud-architecture/tree/main/3-microservices-architecture-style)** where the application is broken down into small, independent services that can be developed, deployed, and scaled independently.
 
 <div align="center">
   <img src="./assets/microservices.png" />
