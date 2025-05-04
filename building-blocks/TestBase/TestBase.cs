@@ -340,6 +340,15 @@ where TEntryPoint : class
                     "PostgresOptions:ConnectionString",
                     PostgresTestcontainer.GetConnectionString()),
                 new(
+                    "PostgresOptions:ConnectionString:Flight",
+                    PostgresTestcontainer.GetConnectionString()),
+                 new(
+                    "PostgresOptions:ConnectionString:Identity",
+                    PostgresTestcontainer.GetConnectionString()),
+                 new(
+                    "PostgresOptions:ConnectionString:Passenger",
+                    PostgresTestcontainer.GetConnectionString()),
+                new(
                     "PersistMessageOptions:ConnectionString",
                     PostgresPersistTestContainer.GetConnectionString()),
                 new("RabbitMqOptions:HostName", RabbitMqTestContainer.Hostname),
