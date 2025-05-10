@@ -333,6 +333,7 @@ where TEntryPoint : class
 
     private void AddCustomAppSettings(IConfigurationBuilder configuration)
     {
+        //todo: provide better approach for reading `PostgresOptions`
         configuration.AddInMemoryCollection(
             new KeyValuePair<string, string>[]
             {
