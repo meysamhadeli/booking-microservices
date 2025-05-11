@@ -1,4 +1,5 @@
 using System.Threading.RateLimiting;
+using Booking;
 using BuildingBlocks.Core;
 using BuildingBlocks.Exception;
 using BuildingBlocks.HealthCheck;
@@ -11,7 +12,10 @@ using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.ProblemDetails;
 using BuildingBlocks.Web;
 using Figgle;
+using Flight;
+using Identity;
 using Microsoft.AspNetCore.Mvc;
+using Passenger;
 using Serilog;
 
 namespace Api.Extensions;
@@ -84,6 +88,19 @@ public static class SharedInfrastructureExtensions
 
         builder.Services.AddEasyCaching(options => { options.UseInMemory(builder.Configuration, "mem"); });
         builder.Services.AddProblemDetails();
+
+        builder.Services.AddScoped<IEventMapper>(sp =>
+        {
+            var mappers = new IEventMapper[] {
+                                                 sp.GetRequiredService<FlightEventMapper>(),
+                                                 sp.GetRequiredService<IdentityEventMapper>(),
+                                                 sp.GetRequiredService<PassengerEventMapper>(),
+                                                 sp.GetRequiredService<BookingEventMapper>(),
+                                             };
+
+            return new CompositeEventMapper(mappers);
+        });
+
 
         return builder;
     }
