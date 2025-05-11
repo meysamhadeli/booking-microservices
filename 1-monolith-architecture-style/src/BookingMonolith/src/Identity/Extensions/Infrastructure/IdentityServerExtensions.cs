@@ -3,6 +3,7 @@ using BookingMonolith.Identity.Data;
 using BookingMonolith.Identity.Identities.Models;
 using BuildingBlocks.Web;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -42,6 +43,21 @@ public static class IdentityServerExtensions
 
         //ref: https://documentation.openiddict.com/configuration/encryption-and-signing-credentials.html
         identityServerBuilder.AddDeveloperSigningCredential();
+
+        builder.Services.ConfigureApplicationCookie(options =>
+                                                    {
+                                                        options.Events.OnRedirectToLogin = context =>
+                                                        {
+                                                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                                                            return Task.CompletedTask;
+                                                        };
+
+                                                        options.Events.OnRedirectToAccessDenied = context =>
+                                                        {
+                                                            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                                                            return Task.CompletedTask;
+                                                        };
+                                                    });
 
         return builder;
     }

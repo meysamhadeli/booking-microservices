@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using BuildingBlocks.Constants;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.EFCore;
@@ -43,14 +44,14 @@ public class IdentityDataSeeder : IDataSeeder
 
     private async Task SeedRoles()
     {
-        if (await _roleManager.RoleExistsAsync(Constants.Role.Admin) == false)
+        if (await _roleManager.RoleExistsAsync(IdentityConstant.Role.Admin) == false)
         {
-            await _roleManager.CreateAsync(new Role { Name = Constants.Role.Admin });
+            await _roleManager.CreateAsync(new Role { Name = IdentityConstant.Role.Admin });
         }
 
-        if (await _roleManager.RoleExistsAsync(Constants.Role.User) == false)
+        if (await _roleManager.RoleExistsAsync(IdentityConstant.Role.User) == false)
         {
-            await _roleManager.CreateAsync(new Role { Name = Constants.Role.User });
+            await _roleManager.CreateAsync(new Role { Name = IdentityConstant.Role.User });
         }
     }
 
@@ -62,7 +63,7 @@ public class IdentityDataSeeder : IDataSeeder
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(InitialData.Users.First(), Constants.Role.Admin);
+                await _userManager.AddToRoleAsync(InitialData.Users.First(), IdentityConstant.Role.Admin);
 
                 await _eventDispatcher.SendAsync(new UserCreated(InitialData.Users.First().Id, InitialData.Users.First().FirstName + " " + InitialData.Users.First().LastName, InitialData.Users.First().PassPortNumber));
             }
@@ -74,7 +75,7 @@ public class IdentityDataSeeder : IDataSeeder
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(InitialData.Users.Last(), Constants.Role.User);
+                await _userManager.AddToRoleAsync(InitialData.Users.Last(), IdentityConstant.Role.User);
 
                 await _eventDispatcher.SendAsync(new UserCreated(InitialData.Users.Last().Id, InitialData.Users.Last().FirstName + " " + InitialData.Users.Last().LastName, InitialData.Users.Last().PassPortNumber));
             }

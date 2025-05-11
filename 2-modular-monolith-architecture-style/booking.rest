@@ -17,7 +17,7 @@ grant_type=password
 &client_secret=secret
 &username=samh
 &password=Admin@123456
-&scope=booking-modular-monolith
+&scope=booking-modular-monolith role
 ###
 
 

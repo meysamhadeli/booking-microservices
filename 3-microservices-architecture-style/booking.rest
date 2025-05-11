@@ -29,7 +29,7 @@ grant_type=password
 &client_secret=secret
 &username=samh
 &password=Admin@123456
-&scope=flight-api
+&scope=flight-api role
 
 ### change scope base on microservices scope (eg. passenger-api, ...)
 ###
