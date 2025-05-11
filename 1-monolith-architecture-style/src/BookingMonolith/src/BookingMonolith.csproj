@@ -17,12 +17,4 @@
     <ProjectReference Include="..\..\..\..\building-blocks\BuildingBlocks.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Booking\Bookings\" />
-    <Folder Include="Booking\Data\" />
-    <Folder Include="Flight\Data\Migrations\" />
-    <Folder Include="Identity\Identities\" />
-    <Folder Include="Passenger\Passengers\" />
-  </ItemGroup>
-
 </Project>
