@@ -1,3 +1,4 @@
+using BuildingBlocks.Constants;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.EFCore;
@@ -23,14 +24,14 @@ public class IdentityTestDataSeeder(
 
     private async Task SeedRoles()
     {
-        if (await roleManager.RoleExistsAsync(Constants.Role.Admin) == false)
+        if (await roleManager.RoleExistsAsync(IdentityConstant.Role.Admin) == false)
         {
-            await roleManager.CreateAsync(new Role { Name = Constants.Role.Admin });
+            await roleManager.CreateAsync(new Role { Name = IdentityConstant.Role.Admin });
         }
 
-        if (await roleManager.RoleExistsAsync(Constants.Role.User) == false)
+        if (await roleManager.RoleExistsAsync(IdentityConstant.Role.User) == false)
         {
-            await roleManager.CreateAsync(new Role { Name = Constants.Role.User });
+            await roleManager.CreateAsync(new Role { Name = IdentityConstant.Role.User });
         }
     }
 
@@ -42,7 +43,7 @@ public class IdentityTestDataSeeder(
 
             if (result.Succeeded)
             {
-                await userManager.AddToRoleAsync(InitialData.Users.First(), Constants.Role.Admin);
+                await userManager.AddToRoleAsync(InitialData.Users.First(), IdentityConstant.Role.Admin);
 
                 await eventDispatcher.SendAsync(new UserCreated(InitialData.Users.First().Id, InitialData.Users.First().FirstName + " " + InitialData.Users.First().LastName, InitialData.Users.First().PassPortNumber));
             }
@@ -54,7 +55,7 @@ public class IdentityTestDataSeeder(
 
             if (result.Succeeded)
             {
-                await userManager.AddToRoleAsync(InitialData.Users.Last(), Constants.Role.User);
+                await userManager.AddToRoleAsync(InitialData.Users.Last(), IdentityConstant.Role.User);
 
                 await eventDispatcher.SendAsync(new UserCreated(InitialData.Users.Last().Id, InitialData.Users.Last().FirstName + " " + InitialData.Users.Last().LastName, InitialData.Users.Last().PassPortNumber));
             }

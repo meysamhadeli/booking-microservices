@@ -1,6 +1,7 @@
 using Ardalis.GuardClauses;
 using BookingMonolith.Identity.Identities.Exceptions;
 using BookingMonolith.Identity.Identities.Models;
+using BuildingBlocks.Constants;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.CQRS;
@@ -109,7 +110,7 @@ internal class RegisterNewUserHandler : ICommandHandler<RegisterNewUser, Registe
         };
 
         var identityResult = await _userManager.CreateAsync(applicationUser, request.Password);
-        var roleResult = await _userManager.AddToRoleAsync(applicationUser, Constants.Constants.Role.User);
+        var roleResult = await _userManager.AddToRoleAsync(applicationUser, IdentityConstant.Role.User);
 
         if (identityResult.Succeeded == false)
         {

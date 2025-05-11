@@ -1,9 +1,9 @@
-namespace Identity.Configurations;
-
-using System.Collections.Generic;
 using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
-using Identity.Constants;
+using Identity.Identity.Constants;
+using IdentityModel;
+
+namespace BookingMonolith.Identity.Configurations;
 
 public static class Config
 {
@@ -12,10 +12,7 @@ public static class Config
         {
             new IdentityResources.OpenId(),
             new IdentityResources.Profile(),
-            new IdentityResources.Email(),
-            new IdentityResources.Phone(),
-            new IdentityResources.Address(),
-            new(Constants.StandardScopes.Roles, new List<string> {"role"})
+            new IdentityResources.Email()
         };
 
 
@@ -27,17 +24,33 @@ public static class Config
             new(Constants.StandardScopes.BookingApi),
             new(Constants.StandardScopes.IdentityApi),
             new(Constants.StandardScopes.BookingModularMonolith),
+            new(JwtClaimTypes.Role, new List<string> {"role"})
         };
 
 
     public static IList<ApiResource> ApiResources =>
         new List<ApiResource>
         {
-            new(Constants.StandardScopes.FlightApi),
-            new(Constants.StandardScopes.PassengerApi),
-            new(Constants.StandardScopes.BookingApi),
-            new(Constants.StandardScopes.IdentityApi),
-            new(Constants.StandardScopes.BookingModularMonolith),
+            new(Constants.StandardScopes.FlightApi)
+            {
+                Scopes = { Constants.StandardScopes.FlightApi }
+            },
+            new(Constants.StandardScopes.PassengerApi)
+            {
+                Scopes = { Constants.StandardScopes.PassengerApi }
+            },
+            new(Constants.StandardScopes.BookingApi)
+            {
+                Scopes = { Constants.StandardScopes.BookingApi }
+            },
+            new(Constants.StandardScopes.IdentityApi)
+            {
+                Scopes = { Constants.StandardScopes.IdentityApi }
+            },
+            new(Constants.StandardScopes.BookingModularMonolith)
+            {
+                Scopes = { Constants.StandardScopes.BookingModularMonolith }
+            },
         };
 
     public static IEnumerable<Client> Clients =>
@@ -55,6 +68,7 @@ public static class Config
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
+                    JwtClaimTypes.Role, // Include roles scope
                     Constants.StandardScopes.FlightApi,
                     Constants.StandardScopes.PassengerApi,
                     Constants.StandardScopes.BookingApi,
@@ -62,7 +76,8 @@ public static class Config
                     Constants.StandardScopes.BookingModularMonolith,
                 },
                 AccessTokenLifetime = 3600,  // authorize the client to access protected resources
-                IdentityTokenLifetime = 3600 // authenticate the user
+                IdentityTokenLifetime = 3600, // authenticate the user,
+                AlwaysIncludeUserClaimsInIdToken = true // Include claims in ID token
             }
         };
 }
