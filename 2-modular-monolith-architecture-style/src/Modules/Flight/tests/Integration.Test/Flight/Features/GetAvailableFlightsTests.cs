@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
-using BuildingBlocks.TestBase;
 using Api;
+using BuildingBlocks.TestBase;
 using Flight.Data;
 using FluentAssertions;
 using Integration.Test.Fakes;

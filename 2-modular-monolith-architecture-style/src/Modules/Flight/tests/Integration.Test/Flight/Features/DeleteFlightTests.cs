@@ -1,8 +1,8 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Api;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.TestBase;
-using Api;
 using Flight.Data;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
