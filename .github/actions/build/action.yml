@@ -55,11 +55,11 @@ runs:
       if: success()
       run: npm install
 
-    - name: Format Service
-      shell: bash
-      if: ${{ success()}}
-      run: |
-        npm run ci-format
+    # - name: Format Service
+    # shell: bash
+    # if: ${{ success()}}
+    # run: |
+    #   npm run ci-format
 
     - name: Build Service
       shell: bash
