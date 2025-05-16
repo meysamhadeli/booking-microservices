@@ -18,7 +18,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Passenger;
+using BookingPassenger;
 using ValueObjects;
 
 public record CreateBooking(Guid PassengerId, Guid FlightId, string Description) : ICommand<CreateBookingResult>
@@ -107,7 +107,7 @@ internal class CreateBookingCommandHandler : ICommandHandler<CreateBooking, Crea
         }
 
         var passenger =
-            await _passengerGrpcServiceClient.GetByIdAsync(new Passenger.GetByIdRequest { Id = command.PassengerId.ToString() }, cancellationToken: cancellationToken);
+            await _passengerGrpcServiceClient.GetByIdAsync(new BookingPassenger.GetByIdRequest { Id = command.PassengerId.ToString() }, cancellationToken: cancellationToken);
 
         var emptySeat = (await _flightGrpcServiceClient
                 .GetAvailableSeatsAsync(new GetAvailableSeatsRequest { FlightId = command.FlightId.ToString() }, cancellationToken: cancellationToken)
