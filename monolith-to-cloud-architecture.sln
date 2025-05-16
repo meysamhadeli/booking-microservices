@@ -111,6 +111,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Test", "2-modul
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndToEnd.Test", "2-modular-monolith-architecture-style\src\Modules\Flight\tests\EndToEnd.Test\EndToEnd.Test.csproj", "{7CBA4E35-64EA-BFB3-0507-B7DE1E60CD54}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Booking", "Booking", "{5DE68C42-13B1-44D0-B966-7EE083B9B2B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Test", "2-modular-monolith-architecture-style\src\Modules\Booking\tests\Integration.Test\Integration.Test.csproj", "{A23A47DB-7C4B-411C-9078-AE567407FEB1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{F59A33C1-6197-4F76-82BF-D7F2CC9D6438}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Test", "2-modular-monolith-architecture-style\src\Modules\Identity\tests\Integration.Test\Integration.Test.csproj", "{39DE2739-1426-2288-DF5D-B58D339E5CDE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Passenger", "Passenger", "{687C40B6-F05C-4794-981D-5DA28C07E3D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Test", "2-modular-monolith-architecture-style\src\Modules\Passenger\tests\Integration.Test\Integration.Test.csproj", "{87AE85AA-A092-2130-C912-97B9B252845A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -221,6 +233,18 @@ Global
 		{7CBA4E35-64EA-BFB3-0507-B7DE1E60CD54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CBA4E35-64EA-BFB3-0507-B7DE1E60CD54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CBA4E35-64EA-BFB3-0507-B7DE1E60CD54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A23A47DB-7C4B-411C-9078-AE567407FEB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A23A47DB-7C4B-411C-9078-AE567407FEB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A23A47DB-7C4B-411C-9078-AE567407FEB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A23A47DB-7C4B-411C-9078-AE567407FEB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39DE2739-1426-2288-DF5D-B58D339E5CDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39DE2739-1426-2288-DF5D-B58D339E5CDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39DE2739-1426-2288-DF5D-B58D339E5CDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39DE2739-1426-2288-DF5D-B58D339E5CDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87AE85AA-A092-2130-C912-97B9B252845A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87AE85AA-A092-2130-C912-97B9B252845A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87AE85AA-A092-2130-C912-97B9B252845A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87AE85AA-A092-2130-C912-97B9B252845A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -276,6 +300,12 @@ Global
 		{E7B7E65D-DB14-494C-A748-EF90666FB0B1} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{AE7E4AE8-4A5C-44AE-B1FC-2A04824EE29B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{7CBA4E35-64EA-BFB3-0507-B7DE1E60CD54} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{5DE68C42-13B1-44D0-B966-7EE083B9B2B5} = {AD2FB7C1-8641-47E9-B62D-B3A2D74147D8}
+		{A23A47DB-7C4B-411C-9078-AE567407FEB1} = {5DE68C42-13B1-44D0-B966-7EE083B9B2B5}
+		{F59A33C1-6197-4F76-82BF-D7F2CC9D6438} = {AD2FB7C1-8641-47E9-B62D-B3A2D74147D8}
+		{39DE2739-1426-2288-DF5D-B58D339E5CDE} = {F59A33C1-6197-4F76-82BF-D7F2CC9D6438}
+		{687C40B6-F05C-4794-981D-5DA28C07E3D2} = {AD2FB7C1-8641-47E9-B62D-B3A2D74147D8}
+		{87AE85AA-A092-2130-C912-97B9B252845A} = {687C40B6-F05C-4794-981D-5DA28C07E3D2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BF29DFD4-25EC-44C4-9DA6-E3AC4B292257}

@@ -2,7 +2,7 @@ using Booking.Configuration;
 using BookingFlight;
 using BuildingBlocks.Web;
 using Microsoft.Extensions.DependencyInjection;
-using Passenger;
+using BookingPassenger;
 
 namespace Booking.Extensions.Infrastructure;
 
