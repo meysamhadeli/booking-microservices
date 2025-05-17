@@ -1,5 +1,5 @@
-using BuildingBlocks.TestBase;
 using Api;
+using BuildingBlocks.TestBase;
 using Passenger.Data;
 using Xunit;
 

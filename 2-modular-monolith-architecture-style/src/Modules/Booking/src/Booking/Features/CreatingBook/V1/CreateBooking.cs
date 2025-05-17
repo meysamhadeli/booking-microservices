@@ -2,6 +2,7 @@ namespace Booking.Booking.Features.CreatingBook.V1;
 
 using Ardalis.GuardClauses;
 using BookingFlight;
+using BookingPassenger;
 using BuildingBlocks.Core;
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.Event;
@@ -18,7 +19,6 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using BookingPassenger;
 using ValueObjects;
 
 public record CreateBooking(Guid PassengerId, Guid FlightId, string Description) : ICommand<CreateBookingResult>
