@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
 using Api;
 using Booking.Data;
+using BookingFlight;
+using BookingPassenger;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.TestBase;
-using BookingFlight;
 using FluentAssertions;
 using Grpc.Core;
 using Grpc.Core.Testing;
@@ -11,7 +12,6 @@ using Integration.Test.Fakes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NSubstitute;
-using BookingPassenger;
 using Xunit;
 using GetByIdRequest = BookingFlight.GetByIdRequest;
 

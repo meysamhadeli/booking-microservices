@@ -1,8 +1,8 @@
 using Booking.Configuration;
 using BookingFlight;
+using BookingPassenger;
 using BuildingBlocks.Web;
 using Microsoft.Extensions.DependencyInjection;
-using BookingPassenger;
 
 namespace Booking.Extensions.Infrastructure;
 

@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
+using Api;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.TestBase;
 using FluentAssertions;
-using Api;
 using Identity.Data;
 using Integration.Test.Fakes;
 using Xunit;
