@@ -4,7 +4,7 @@ namespace BookingMonolith.Identity.Identities.Exceptions;
 
 public class RegisterIdentityUserException : AppException
 {
-    public RegisterIdentityUserException(string error) : base(error)
+    public RegisterIdentityUserException(string message) : base(message)
     {
     }
 }

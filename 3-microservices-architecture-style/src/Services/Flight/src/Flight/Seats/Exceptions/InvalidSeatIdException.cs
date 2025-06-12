@@ -1,9 +1,8 @@
+using SmartCharging.Infrastructure.Exceptions;
+
 namespace Flight.Seats.Exceptions;
-using System;
-using BuildingBlocks.Exception;
 
-
-public class InvalidSeatIdException : BadRequestException
+public class InvalidSeatIdException : DomainException
 {
     public InvalidSeatIdException(Guid seatId)
         : base($"seatId: '{seatId}' is invalid.")

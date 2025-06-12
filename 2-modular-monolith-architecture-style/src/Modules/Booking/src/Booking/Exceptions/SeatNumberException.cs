@@ -1,8 +1,8 @@
+using SmartCharging.Infrastructure.Exceptions;
+
 namespace Booking.Booking.Exceptions;
 
-using BuildingBlocks.Exception;
-
-public class SeatNumberException : BadRequestException
+public class SeatNumberException : DomainException
 {
     public SeatNumberException(string seatNumber)
         : base($"Seat Number: '{seatNumber}' is invalid.")

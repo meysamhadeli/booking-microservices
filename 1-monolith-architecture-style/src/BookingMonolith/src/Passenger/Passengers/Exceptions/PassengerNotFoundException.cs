@@ -1,10 +1,11 @@
+using System.Net;
 using BuildingBlocks.Exception;
 
 namespace BookingMonolith.Passenger.Passengers.Exceptions;
 
-public class PassengerNotFoundException : NotFoundException
+public class PassengerNotFoundException : AppException
 {
-    public PassengerNotFoundException(string code = default) : base("Passenger not found!")
+    public PassengerNotFoundException() : base("Passenger not found!", HttpStatusCode.NotFound)
     {
     }
 }

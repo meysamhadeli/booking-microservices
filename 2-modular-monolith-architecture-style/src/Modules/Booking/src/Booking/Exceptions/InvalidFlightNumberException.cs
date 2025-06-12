@@ -1,7 +1,8 @@
+using SmartCharging.Infrastructure.Exceptions;
+
 namespace Booking.Booking.Exceptions;
 
-using BuildingBlocks.Exception;
-public class InvalidFlightNumberException : BadRequestException
+public class InvalidFlightNumberException : DomainException
 {
     public InvalidFlightNumberException(string flightNumber)
         : base($"Flight Number: '{flightNumber}' is invalid.")

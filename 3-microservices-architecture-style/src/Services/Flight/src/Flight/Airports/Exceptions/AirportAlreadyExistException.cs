@@ -1,10 +1,11 @@
-namespace Flight.Airports.Exceptions;
-
+using System.Net;
 using BuildingBlocks.Exception;
 
-public class AirportAlreadyExistException : ConflictException
+namespace Flight.Airports.Exceptions;
+
+public class AirportAlreadyExistException : AppException
 {
-    public AirportAlreadyExistException(int? code = default) : base("Airport already exist!", code)
+    public AirportAlreadyExistException(int? code = default) : base("Airport already exist!", HttpStatusCode.Conflict, code)
     {
     }
 }

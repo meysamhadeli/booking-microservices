@@ -1,8 +1,8 @@
+using SmartCharging.Infrastructure.Exceptions;
+
 namespace Flight.Airports.Exceptions;
-using BuildingBlocks.Exception;
 
-
-public class InvalidNameException : BadRequestException
+public class InvalidNameException : DomainException
 {
     public InvalidNameException() : base("Name cannot be empty or whitespace.")
     {

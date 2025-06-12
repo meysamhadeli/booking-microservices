@@ -1,7 +1,8 @@
-namespace Flight.Airports.Exceptions;
-using BuildingBlocks.Exception;
+using SmartCharging.Infrastructure.Exceptions;
 
-public class InvalidAddressException : BadRequestException
+namespace Flight.Airports.Exceptions;
+
+public class InvalidAddressException : DomainException
 {
     public InvalidAddressException() : base("Address cannot be empty or whitespace.")
     {

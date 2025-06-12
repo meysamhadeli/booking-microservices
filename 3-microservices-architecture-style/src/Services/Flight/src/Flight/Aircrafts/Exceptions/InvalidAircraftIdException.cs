@@ -1,9 +1,8 @@
+using SmartCharging.Infrastructure.Exceptions;
+
 namespace Flight.Aircrafts.Exceptions;
-using System;
-using BuildingBlocks.Exception;
 
-
-public class InvalidAircraftIdException : BadRequestException
+public class InvalidAircraftIdException : DomainException
 {
     public InvalidAircraftIdException(Guid aircraftId)
         : base($"AircraftId: '{aircraftId}' is invalid.")

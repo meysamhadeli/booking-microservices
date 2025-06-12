@@ -1,8 +1,8 @@
+using SmartCharging.Infrastructure.Exceptions;
+
 namespace Booking.Booking.Exceptions;
 
-using BuildingBlocks.Exception;
-
-public class InvalidArriveAirportIdException : BadRequestException
+public class InvalidArriveAirportIdException : DomainException
 {
     public InvalidArriveAirportIdException(Guid arriveAirportId)
         : base($"arriveAirportId: '{arriveAirportId}' is invalid.")

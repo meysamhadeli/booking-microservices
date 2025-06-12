@@ -1,4 +1,3 @@
-using BookingMonolith.Identity.Configurations;
 using BuildingBlocks.Web;
 using Identity.Data;
 using Identity.Identity.Models;

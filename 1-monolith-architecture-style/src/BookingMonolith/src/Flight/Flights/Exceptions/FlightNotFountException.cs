@@ -1,10 +1,11 @@
+using System.Net;
 using BuildingBlocks.Exception;
 
 namespace BookingMonolith.Flight.Flights.Exceptions;
 
-public class FlightNotFountException : NotFoundException
+public class FlightNotFountException : AppException
 {
-    public FlightNotFountException() : base("Flight not found!")
+    public FlightNotFountException() : base("Flight not found!", HttpStatusCode.NotFound)
     {
     }
 }
