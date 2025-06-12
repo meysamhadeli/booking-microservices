@@ -1,8 +1,8 @@
+using SmartCharging.Infrastructure.Exceptions;
+
 namespace Booking.Booking.Exceptions;
 
-using BuildingBlocks.Exception;
-
-public class InvalidFlightDateException : BadRequestException
+public class InvalidFlightDateException : DomainException
 {
     public InvalidFlightDateException(DateTime flightDate)
         : base($"Flight Date: '{flightDate}' is invalid.")

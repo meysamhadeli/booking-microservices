@@ -1,8 +1,8 @@
-namespace Flight.Airports.Exceptions;
-using System;
-using BuildingBlocks.Exception;
+using SmartCharging.Infrastructure.Exceptions;
 
-public class InvalidAirportIdException : BadRequestException
+namespace Flight.Airports.Exceptions;
+
+public class InvalidAirportIdException : DomainException
 {
     public InvalidAirportIdException(Guid airportId)
         : base($"airportId: '{airportId}' is invalid.")

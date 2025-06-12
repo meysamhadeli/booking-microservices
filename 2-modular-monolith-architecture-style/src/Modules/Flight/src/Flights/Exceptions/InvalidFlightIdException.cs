@@ -1,8 +1,8 @@
-namespace Flight.Flights.Exceptions;
-using System;
-using BuildingBlocks.Exception;
+using SmartCharging.Infrastructure.Exceptions;
 
-public class InvalidFlightIdException : BadRequestException
+namespace Flight.Flights.Exceptions;
+
+public class InvalidFlightIdException : DomainException
 {
     public InvalidFlightIdException(Guid flightId)
         : base($"flightId: '{flightId}' is invalid.")

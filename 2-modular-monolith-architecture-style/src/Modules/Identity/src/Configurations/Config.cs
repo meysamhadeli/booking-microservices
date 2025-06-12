@@ -3,7 +3,7 @@ using Duende.IdentityServer.Models;
 using Identity.Identity.Constants;
 using IdentityModel;
 
-namespace BookingMonolith.Identity.Configurations;
+namespace Identity.Configurations;
 
 public static class Config
 {

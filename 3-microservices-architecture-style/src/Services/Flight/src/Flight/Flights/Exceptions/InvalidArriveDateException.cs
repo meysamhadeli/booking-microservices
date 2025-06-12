@@ -1,8 +1,8 @@
-namespace Flight.Flights.Exceptions;
-using System;
-using BuildingBlocks.Exception;
+using SmartCharging.Infrastructure.Exceptions;
 
-public class InvalidArriveDateException : BadRequestException
+namespace Flight.Flights.Exceptions;
+
+public class InvalidArriveDateException : DomainException
 {
     public InvalidArriveDateException(DateTime arriveDate)
         : base($"Arrive Date: '{arriveDate}' is invalid.")

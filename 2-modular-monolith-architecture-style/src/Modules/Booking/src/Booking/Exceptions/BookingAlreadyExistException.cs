@@ -1,10 +1,11 @@
-namespace Booking.Booking.Exceptions;
-
+using System.Net;
 using BuildingBlocks.Exception;
 
-public class BookingAlreadyExistException : ConflictException
+namespace Booking.Booking.Exceptions;
+
+public class BookingAlreadyExistException : AppException
 {
-    public BookingAlreadyExistException(int? code = default) : base("Booking already exist!", code)
+    public BookingAlreadyExistException(int? code = default) : base("Booking already exist!", HttpStatusCode.Conflict, code)
     {
     }
 }

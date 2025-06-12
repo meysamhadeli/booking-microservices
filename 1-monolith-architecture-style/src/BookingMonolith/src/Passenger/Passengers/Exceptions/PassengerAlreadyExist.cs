@@ -1,10 +1,11 @@
+using System.Net;
 using BuildingBlocks.Exception;
 
 namespace BookingMonolith.Passenger.Passengers.Exceptions;
 
-public class PassengerNotExist : BadRequestException
+public class PassengerNotExist : AppException
 {
-    public PassengerNotExist(string code = default) : base("Please register before!")
+    public PassengerNotExist() : base("Please register before!", HttpStatusCode.NotFound)
     {
     }
 }

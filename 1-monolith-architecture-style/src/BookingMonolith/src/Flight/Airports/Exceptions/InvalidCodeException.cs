@@ -1,8 +1,8 @@
-using BuildingBlocks.Exception;
+using SmartCharging.Infrastructure.Exceptions;
 
 namespace BookingMonolith.Flight.Airports.Exceptions;
 
-public class InvalidCodeException : BadRequestException
+public class InvalidCodeException : DomainException
 {
     public InvalidCodeException() : base("Code cannot be empty or whitespace.")
     {

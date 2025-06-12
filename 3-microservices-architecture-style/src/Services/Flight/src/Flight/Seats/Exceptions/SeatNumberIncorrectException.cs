@@ -1,8 +1,8 @@
-namespace Flight.Seats.Exceptions;
-
 using BuildingBlocks.Exception;
 
-public class SeatNumberIncorrectException : BadRequestException
+namespace Flight.Seats.Exceptions;
+
+public class SeatNumberIncorrectException : AppException
 {
     public SeatNumberIncorrectException() : base("Seat number is incorrect!")
     {

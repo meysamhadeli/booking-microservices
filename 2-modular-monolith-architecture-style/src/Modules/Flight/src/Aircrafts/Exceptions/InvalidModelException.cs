@@ -1,8 +1,8 @@
+using SmartCharging.Infrastructure.Exceptions;
+
 namespace Flight.Aircrafts.Exceptions;
-using BuildingBlocks.Exception;
 
-
-public class InvalidModelException : BadRequestException
+public class InvalidModelException : DomainException
 {
     public InvalidModelException() : base("Model cannot be empty or whitespace.")
     {

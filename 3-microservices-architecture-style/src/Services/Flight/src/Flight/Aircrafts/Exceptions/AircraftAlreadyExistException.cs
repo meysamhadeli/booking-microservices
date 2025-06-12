@@ -1,7 +1,7 @@
-namespace Flight.Aircrafts.Exceptions;
-
 using System.Net;
 using BuildingBlocks.Exception;
+
+namespace Flight.Aircrafts.Exceptions;
 
 public class AircraftAlreadyExistException : AppException
 {

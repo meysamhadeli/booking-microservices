@@ -1,8 +1,8 @@
-using BuildingBlocks.Exception;
+using SmartCharging.Infrastructure.Exceptions;
 
 namespace BookingMonolith.Flight.Airports.Exceptions;
 
-public class InvalidAirportIdException : BadRequestException
+public class InvalidAirportIdException : DomainException
 {
     public InvalidAirportIdException(Guid airportId)
         : base($"airportId: '{airportId}' is invalid.")

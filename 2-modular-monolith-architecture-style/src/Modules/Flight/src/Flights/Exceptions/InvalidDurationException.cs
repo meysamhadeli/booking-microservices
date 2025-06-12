@@ -1,7 +1,8 @@
-namespace Flight.Flights.Exceptions;
-using BuildingBlocks.Exception;
+using SmartCharging.Infrastructure.Exceptions;
 
-public class InvalidDurationException : BadRequestException
+namespace Flight.Flights.Exceptions;
+
+public class InvalidDurationException : DomainException
 {
     public InvalidDurationException()
         : base("Duration cannot be negative.")

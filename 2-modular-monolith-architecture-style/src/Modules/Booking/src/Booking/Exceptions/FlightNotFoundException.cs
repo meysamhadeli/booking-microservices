@@ -1,10 +1,11 @@
-namespace Booking.Booking.Exceptions;
-
+using System.Net;
 using BuildingBlocks.Exception;
 
-public class FlightNotFoundException : NotFoundException
+namespace Booking.Booking.Exceptions;
+
+public class FlightNotFoundException : AppException
 {
-    public FlightNotFoundException() : base("Flight doesn't exist!")
+    public FlightNotFoundException() : base("Flight doesn't exist!", HttpStatusCode.NotFound)
     {
     }
 }

@@ -1,7 +1,8 @@
-namespace Flight.Seats.Exceptions;
-using BuildingBlocks.Exception;
+using SmartCharging.Infrastructure.Exceptions;
 
-public class InvalidSeatNumberException : BadRequestException
+namespace Flight.Seats.Exceptions;
+
+public class InvalidSeatNumberException : DomainException
 {
     public InvalidSeatNumberException() : base("SeatNumber Cannot be null or negative")
     {

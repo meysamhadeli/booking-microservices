@@ -1,8 +1,8 @@
+using SmartCharging.Infrastructure.Exceptions;
+
 namespace Booking.Booking.Exceptions;
 
-using BuildingBlocks.Exception;
-
-public class InvalidPassengerNameException : BadRequestException
+public class InvalidPassengerNameException : DomainException
 {
     public InvalidPassengerNameException(string passengerName)
         : base($"Passenger Name: '{passengerName}' is invalid.")
