@@ -6,7 +6,7 @@ COPY ./global.json ./
 COPY ./Directory.Build.props ./
 
 # Setup working directory for the project
-COPY ./building-blocks/BuildingBlocks.csproj ./building-blocks/
+COPY ./src/BuildingBlocks/BuildingBlocks.csproj ./building-blocks/
 COPY ./src/ApiGateway/src/ApiGateway.csproj ./src/ApiGateway/src/
 
 
@@ -15,7 +15,7 @@ RUN --mount=type=cache,id=gateway_nuget,target=/root/.nuget/packages \
     dotnet restore ./src/ApiGateway/src/ApiGateway.csproj
 
 # Copy project files
-COPY ./building-blocks ./building-blocks/
+COPY ./src/BuildingBlocks ./src/BuildingBlocks/
 COPY ./src/ApiGateway/src  ./src/ApiGateway/src/
 
 # Build project with Release configuration

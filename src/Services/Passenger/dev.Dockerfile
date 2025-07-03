@@ -6,7 +6,7 @@ COPY ./global.json ./
 COPY ./Directory.Build.props ./
 
 # Setup working directory for the project
-COPY ./building-blocks/BuildingBlocks.csproj ./building-blocks/
+COPY ./src/BuildingBlocks/BuildingBlocks.csproj ./src/BuildingBlocks/
 COPY ./src/Services/Passenger/src/Passenger/Passenger.csproj ./src/Services/Passenger/src/Passenger/
 COPY ./src/Services/Passenger/src/Passenger.Api/Passenger.Api.csproj ./src/Services/Passenger/src/Passenger.Api/
 
@@ -16,7 +16,7 @@ RUN --mount=type=cache,id=passenger_nuget,target=/root/.nuget/packages \
     dotnet restore ./src/Services/Passenger/src/Passenger.Api/Passenger.Api.csproj
 
 # Copy project files
-COPY ./building-blocks ./building-blocks/
+COPY ./src/BuildingBlocks ./src/BuildingBlocks/
 COPY ./src/Services/Passenger/src/Passenger/  ./src/Services/Passenger/src/Passenger/
 COPY ./src/Services/Passenger/src/Passenger.Api/  ./src/Services/Passenger/src/Passenger.Api/
 
