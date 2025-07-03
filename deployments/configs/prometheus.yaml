@@ -1,0 +1,48 @@
+# ref: https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/examples/demo/prometheus.yaml
+# https://prometheus.io/docs/introduction/first_steps/
+# https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/prometheus-config-examples/docker-compose-linux/
+
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+    # when we use otel-collector we should comment other jobs in prometheus config, and we read configs from `otel-collector-config`
+  - job_name: "otel-collector"
+    scrape_interval: 10s
+    static_configs:
+      # otel-collector Prometheus exporter metrics
+      - targets: [ 'otel-collector:8889' ]
+      - targets: [ 'otel-collector:8888' ]
+
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["prometheus:9090"]
+
+#  # https://prometheus.io/docs/guides/node-exporter/
+#  # https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/prometheus-config-examples/docker-compose-linux/
+#  - job_name: "node-exporter"
+#    static_configs:
+#      - targets: [ 'node-exporter:9100' ]
+
+#  # if we don't use otel collector we should uncomment this
+#  # scrap application metrics
+#  # http://localhost:4000/metrics by AddPrometheusExporter()
+#  - job_name: vertical-slice-template-api
+#    scrape_interval: 10s
+#    metrics_path: /metrics
+#    static_configs:
+#      - targets: ['host.docker.internal:4000']
+#
+#  # if we don't use otel collector we should uncomment this
+#  # scrap application health metrics
+#  # http://localhost:4000/health/metrics  by AddPrometheusExporter()
+#  - job_name: vertical-slice-template-api-healthchecks
+#    scrape_interval: 10s
+#    metrics_path: /health/metrics
+#    static_configs:
+#      - targets: ['host.docker.internal:4000']
+
+## https://github.com/grafana/tempo/blob/main/example/docker-compose/shared/prometheus.yaml
+#  - job_name: 'tempo'
+#    static_configs:
+#      - targets: [ 'tempo:3200' ]
