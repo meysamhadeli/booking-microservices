@@ -6,7 +6,7 @@ COPY ./global.json ./
 COPY ./Directory.Build.props ./
 
 # Setup working directory for the project
-COPY ./building-blocks/BuildingBlocks.csproj ./building-blocks/
+COPY ./src/BuildingBlocks/BuildingBlocks.csproj ./src/BuildingBlocks/
 COPY ./src/Services/Flight/src/Flight/Flight.csproj ./src/Services/Flight/src/Flight/
 COPY ./src/Services/Flight/src/Flight.Api/Flight.Api.csproj ./src/Services/Flight/src/Flight.Api/
 
@@ -16,7 +16,7 @@ RUN --mount=type=cache,id=flight_nuget,target=/root/.nuget/packages \
     dotnet restore ./src/Services/Flight/src/Flight.Api/Flight.Api.csproj
 
 # Copy project files
-COPY ./building-blocks ./building-blocks/
+COPY ./src/BuildingBlocks ./src/BuildingBlocks/
 COPY ./src/Services/Flight/src/Flight/  ./src/Services/Flight/src/Flight/
 COPY ./src/Services/Flight/src/Flight.Api/  ./src/Services/Flight/src/Flight.Api/
 

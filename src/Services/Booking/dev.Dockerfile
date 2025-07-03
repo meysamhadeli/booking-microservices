@@ -6,7 +6,7 @@ COPY ./global.json ./
 COPY ./Directory.Build.props ./
 
 # Setup working directory for the project
-COPY ./building-blocks/BuildingBlocks.csproj ./building-blocks/
+COPY ./src/BuildingBlocks/BuildingBlocks.csproj ./src/BuildingBlocks/
 COPY ./src/Services/Booking/src/Booking/Booking.csproj ./src/Services/Booking/src/Booking/
 COPY ./src/Services/Booking/src/Booking.Api/Booking.Api.csproj ./src/Services/Booking/src/Booking.Api/
 
@@ -16,7 +16,7 @@ RUN --mount=type=cache,id=booking_nuget,target=/root/.nuget/packages \
     dotnet restore ./src/Services/Booking/src/Booking.Api/Booking.Api.csproj
 
 # Copy project files
-COPY ./building-blocks ./building-blocks/
+COPY ./src/BuildingBlocks ./src/BuildingBlocks/
 COPY ./src/Services/Booking/src/Booking/  ./src/Services/Booking/src/Booking/
 COPY ./src/Services/Booking/src/Booking.Api/  ./src/Services/Booking/src/Booking.Api/
 
