@@ -1,0 +1,1245 @@
+## ref: https://kompose.io
+#######################################################
+#  Network
+#######################################################
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  creationTimestamp: null
+  name: booking
+spec:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              io.kompose.network/booking: "true"
+  podSelector:
+    matchLabels:
+      io.kompose.network/booking: "true"
+
+---
+#######################################################
+#  ElasticSearch
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
+        env:
+        - name: discovery.type
+          value: "single-node"
+        - name: cluster.name
+          value: "docker-cluster"
+        - name: node.name
+          value: "docker-node"
+        - name: ES_JAVA_OPTS
+          value: "-Xms512m -Xmx512m"
+        - name: xpack.security.enabled
+          value: "false"
+        - name: xpack.security.http.ssl.enabled
+          value: "false"
+        - name: xpack.security.transport.ssl.enabled
+          value: "false"
+        - name: network.host
+          value: "0.0.0.0"
+        - name: http.port
+          value: "9200"
+        - name: transport.host
+          value: "localhost"
+        - name: bootstrap.memory_lock
+          value: "true"
+        - name: cluster.routing.allocation.disk.threshold_enabled
+          value: "false"
+        ports:
+        - containerPort: 9200
+        - containerPort: 9300
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: elastic-data
+      volumes:
+      - name: elastic-data
+        persistentVolumeClaim:
+          claimName: elasticsearch-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: elasticsearch-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+spec:
+  selector:
+    app: elasticsearch
+  ports:
+  - port: 9200
+    targetPort: 9200
+  - port: 9300
+    targetPort: 9300
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: elasticsearch-pv
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+---
+#######################################################
+#  Kibana
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:8.17.0
+        env:
+        - name: ELASTICSEARCH_HOSTS
+          value: "http://elasticsearch:9200"
+        ports:
+        - containerPort: 5601
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+spec:
+  selector:
+    app: kibana
+  ports:
+  - port: 5601
+    targetPort: 5601
+  type: ClusterIP
+---
+#######################################################
+#  Tempo
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tempo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tempo
+  template:
+    metadata:
+      labels:
+        app: tempo
+    spec:
+      containers:
+      - name: tempo
+        image: grafana/tempo:latest
+        args:
+        - "-config.file=/etc/tempo.yaml"
+        ports:
+        - containerPort: 3200
+        - containerPort: 4317
+        - containerPort: 4318
+        volumeMounts:
+        - mountPath: /etc/tempo.yaml
+          name: tempo-config
+          subPath: tempo.yaml
+      volumes:
+      - name: tempo-config
+        configMap:
+          name: tempo-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tempo-config
+data:
+  tempo.yaml: |
+    # Your Tempo configuration here
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tempo
+spec:
+  selector:
+    app: tempo
+  ports:
+  - port: 3200
+    targetPort: 3200
+  - port: 4317
+    targetPort: 4317
+  - port: 4318
+    targetPort: 4318
+  type: ClusterIP
+---
+#######################################################
+#  Looki
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loki
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loki
+  template:
+    metadata:
+      labels:
+        app: loki
+    spec:
+      containers:
+      - name: loki
+        image: grafana/loki:latest
+        args:
+        - "-config.file=/etc/loki/local-config.yaml"
+        ports:
+        - containerPort: 3100
+        volumeMounts:
+        - mountPath: /etc/loki/local-config.yaml
+          name: loki-config
+          subPath: local-config.yaml
+      volumes:
+      - name: loki-config
+        configMap:
+          name: loki-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loki-config
+data:
+  local-config.yaml: |
+    # Your Loki configuration here
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki
+spec:
+  selector:
+    app: loki
+  ports:
+  - port: 3100
+    targetPort: 3100
+  type: ClusterIP
+---
+#######################################################
+#  Event Store
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventstore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eventstore
+  template:
+    metadata:
+      labels:
+        app: eventstore
+    spec:
+      containers:
+      - name: eventstore
+        image: eventstore/eventstore:latest
+        env:
+        - name: EVENTSTORE_CLUSTER_SIZE
+          value: "1"
+        - name: EVENTSTORE_RUN_PROJECTIONS
+          value: "All"
+        - name: EVENTSTORE_START_STANDARD_PROJECTIONS
+          value: "True"
+        - name: EVENTSTORE_HTTP_PORT
+          value: "2113"
+        - name: EVENTSTORE_INSECURE
+          value: "True"
+        - name: EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP
+          value: "True"
+        ports:
+        - containerPort: 2113
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eventstore
+spec:
+  selector:
+    app: eventstore
+  ports:
+  - port: 2113
+    targetPort: 2113
+  type: ClusterIP
+---
+#######################################################
+#  Jaeger
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaeger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jaeger
+  template:
+    metadata:
+      labels:
+        app: jaeger
+    spec:
+      containers:
+      - name: jaeger
+        image: jaegertracing/all-in-one:latest
+        ports:
+        - containerPort: 6831
+          protocol: UDP
+        - containerPort: 16686
+        - containerPort: 14268
+        - containerPort: 4317
+        - containerPort: 4318
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger
+spec:
+  selector:
+    app: jaeger
+  ports:
+  - port: 6831
+    targetPort: 6831
+    protocol: UDP
+  - port: 16686
+    targetPort: 16686
+  - port: 14268
+    targetPort: 14268
+  - port: 4317
+    targetPort: 4317
+  - port: 4318
+    targetPort: 4318
+  type: ClusterIP
+---
+#######################################################
+#  Zipkin
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zipkin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zipkin
+  template:
+    metadata:
+      labels:
+        app: zipkin
+    spec:
+      containers:
+      - name: zipkin
+        image: openzipkin/zipkin:latest
+        ports:
+        - containerPort: 9411
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin
+spec:
+  selector:
+    app: zipkin
+  ports:
+  - port: 9411
+    targetPort: 9411
+  type: ClusterIP
+
+---
+#######################################################
+#  OpenTelemetry Collector
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otel-collector
+  template:
+    metadata:
+      labels:
+        app: otel-collector
+    spec:
+      containers:
+      - name: otel-collector
+        image: otel/opentelemetry-collector-contrib:latest
+        args: ["--config=/etc/otelcol-contrib/config.yaml"]
+        ports:
+        - containerPort: 11888
+        - containerPort: 8888
+        - containerPort: 8889
+        - containerPort: 13133
+        - containerPort: 4317
+        - containerPort: 4318
+        - containerPort: 55679
+        volumeMounts:
+        - mountPath: /etc/otelcol-contrib/config.yaml
+          name: otel-config
+          subPath: config.yaml
+      volumes:
+      - name: otel-config
+        configMap:
+          name: otel-collector-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-config
+data:
+  config.yaml: |
+    # Your OpenTelemetry Collector configuration here
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-collector
+spec:
+  selector:
+    app: otel-collector
+  ports:
+  - port: 11888
+    targetPort: 11888
+  - port: 8888
+    targetPort: 8888
+  - port: 8889
+    targetPort: 8889
+  - port: 13133
+    targetPort: 13133
+  - port: 4317
+    targetPort: 4317
+  - port: 4318
+    targetPort: 4318
+  - port: 55679
+    targetPort: 55679
+  type: ClusterIP
+---
+#######################################################
+#  Prometheus
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+      - name: prometheus
+        image: prom/prometheus:latest
+        args:
+        - "--config.file=/etc/prometheus/prometheus.yml"
+        - "--storage.tsdb.path=/prometheus"
+        - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+        - "--web.console.templates=/usr/share/prometheus/consoles"
+        - "--web.enable-remote-write-receiver"
+        ports:
+        - containerPort: 9090
+        volumeMounts:
+        - mountPath: /etc/prometheus/prometheus.yml
+          name: prometheus-config
+          subPath: prometheus.yml
+      volumes:
+      - name: prometheus-config
+        configMap:
+          name: prometheus-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+data:
+  prometheus.yml: |
+    # Your Prometheus configuration here
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+spec:
+  selector:
+    app: prometheus
+  ports:
+  - port: 9090
+    targetPort: 9090
+  type: ClusterIP
+---
+#######################################################
+#  Grafana
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - name: grafana
+        image: grafana/grafana:latest
+        env:
+        - name: GF_INSTALL_PLUGINS
+          value: "grafana-clock-panel,grafana-simple-json-datasource"
+        - name: GF_SECURITY_ADMIN_USER
+          value: "admin"
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          value: "admin"
+        - name: GF_FEATURE_TOGGLES_ENABLE
+          value: "traceqlEditor"
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - mountPath: /etc/grafana/provisioning
+          name: grafana-provisioning
+        - mountPath: /var/lib/grafana/dashboards
+          name: grafana-dashboards
+      volumes:
+      - name: grafana-provisioning
+        configMap:
+          name: grafana-provisioning
+      - name: grafana-dashboards
+        configMap:
+          name: grafana-dashboards
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-provisioning
+data:
+  # Your Grafana provisioning configuration here
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+data:
+  # Your Grafana dashboards configuration here
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+spec:
+  selector:
+    app: grafana
+  ports:
+  - port: 3000
+    targetPort: 3000
+  type: ClusterIP
+---
+#######################################################
+#  Node Exporter
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-exporter
+  template:
+    metadata:
+      labels:
+        app: node-exporter
+    spec:
+      containers:
+      - name: node-exporter
+        image: prom/node-exporter:latest
+        args:
+        - "--path.procfs=/host/proc"
+        - "--path.rootfs=/rootfs"
+        - "--path.sysfs=/host/sys"
+        ports:
+        - containerPort: 9100
+        volumeMounts:
+        - mountPath: /host/proc
+          name: proc
+          readOnly: true
+        - mountPath: /host/sys
+          name: sys
+          readOnly: true
+        - mountPath: /rootfs
+          name: rootfs
+          readOnly: true
+      volumes:
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: sys
+        hostPath:
+          path: /sys
+      - name: rootfs
+        hostPath:
+          path: /
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-exporter
+spec:
+  selector:
+    app: node-exporter
+  ports:
+  - port: 9100
+    targetPort: 9100
+  type: ClusterIP
+---
+#######################################################
+#  Cadvisor
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cadvisor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cadvisor
+  template:
+    metadata:
+      labels:
+        app: cadvisor
+    spec:
+      containers:
+      - name: cadvisor
+        image: gcr.io/cadvisor/cadvisor:latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /rootfs
+          name: rootfs
+          readOnly: true
+        - mountPath: /var/run
+          name: var-run
+          readOnly: true
+        - mountPath: /sys
+          name: sys
+          readOnly: true
+        - mountPath: /var/lib/docker
+          name: var-lib-docker
+          readOnly: true
+        - mountPath: /dev/disk
+          name: dev-disk
+          readOnly: true
+      volumes:
+      - name: rootfs
+        hostPath:
+          path: /
+      - name: var-run
+        hostPath:
+          path: /var/run
+      - name: sys
+        hostPath:
+          path: /sys
+      - name: var-lib-docker
+        hostPath:
+          path: /var/lib/docker
+      - name: dev-disk
+        hostPath:
+          path: /dev/disk
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cadvisor
+spec:
+  selector:
+    app: cadvisor
+  ports:
+  - port: 8080
+    targetPort: 8080
+  type: ClusterIP
+---
+#######################################################
+#  Mongo
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:latest
+        ports:
+        - containerPort: 27017
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+spec:
+  selector:
+    app: mongo
+  ports:
+  - port: 27017
+    targetPort: 27017
+  type: ClusterIP
+---
+#######################################################
+#  Postgres
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:latest
+        env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgres-data
+      volumes:
+      - name: postgres-data
+        persistentVolumeClaim:
+          claimName: postgres-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+  type: ClusterIP
+---
+#######################################################
+#  Rabbitmq
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:management
+        ports:
+        - containerPort: 5672
+        - containerPort: 15672
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+spec:
+  selector:
+    app: rabbitmq
+  ports:
+  - port: 5672
+    targetPort: 5672
+  - port: 15672
+    targetPort: 15672
+  type: ClusterIP
+---
+#######################################################
+#  Redis
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis
+        ports:
+        - containerPort: 6379
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  selector:
+    app: redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+  type: ClusterIP
+---
+#######################################################
+#   ConfigMap AppSettings
+#######################################################
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: appsettings
+data:
+  appsettings.json: |-
+    {
+      .Files.Get "settings/appsettings.docker.json"
+    }
+#ref: https://www.mrjamiebowman.com/software-development/dotnet/kubernetes-configmaps-with-net-core/
+---
+#######################################################
+#   Flight
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flight-deployment
+  labels:
+    app: flight
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flight
+  template:
+    metadata:
+      labels:
+        app: flight
+    spec:
+      containers:
+        - image: meysamh66/booking-microservices-flight:v1.6.7
+          name: flight
+          ports:
+            - containerPort: 80
+          env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: docker
+          - name: ASPNETCORE_URLS
+            value: http://+
+          volumeMounts:
+          - name: appsettings-volume
+            mountPath: /app/Settings
+      volumes:
+      - name: appsettings-volume
+        configMap:
+          name: appsettings
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flight
+spec:
+  selector:
+    app: flight
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+---
+#######################################################
+#   Identity
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity-deployment
+  labels:
+    app: identity
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: identity
+  template:
+    metadata:
+      labels:
+        app: identity
+    spec:
+      containers:
+        - image: meysamh66/booking-microservices-identity:v1.6.7
+          name: identity
+          ports:
+            - containerPort: 80
+          env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: docker
+          - name: ASPNETCORE_URLS
+            value: http://+
+          volumeMounts:
+          - name: appsettings-volume
+            mountPath: /app/Settings
+      volumes:
+      - name: appsettings-volume
+        configMap:
+          name: appsettings
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: identity
+spec:
+  selector:
+    app: identity
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+---
+#######################################################
+#   Booking
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-deployment
+  labels:
+    app: booking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: booking
+  template:
+    metadata:
+      labels:
+        app: booking
+    spec:
+      containers:
+        - image: meysamh66/booking-microservices-booking:v1.6.7
+          name: booking
+          ports:
+            - containerPort: 80
+          env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: docker
+          - name: ASPNETCORE_URLS
+            value: http://+
+          volumeMounts:
+          - name: appsettings-volume
+            mountPath: /app/Settings
+      volumes:
+      - name: appsettings-volume
+        configMap:
+          name: appsettings
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking
+spec:
+  selector:
+    app: booking
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+---
+#######################################################
+#   Passenger
+#######################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: passenger-deployment
+  labels:
+    app: passenger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: passenger
+  template:
+    metadata:
+      labels:
+        app: passenger
+    spec:
+      containers:
+        - image: meysamh66/booking-microservices-passenger:v1.6.7
+          name: passenger
+          ports:
+            - containerPort: 80
+          env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: docker
+          - name: ASPNETCORE_URLS
+            value: http://+
+          volumeMounts:
+          - name: appsettings-volume
+            mountPath: /app/Settings
+      volumes:
+      - name: appsettings-volume
+        configMap:
+          name: appsettings
+---
+#######################################################
+#   Ingress Controller
+#######################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: passenger
+spec:
+  selector:
+    app: passenger
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: booking-microservies
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "128k"
+    nginx.ingress.kubernetes.io/proxy-buffers: "4 256k"
+    nginx.ingress.kubernetes.io/proxy-busy-buffers-size: "256k"
+    nginx.ingress.kubernetes.io/client-header-buffer-size: "64k"
+    nginx.ingress.kubernetes.io/http2-max-field-size: "16k"
+    nginx.ingress.kubernetes.io/http2-max-header-size: "128k"
+    nginx.ingress.kubernetes.io/large-client-header-buffers: "8 64k"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+      - booking-microservices.com
+    secretName: letsencrypt-staging
+  rules:
+    - host: booking-microservices.com
+      http:
+        paths:
+          - path: /identity
+            pathType: Prefix
+            backend:
+              service:
+                name: flight
+                port:
+                  number: 80
+          - path: /identity/(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: identity
+                port:
+                  number: 80
+
+
+          - path: /flight
+            pathType: Prefix
+            backend:
+              service:
+                name: flight
+                port:
+                  number: 80
+          - path: /flight/(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: flight
+                port:
+                  number: 80
+
+
+          - path: /passenger
+            pathType: Prefix
+            backend:
+              service:
+                name: passenger
+                port:
+                  number: 80
+          - path: /passenger/(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: passenger
+                port:
+                  number: 80
+
+
+          - path: /booking
+            pathType: Prefix
+            backend:
+              service:
+                name: booking
+                port:
+                  number: 80
+          - path: /booking/(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: booking
+                port:
+                  number: 80

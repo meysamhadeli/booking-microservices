@@ -1,0 +1,88 @@
+# https://grafana.com/docs/grafana/latest/administration/provisioning/
+# https://github.com/grafana/tempo/blob/main/example/docker-compose/shared/grafana-datasources.yaml
+# https://github.com/grafana/intro-to-mltp/blob/main/grafana/provisioning/datasources/datasources.yaml
+
+apiVersion: 1
+
+datasources:
+  # https://github.com/grafana/tempo/blob/main/example/docker-compose/shared/grafana-datasources.yaml
+  - name: Prometheus
+    type: prometheus
+    typeName: Prometheus
+    uid: prometheus-uid
+    access: proxy
+    orgId: 1
+    url: http://prometheus:9090
+    basicAuth: false
+    isDefault: true
+    readOnly: false
+    user: ''
+    database: ''
+    version: 1
+    editable: false
+    jsonData:
+      httpMethod: GET
+
+  - name: Jaeger
+    type: jaeger
+    access: proxy
+    url: http://jaeger-all-in-one:16686
+    editable: false
+    uid: jaeger-uid
+
+  - name: Zipkin
+    type: zipkin
+    access: proxy
+    url: http://zipkin-all-in-one:9411
+    editable: false
+    uid: zipkin-uid
+
+  # https://github.com/grafana/tempo/blob/main/example/docker-compose/shared/grafana-datasources.yaml
+  - name: Tempo
+    type: tempo
+    access: proxy
+    orgId: 1
+    url: http://tempo:3200
+    basicAuth: false
+    isDefault: false
+    version: 1
+    editable: false
+    apiVersion: 1
+    uid: tempo-uid
+    jsonData:
+      httpMethod: GET
+      serviceMap:
+        datasourceUid: prometheus-uid
+      streamingEnabled:
+        search: true
+
+  #https://github.com/grafana/intro-to-mltp/blob/main/grafana/provisioning/datasources/datasources.yaml
+  - name: Loki
+    type: loki
+    access: proxy
+    uid: loki-uid
+    url: http://loki:3100
+    user: ''
+    database: ''
+    readOnly: false
+    jsonData:
+      derivedFields:
+        - datasourceUid: tempo-uid
+          matcherRegex: "^.*?traceI[d|D]=(\\w+).*$"
+          name: traceId
+          url: '$${__value.raw}'
+
+  - name: Kibana
+    type: elasticsearch
+    url: http://elasticsearch:9200
+    access: proxy
+    isDefault: false
+    uid: kibana-uid
+    jsonData:
+      esVersion: 7
+      timeField: "@timestamp"
+      maxConcurrentShardRequests: 256
+      interval: Daily
+      logMessageField: "message" # Optional: Field for log messages
+      logLevelField: "level" # Optional: Field for log levels
+    editable: true

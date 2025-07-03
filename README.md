@@ -1,33 +1,47 @@
-# 🪁 Monolith To Cloud Architecture
-
 <div align="center" style="margin-bottom:20px">
-    <div align="left">
-           <a href="https://github.com/meysamhadeli/monolith-to-cloud-architecture/actions/workflows/ci.yml"><img alt="ci-status" src="https://github.com/meysamhadeli/monolith-to-cloud-architecture/actions/workflows/ci.yml/badge.svg?branch=main&style=flat-square"/></a>
-                 <a href="https://github.com/meysamhadeli/monolith-to-cloud-architecture/blob/main/LICENSE"><img alt="build-status"          src="https://img.shields.io/github/license/meysamhadeli/monolith-to-cloud-architecture?color=%234275f5&style=flat-square"/></a>
+  <img src="assets/logo.png" alt="booking-microservices" />
+    <div align="center">
+           <a href="https://github.com/meysamhadeli/booking-microservices/actions/workflows/ci.yml"><img alt="ci-status" src="https://github.com/meysamhadeli/booking-microservices/actions/workflows/ci.yml/badge.svg?branch=main&style=flat-square"/></a>
+                 <a href="https://github.com/meysamhadeli/booking-microservices/blob/main/LICENSE"><img alt="build-status"          src="https://img.shields.io/github/license/meysamhadeli/booking-microservices?color=%234275f5&style=flat-square"/></a>
     </div>
 </div>
 
-> **A practical architecture styles for migrating from monolith to modern cloud native application with the latest technologies and architectures like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq, and Masstransit in .Net 9.**
+> 🚀 **A practical and imaginary microservices for implementing an infrastructure for up and running distributed system with the latest technology and architecture like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq, Masstransit in .Net 9.**
+
+> 💡 **This project is not business-oriented and most of my focus was in the thechnical part for implement a distributed system with a sample project. In this project I implemented some concept in microservices like Messaging, Tracing, Event Driven Architecture, Vertical Slice Architecture, Event Sourcing, CQRS, DDD and gRpc.**
+
 
 <div>
-  <a href="https://gitpod.io/#https://github.com/meysamhadeli/monolith-to-cloud-architecture"><img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg"/></a>
+  <a href="https://gitpod.io/#https://github.com/meysamhadeli/booking-microservices"><img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg"/></a>
 </div>
 <div>
-  <a href='https://codespaces.new/meysamhadeli/monolith-to-cloud-architecture?quickstart=1'><img alt='Open in GitHub Codespaces' src='https://github.com/codespaces/badge.svg'></a>
+  <a href='https://codespaces.new/meysamhadeli/booking-microservices?quickstart=1'><img alt='Open in GitHub Codespaces' src='https://github.com/codespaces/badge.svg'></a>
 </div>
 
 # Table of Contents
 
 - [The Goals of This Project](#the-goals-of-this-project)
 - [Technologies - Libraries](#technologies---libraries)
-- [Architectural Styles and How to Choose the Right One](#architectural-styles-and-how-to-choose-the-right-one)
-  - [1. Monolithic Architecture](#1-monolithic-architecture-style)
-  - [2. Modular Monolith Architecture](#2-modular-monolith-architecture-style)
-  - [3. Microservices Architecture](#3-microservices-architecture-style)
+- [Key Features](#key-features)
+- [When to Use](#when-to-use)
+- [Challenges](#challenges)
 - [The Domain and Bounded Context - Service Boundary](#the-domain-and-bounded-context---service-boundary)
 - [Structure of Project](#structure-of-project)
+- [Development Setup](#development-setup)
+    - [Dotnet Tools Packages](#dotnet-tools-packages)
+    - [Husky](#husky)
+    - [Upgrade Nuget Packages](#upgrade-nuget-packages)
+- [How to Run](#how-to-run)
+  - [Config Certificate](#config-certificate)
+  - [Docker Compose](#docker-compose)
+  - [Kubernetes](#kubernetes)
+  - [Build](#build)
+  - [Run](#run)
+  - [Test](#test)
+- [Documentation Apis](#documentation-apis)
 - [Support](#support)
 - [Contribution](#contribution)
+
 
 ## The Goals of This Project
 
@@ -88,75 +102,26 @@
 - ✔️ **[`Testcontainers`](https://github.com/testcontainers/testcontainers-dotnet)** - Testcontainers for .NET is a library to support tests with throwaway instances of Docker containers.
 - ✔️ **[`K6`](https://github.com/grafana/k6)** - Modern load testing for developers and testers in the DevOps era.
 
-## Architectural Styles and How to Choose the Right One
 
-The repository is organized into `three folders`, each representing a different `architectural style`. Below is an overview of each style, along with guidance on when to choose it based on your `project requirements`, `team size`, `scalability needs`, and `long-term maintenance` goals.
+## Key Features
+1. **Independent Services**: Each service is a separate project with its own database and deployment pipeline, enabling independent development and deployment.
+2. **Decentralized Communication**: Services communicate via APIs (REST, gRPC) or message brokers (RabbitMQ, Kafka), ensuring loose coupling and resilience.
+3. **Scalability**: Services can be scaled independently based on demand, allowing efficient resource utilization.
+4. **Fault Tolerance**: Failures are isolated, preventing cascading failures and ensuring high availability.
+5. **Technology Agnostic**: Services can use different technologies, frameworks, or databases, providing flexibility.
 
-### 1. Monolithic Architecture Style
-> A traditional **[monolithic architecture](https://github.com/meysamhadeli/monolith-to-cloud-architecture/tree/main/1-monolith-architecture-style)** where all components of the application are tightly coupled and deployed as a single unit.
 
-<div align="center">
-  <img src="./assets/monolith.png" />
-</div>
+## When to Use
+1. **Large and Complex Projects**: Ideal for applications with complex business logic that can be broken into smaller, manageable services.
+2. **High Scalability Needs**: Suitable for applications requiring independent scaling of components.
+3. **Fault Tolerance and High Availability**: Perfect for systems where failure isolation and uptime are critical.
+4. **Distributed Teams**: Enables teams to work independently on different services.
+5. **Frequent Updates**: Supports continuous deployment and A/B testing for individual services.
+6. **Technology Diversity**: Allows the use of different technologies for different services.
 
-- **When to Choose**:
-  - Your project is small or medium-sized.
-  - You have a small development team.
-  - You need to develop and deploy the application quickly.
-  - The application has relatively simple functionality.
-  - You don’t anticipate significant scaling needs in the near future.
-- **Pros**:
-  - Simple to develop, test, and deploy.
-  - Easier to manage for small teams.
-  - Lower operational overhead.
-- **Cons**:
-  - Tight coupling makes it harder to maintain as the codebase grows.
-  - Scaling is limited to scaling the entire application.
-  - Difficult to adopt new technologies or frameworks incrementally.
 
-### 2. Modular Monolith Architecture Style
-> A **[modular monolith architecture](https://github.com/meysamhadeli/monolith-to-cloud-architecture/tree/main/2-modular-monolith-architecture-style)** where the application is divided into modules, but still deployed as a single unit. This approach promotes better separation of concerns and maintainability.
-
-<div align="center">
-  <img src="./assets/modular-monolith.png" />
-</div>
-
-- **When to Choose**:
-  - Your project is medium to large-sized.
-  - You want better separation of concerns and maintainability than a traditional monolith.
-  - You plan to scale the application in the future but want to avoid the complexity of microservices.
-  - Your team is growing, and you need a more organized codebase.
-- **Pros**:
-  - Better separation of concerns compared to a traditional monolith.
-  - Easier to maintain and extend as the application grows.
-  - Can be a stepping stone toward a microservices architecture.
-  - Simpler deployment than microservices.
-- **Cons**:
-  - Still a single deployment unit, so scaling is limited.
-  - Requires careful design to avoid tight coupling between modules.
-
-### 3. Microservices Architecture Style
-> A **[microservices architecture](https://github.com/meysamhadeli/monolith-to-cloud-architecture/tree/main/3-microservices-architecture-style)** where the application is broken down into small, independent services that can be developed, deployed, and scaled independently.
-
-<div align="center">
-  <img src="./assets/microservices.png" />
-</div>
-
-- **When to Choose**:
-  - Your project is large and complex.
-  - You need to scale different parts of the application independently.
-  - Your team is large and can handle the complexity of distributed systems.
-  - You need to adopt different technologies or frameworks for different parts of the application.
-  - You require high availability and fault tolerance.
-- **Pros**:
-  - Independent development, deployment, and scaling of services.
-  - Better fault isolation.
-  - Flexibility to use different technologies for different services.
-  - Easier to maintain and update individual services.
-- **Cons**:
-  - Higher complexity in development, testing, and deployment.
-  - Requires robust DevOps practices and infrastructure.
-  - Increased operational overhead (e.g., monitoring, logging, service discovery).
+## Challenges
+- Increased complexity in management, DevOps overhead, data consistency, latency, and higher costs.
 
 
 ## The Domain And Bounded Context - Service Boundary
@@ -168,6 +133,8 @@ The repository is organized into `three folders`, each representing a different 
 - `Passenger Service`: The Passenger Service is a bounded context for managing passenger information, tracking activities and subscribing to get notification for out of stock products.
 
 - `Booking Service`: The Booking Service is a bounded context for managing all operation related to booking ticket.
+
+![](./assets/booking-microservices.png)
 
 
 ## Structure of Project
@@ -196,6 +163,100 @@ I used CQRS to decompose my features into small parts that makes our application
 Using the CQRS pattern, we cut each business functionality into vertical slices, for each of these slices we group classes (see [technical folders structure](http://www.kamilgrzybek.com/design/feature-folders)) specific to that feature together (command, handlers, infrastructure, repository, controllers, etc). In our CQRS pattern each command/query handler is a separate slice. This is where you can reduce coupling between layers. Each handler can be a separated code unit, even copy/pasted. Thanks to that, we can tune down the specific method to not follow general conventions (e.g. use custom SQL query or even different storage). In a traditional layered architecture, when we change the core generic mechanism in one layer, it can impact all methods.
 
 
+## Development Setup
+
+### Dotnet Tools Packages
+For installing our requirement packages with .NET cli tools, we need to install `dotnet tool manifest`.
+```bash
+dotnet new tool-manifest
+```
+And after that we can restore our dotnet tools packages with .NET cli tools from `.config` folder and `dotnet-tools.json` file.
+```
+dotnet tool restore
+```
+
+### Husky
+Here we use `husky` to handel some pre commit rules and we used `conventional commits` rules and `formatting` as pre commit rules, here in [package.json](.././package.json). of course, we can add more rules for pre commit in future. (find more about husky in the [documentation](https://typicode.github.io/husky/get-started.html))
+We need to install `husky` package for `manage` `pre commits hooks` and also I add two packages `@commitlint/cli` and `@commitlint/config-conventional` for handling conventional commits rules in [package.json](.././package.json).
+Run the command bellow in the root of project to install all npm dependencies related to husky:
+
+```bash
+npm install
+```
+
+> Note: In the root of project we have `.husky` folder and it has `commit-msg` file for handling conventional commits rules with provide user friendly message and `pre-commit` file that we can run our `scripts` as a `pre-commit` hooks. that here we call `format` script from [package.json](./package.json) for formatting purpose.
+
+### Upgrade Nuget Packages
+For upgrading our nuget packages to last version, we use the great package [dotnet-outdated](https://github.com/dotnet-outdated/dotnet-outdated).
+Run the command below in the root of project to upgrade all of packages to last version:
+```bash
+dotnet outdated -u
+```
+
+## How to Run
+
+> ### Config Certificate
+Run the following commands to [Config SSL](https://docs.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-6.0) in your system:
+
+#### Windows using Linux containers
+```bash
+dotnet dev-certs https -ep %USERPROFILE%\.aspnet\https\aspnetapp.pfx -p password
+dotnet dev-certs https --trust
+```
+***Note:** for running this command in `powershell` use `$env:USERPROFILE` instead of `%USERPROFILE%`*
+
+#### macOS or Linux
+```bash
+dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p $CREDENTIAL_PLACEHOLDER$
+dotnet dev-certs https --trust
+```
+> ### Docker Compose
+
+
+To run this app in `Docker`, use the [docker-compose.yaml](./deployments/docker-compose/docker-compose.yaml) and execute the below command at the `root` of the application:
+
+```bash
+docker-compose -f ./deployments/docker-compose/docker-compose.yaml up -d
+```
+
+> ### Kubernetes
+To `configure TLS` in the `Kubernetes cluster`, we need to install `cert-manager` based on the [docs](https://cert-manager.io/docs/installation) and run the following commands to apply TLS in our application. Here, we use [Let's Encrypt](https://letsencrypt.org/) to encrypt our certificate.
+
+```bash
+kubectl apply -f ./deployments/kubernetes/booking-cert-manager.yml
+```
+
+To apply all necessary `deployments`, `pods`, `services`, `ingress`, and `config maps`, please run the following command:
+
+```bash
+kubectl apply -f ./deployments/kubernetes/booking-microservices.yml
+```
+
+> ### Build
+To `build` all microservices, run this command in the `root` of the project:
+```bash
+dotnet build
+```
+
+> ### Run
+To `run` each microservice, run this command in the root of the `Api` folder of each microservice where the `csproj` file is located:
+```bash
+dotnet run
+```
+
+> ### Test
+
+To `test` all microservices, run this command in the `root` of the project:
+```bash
+dotnet test
+```
+
+> ### Documentation Apis
+
+Each microservice provides `API documentation` and navigate to `/swagger` for `Swagger OpenAPI` or `/scalar/v1` for `Scalar OpenAPI` to visit list of endpoints.
+
+As part of API testing, I created the [booking.rest](./booking.rest) file which can be run with the [REST Client](https://github.com/Huachao/vscode-restclient) `VSCode plugin`.
+
 # Support
 
 If you like my work, feel free to:
@@ -206,7 +267,7 @@ Thanks a bunch for supporting me!
 
 ## Contribution
 
-Thanks to all [contributors](https://github.com/meysamhadeli/monolith-to-cloud-architecture/graphs/contributors), you're awesome and this wouldn't be possible without you! The goal is to build a categorized, community-driven collection of very well-known resources.
+Thanks to all [contributors](https://github.com/meysamhadeli/booking-microservices/graphs/contributors), you're awesome and this wouldn't be possible without you! The goal is to build a categorized, community-driven collection of very well-known resources.
 
 Please follow this [contribution guideline](./CONTRIBUTION.md) to submit a pull request or create the issue.
 
@@ -219,4 +280,4 @@ Please follow this [contribution guideline](./CONTRIBUTION.md) to submit a pull 
 - [https://github.com/pdevito3/MessageBusTestingInMemHarness](https://github.com/pdevito3/MessageBusTestingInMemHarness)
 
 ## License
-This project is made available under the MIT license. See [LICENSE](https://github.com/meysamhadeli/monolith-to-cloud-architecture/blob/main/LICENSE) for details.
+This project is made available under the MIT license. See [LICENSE](https://github.com/meysamhadeli/booking-microservices/blob/main/LICENSE) for details.

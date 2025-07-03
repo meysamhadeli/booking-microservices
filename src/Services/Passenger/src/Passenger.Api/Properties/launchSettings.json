@@ -1,0 +1,16 @@
+{
+    "$schema": "https://json.schemastore.org/launchsettings.json",
+    "profiles": {
+        "Passenger.Api": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchUrl": "swagger",
+            "launchBrowser": true,
+            "applicationUrl": "http://localhost:6012;https://localhost:5012",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        }
+    }
+}
+

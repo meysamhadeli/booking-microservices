@@ -1,14 +1,14 @@
 {
-  "name": "monolith-to-cloud-architecture",
+  "name": "booking-microservices",
   "version": "1.0.0",
-  "description": "monolith-to-cloud-architecture",
+  "description": "booking-microservices",
   "author": "Meysam Hadeli",
   "license": "MIT",
   "main": "index.js",
   "scripts": {
     "prepare": "husky && dotnet tool restore",
-    "format": "dotnet format monolith-to-cloud-architecture.sln --severity error --verbosity detailed",
-    "ci-format": "dotnet format monolith-to-cloud-architecture.sln --verify-no-changes --severity error --verbosity detailed",
+    "format": "dotnet format booking-microservices.sln --severity error --verbosity detailed",
+    "ci-format": "dotnet format booking-microservices.sln --verify-no-changes --severity error --verbosity detailed",
     "upgrade-packages": "dotnet outdated --upgrade"
   },
   "devDependencies": {
