@@ -6,7 +6,7 @@
     </div>
 </div>
 
-> 🚀 **A practical microservices with the latest technologies and architecture like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq, Masstransit in .Net 9.**
+> 🚀 **A practical microservices with the latest technologies and architecture like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq and Masstransit in .Net 9.**
 
 ## You can find other version of this project here:
 - [Booking with Modular Monolith Architecture](https://github.com/meysamhadeli/booking-modular-monolith)
