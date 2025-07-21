@@ -1,26 +1,32 @@
 using BuildingBlocks.Web;
-using Microsoft.AspNetCore.Hosting;
+using Humanizer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.PersistMessageProcessor;
 
 public static class Extensions
 {
-    public static IServiceCollection AddPersistMessageProcessor(this IServiceCollection services)
+    public static IServiceCollection AddPersistMessageProcessor(this WebApplicationBuilder builder, string? connectionName = "persist-message")
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-        services.AddValidateOptions<PersistMessageOptions>();
+        builder.Services.AddValidateOptions<PersistMessageOptions>();
 
-        services.AddDbContext<PersistMessageDbContext>(
+        builder.Services.AddDbContext<PersistMessageDbContext>(
             (sp, options) =>
             {
-                var persistMessageOptions = sp.GetRequiredService<PersistMessageOptions>();
+                var aspireConnectionString = builder.Configuration.GetConnectionString(connectionName.Kebaberize());
+
+                var connectionString = aspireConnectionString ?? sp.GetRequiredService<PersistMessageOptions>().ConnectionString;
+
+                ArgumentException.ThrowIfNullOrEmpty(connectionString);
 
                 options.UseNpgsql(
-                        persistMessageOptions.ConnectionString,
+                        connectionString,
                         dbOptions =>
                         {
                             dbOptions.MigrationsAssembly(
@@ -34,7 +40,7 @@ public static class Extensions
                     w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
             });
 
-        services.AddScoped<IPersistMessageDbContext>(
+        builder.Services.AddScoped<IPersistMessageDbContext>(
             provider =>
             {
                 var persistMessageDbContext =
@@ -46,10 +52,10 @@ public static class Extensions
                 return persistMessageDbContext;
             });
 
-        services.AddScoped<IPersistMessageProcessor, PersistMessageProcessor>();
+        builder.Services.AddScoped<IPersistMessageProcessor, PersistMessageProcessor>();
 
-        services.AddHostedService<PersistMessageBackgroundService>();
+        builder.Services.AddHostedService<PersistMessageBackgroundService>();
 
-        return services;
+        return builder.Services;
     }
 }

@@ -1,10 +1,8 @@
-using System.Threading.RateLimiting;
 using Booking.Data;
 using BuildingBlocks.Core;
 using BuildingBlocks.EventStoreDB;
 using BuildingBlocks.HealthCheck;
 using BuildingBlocks.Jwt;
-using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
@@ -20,7 +18,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Serilog;
 
 namespace Booking.Extensions.Infrastructure;
 
@@ -30,6 +27,26 @@ public static class InfrastructureExtensions
     {
         var configuration = builder.Configuration;
         var env = builder.Environment;
+
+        builder.Services.AddCustomHealthCheck();
+
+        builder.AddCustomObservability();
+
+        builder.Services.AddServiceDiscovery();
+
+        builder.Services.ConfigureHttpClientDefaults(http =>
+                                                     {
+                                                         http.AddStandardResilienceHandler(options =>
+                                                         {
+                                                             var timeSpan = TimeSpan.FromMinutes(1);
+                                                             options.CircuitBreaker.SamplingDuration = timeSpan * 2;
+                                                             options.TotalRequestTimeout.Timeout = timeSpan * 3;
+                                                             options.Retry.MaxRetryAttempts = 3;
+                                                         });
+
+                                                         // Turn on service discovery by default
+                                                         http.AddServiceDiscovery();
+                                                     });
 
         builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
         builder.Services.AddScoped<IEventMapper, BookingEventMapper>();
@@ -44,25 +61,10 @@ public static class InfrastructureExtensions
 
         Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
-        builder.Services.AddRateLimiter(options =>
-        {
-            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
-                RateLimitPartition.GetFixedWindowLimiter(
-                    partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
-                    factory: partition => new FixedWindowRateLimiterOptions
-                    {
-                        AutoReplenishment = true,
-                        PermitLimit = 10,
-                        QueueLimit = 0,
-                        Window = TimeSpan.FromMinutes(1)
-                    }));
-        });
-
-        builder.Services.AddPersistMessageProcessor();
+        builder.AddPersistMessageProcessor(nameof(PersistMessage));
         builder.AddMongoDbContext<BookingReadDbContext>();
 
         builder.Services.AddEndpointsApiExplorer();
-        builder.AddCustomSerilog(env);
         builder.Services.AddJwt();
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddAspnetOpenApi();
@@ -71,9 +73,7 @@ public static class InfrastructureExtensions
         builder.Services.AddValidatorsFromAssembly(typeof(BookingRoot).Assembly);
         builder.Services.AddProblemDetails();
         builder.Services.AddCustomMapster(typeof(BookingRoot).Assembly);
-        builder.Services.AddCustomHealthCheck();
         builder.Services.AddCustomMassTransit(env, TransportType.RabbitMq, typeof(BookingRoot).Assembly);
-        builder.AddCustomObservability();
         builder.Services.AddTransient<AuthHeaderHandler>();
 
         // ref: https://github.com/oskardudycz/EventSourcing.NetCore/tree/main/Sample/EventStoreDB/ECommerce
@@ -91,15 +91,14 @@ public static class InfrastructureExtensions
         var env = app.Environment;
         var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.UseCustomHealthCheck();
         app.UseCustomObservability();
 
         app.UseCustomProblemDetails();
-        app.UseSerilogRequestLogging(options =>
-        {
-            options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest;
-        });
         app.UseCorrelationId();
-        app.UseCustomHealthCheck();
         app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
 
         if (env.IsDevelopment())

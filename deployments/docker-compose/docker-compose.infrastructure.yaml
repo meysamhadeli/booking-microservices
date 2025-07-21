@@ -358,4 +358,5 @@ networks:
     driver: bridge
 
 volumes:
+  elastic-data:
   postgres-data:

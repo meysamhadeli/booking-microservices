@@ -24,15 +24,16 @@ public record EventStoreDBOptions(
 
 public static class EventStoreDBConfigExtensions
 {
-    public static IServiceCollection AddEventStoreDB(this IServiceCollection services, IConfiguration config,
+    public static IServiceCollection AddEventStoreDB(this IServiceCollection services, IConfiguration configuration,
         EventStoreDBOptions? options = null)
     {
 
         services
             .AddSingleton(x =>
             {
+                var aspireConnectionString = configuration.GetConnectionString("eventstore");
                 var eventStoreOptions = services.GetOptions<EventStoreOptions>(nameof(EventStoreOptions));
-                return new EventStoreClient(EventStoreClientSettings.Create(eventStoreOptions.ConnectionString));
+                return new EventStoreClient(EventStoreClientSettings.Create(aspireConnectionString ?? eventStoreOptions.ConnectionString));
             })
             .AddScoped(typeof(IEventStoreDBRepository<>), typeof(EventStoreDBRepository<>))
             .AddTransient<EventStoreDBSubscriptionToAll, EventStoreDBSubscriptionToAll>();
