@@ -6,10 +6,11 @@
     </div>
 </div>
 
-> 🚀 **A practical and imaginary microservices for implementing an infrastructure for up and running distributed system with the latest technology and architecture like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq, Masstransit in .Net 9.**
+> 🚀 **A practical microservices with the latest technologies and architecture like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq and Masstransit in .Net 9.**
 
-> 💡 **This project is not business-oriented and most of my focus was in the thechnical part for implement a distributed system with a sample project. In this project I implemented some concept in microservices like Messaging, Tracing, Event Driven Architecture, Vertical Slice Architecture, Event Sourcing, CQRS, DDD and gRpc.**
-
+## You can find other version of this project here:
+- [Booking with Modular Monolith Architecture](https://github.com/meysamhadeli/booking-modular-monolith)
+- [Booking with Monolith Architecture](https://github.com/meysamhadeli/booking-monolith)
 
 <div>
   <a href="https://gitpod.io/#https://github.com/meysamhadeli/booking-microservices"><img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg"/></a>
