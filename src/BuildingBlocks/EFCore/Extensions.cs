@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -14,7 +15,7 @@ namespace BuildingBlocks.EFCore;
 
 public static class Extensions
 {
-    public static IServiceCollection AddCustomDbContext<TContext>(this WebApplicationBuilder builder, string connectionName = "")
+    public static IServiceCollection AddCustomDbContext<TContext>(this WebApplicationBuilder builder, string? connectionName = "")
     where TContext : DbContext, IDbContext
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -24,9 +25,8 @@ public static class Extensions
         builder.Services.AddDbContext<TContext>(
             (sp, options) =>
             {
-                string? connectionString = string.IsNullOrEmpty(connectionName) ?
-                                               sp.GetRequiredService<PostgresOptions>().ConnectionString :
-                                               builder.Configuration?.GetSection("PostgresOptions:ConnectionString")[connectionName];
+                var aspireConnectionString = builder.Configuration.GetConnectionString(connectionName.Kebaberize());
+                var connectionString = aspireConnectionString ?? sp.GetRequiredService<PostgresOptions>().ConnectionString;
 
                 ArgumentException.ThrowIfNullOrEmpty(connectionString);
 

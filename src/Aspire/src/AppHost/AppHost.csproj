@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Sdk Name="Aspire.AppHost.SDK" Version="9.3.1"/>
+  
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>bde28db3-85ba-4201-b889-0f3faba24169</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.1" />
+    <PackageReference Include="Aspire.Hosting.MongoDB" Version="9.3.1" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.3.1" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="9.3.1" />
+    <PackageReference Include="Aspire.Hosting.Redis" Version="9.3.1" />
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.EventStore" Version="9.6.0" />
+    <PackageReference Include="Elastic.Aspire.Hosting.Elasticsearch" Version="9.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\ApiGateway\src\ApiGateway.csproj" />
+    <ProjectReference Include="..\..\..\Services\Booking\src\Booking.Api\Booking.Api.csproj" />
+    <ProjectReference Include="..\..\..\Services\Flight\src\Flight.Api\Flight.Api.csproj" />
+    <ProjectReference Include="..\..\..\Services\Identity\src\Identity.Api\Identity.Api.csproj" />
+    <ProjectReference Include="..\..\..\Services\Passenger\src\Passenger.Api\Passenger.Api.csproj" />
+  </ItemGroup>
+
+</Project>

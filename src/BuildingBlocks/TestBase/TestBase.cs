@@ -20,14 +20,13 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using NSubstitute;
 using Respawn;
-using Serilog;
 using WebMotions.Fake.Authentication.JwtBearer;
 using Xunit;
 using Xunit.Abstractions;
-using ILogger = Serilog.ILogger;
 
 namespace BuildingBlocks.TestBase;
 
@@ -154,14 +153,15 @@ where TEntryPoint : class
     // ref: https://github.com/trbenning/serilog-sinks-xunit
     public ILogger CreateLogger(ITestOutputHelper output)
     {
-        if (output != null)
-        {
-            return new LoggerConfiguration()
-                .WriteTo.TestOutput(output)
-                .CreateLogger();
-        }
+        if (output == null)
+            return null;
 
-        return null;
+        var loggerFactory = LoggerFactory.Create(builder =>
+                                                 {
+                                                     builder.AddXunit(output);
+                                                     builder.SetMinimumLevel(LogLevel.Debug);
+                                                 });
+        return loggerFactory.CreateLogger("TestLogger");
     }
 
     protected async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)

@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using BuildingBlocks.Contracts.EventBus.Messages;
 using BuildingBlocks.TestBase;
 using FluentAssertions;

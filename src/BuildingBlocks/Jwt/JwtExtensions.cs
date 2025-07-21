@@ -19,7 +19,7 @@ namespace BuildingBlocks.Jwt
             {
                 options.Authority = jwtOptions.Authority;
                 options.Audience = jwtOptions.Audience;
-                options.RequireHttpsMetadata = true;
+                options.RequireHttpsMetadata = false;
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {

@@ -20,7 +20,14 @@ namespace BuildingBlocks.Mongo
         where TContextService : IMongoDbContext
         where TContextImplementation : MongoDbContext, TContextService
         {
-            services.Configure<MongoOptions>(configuration.GetSection(nameof(MongoOptions)));
+            // Configure MongoOptions with Aspire-aware defaults
+            services.AddOptions<MongoOptions>()
+                .Bind(configuration.GetSection(nameof(MongoOptions)))
+                .PostConfigure(options =>
+                               {
+                                   var aspireConnectionString = configuration.GetConnectionString("mongo");
+                                   options.ConnectionString = aspireConnectionString ?? options.ConnectionString;
+                               });
 
             if (configurator is { })
             {

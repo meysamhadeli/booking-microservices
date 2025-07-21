@@ -1,0 +1,30 @@
+﻿{
+    "$schema": "http://json.schemastore.org/launchsettings.json",
+    "profiles": {
+        "https": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "applicationUrl": "https://localhost:7000;http://localhost:7001",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "DOTNET_ENVIRONMENT": "Development",
+                "ASPIRE_DASHBOARD_OTLP_ENDPOINT_URL": "http://otel-collector:4317",
+                "ASPIRE_DASHBOARD_OTLP_HTTP_ENDPOINT_URL": "http://otel-collector:4318"
+            }
+        },
+        "http": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "applicationUrl": "http://localhost:7001",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "DOTNET_ENVIRONMENT": "Development",
+                "ASPIRE_DASHBOARD_OTLP_ENDPOINT_URL": "http://otel-collector:4317",
+                "ASPIRE_DASHBOARD_OTLP_HTTP_ENDPOINT_URL": "http://otel-collector:4318",
+                "ASPIRE_ALLOW_UNSECURED_TRANSPORT": "true"
+            }
+        }
+    }
+}

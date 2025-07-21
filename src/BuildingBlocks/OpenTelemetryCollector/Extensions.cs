@@ -29,9 +29,11 @@ namespace BuildingBlocks.OpenTelemetryCollector;
 // https://blog.codingmilitia.com/2023/09/05/observing-dotnet-microservices-with-opentelemetry-logs-traces-metrics/
 public static class Extensions
 {
+    private const string HealthEndpointPath = "/health";
+    private const string AlivenessEndpointPath = "/alive";
+
     public static WebApplicationBuilder AddCustomObservability(this WebApplicationBuilder builder)
     {
-
         Activity.DefaultIdFormat = ActivityIdFormat.W3C;
         builder.Services.AddSingleton<IDiagnosticsProvider, CustomeDiagnosticsProvider>();
         builder.AddCoreDiagnostics();
@@ -147,6 +149,13 @@ public static class Extensions
                     .AddAspNetCoreInstrumentation(options =>
                     {
                         options.RecordException = true;
+                        // Don't trace requests to the health endpoint to avoid filling the dashboard with noise
+                        options.Filter = httpContext =>
+                                             !(httpContext.Request.Path.StartsWithSegments(
+                                                   HealthEndpointPath, StringComparison.OrdinalIgnoreCase) ||
+                                               httpContext.Request.Path.StartsWithSegments(
+                                                   AlivenessEndpointPath, StringComparison.OrdinalIgnoreCase
+                                               ));
                     })
                     .AddGrpcClientInstrumentation()
                     .AddHttpClientInstrumentation(instrumentationOptions =>

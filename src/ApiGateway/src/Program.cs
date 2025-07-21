@@ -1,7 +1,5 @@
-using BuildingBlocks.Logging;
 using BuildingBlocks.Web;
 using Figgle;
-using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var env = builder.Environment;
@@ -10,7 +8,6 @@ Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
 
 
-builder.AddCustomSerilog(env);
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 
@@ -18,7 +15,6 @@ builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSecti
 
 var app = builder.Build();
 
-app.UseSerilogRequestLogging();
 app.UseCorrelationId();
 app.UseRouting();
 app.UseHttpsRedirection();

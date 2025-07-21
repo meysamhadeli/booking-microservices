@@ -347,16 +347,16 @@ services:
 
 
   ######################################################
-  #  Gateway
+  #  Api-Gateway
   ######################################################
-  gateway:
-    image: gateway
+  api-gateway:
+    image: api-gateway
     build:
       args:
         Version: "1"
       context: ../../
       dockerfile: src/ApiGateway/dev.Dockerfile
-    container_name: gateway
+    container_name: api-gateway
     ports:
       - "5001:80"
       - "5000:443"

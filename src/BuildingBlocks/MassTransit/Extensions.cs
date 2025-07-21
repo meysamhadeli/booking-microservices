@@ -2,6 +2,7 @@ using System.Reflection;
 using BuildingBlocks.Web;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -58,18 +59,30 @@ public static class Extensions
                 configure.UsingRabbitMq(
                     (context, configurator) =>
                     {
-                        var rabbitMqOptions =
-                            services.GetOptions<RabbitMqOptions>(nameof(RabbitMqOptions));
+                        var configuration = context.GetRequiredService<IConfiguration>();
 
-                        configurator.Host(
-                            rabbitMqOptions?.HostName,
-                            rabbitMqOptions?.Port ?? 5672,
-                            "/",
-                            h =>
-                            {
-                                h.Username(rabbitMqOptions?.UserName);
-                                h.Password(rabbitMqOptions?.Password);
-                            });
+                        var aspireConnectionString = configuration.GetConnectionString("rabbitmq");
+
+                        if (!string.IsNullOrEmpty(aspireConnectionString))
+                        {
+                            configurator.Host(new Uri(aspireConnectionString));
+                        }
+                        else
+                        {
+                            var rabbitMqOptions = services.GetOptions<RabbitMqOptions>(nameof(RabbitMqOptions));
+
+                            ArgumentNullException.ThrowIfNull(rabbitMqOptions);
+
+                            configurator.Host(
+                                rabbitMqOptions?.HostName,
+                                rabbitMqOptions?.Port ?? 5672,
+                                "/",
+                                h =>
+                                {
+                                    h.Username(rabbitMqOptions.UserName);
+                                    h.Password(rabbitMqOptions.Password);
+                                });
+                        }
 
                         configurator.ConfigureEndpoints(context);
 
