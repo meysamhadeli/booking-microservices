@@ -34,6 +34,7 @@
     - [Upgrade Nuget Packages](#upgrade-nuget-packages)
 - [How to Run](#how-to-run)
   - [Config Certificate](#config-certificate)
+  - [Aspire](#aspire)
   - [Docker Compose](#docker-compose)
   - [Kubernetes](#kubernetes)
   - [Build](#build)
@@ -204,13 +205,24 @@ Run the following commands to [Config SSL](https://docs.microsoft.com/en-us/aspn
 dotnet dev-certs https -ep %USERPROFILE%\.aspnet\https\aspnetapp.pfx -p password
 dotnet dev-certs https --trust
 ```
-***Note:** for running this command in `powershell` use `$env:USERPROFILE` instead of `%USERPROFILE%`*
+> Note: for running this command in `powershell` use `$env:USERPROFILE` instead of `%USERPROFILE%`*
 
 #### macOS or Linux
 ```bash
 dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p $CREDENTIAL_PLACEHOLDER$
 dotnet dev-certs https --trust
 ```
+
+### Aspire
+
+To run the application using the `ASPIRE App Host`, execute the following command from the solution root:
+
+```bash
+dotnet run --project ./src/Aspire/src/AppHost
+```
+
+> Note:The `ASPIRE dashboard` will be available at `http://localhost:18888`
+
 > ### Docker Compose
 
 
