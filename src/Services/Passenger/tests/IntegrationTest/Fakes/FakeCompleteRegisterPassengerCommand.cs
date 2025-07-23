@@ -16,4 +16,3 @@ public sealed class FakeCompleteRegisterPassengerCommand : AutoFaker<CompleteReg
         RuleFor(r => r.Age, _ => 30);
     }
 }
-

@@ -9,4 +9,3 @@ public class SeatNumberException : DomainException
     {
     }
 }
-

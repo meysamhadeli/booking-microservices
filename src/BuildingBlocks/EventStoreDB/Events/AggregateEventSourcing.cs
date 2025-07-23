@@ -25,4 +25,3 @@ namespace BuildingBlocks.EventStoreDB.Events
         public virtual void When(object @event) { }
     }
 }
-
