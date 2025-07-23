@@ -29,4 +29,3 @@ public class MongoUnitOfWork<TContext> : IMongoUnitOfWork<TContext>, ITransactio
 
     public void Dispose() => Context.Dispose();
 }
-

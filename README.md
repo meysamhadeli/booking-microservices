@@ -1,23 +1,20 @@
+# 🛩️ Booking Monolith
+
 <div align="center" style="margin-bottom:20px">
-  <img src="assets/logo.png" alt="booking-microservices" />
-    <div align="center">
-           <a href="https://github.com/meysamhadeli/booking-microservices/actions/workflows/ci.yml"><img alt="ci-status" src="https://github.com/meysamhadeli/booking-microservices/actions/workflows/ci.yml/badge.svg?branch=main&style=flat-square"/></a>
-                 <a href="https://github.com/meysamhadeli/booking-microservices/blob/main/LICENSE"><img alt="build-status"          src="https://img.shields.io/github/license/meysamhadeli/booking-microservices?color=%234275f5&style=flat-square"/></a>
+    <div align="left">
+           <a href="https://github.com/meysamhadeli/booking-monolith/actions/workflows/ci.yml"><img alt="build-status" src="https://github.com/meysamhadeli/booking-monolith/actions/workflows/ci.yml/badge.svg?branch=main&style=flat-square"/></a>
+                 <a href="https://github.com/meysamhadeli/booking-monolith/blob/main/LICENSE"><img alt="build-status"          src="https://img.shields.io/github/license/meysamhadeli/booking-monolith?color=%234275f5&style=flat-square"/></a>
     </div>
 </div>
 
-> 🚀 **A practical microservices with the latest technologies and architecture like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq and Masstransit in .Net 9.**
+> 🚀 **A practical Monolith architecture with the latest technologies and architectures like Vertical Slice Architecture, Event Driven Architecture, CQRS, DDD and Aspire in .Net 9.**
 
 ## You can find other version of this project here:
+- [Booking with Microservices Architecture](https://github.com/meysamhadeli/booking-microservices)
 - [Booking with Modular Monolith Architecture](https://github.com/meysamhadeli/booking-modular-monolith)
-- [Booking with Monolith Architecture](https://github.com/meysamhadeli/booking-monolith)
 
-<div>
-  <a href="https://gitpod.io/#https://github.com/meysamhadeli/booking-microservices"><img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg"/></a>
-</div>
-<div>
-  <a href='https://codespaces.new/meysamhadeli/booking-microservices?quickstart=1'><img alt='Open in GitHub Codespaces' src='https://github.com/codespaces/badge.svg'></a>
-</div>
+<a href="https://gitpod.io/#https://github.com/meysamhadeli/booking-monolith"><img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg"/></a>
+
 
 # Table of Contents
 
@@ -26,17 +23,15 @@
 - [Key Features](#key-features)
 - [When to Use](#when-to-use)
 - [Challenges](#challenges)
-- [The Domain and Bounded Context - Service Boundary](#the-domain-and-bounded-context---service-boundary)
+- [The Domain and Bounded Context](#the-domain-and-bounded-context)
 - [Structure of Project](#structure-of-project)
 - [Development Setup](#development-setup)
-    - [Dotnet Tools Packages](#dotnet-tools-packages)
-    - [Husky](#husky)
-    - [Upgrade Nuget Packages](#upgrade-nuget-packages)
+  - [Dotnet Tools Packages](#dotnet-tools-packages)
+  - [Husky](#husky)
+  - [Upgrade Nuget Packages](#upgrade-nuget-packages)
 - [How to Run](#how-to-run)
   - [Config Certificate](#config-certificate)
-  - [Aspire](#aspire)
   - [Docker Compose](#docker-compose)
-  - [Kubernetes](#kubernetes)
   - [Build](#build)
   - [Run](#run)
   - [Test](#test)
@@ -49,12 +44,11 @@
 
 - :sparkle: Using `Vertical Slice Architecture` for `architecture` level.
 - :sparkle: Using `Domain Driven Design (DDD)` to implement all `business logic`.
-- :sparkle: Using `Rabbitmq` on top of `Masstransit` for `Event Driven Architecture`.
-- :sparkle: Using `gRPC` for `internal communication`.
 - :sparkle: Using `CQRS` implementation with `MediatR` library.
 - :sparkle: Using `Postgres` for `write side` database.
+- :sparkle: Using `InMemory Broker` on top of `Masstransit` for `Event Driven Architecture`.
 - :sparkle: Using `MongoDB` for `read side` database.
-- :sparkle: Using `Event Store` for `write side` of Booking Microservice/Module to store all `historical change` of aggregate.
+- :sparkle: Using `Event Store` for `write side` of Booking to store all `historical change` of aggregate.
 - :sparkle: Using `Inbox Pattern` for ensuring message idempotency for receiver and `Exactly once Delivery`.
 - :sparkle: Using `Outbox Pattern` for ensuring no message is lost and there is at `At Least One Delivery`.
 - :sparkle: Using `Unit Testing` for testing small units and mocking our dependencies with `Nsubstitute`.
@@ -68,11 +62,7 @@
 - :sparkle: Using `OpenTelemetry` for distributed tracing on top of `Jaeger`.
 - :sparkle: Using `OpenTelemetry` for monitoring on top of `Prometheus` and `Grafana`.
 - :sparkle: Using `IdentityServer` for authentication and authorization base on `OpenID-Connect` and `OAuth2`.
-- :sparkle: Using `Yarp` as a microservices `gateway`.
-- :sparkle: Using `Kubernetes` to achieve efficient `scaling` and ensure `high availability` for each of our microservices.
-- :sparkle: Using `Nginx Ingress Controller` for `load balancing` between our microservices top of `Kubernetes`.
-- :sparkle: Using `cert-manager` to Configure `TLS` in `kubernetes cluster`.
-
+- :sparkle: Using `Aspire` for `service discovery`, `observability`, and `local orchestration` of microservices.
 
 ## Technologies - Libraries
 
@@ -95,48 +85,46 @@
 - ✔️ **[`Hellang.Middleware.ProblemDetails`](https://github.com/khellang/Middleware/tree/master/src/ProblemDetails)** - A middleware for handling exception in .Net Core.
 - ✔️ **[`NewId`](https://github.com/phatboyg/NewId)** - NewId can be used as an embedded unique ID generator that produces 128 bit (16 bytes) sequential IDs.
 - ✔️ **[`Yarp`](https://github.com/microsoft/reverse-proxy)** - Reverse proxy toolkit for building fast proxy servers in .NET.
-- ✔️ **[`Tye`](https://github.com/dotnet/tye)** - Developer tool that makes developing, testing, and deploying microservices and distributed applications easier.
-- ✔️ **[`gRPC-dotnet`](https://github.com/grpc/grpc-dotnet)** - gRPC functionality for .NET.
 - ✔️ **[`EventStore`](https://github.com/EventStore/EventStore)** - The open-source, functional database with Complex Event Processing.
 - ✔️ **[`MongoDB.Driver`](https://github.com/mongodb/mongo-csharp-driver)** - .NET Driver for MongoDB.
 - ✔️ **[`xUnit.net`](https://github.com/xunit/xunit)** - A free, open source, community-focused unit testing tool for the .NET Framework.
 - ✔️ **[`Respawn`](https://github.com/jbogard/Respawn)** - Respawn is a small utility to help in resetting test databases to a clean state.
 - ✔️ **[`Testcontainers`](https://github.com/testcontainers/testcontainers-dotnet)** - Testcontainers for .NET is a library to support tests with throwaway instances of Docker containers.
 - ✔️ **[`K6`](https://github.com/grafana/k6)** - Modern load testing for developers and testers in the DevOps era.
+- ✔️ **[`Aspire`](https://github.com/dotnet/aspire)** - .NET stack for building and orchestrating observable, distributed cloud-native applications.
 
 
 ## Key Features
-1. **Independent Services**: Each service is a separate project with its own database and deployment pipeline, enabling independent development and deployment.
-2. **Decentralized Communication**: Services communicate via APIs (REST, gRPC) or message brokers (RabbitMQ, Kafka), ensuring loose coupling and resilience.
-3. **Scalability**: Services can be scaled independently based on demand, allowing efficient resource utilization.
-4. **Fault Tolerance**: Failures are isolated, preventing cascading failures and ensuring high availability.
-5. **Technology Agnostic**: Services can use different technologies, frameworks, or databases, providing flexibility.
+1. **Single Codebase**: All components (UI, business logic, data access) are part of one project.
+2. **Tight Coupling**: Components are highly dependent on each other, making changes riskier.
+3. **Simple Deployment**: The entire application is deployed as a single unit.
+4. **Centralized Database**: Typically uses a single database for all data storage and access.
 
 
 ## When to Use
-1. **Large and Complex Projects**: Ideal for applications with complex business logic that can be broken into smaller, manageable services.
-2. **High Scalability Needs**: Suitable for applications requiring independent scaling of components.
-3. **Fault Tolerance and High Availability**: Perfect for systems where failure isolation and uptime are critical.
-4. **Distributed Teams**: Enables teams to work independently on different services.
-5. **Frequent Updates**: Supports continuous deployment and A/B testing for individual services.
-6. **Technology Diversity**: Allows the use of different technologies for different services.
+1. **Small to Medium Projects**: Ideal for applications with limited complexity and scope.
+2. **Rapid Development**: Suitable for projects requiring quick development and deployment.
+3. **Small Teams**: Works well for small teams with limited resources.
+4. **Low Scalability Needs**: Best for applications with predictable and low traffic.
 
 
 ## Challenges
-- Increased complexity in management, DevOps overhead, data consistency, latency, and higher costs.
+- Harder to maintain as the codebase grows.
+- Limited scalability (scaling requires scaling the entire application).
+- Difficult to adopt new technologies incrementally.
 
 
-## The Domain And Bounded Context - Service Boundary
+## The Domain And Bounded Context
 
-- `Identity Service`: The Identity Service is a bounded context for the authentication and authorization of users using [Identity Server](https://github.com/DuendeSoftware/IdentityServer). This service is responsible for creating new users and their corresponding roles and permissions using [.Net Core Identity](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity) and Jwt authentication and authorization.
+- `Identity`: The Identity is a bounded context for the authentication and authorization of users using [Identity Server](https://github.com/DuendeSoftware/IdentityServer). This service is responsible for creating new users and their corresponding roles and permissions using [.Net Core Identity](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity) and Jwt authentication and authorization.
 
-- `Flight Service`: The Flight Service is a bounded context `CRUD` service to handle flight related operations.
+- `Flight`: The Flight is a bounded context `CRUD` service to handle flight related operations.
 
-- `Passenger Service`: The Passenger Service is a bounded context for managing passenger information, tracking activities and subscribing to get notification for out of stock products.
+- `Passenger`: The Passenger is a bounded context for managing passenger information, tracking activities and subscribing to get notification for out of stock products.
 
-- `Booking Service`: The Booking Service is a bounded context for managing all operation related to booking ticket.
+- `Booking`: The Booking is a bounded context for managing all operation related to booking ticket.
 
-![](./assets/booking-microservices.png)
+![](./assets/booking-monolith.png)
 
 
 ## Structure of Project
@@ -178,7 +166,7 @@ dotnet tool restore
 ```
 
 ### Husky
-Here we use `husky` to handel some pre commit rules and we used `conventional commits` rules and `formatting` as pre commit rules, here in [package.json](.././package.json). of course, we can add more rules for pre commit in future. (find more about husky in the [documentation](https://typicode.github.io/husky/get-started.html))
+Here we use `husky` to handel some pre commit rules and we used `conventional commits` rules and `formatting` as pre commit rules, here in [package.json](./package.json). of course, we can add more rules for pre commit in future. (find more about husky in the [documentation](https://typicode.github.io/husky/get-started.html))
 We need to install `husky` package for `manage` `pre commits hooks` and also I add two packages `@commitlint/cli` and `@commitlint/config-conventional` for handling conventional commits rules in [package.json](.././package.json).
 Run the command bellow in the root of project to install all npm dependencies related to husky:
 
@@ -205,24 +193,13 @@ Run the following commands to [Config SSL](https://docs.microsoft.com/en-us/aspn
 dotnet dev-certs https -ep %USERPROFILE%\.aspnet\https\aspnetapp.pfx -p password
 dotnet dev-certs https --trust
 ```
-> Note: for running this command in `powershell` use `$env:USERPROFILE` instead of `%USERPROFILE%`*
+***Note:** for running this command in `powershell` use `$env:USERPROFILE` instead of `%USERPROFILE%`*
 
 #### macOS or Linux
 ```bash
 dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p $CREDENTIAL_PLACEHOLDER$
 dotnet dev-certs https --trust
 ```
-
-### Aspire
-
-To run the application using the `ASPIRE App Host`, execute the following command from the solution root:
-
-```bash
-dotnet run --project ./src/Aspire/src/AppHost
-```
-
-> Note:The `ASPIRE dashboard` will be available at `http://localhost:18888`
-
 > ### Docker Compose
 
 
@@ -232,41 +209,28 @@ To run this app in `Docker`, use the [docker-compose.yaml](./deployments/docker-
 docker-compose -f ./deployments/docker-compose/docker-compose.yaml up -d
 ```
 
-> ### Kubernetes
-To `configure TLS` in the `Kubernetes cluster`, we need to install `cert-manager` based on the [docs](https://cert-manager.io/docs/installation) and run the following commands to apply TLS in our application. Here, we use [Let's Encrypt](https://letsencrypt.org/) to encrypt our certificate.
-
-```bash
-kubectl apply -f ./deployments/kubernetes/booking-cert-manager.yml
-```
-
-To apply all necessary `deployments`, `pods`, `services`, `ingress`, and `config maps`, please run the following command:
-
-```bash
-kubectl apply -f ./deployments/kubernetes/booking-microservices.yml
-```
-
 > ### Build
-To `build` all microservices, run this command in the `root` of the project:
+To `build` monolith app, run this command in the `root` of the project:
 ```bash
 dotnet build
 ```
 
 > ### Run
-To `run` each microservice, run this command in the root of the `Api` folder of each microservice where the `csproj` file is located:
+To `run` monolith app, run this command in the root of the `Api` folder:
 ```bash
 dotnet run
 ```
 
 > ### Test
 
-To `test` all microservices, run this command in the `root` of the project:
+To `test` monolith app, run this command in the `root` of the project:
 ```bash
 dotnet test
 ```
 
 > ### Documentation Apis
 
-Each microservice provides `API documentation` and navigate to `/swagger` for `Swagger OpenAPI` or `/scalar/v1` for `Scalar OpenAPI` to visit list of endpoints.
+For checking `API documentation`, navigate to `/swagger` for `Swagger OpenAPI` or `/scalar/v1` for `Scalar OpenAPI` to visit list of endpoints.
 
 As part of API testing, I created the [booking.rest](./booking.rest) file which can be run with the [REST Client](https://github.com/Huachao/vscode-restclient) `VSCode plugin`.
 
@@ -280,7 +244,7 @@ Thanks a bunch for supporting me!
 
 ## Contribution
 
-Thanks to all [contributors](https://github.com/meysamhadeli/booking-microservices/graphs/contributors), you're awesome and this wouldn't be possible without you! The goal is to build a categorized, community-driven collection of very well-known resources.
+Thanks to all [contributors](https://github.com/meysamhadeli/booking-monolith/graphs/contributors), you're awesome and this wouldn't be possible without you! The goal is to build a categorized, community-driven collection of very well-known resources.
 
 Please follow this [contribution guideline](./CONTRIBUTION.md) to submit a pull request or create the issue.
 
@@ -293,4 +257,4 @@ Please follow this [contribution guideline](./CONTRIBUTION.md) to submit a pull 
 - [https://github.com/pdevito3/MessageBusTestingInMemHarness](https://github.com/pdevito3/MessageBusTestingInMemHarness)
 
 ## License
-This project is made available under the MIT license. See [LICENSE](https://github.com/meysamhadeli/booking-microservices/blob/main/LICENSE) for details.
+This project is made available under the MIT license. See [LICENSE](https://github.com/meysamhadeli/booking-monolith/blob/main/LICENSE) for details.

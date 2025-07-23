@@ -20,4 +20,3 @@ public sealed class FakeCreateFlightMongoCommand : AutoFaker<CreateFlightMongo>
         RuleFor(r => r.IsDeleted, _ => false);
     }
 }
-

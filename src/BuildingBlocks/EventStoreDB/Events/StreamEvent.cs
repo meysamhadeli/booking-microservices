@@ -27,4 +27,3 @@ public class StreamEvent<T> : StreamEvent where T : notnull
     {
     }
 }
-
