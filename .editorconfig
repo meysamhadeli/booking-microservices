@@ -455,6 +455,8 @@ dotnet_diagnostic.CA1707.severity = None
 dotnet_diagnostic.CA1716.severity = Suggestion
 # CA1032: Implement standard exception constructors
 dotnet_diagnostic.CA1032.severity = Suggestion
+# AV1500: A method should not exceed a predefined number (60-100 lines) of lines
+dotnet_diagnostic.AV1500.severity = none
 
 ##################################################################################
 # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/

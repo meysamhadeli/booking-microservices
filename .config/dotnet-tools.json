@@ -15,6 +15,13 @@
         "dotnet-ef"
       ],
       "rollForward": false
+    },
+    "aspire.cli": {
+      "version": "9.4.0-preview.1.25378.8",
+      "commands": [
+        "aspire"
+      ],
+      "rollForward": false
     }
   }
 }

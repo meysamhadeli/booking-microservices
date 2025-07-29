@@ -217,13 +217,13 @@ dotnet dev-certs https --trust
 
 ### Aspire
 
-To run the application using the `ASPIRE App Host`, execute the following command from the solution root:
+To run the application using the `Aspire App Host`, execute the following command from the solution root:
 
 ```bash
-dotnet run --project ./src/Aspire/src/AppHost
+aspire run
 ```
 
-> Note:The `ASPIRE dashboard` will be available at `http://localhost:18888`
+> Note:The `Aspire dashboard` will be available at `http://localhost:18888`
 
 > ### Docker Compose
 
