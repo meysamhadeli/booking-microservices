@@ -30,8 +30,8 @@ public static class InfrastructureExtensions
         var configuration = builder.Configuration;
         var env = builder.Environment;
 
-        builder.AddServiceDefaults();    
-        
+        builder.AddServiceDefaults();
+
         builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
         builder.Services.AddScoped<IEventMapper, PassengerEventMapper>();
         builder.Services.AddScoped<IEventDispatcher, EventDispatcher>();
