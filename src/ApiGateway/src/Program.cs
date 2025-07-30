@@ -7,7 +7,6 @@ var appOptions = builder.Services.GetOptions<AppOptions>("AppOptions");
 Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
 
-
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 

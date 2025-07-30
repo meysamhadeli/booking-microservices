@@ -32,25 +32,7 @@ public static class InfrastructureExtensions
         var configuration = builder.Configuration;
         var env = builder.Environment;
 
-        builder.Services.AddCustomHealthCheck();
-
-        builder.AddCustomObservability();
-
-        builder.Services.AddServiceDiscovery();
-
-        builder.Services.ConfigureHttpClientDefaults(http =>
-        {
-            http.AddStandardResilienceHandler(options =>
-            {
-                var timeSpan = TimeSpan.FromMinutes(1);
-                options.CircuitBreaker.SamplingDuration = timeSpan * 2;
-                options.TotalRequestTimeout.Timeout = timeSpan * 3;
-                options.Retry.MaxRetryAttempts = 3;
-            });
-
-            // Turn on service discovery by default
-            http.AddServiceDiscovery();
-        });
+        builder.AddServiceDefaults();
 
         builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
         builder.Services.AddScoped<IEventMapper, FlightEventMapper>();
@@ -100,8 +82,7 @@ public static class InfrastructureExtensions
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.UseCustomHealthCheck();
-        app.UseCustomObservability();
+        app.UseServiceDefaults();
 
         app.UseCustomProblemDetails();
         app.UseCorrelationId();
