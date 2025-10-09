@@ -13,9 +13,6 @@
 - [Booking with Monolith Architecture](https://github.com/meysamhadeli/booking-monolith)
 
 <div>
-  <a href="https://gitpod.io/#https://github.com/meysamhadeli/booking-microservices"><img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg"/></a>
-</div>
-<div>
   <a href='https://codespaces.new/meysamhadeli/booking-microservices?quickstart=1'><img alt='Open in GitHub Codespaces' src='https://github.com/codespaces/badge.svg'></a>
 </div>
 
