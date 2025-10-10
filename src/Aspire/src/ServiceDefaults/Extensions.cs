@@ -2,8 +2,9 @@ using BuildingBlocks.HealthCheck;
 using BuildingBlocks.OpenTelemetryCollector;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-namespace Microsoft.Extensions.Hosting;
+namespace ServiceDefaults;
 
 public static class Extensions
 {

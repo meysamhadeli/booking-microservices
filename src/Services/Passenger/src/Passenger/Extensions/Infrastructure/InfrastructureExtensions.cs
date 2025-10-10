@@ -20,6 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Passenger.Data;
 using Passenger.GrpcServer.Services;
+using ServiceDefaults;
 
 namespace Passenger.Extensions.Infrastructure;
 

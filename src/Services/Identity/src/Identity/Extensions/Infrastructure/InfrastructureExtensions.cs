@@ -1,10 +1,8 @@
 using BuildingBlocks.Core;
 using BuildingBlocks.EFCore;
-using BuildingBlocks.HealthCheck;
 using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.OpenApi;
-using BuildingBlocks.OpenTelemetryCollector;
 using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.ProblemDetails;
 using BuildingBlocks.Web;
@@ -18,6 +16,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ServiceDefaults;
 
 namespace Identity.Extensions.Infrastructure;
 
