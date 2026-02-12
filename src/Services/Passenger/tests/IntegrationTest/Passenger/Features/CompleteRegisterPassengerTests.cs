@@ -6,6 +6,7 @@ using Passenger.Data;
 using Xunit;
 
 namespace Integration.Test.Passenger.Features;
+
 public class CompleteRegisterPassengerTests : PassengerIntegrationTestBase
 {
 

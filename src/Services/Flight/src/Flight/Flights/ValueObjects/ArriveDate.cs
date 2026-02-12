@@ -1,4 +1,5 @@
 namespace Flight.Flights.ValueObjects;
+
 using System;
 using Flight.Flights.Exceptions;
 

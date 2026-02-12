@@ -618,11 +618,11 @@ where TEntryPoint : class
         {
             PersistDbConnection = new NpgsqlConnection(persistOptions.ConnectionString);
             await PersistDbConnection.OpenAsync();
-            
+
             using var scope = Fixture.ServiceProvider.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<PersistMessageDbContext>();
             await dbContext.Database.EnsureCreatedAsync();
-            
+
             await Fixture.PersistMessageBackgroundService.StartAsync(
                 Fixture.CancellationTokenSource.Token);
 
@@ -645,8 +645,8 @@ where TEntryPoint : class
 
             _reSpawnerDefaultDb = await Respawner.CreateAsync(
                                       DefaultDbConnection,
-                                      new RespawnerOptions 
-                                      { 
+                                      new RespawnerOptions
+                                      {
                                           DbAdapter = DbAdapter.Postgres,
                                           TablesToIgnore = ["__EFMigrationsHistory",]
                                       });

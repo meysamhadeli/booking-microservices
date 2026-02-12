@@ -1,6 +1,7 @@
 using SmartCharging.Infrastructure.Exceptions;
 
 namespace Passenger.Exceptions;
+
 using System;
 
 public class InvalidPassengerIdException : DomainException

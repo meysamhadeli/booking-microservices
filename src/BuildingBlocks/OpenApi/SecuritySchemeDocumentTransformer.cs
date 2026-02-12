@@ -15,26 +15,26 @@ public class SecuritySchemeDocumentTransformer : IOpenApiDocumentTransformer
         document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
 
         var securitySchemes = new Dictionary<string, IOpenApiSecurityScheme>
-                              {
-                                  ["Bearer"] = new OpenApiSecurityScheme
-                                               {
-                                                   Name = "Authorization",
-                                                   Type = SecuritySchemeType.Http,
-                                                   Scheme = "bearer",
-                                                   BearerFormat = "JWT",
-                                                   In = ParameterLocation.Header,
-                                                   Description =
+        {
+            ["Bearer"] = new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description =
                                                        "Enter 'Bearer' [space] and your token in the text input below.\n\nExample: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'",
-                                               },
-                                  ["ApiKey"] = new OpenApiSecurityScheme
-                                               {
-                                                   Name = "X-API-KEY",
-                                                   Type = SecuritySchemeType.ApiKey,
-                                                   In = ParameterLocation.Header,
-                                                   Description =
+            },
+            ["ApiKey"] = new OpenApiSecurityScheme
+            {
+                Name = "X-API-KEY",
+                Type = SecuritySchemeType.ApiKey,
+                In = ParameterLocation.Header,
+                Description =
                                                        "Enter your API key in the text input below.\n\nExample: '12345-abcdef'",
-                                               },
-                              };
+            },
+        };
 
         foreach (var (key, scheme) in securitySchemes)
         {

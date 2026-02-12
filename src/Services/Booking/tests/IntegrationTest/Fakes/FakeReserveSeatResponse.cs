@@ -1,4 +1,5 @@
 namespace Integration.Test.Fakes;
+
 using Flight;
 using MassTransit;
 
