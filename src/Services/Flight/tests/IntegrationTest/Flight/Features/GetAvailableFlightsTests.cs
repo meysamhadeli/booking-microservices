@@ -34,6 +34,6 @@ public class GetAvailableFlightsTests : FlightIntegrationTestBase
 
         // Assert
         response?.Should().NotBeNull();
-        response?.Count.Should().BeGreaterOrEqualTo(2);
+        response?.Count.Should().BeGreaterThanOrEqualTo(2);
     }
 }
