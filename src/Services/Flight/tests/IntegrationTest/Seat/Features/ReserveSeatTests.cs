@@ -8,6 +8,7 @@ using Integration.Test.Fakes;
 using Xunit;
 
 namespace Integration.Test.Seat.Features;
+
 public class ReserveSeatTests : FlightIntegrationTestBase
 {
     public ReserveSeatTests(

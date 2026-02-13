@@ -12,6 +12,7 @@ using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.ProblemDetails;
 using BuildingBlocks.Web;
 using Figgle;
+using Figgle.Fonts;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

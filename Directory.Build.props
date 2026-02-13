@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -10,25 +10,22 @@
     <PackageReference Include="StyleCop.Analyzers" PrivateAssets="all" Version="1.1.118">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Meziantou.Analyzer" PrivateAssets="all" Version="2.0.182">
+    <PackageReference Include="Meziantou.Analyzer" PrivateAssets="all" Version="2.0.299">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Roslynator.Analyzers" PrivateAssets="all" Version="4.12.9">
+    <PackageReference Include="Roslynator.Analyzers" PrivateAssets="all" Version="4.15.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" PrivateAssets="all" Version="4.12.9">
+    <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" PrivateAssets="all" Version="4.15.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Roslynator.Formatting.Analyzers" PrivateAssets="all" Version="4.12.9">
+    <PackageReference Include="Roslynator.Formatting.Analyzers" PrivateAssets="all" Version="4.15.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" PrivateAssets="all" Version="17.12.19">
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" PrivateAssets="all" Version="17.14.15">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="AsyncAwaitBestPractices" PrivateAssets="all" Version="9.0.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="SerilogAnalyzer" PrivateAssets="all" Version="0.15.0">
+    <PackageReference Include="AsyncAwaitBestPractices" PrivateAssets="all" Version="10.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="CSharpGuidelinesAnalyzer" PrivateAssets="all" Version="3.8.5">

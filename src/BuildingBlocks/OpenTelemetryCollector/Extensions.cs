@@ -162,10 +162,7 @@ public static class Extensions
                     {
                         instrumentationOptions.RecordException = true;
                     })
-                    .AddEntityFrameworkCoreInstrumentation(instrumentationOptions =>
-                    {
-                        instrumentationOptions.SetDbStatementForText = true;
-                    })
+                    .AddEntityFrameworkCoreInstrumentation()
                     .AddSource(DiagnosticHeaders.DefaultListenerName)
                     .AddNpgsql()
                     // `AddSource` for adding custom activity sources

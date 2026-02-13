@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 public class SecuritySchemeDocumentTransformer : IOpenApiDocumentTransformer
 {
@@ -9,12 +9,14 @@ public class SecuritySchemeDocumentTransformer : IOpenApiDocumentTransformer
         CancellationToken cancellationToken
     )
     {
-        document.Components ??= new();
+        document.Components ??= new OpenApiComponents();
 
-        // Bearer token scheme
-        document.Components.SecuritySchemes.Add(
-            "Bearer",
-            new OpenApiSecurityScheme
+        // Initialize with the correct interface type
+        document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+
+        var securitySchemes = new Dictionary<string, IOpenApiSecurityScheme>
+        {
+            ["Bearer"] = new OpenApiSecurityScheme
             {
                 Name = "Authorization",
                 Type = SecuritySchemeType.Http,
@@ -22,22 +24,25 @@ public class SecuritySchemeDocumentTransformer : IOpenApiDocumentTransformer
                 BearerFormat = "JWT",
                 In = ParameterLocation.Header,
                 Description =
-                    "Enter 'Bearer' [space] and your token in the text input below.\n\nExample: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'",
-            }
-        );
-
-        // API Key scheme
-        document.Components.SecuritySchemes.Add(
-            "ApiKey",
-            new OpenApiSecurityScheme
+                                                       "Enter 'Bearer' [space] and your token in the text input below.\n\nExample: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'",
+            },
+            ["ApiKey"] = new OpenApiSecurityScheme
             {
                 Name = "X-API-KEY",
                 Type = SecuritySchemeType.ApiKey,
                 In = ParameterLocation.Header,
                 Description =
-                    "Enter your API key in the text input below.\n\nExample: '12345-abcdef'",
+                                                       "Enter your API key in the text input below.\n\nExample: '12345-abcdef'",
+            },
+        };
+
+        foreach (var (key, scheme) in securitySchemes)
+        {
+            if (!document.Components.SecuritySchemes.ContainsKey(key))
+            {
+                document.Components.SecuritySchemes.Add(key, scheme);
             }
-        );
+        }
 
         return Task.CompletedTask;
     }

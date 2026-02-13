@@ -1,5 +1,6 @@
 using BuildingBlocks.Web;
 using Figgle;
+using Figgle.Fonts;
 
 var builder = WebApplication.CreateBuilder(args);
 var env = builder.Environment;

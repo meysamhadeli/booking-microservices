@@ -12,6 +12,7 @@ using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.ProblemDetails;
 using BuildingBlocks.Web;
 using Figgle;
+using Figgle.Fonts;
 using Flight.Data;
 using Flight.Data.Seed;
 using Flight.GrpcServer.Services;

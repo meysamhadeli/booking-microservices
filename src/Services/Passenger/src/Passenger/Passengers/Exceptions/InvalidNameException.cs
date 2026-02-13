@@ -1,4 +1,5 @@
 namespace Passenger.Passengers.Exceptions;
+
 using BuildingBlocks.Exception;
 
 

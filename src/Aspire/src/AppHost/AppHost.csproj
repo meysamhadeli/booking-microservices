@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Sdk Name="Aspire.AppHost.SDK" Version="9.3.1"/>
+  <Sdk Name="Aspire.AppHost.SDK" Version="13.1.1"/>
   
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsAspireHost>true</IsAspireHost>
@@ -12,13 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.1" />
-    <PackageReference Include="Aspire.Hosting.Docker" Version="9.3.1-preview.1.25305.6" />
-    <PackageReference Include="Aspire.Hosting.MongoDB" Version="9.3.1" />
-    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.3.1" />
-    <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="9.3.1" />
-    <PackageReference Include="Aspire.Hosting.Redis" Version="9.3.1" />
-    <PackageReference Include="CommunityToolkit.Aspire.Hosting.EventStore" Version="9.6.0" />
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="13.1.1" />
+    <PackageReference Include="Aspire.Hosting.Docker" Version="13.1.1-preview.1.26105.8" />
+    <PackageReference Include="Aspire.Hosting.MongoDB" Version="13.1.1" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.1.1" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="13.1.1" />
+    <PackageReference Include="Aspire.Hosting.Redis" Version="13.1.1" />
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.EventStore" Version="9.9.0" />
     <PackageReference Include="Elastic.Aspire.Hosting.Elasticsearch" Version="9.3.0" />
   </ItemGroup>
 

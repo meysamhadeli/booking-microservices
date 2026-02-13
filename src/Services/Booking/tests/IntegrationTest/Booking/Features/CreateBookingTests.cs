@@ -40,7 +40,7 @@ namespace Integration.Test.Booking.Features
             var response = await Fixture.SendAsync(command);
 
             // Assert
-            response?.Id.Should().BeGreaterOrEqualTo(0);
+            response?.Id.Should().BeGreaterThanOrEqualTo(0);
 
             (await Fixture.WaitForPublishing<BookingCreated>()).Should().Be(true);
         }

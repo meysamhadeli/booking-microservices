@@ -7,6 +7,7 @@ using BuildingBlocks.PersistMessageProcessor;
 using BuildingBlocks.ProblemDetails;
 using BuildingBlocks.Web;
 using Figgle;
+using Figgle.Fonts;
 using FluentValidation;
 using Identity.Data;
 using Identity.Data.Seed;

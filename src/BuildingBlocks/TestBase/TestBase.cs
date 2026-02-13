@@ -24,6 +24,7 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using NSubstitute;
 using Respawn;
+using Respawn.Graph;
 using WebMotions.Fake.Authentication.JwtBearer;
 using Xunit;
 using Xunit.Abstractions;
@@ -579,16 +580,18 @@ where TEntryPoint : class
     private Respawner _reSpawnerPersistDb;
     private NpgsqlConnection DefaultDbConnection { get; set; }
     private NpgsqlConnection PersistDbConnection { get; set; }
-
+    private Type _dbContextType;
 
     public TestFixtureCore(
         TestFixture<TEntryPoint> integrationTestFixture,
-        ITestOutputHelper outputHelper
+        ITestOutputHelper outputHelper,
+        Type dbContextType = null
     )
     {
         Fixture = integrationTestFixture;
         integrationTestFixture.RegisterServices(RegisterTestsServices);
         integrationTestFixture.Logger = integrationTestFixture.CreateLogger(outputHelper);
+        _dbContextType = dbContextType;
     }
 
     public TestFixture<TEntryPoint> Fixture { get; }
@@ -613,25 +616,40 @@ where TEntryPoint : class
 
         if (!string.IsNullOrEmpty(persistOptions?.ConnectionString))
         {
-            await Fixture.PersistMessageBackgroundService.StartAsync(
-                Fixture.CancellationTokenSource.Token);
-
             PersistDbConnection = new NpgsqlConnection(persistOptions.ConnectionString);
             await PersistDbConnection.OpenAsync();
+
+            using var scope = Fixture.ServiceProvider.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<PersistMessageDbContext>();
+            await dbContext.Database.EnsureCreatedAsync();
+
+            await Fixture.PersistMessageBackgroundService.StartAsync(
+                Fixture.CancellationTokenSource.Token);
 
             _reSpawnerPersistDb = await Respawner.CreateAsync(
                                       PersistDbConnection,
                                       new RespawnerOptions { DbAdapter = DbAdapter.Postgres });
         }
 
-        if (!string.IsNullOrEmpty(postgresOptions?.ConnectionString))
+        if (!string.IsNullOrEmpty(postgresOptions?.ConnectionString) && _dbContextType != null)
         {
             DefaultDbConnection = new NpgsqlConnection(postgresOptions.ConnectionString);
             await DefaultDbConnection.OpenAsync();
 
+            using var scope = Fixture.ServiceProvider.CreateScope();
+
+            if (scope.ServiceProvider.GetRequiredService(_dbContextType) is DbContext dbContext)
+            {
+                await dbContext.Database.EnsureCreatedAsync();
+            }
+
             _reSpawnerDefaultDb = await Respawner.CreateAsync(
                                       DefaultDbConnection,
-                                      new RespawnerOptions { DbAdapter = DbAdapter.Postgres });
+                                      new RespawnerOptions
+                                      {
+                                          DbAdapter = DbAdapter.Postgres,
+                                          TablesToIgnore = ["__EFMigrationsHistory",]
+                                      });
 
             await SeedDataAsync();
         }
@@ -735,7 +753,7 @@ where TWContext : DbContext
     protected TestWriteBase(
         TestWriteFixture<TEntryPoint, TWContext> integrationTestFixture,
         ITestOutputHelper outputHelper = null
-    ) : base(integrationTestFixture, outputHelper)
+    ) : base(integrationTestFixture, outputHelper, typeof(TWContext))
     {
         Fixture = integrationTestFixture;
     }
@@ -753,7 +771,7 @@ where TRContext : MongoDbContext
         TestFixture<TEntryPoint, TWContext, TRContext> integrationTestFixture,
         ITestOutputHelper outputHelper = null
     ) :
-        base(integrationTestFixture, outputHelper)
+        base(integrationTestFixture, outputHelper, typeof(TWContext))
     {
         Fixture = integrationTestFixture;
     }
