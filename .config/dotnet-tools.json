@@ -3,25 +3,22 @@
   "isRoot": true,
   "tools": {
     "dotnet-outdated-tool": {
-      "version": "4.6.4",
+      "version": "4.6.9",
       "commands": [
         "dotnet-outdated"
-      ],
-      "rollForward": false
+      ]
     },
     "dotnet-ef": {
-      "version": "9.0.0",
+      "version": "10.0.3",
       "commands": [
         "dotnet-ef"
-      ],
-      "rollForward": false
+      ]
     },
     "aspire.cli": {
-      "version": "9.4.0-preview.1.25378.8",
+      "version": "13.1.1",
       "commands": [
         "aspire"
-      ],
-      "rollForward": false
+      ]
     }
   }
 }
