@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
-using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.TestBase;
+using Woo.Core.EventBus.Messages;
+using Woo.TestBase;
 using Flight.Api;
 using Flight.Data;
 using FluentAssertions;

@@ -1,0 +1,15 @@
+C:\Users\Pc\Desktop\booking-microservices\src\BuildingBlocks\src\Utils\bin\Debug\net10.0\Woo.Utils.deps.json
+C:\Users\Pc\Desktop\booking-microservices\src\BuildingBlocks\src\Utils\bin\Debug\net10.0\Woo.Utils.dll
+C:\Users\Pc\Desktop\booking-microservices\src\BuildingBlocks\src\Utils\bin\Debug\net10.0\Woo.Utils.pdb
+C:\Users\Pc\Desktop\booking-microservices\src\BuildingBlocks\src\Utils\obj\Debug\net10.0\Woo.Utils.csproj.AssemblyReference.cache
+C:\Users\Pc\Desktop\booking-microservices\src\BuildingBlocks\src\Utils\obj\Debug\net10.0\Woo.Utils.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Pc\Desktop\booking-microservices\src\BuildingBlocks\src\Utils\obj\Debug\net10.0\Woo.Utils.AssemblyInfoInputs.cache
+C:\Users\Pc\Desktop\booking-microservices\src\BuildingBlocks\src\Utils\obj\Debug\net10.0\Woo.Utils.AssemblyInfo.cs
+C:\Users\Pc\Desktop\booking-microservices\src\BuildingBlocks\src\Utils\obj\Debug\net10.0\Woo.Utils.csproj.CoreCompileInputs.cache
+C:\Users\Pc\Desktop\booking-microservices\src\BuildingBlocks\src\Utils\obj\Debug\net10.0\Woo.Utils.sourcelink.json
+C:\Users\Pc\Desktop\booking-microservices\src\BuildingBlocks\src\Utils\obj\Debug\net10.0\Woo.Utils.dll
+C:\Users\Pc\Desktop\booking-microservices\src\BuildingBlocks\src\Utils\obj\Debug\net10.0\refint\Woo.Utils.dll
+C:\Users\Pc\Desktop\booking-microservices\src\BuildingBlocks\src\Utils\obj\Debug\net10.0\Woo.Utils.pdb
+C:\Users\Pc\Desktop\booking-microservices\src\BuildingBlocks\src\Utils\obj\Debug\net10.0\ref\Woo.Utils.dll
+C:\Users\Pc\Desktop\booking-microservices\src\BuildingBlocks\src\Utils\bin\Debug\net10.0\Woo.Utils.runtimeconfig.json
+C:\Users\Pc\Desktop\booking-microservices\src\BuildingBlocks\src\Utils\obj\Debug\net10.0\Woo.Utils.genruntimeconfig.cache

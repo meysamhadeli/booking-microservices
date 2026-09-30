@@ -1,0 +1,41 @@
+name: Feature request
+description: Propose a focused improvement to a Woo library.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: input
+    id: module
+    attributes:
+      label: Module
+      description: Which library should own this capability?
+      placeholder: src/OpenTelemetryCollector
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What consumer problem should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API or behavior
+      description: Describe the smallest useful public surface and compatibility impact.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope checks
+      options:
+        - label: I checked whether an existing Woo module already owns this concern.
+          required: true
+        - label: I considered direct package and ProjectReference impact.
+          required: true

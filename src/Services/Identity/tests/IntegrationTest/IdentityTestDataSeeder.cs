@@ -1,7 +1,7 @@
-using BuildingBlocks.Constants;
-using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.Core;
-using BuildingBlocks.EFCore;
+using Woo.Core.Constants;
+using Woo.Core.EventBus.Messages;
+using Woo.Core;
+using Woo.EFCore;
 using Identity.Data.Seed;
 using Identity.Identity.Constants;
 using Identity.Identity.Models;

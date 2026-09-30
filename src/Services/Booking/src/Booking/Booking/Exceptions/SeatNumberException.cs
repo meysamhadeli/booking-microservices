@@ -1,4 +1,4 @@
-using BuildingBlocks.Exception;
+using Woo.Core.Exception;
 
 namespace Booking.Booking.Exceptions;
 

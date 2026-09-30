@@ -1,5 +1,5 @@
-using BuildingBlocks.HealthCheck;
-using BuildingBlocks.OpenTelemetryCollector;
+using Woo.HealthCheck;
+using Woo.OpenTelemetryCollector;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

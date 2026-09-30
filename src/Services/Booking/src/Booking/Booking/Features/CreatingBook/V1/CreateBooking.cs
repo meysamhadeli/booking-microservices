@@ -1,12 +1,12 @@
 namespace Booking.Booking.Features.CreatingBook.V1;
 
 using Ardalis.GuardClauses;
-using BuildingBlocks.Core;
-using BuildingBlocks.Core.CQRS;
-using BuildingBlocks.Core.Event;
-using BuildingBlocks.Core.Model;
-using BuildingBlocks.EventStoreDB.Repository;
-using BuildingBlocks.Web;
+using Woo.Core;
+using Woo.Core.CQRS;
+using Woo.Core.Event;
+using Woo.Core.Model;
+using Woo.EventStoreDB.Repository;
+using Woo.Web;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using Flight;

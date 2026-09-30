@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.csproj" IsAspireProjectResource="false" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\src\**\*.csproj" IsAspireProjectResource="false" />
   </ItemGroup>
 
 </Project>

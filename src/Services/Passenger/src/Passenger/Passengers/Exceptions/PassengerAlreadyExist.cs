@@ -1,6 +1,6 @@
 namespace Passenger.Passengers.Exceptions;
 
-using BuildingBlocks.Exception;
+using Woo.Core.Exception;
 
 public class PassengerNotExist : BadRequestException
 {

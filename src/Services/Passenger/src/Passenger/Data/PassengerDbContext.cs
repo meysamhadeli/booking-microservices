@@ -1,6 +1,6 @@
 using System.Reflection;
-using BuildingBlocks.EFCore;
-using BuildingBlocks.Web;
+using Woo.EFCore;
+using Woo.Web;
 using Microsoft.EntityFrameworkCore;
 
 namespace Passenger.Data;

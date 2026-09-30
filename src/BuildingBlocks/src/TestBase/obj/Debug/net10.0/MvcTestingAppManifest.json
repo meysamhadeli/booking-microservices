@@ -1,0 +1,8 @@
+{
+  "Woo.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\Pc\\Desktop\\booking-microservices\\src\\BuildingBlocks\\src\\Core",
+  "Woo.EFCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\Pc\\Desktop\\booking-microservices\\src\\BuildingBlocks\\src\\EFCore",
+  "Woo.Mongo, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\Pc\\Desktop\\booking-microservices\\src\\BuildingBlocks\\src\\Mongo",
+  "Woo.Polly, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\Pc\\Desktop\\booking-microservices\\src\\BuildingBlocks\\src\\Polly",
+  "Woo.Utils, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\Pc\\Desktop\\booking-microservices\\src\\BuildingBlocks\\src\\Utils",
+  "Woo.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\Pc\\Desktop\\booking-microservices\\src\\BuildingBlocks\\src\\Web"
+}

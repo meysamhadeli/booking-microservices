@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Aspire\src\ServiceDefaults\ServiceDefaults.csproj" />
-    <ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.csproj" />
+    <ProjectReference Include="..\..\..\..\BuildingBlocks\src\**\*.csproj" />
   </ItemGroup>
 
 </Project>

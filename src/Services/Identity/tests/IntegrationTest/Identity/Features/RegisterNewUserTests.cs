@@ -1,5 +1,5 @@
-using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.TestBase;
+using Woo.Core.EventBus.Messages;
+using Woo.TestBase;
 using FluentAssertions;
 using Identity.Api;
 using Identity.Data;

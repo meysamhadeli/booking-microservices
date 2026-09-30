@@ -1,6 +1,6 @@
 using Booking.Data;
-using BuildingBlocks.EventStoreDB.Events;
-using BuildingBlocks.EventStoreDB.Projections;
+using Woo.EventStoreDB.Events;
+using Woo.EventStoreDB.Projections;
 using MediatR;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
