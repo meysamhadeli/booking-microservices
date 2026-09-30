@@ -1,10 +1,10 @@
 namespace Passenger.Identity.Consumers.RegisteringNewUser.V1;
 
 using Ardalis.GuardClauses;
-using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.Core;
-using BuildingBlocks.Core.Event;
-using BuildingBlocks.Web;
+using Woo.Core.EventBus.Messages;
+using Woo.Core;
+using Woo.Core.Event;
+using Woo.Web;
 using Data;
 using Humanizer;
 using Microsoft.EntityFrameworkCore;

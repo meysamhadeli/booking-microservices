@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using BuildingBlocks.Constants;
-using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.Core;
-using BuildingBlocks.EFCore;
+using Woo.Core.Constants;
+using Woo.Core.EventBus.Messages;
+using Woo.Core;
+using Woo.EFCore;
 using Identity.Identity.Constants;
 using Identity.Identity.Models;
 using Microsoft.AspNetCore.Identity;

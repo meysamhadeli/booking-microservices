@@ -1,7 +1,7 @@
 using Ardalis.GuardClauses;
-using BuildingBlocks.Core.CQRS;
-using BuildingBlocks.Core.Event;
-using BuildingBlocks.Web;
+using Woo.Core.CQRS;
+using Woo.Core.Event;
+using Woo.Web;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Flight.Data;
 using Flight.Flights.Exceptions;

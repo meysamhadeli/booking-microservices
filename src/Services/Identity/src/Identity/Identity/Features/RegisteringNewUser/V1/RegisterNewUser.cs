@@ -1,4 +1,4 @@
-using BuildingBlocks.Constants;
+using Woo.Core.Constants;
 
 namespace Identity.Identity.Features.RegisteringNewUser.V1;
 
@@ -7,10 +7,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
-using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.Core;
-using BuildingBlocks.Core.CQRS;
-using BuildingBlocks.Web;
+using Woo.Core.EventBus.Messages;
+using Woo.Core;
+using Woo.Core.CQRS;
+using Woo.Web;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using FluentValidation;

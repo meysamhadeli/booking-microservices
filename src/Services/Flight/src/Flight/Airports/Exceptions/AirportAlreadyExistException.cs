@@ -1,5 +1,5 @@
 using System.Net;
-using BuildingBlocks.Exception;
+using Woo.Core.Exception;
 
 namespace Flight.Airports.Exceptions;
 

@@ -1,10 +1,10 @@
-using BuildingBlocks.Core;
-using BuildingBlocks.EFCore;
-using BuildingBlocks.Mapster;
-using BuildingBlocks.Wolverine;
-using BuildingBlocks.OpenApi;
-using BuildingBlocks.ProblemDetails;
-using BuildingBlocks.Web;
+using Woo.Core;
+using Woo.EFCore;
+using Woo.Mapster;
+using Woo.Wolverine;
+using Woo.OpenApi;
+using Woo.ProblemDetails;
+using Woo.Web;
 using Figgle;
 using Figgle.Fonts;
 using FluentValidation;

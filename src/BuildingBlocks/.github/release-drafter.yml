@@ -1,0 +1,122 @@
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+change-template: '- $TITLE @$AUTHOR'
+change-title-escapes: '\<*_&'
+
+header: |
+  ## What Changed 👀
+
+template: |
+  $CHANGES
+
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
+
+categories:
+  - title: '🚀 Features'
+    exclusive: true
+    semver-increment: minor
+    when:
+      - conventional:
+          type: 'feat'
+      - labels:
+          - 'feature'
+          - 'enhancement'
+  - title: '🐛 Bug Fixes'
+    exclusive: true
+    when:
+      - conventional:
+          types:
+            - 'fix'
+            - 'perf'
+      - labels:
+          - 'bug'
+          - 'fix'
+  - title: '♻️ Refactor'
+    exclusive: true
+    when:
+      - conventional:
+          type: 'refactor'
+      - labels:
+          - 'refactor'
+  - title: '🧰 Maintenance'
+    exclusive: true
+    when:
+      - conventional:
+          types:
+            - 'chore'
+            - 'build'
+            - 'ci'
+      - labels:
+          - 'chore'
+          - 'dependencies'
+          - 'deps'
+  - title: '🧪 Test'
+    exclusive: true
+    when:
+      - conventional:
+          type: 'test'
+      - labels:
+          - 'test'
+  - title: '📝 Other changes'
+    exclusive: true
+    when:
+      - conventional:
+          types:
+            - 'docs'
+            - 'style'
+            - 'revert'
+      - labels:
+          - 'documentation'
+          - 'docs'
+  - title: '📝 Other changes'
+    exclusive: true
+
+version-resolver:
+  major:
+    labels:
+      - 'major'
+  minor:
+    labels:
+      - 'minor'
+      - 'feature'
+  patch:
+    labels:
+      - 'patch'
+      - 'bug'
+      - 'fix'
+  default: patch
+
+exclude-labels:
+  - 'skip-changelog'
+  - 'duplicate'
+  - 'invalid'
+  - 'question'
+
+autolabeler:
+  - label: 'feature'
+    branch:
+      - '/^(feat|feature)\\/.*/'
+  - label: 'bug'
+    branch:
+      - '/^(fix|bug)\\/.*/'
+  - label: 'documentation'
+    branch:
+      - '/^(docs|documentation)\\/.*/'
+  - label: 'test'
+    branch:
+      - '/^test\\/.*/'
+  - label: 'refactor'
+    branch:
+      - '/^refactor\\/.*/'
+  - label: 'ci'
+    branch:
+      - '/^(ci|build)\\/.*/'
+  - label: 'security'
+    branch:
+      - '/^security\\/.*/'
+  - label: 'minor'
+    branch:
+      - '/^(feat|feature)\\/.*/'
+  - label: 'patch'
+    branch:
+      - '/^(fix|bug)\\/.*/'

@@ -1,4 +1,4 @@
-using BuildingBlocks.EventStoreDB.Events;
+using Woo.EventStoreDB.Events;
 
 namespace Booking.Booking.Models;
 

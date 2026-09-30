@@ -1,8 +1,8 @@
 namespace Passenger.Passengers.Features.GettingPassengerById.V1;
 
 using Ardalis.GuardClauses;
-using BuildingBlocks.Core.CQRS;
-using BuildingBlocks.Web;
+using Woo.Core.CQRS;
+using Woo.Web;
 using Duende.IdentityServer.EntityFramework.Entities;
 using FluentValidation;
 using Mapster;

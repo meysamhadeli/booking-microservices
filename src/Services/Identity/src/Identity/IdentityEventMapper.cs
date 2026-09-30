@@ -1,5 +1,5 @@
-using BuildingBlocks.Core;
-using BuildingBlocks.Core.Event;
+using Woo.Core;
+using Woo.Core.Event;
 
 namespace Identity;
 

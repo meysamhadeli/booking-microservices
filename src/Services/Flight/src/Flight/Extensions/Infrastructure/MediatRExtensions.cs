@@ -1,7 +1,7 @@
-using BuildingBlocks.Caching;
-using BuildingBlocks.EFCore;
-using BuildingBlocks.Logging;
-using BuildingBlocks.Validation;
+using Woo.Caching;
+using Woo.EFCore;
+using Woo.Logging;
+using Woo.Validation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 

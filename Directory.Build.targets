@@ -1,0 +1,16 @@
+<Project>
+  <ItemGroup>
+    <Using Include="MassTransit" Condition="$([System.String]::Copy('$(MSBuildProjectName)').StartsWith('Woo.')) == 'false'" />
+    <Using Include="MassTransit.NewId" Alias="NewId" Condition="$([System.String]::Copy('$(MSBuildProjectName)').StartsWith('Woo.')) == 'false'" />
+    <PackageReference Include="MassTransit" Version="8.3.6" Condition="'$(MSBuildProjectName)' == 'Woo.Core'" />
+    <PackageReference Update="NewId" ExcludeAssets="compile;runtime" />
+  </ItemGroup>
+
+  <Target Name="RemoveStandaloneNewIdReference" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <Reference Remove="NewId" />
+      <ReferencePath Remove="@(ReferencePath)" Condition="'%(ReferencePath.Filename)' == 'NewId'" />
+      <ReferencePathWithRefAssemblies Remove="@(ReferencePathWithRefAssemblies)" Condition="'%(ReferencePathWithRefAssemblies.Filename)' == 'NewId'" />
+    </ItemGroup>
+  </Target>
+</Project>

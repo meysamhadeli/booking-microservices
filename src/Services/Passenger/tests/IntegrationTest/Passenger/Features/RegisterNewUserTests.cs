@@ -1,5 +1,5 @@
-using BuildingBlocks.TestBase;
-using BuildingBlocks.Contracts.EventBus.Messages;
+using Woo.TestBase;
+using Woo.Core.EventBus.Messages;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Passenger.Data;

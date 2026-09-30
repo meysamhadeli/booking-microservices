@@ -1,6 +1,6 @@
-using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.Core;
-using BuildingBlocks.Core.Event;
+using Woo.Core.EventBus.Messages;
+using Woo.Core;
+using Woo.Core.Event;
 
 namespace Passenger;
 

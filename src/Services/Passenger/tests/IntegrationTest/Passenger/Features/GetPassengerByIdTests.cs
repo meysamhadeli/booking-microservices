@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using BuildingBlocks.TestBase;
+using Woo.TestBase;
 using FluentAssertions;
 using Integration.Test.Fakes;
 using Passenger;

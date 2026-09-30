@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using Booking.Api;
 using Booking.Data;
-using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.TestBase;
+using Woo.Core.EventBus.Messages;
+using Woo.TestBase;
 using Flight;
 using FluentAssertions;
 using Grpc.Core;

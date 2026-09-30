@@ -1,4 +1,4 @@
-using BuildingBlocks.Core.Model;
+using Woo.Core.Model;
 
 namespace Flight.Aircrafts.Models;
 
