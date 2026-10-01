@@ -26,6 +26,7 @@
 - [The Domain and Bounded Context - Service Boundary](#the-domain-and-bounded-context---service-boundary)
 - [Structure of Project](#structure-of-project)
 - [Development Setup](#development-setup)
+  - [BuildingBlocks Git Submodule](#buildingblocks-git-submodule)
   - [Dotnet Tools Packages](#dotnet-tools-packages)
   - [Husky](#husky)
   - [Upgrade Nuget Packages](#upgrade-nuget-packages)
@@ -170,6 +171,43 @@ For asynchronous messaging, this project uses `Wolverine` with `RabbitMQ` transp
 
 
 ## Development Setup
+
+### BuildingBlocks Git Submodule
+
+`src/BuildingBlocks` is a Git submodule linked to the [Woo repository](https://github.com/meysamhadeli/woo). The parent project stores a specific Woo commit, not a copy of its files.
+
+Clone with the submodule:
+
+```bash
+git clone --recurse-submodules https://github.com/meysamhadeli/booking-microservices.git
+```
+
+For an existing clone:
+
+```bash
+git submodule update --init --recursive
+```
+
+Update `BuildingBlocks` from the latest `main` commit in the `Woo` repository:
+
+```bash
+git -C src/BuildingBlocks switch main
+git -C src/BuildingBlocks pull --ff-only origin main
+git add src/BuildingBlocks
+git commit -m "chore: update buildingblocks submodule"
+```
+
+The submodule commit must be pushed to Woo before pushing the parent commit. To change Woo itself:
+
+```bash
+cd src/BuildingBlocks
+git add .
+git commit -m "feat: describe Woo change"
+git push origin main
+cd ../..
+git add src/BuildingBlocks
+git commit -m "chore: update buildingblocks submodule"
+```
 
 ### Dotnet Tools Packages
 For installing our requirement packages with .NET cli tools, we need to install `dotnet tool manifest`.

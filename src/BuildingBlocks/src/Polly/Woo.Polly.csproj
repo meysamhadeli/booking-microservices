@@ -1,8 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><TargetFramework>net10.0</TargetFramework><RootNamespace>Woo.Polly</RootNamespace><AssemblyName>Woo.Polly</AssemblyName></PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="10.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.3" />
-    <PackageReference Include="Polly" Version="8.6.5" />
-  </ItemGroup>
-</Project>

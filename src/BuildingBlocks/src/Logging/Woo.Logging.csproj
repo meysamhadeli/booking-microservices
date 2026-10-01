@@ -1,7 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><TargetFramework>net10.0</TargetFramework><RootNamespace>Woo.Logging</RootNamespace><AssemblyName>Woo.Logging</AssemblyName></PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="MediatR" Version="14.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.3" />
-  </ItemGroup>
-</Project>

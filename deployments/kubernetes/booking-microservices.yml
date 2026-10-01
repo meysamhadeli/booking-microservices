@@ -178,7 +178,7 @@ spec:
     spec:
       containers:
       - name: tempo
-        image: grafana/tempo:latest
+        image: grafana/tempo:2.7.0
         args:
         - "-config.file=/etc/tempo.yaml"
         ports:
@@ -237,7 +237,7 @@ spec:
     spec:
       containers:
       - name: loki
-        image: grafana/loki:latest
+        image: grafana/loki:3.3.2
         args:
         - "-config.file=/etc/loki/local-config.yaml"
         ports:
@@ -290,7 +290,7 @@ spec:
     spec:
       containers:
       - name: eventstore
-        image: eventstore/eventstore:latest
+        image: eventstore/eventstore:24.10.5-bookworm-slim
         env:
         - name: EVENTSTORE_CLUSTER_SIZE
           value: "1"
@@ -401,7 +401,7 @@ spec:
     spec:
       containers:
       - name: zipkin
-        image: openzipkin/zipkin:latest
+        image: openzipkin/zipkin:3.6.1
         ports:
         - containerPort: 9411
         resources:
@@ -444,7 +444,7 @@ spec:
     spec:
       containers:
       - name: otel-collector
-        image: otel/opentelemetry-collector-contrib:latest
+        image: otel/opentelemetry-collector-contrib:0.116.1
         args: ["--config=/etc/otelcol-contrib/config.yaml"]
         ports:
         - containerPort: 11888
@@ -514,7 +514,7 @@ spec:
     spec:
       containers:
       - name: prometheus
-        image: prom/prometheus:latest
+        image: prom/prometheus:v3.1.0
         args:
         - "--config.file=/etc/prometheus/prometheus.yml"
         - "--storage.tsdb.path=/prometheus"
@@ -571,7 +571,7 @@ spec:
     spec:
       containers:
       - name: grafana
-        image: grafana/grafana:latest
+        image: grafana/grafana:11.4.0
         env:
         - name: GF_INSTALL_PLUGINS
           value: "grafana-clock-panel,grafana-simple-json-datasource"
@@ -641,7 +641,7 @@ spec:
     spec:
       containers:
       - name: node-exporter
-        image: prom/node-exporter:latest
+        image: prom/node-exporter:v1.12.1
         args:
         - "--path.procfs=/host/proc"
         - "--path.rootfs=/rootfs"
@@ -700,7 +700,7 @@ spec:
     spec:
       containers:
       - name: cadvisor
-        image: gcr.io/cadvisor/cadvisor:latest
+        image: google/cadvisor:v0.33.0
         ports:
         - containerPort: 8080
         volumeMounts:
@@ -767,7 +767,7 @@ spec:
     spec:
       containers:
       - name: mongo
-        image: mongo:latest
+        image: mongo:8.0
         ports:
         - containerPort: 27017
         resources:
@@ -809,7 +809,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:latest
+        image: postgres:17
         env:
         - name: POSTGRES_USER
           value: postgres
@@ -867,7 +867,7 @@ spec:
     spec:
       containers:
       - name: rabbitmq
-        image: rabbitmq:management
+        image: rabbitmq:4.3.6-management
         ports:
         - containerPort: 5672
         - containerPort: 15672
@@ -912,7 +912,7 @@ spec:
     spec:
       containers:
       - name: redis
-        image: redis
+        image: redis:7.4
         ports:
         - containerPort: 6379
         resources:
