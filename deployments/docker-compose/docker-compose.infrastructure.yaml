@@ -12,7 +12,7 @@ services:
   #  rabbitmq
   #######################################################
   rabbitmq:
-    image: rabbitmq:management
+    image: rabbitmq:4.3.6-management
     container_name: rabbitmq
     restart: unless-stopped
     ports:
@@ -27,7 +27,7 @@ services:
   #  postgres
   #######################################################
   postgres:
-    image: postgres:latest
+    image: postgres:17
     container_name: postgres
     restart: unless-stopped
     ports:
@@ -52,7 +52,7 @@ services:
   #######################################################
   eventstore:
       container_name: eventstore
-      image: eventstore/eventstore:latest
+      image: eventstore/eventstore:24.10.5-bookworm-slim
       restart: unless-stopped
       environment:
          - EVENTSTORE_CLUSTER_SIZE=1
@@ -71,7 +71,7 @@ services:
   # #  Mongo
   # #######################################################
   mongo:
-    image: mongo:latest
+    image: mongo:8.0
     container_name: mongo
     restart: unless-stopped
     # environment:
@@ -87,7 +87,7 @@ services:
   # #  Redis
   # #######################################################
   redis:
-    image: redis
+    image: redis:7.4
     container_name: redis
     restart: unless-stopped
     ports:
@@ -121,7 +121,7 @@ services:
   # # https://zipkin.io/pages/quickstart
   # #######################################################
   zipkin-all-in-one:
-    image: openzipkin/zipkin:latest
+    image: openzipkin/zipkin:3.6.1
     container_name: zipkin-all-in-one
     restart: unless-stopped
     ports:
@@ -139,7 +139,7 @@ services:
   # # if we need more components like `elasticsearch` we should use `otel/opentelemetry-collector-contrib` image of `https://github.com/open-telemetry/opentelemetry-collector-contrib` repository.
   # #######################################################
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:latest
+    image: otel/opentelemetry-collector-contrib:0.116.1
     container_name: otel-collector
     restart: unless-stopped
     command: ["--config=/etc/otelcol-contrib/config.yaml"]
@@ -164,7 +164,7 @@ services:
   # # https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/prometheus-config-examples/docker-compose-linux/
   # #######################################################
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v3.1.0
     restart: unless-stopped
     ports:
       - "9090:9090"
@@ -189,7 +189,7 @@ services:
   # # https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/prometheus-config-examples/docker-compose-linux/
   # #######################################################
   node-exporter:
-    image: prom/node-exporter:latest
+    image: prom/node-exporter:v1.12.1
     container_name: node-exporter
     restart: unless-stopped
     volumes:
@@ -214,7 +214,7 @@ services:
   # # https://github.com/grafana/intro-to-mltp/blob/main/grafana/provisioning/datasources/datasources.yaml
   # #######################################################
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:11.4.0
     container_name: grafana
     restart: unless-stopped
     environment:
@@ -246,7 +246,7 @@ services:
   # # https://github.com/grafana/tempo/tree/main/example/docker-compose
   # #######################################################
   tempo:
-    image: grafana/tempo:latest
+    image: grafana/tempo:2.7.0
     container_name: tempo
     restart: unless-stopped
     command: [ "-config.file=/etc/tempo.yaml" ]
@@ -267,7 +267,7 @@ services:
   # # https://github.com/grafana/loki/blob/main/examples/getting-started/docker-compose.yaml
   # #######################################################
   loki:
-    image: grafana/loki:latest
+    image: grafana/loki:3.3.2
     hostname: loki
     container_name: loki
     ports:
@@ -335,7 +335,7 @@ services:
   #   # cadvisor
   #   #######################################################
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
+    image: google/cadvisor:v0.33.0
     container_name: cadvisor
     restart: unless-stopped
     ports:
