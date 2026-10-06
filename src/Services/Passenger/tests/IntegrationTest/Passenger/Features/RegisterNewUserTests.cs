@@ -1,5 +1,5 @@
-using Woo.TestBase;
-using Woo.Core.EventBus.Messages;
+using Griffin.TestBase;
+using Griffin.Core.EventBus.Messages;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Passenger.Data;

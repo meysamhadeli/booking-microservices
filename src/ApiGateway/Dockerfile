@@ -6,9 +6,10 @@ WORKDIR /src
 COPY .editorconfig .
 COPY global.json .
 COPY Directory.Build.props .
+COPY Directory.Build.targets .
 
 # Copy project files first (better Docker caching)
-COPY src/BuildingBlocks/BuildingBlocks.csproj src/BuildingBlocks/
+COPY src/BuildingBlocks/ src/BuildingBlocks/
 COPY src/ApiGateway/src/ApiGateway.csproj src/ApiGateway/src/
 COPY src/Aspire/src/ServiceDefaults/ServiceDefaults.csproj src/Aspire/src/ServiceDefaults/
 

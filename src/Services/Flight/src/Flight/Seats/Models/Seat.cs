@@ -1,5 +1,5 @@
 using System;
-using Woo.Core.Model;
+using Griffin.Core.Model;
 
 namespace Flight.Seats.Models;
 

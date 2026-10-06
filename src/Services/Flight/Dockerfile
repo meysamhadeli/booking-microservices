@@ -6,9 +6,10 @@ WORKDIR /src
 COPY .editorconfig .
 COPY global.json .
 COPY Directory.Build.props .
+COPY Directory.Build.targets .
 
 # Copy project files first (better layer caching)
-COPY src/BuildingBlocks/BuildingBlocks.csproj src/BuildingBlocks/
+COPY src/BuildingBlocks/ src/BuildingBlocks/
 COPY src/Services/Flight/src/Flight/Flight.csproj src/Services/Flight/src/Flight/
 COPY src/Services/Flight/src/Flight.Api/Flight.Api.csproj src/Services/Flight/src/Flight.Api/
 COPY src/Aspire/src/ServiceDefaults/ServiceDefaults.csproj src/Aspire/src/ServiceDefaults/

@@ -1,4 +1,4 @@
-using Woo.TestBase;
+using Griffin.TestBase;
 using Passenger.Api;
 using Passenger.Data;
 using Xunit;

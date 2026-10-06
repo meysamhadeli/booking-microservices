@@ -6,9 +6,10 @@ WORKDIR /src
 COPY .editorconfig .
 COPY global.json .
 COPY Directory.Build.props .
+COPY Directory.Build.targets .
 
 # Copy project files first (for Docker layer caching)
-COPY src/BuildingBlocks/BuildingBlocks.csproj src/BuildingBlocks/
+COPY src/BuildingBlocks/ src/BuildingBlocks/
 COPY src/Services/Booking/src/Booking/Booking.csproj src/Services/Booking/src/Booking/
 COPY src/Services/Booking/src/Booking.Api/Booking.Api.csproj src/Services/Booking/src/Booking.Api/
 COPY src/Aspire/src/ServiceDefaults/ServiceDefaults.csproj src/Aspire/src/ServiceDefaults/

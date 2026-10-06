@@ -1,7 +1,7 @@
 using Ardalis.GuardClauses;
-using Woo.Core.CQRS;
-using Woo.Core.Event;
-using Woo.Web;
+using Griffin.Core.CQRS;
+using Griffin.Core.Event;
+using Griffin.Web;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Flight.Data;
 using Flight.Flights.Exceptions;

@@ -1,4 +1,4 @@
-using Woo.Core.Exception;
+using Griffin.Core.Exception;
 
 namespace Flight.Seats.Exceptions;
 

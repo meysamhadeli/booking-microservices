@@ -1,5 +1,5 @@
 using Booking.Data;
-using Woo.TestBase;
+using Griffin.TestBase;
 using Xunit;
 
 namespace Integration.Test;

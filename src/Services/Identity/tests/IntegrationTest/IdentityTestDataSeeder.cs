@@ -1,7 +1,7 @@
-using Woo.Core.Constants;
-using Woo.Core.EventBus.Messages;
-using Woo.Core;
-using Woo.EFCore;
+using Griffin.Core.Constants;
+using Griffin.Core.EventBus.Messages;
+using Griffin.Core;
+using Griffin.EFCore;
 using Identity.Data.Seed;
 using Identity.Identity.Constants;
 using Identity.Identity.Models;

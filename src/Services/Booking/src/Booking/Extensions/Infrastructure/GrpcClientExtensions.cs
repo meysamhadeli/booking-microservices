@@ -1,5 +1,5 @@
 using Booking.Configuration;
-using Woo.Web;
+using Griffin.Web;
 using Flight;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http.Resilience;

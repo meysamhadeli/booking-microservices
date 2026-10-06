@@ -1,7 +1,7 @@
 namespace Identity.Identity.Models;
 
 using System;
-using Woo.Core.Model;
+using Griffin.Core.Model;
 using Microsoft.AspNetCore.Identity;
 
 public class UserLogin : IdentityUserLogin<Guid>, IVersion

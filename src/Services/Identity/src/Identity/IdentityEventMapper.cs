@@ -1,5 +1,5 @@
-using Woo.Core;
-using Woo.Core.Event;
+using Griffin.Core;
+using Griffin.Core.Event;
 
 namespace Identity;
 

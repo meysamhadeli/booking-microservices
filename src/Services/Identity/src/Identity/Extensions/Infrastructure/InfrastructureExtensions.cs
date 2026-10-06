@@ -1,10 +1,10 @@
-using Woo.Core;
-using Woo.EFCore;
-using Woo.Mapster;
-using Woo.Wolverine;
-using Woo.OpenApi;
-using Woo.ProblemDetails;
-using Woo.Web;
+using Griffin.Core;
+using Griffin.EFCore;
+using Griffin.Mapster;
+using Griffin.Wolverine;
+using Griffin.OpenApi;
+using Griffin.ProblemDetails;
+using Griffin.Web;
 using Figgle;
 using Figgle.Fonts;
 using FluentValidation;

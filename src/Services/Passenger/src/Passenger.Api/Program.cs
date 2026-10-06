@@ -1,4 +1,4 @@
-using Woo.Web;
+using Griffin.Web;
 using Passenger;
 using Passenger.Extensions.Infrastructure;
 

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 namespace Identity.Identity.Models;
 
 using System;
-using Woo.Core.Model;
+using Griffin.Core.Model;
 
 public class User : IdentityUser<Guid>, IVersion
 {

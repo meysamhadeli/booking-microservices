@@ -1,6 +1,6 @@
 using Booking.Data;
-using Woo.EventStoreDB.Events;
-using Woo.EventStoreDB.Projections;
+using Griffin.EventStoreDB.Events;
+using Griffin.EventStoreDB.Projections;
 using MediatR;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
