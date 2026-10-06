@@ -18,7 +18,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # BuildingBlocks is a git submodule (Griffin); it must be checked out so the
+      # service projects' <ProjectReference Include="...\BuildingBlocks\src\**\*.csproj" /> resolves.
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Build and Test Flight Microservice
         uses: ./.github/actions/build-test

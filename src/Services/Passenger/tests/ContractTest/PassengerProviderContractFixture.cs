@@ -1,8 +1,8 @@
 using System.Net;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
-using Woo.TestBase;
-using Woo.Web;
+using Griffin.TestBase;
+using Griffin.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;

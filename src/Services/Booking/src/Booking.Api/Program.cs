@@ -1,6 +1,6 @@
 using Booking;
 using Booking.Extensions.Infrastructure;
-using Woo.Web;
+using Griffin.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 

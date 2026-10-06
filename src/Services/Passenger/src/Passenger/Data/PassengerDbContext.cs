@@ -1,6 +1,6 @@
 using System.Reflection;
-using Woo.EFCore;
-using Woo.Web;
+using Griffin.EFCore;
+using Griffin.Web;
 using Microsoft.EntityFrameworkCore;
 
 namespace Passenger.Data;

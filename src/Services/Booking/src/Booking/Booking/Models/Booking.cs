@@ -1,4 +1,4 @@
-using Woo.EventStoreDB.Events;
+using Griffin.EventStoreDB.Events;
 
 namespace Booking.Booking.Models;
 

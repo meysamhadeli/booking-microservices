@@ -1,7 +1,7 @@
-using Woo.Caching;
-using Woo.EFCore;
-using Woo.Logging;
-using Woo.Validation;
+using Griffin.Caching;
+using Griffin.EFCore;
+using Griffin.Log;
+using Griffin.Validation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 

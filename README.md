@@ -8,9 +8,12 @@
 
 > 🚀 **A practical microservices with the latest technologies and architectures like Vertical Slice Architecture, Event Sourcing, CQRS, DDD, gRpc, MongoDB, RabbitMq, Wolverine, and Aspire in .Net 10.**
 
-## You can find other version of this project here:
+## You can find other versions of this project here:
 - [Booking with Modular Monolith Architecture](https://github.com/meysamhadeli/booking-modular-monolith)
 - [Booking with Monolith Architecture](https://github.com/meysamhadeli/booking-monolith)
+
+## You can find the reusable infrastructure library (Griffin) of this project here:
+- [Griffin](https://github.com/meysamhadeli/Griffin)
 
 <div>
   <a href='https://codespaces.new/meysamhadeli/booking-microservices?quickstart=1'><img alt='Open in GitHub Codespaces' src='https://github.com/codespaces/badge.svg'></a>
@@ -174,40 +177,13 @@ For asynchronous messaging, this project uses `Wolverine` with `RabbitMQ` transp
 
 ### BuildingBlocks Git Submodule
 
-`src/BuildingBlocks` is a Git submodule linked to the [Woo repository](https://github.com/meysamhadeli/woo). The parent project stores a specific Woo commit, not a copy of its files.
-
-Clone with the submodule:
+`src/BuildingBlocks` is a submodule from the [Griffin repository](https://github.com/meysamhadeli/Griffin) and is already referenced by the services, so we only need to initialize it:
 
 ```bash
-git clone --recurse-submodules https://github.com/meysamhadeli/booking-microservices.git
+git submodule update --init src/BuildingBlocks
 ```
 
-For an existing clone:
-
-```bash
-git submodule update --init --recursive
-```
-
-Update `BuildingBlocks` from the latest `main` commit in the `Woo` repository:
-
-```bash
-git -C src/BuildingBlocks switch main
-git -C src/BuildingBlocks pull --ff-only origin main
-git add src/BuildingBlocks
-git commit -m "chore: update buildingblocks submodule"
-```
-
-The submodule commit must be pushed to Woo before pushing the parent commit. To change Woo itself:
-
-```bash
-cd src/BuildingBlocks
-git add .
-git commit -m "feat: describe Woo change"
-git push origin main
-cd ../..
-git add src/BuildingBlocks
-git commit -m "chore: update buildingblocks submodule"
-```
+> Note: A fresh clone can fetch the submodule in one step with `git clone --recurse-submodules`.
 
 ### Dotnet Tools Packages
 For installing our requirement packages with .NET cli tools, we need to install `dotnet tool manifest`.

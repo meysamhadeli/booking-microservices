@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
-using Woo.Core.EventBus.Messages;
-using Woo.TestBase;
+using Griffin.Core.EventBus.Messages;
+using Griffin.TestBase;
 using Flight.Api;
 using Flight.Data;
 using FluentAssertions;

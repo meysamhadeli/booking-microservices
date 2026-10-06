@@ -1,8 +1,8 @@
 namespace Passenger.Passengers.Features.CompletingRegisterPassenger.V1;
 
 using Ardalis.GuardClauses;
-using Woo.Core.CQRS;
-using Woo.Core.Event;
+using Griffin.Core.CQRS;
+using Griffin.Core.Event;
 using Data;
 using MapsterMapper;
 using MediatR;

@@ -1,8 +1,8 @@
 <Project>
   <ItemGroup>
-    <Using Include="MassTransit" Condition="$([System.String]::Copy('$(MSBuildProjectName)').StartsWith('Woo.')) == 'false'" />
-    <Using Include="MassTransit.NewId" Alias="NewId" Condition="$([System.String]::Copy('$(MSBuildProjectName)').StartsWith('Woo.')) == 'false'" />
-    <PackageReference Include="MassTransit" Version="8.3.6" Condition="'$(MSBuildProjectName)' == 'Woo.Core'" />
+    <Using Include="MassTransit" Condition="$([System.String]::Copy('$(MSBuildProjectName)').StartsWith('Griffin.')) == 'false'" />
+    <Using Include="MassTransit.NewId" Alias="NewId" Condition="$([System.String]::Copy('$(MSBuildProjectName)').StartsWith('Griffin.')) == 'false'" />
+    <PackageReference Include="MassTransit" Version="8.3.6" Condition="'$(MSBuildProjectName)' == 'Griffin.Core'" />
     <PackageReference Update="NewId" ExcludeAssets="compile;runtime" />
   </ItemGroup>
 

@@ -1,6 +1,6 @@
 using System.Net;
-using Woo.TestBase;
-using Woo.Web;
+using Griffin.TestBase;
+using Griffin.Web;
 using Identity;
 using Identity.Api;
 using Identity.Extensions.Infrastructure;

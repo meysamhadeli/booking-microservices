@@ -1,5 +1,5 @@
-using Woo.HealthCheck;
-using Woo.OpenTelemetryCollector;
+using Griffin.HealthCheck;
+using Griffin.OpenTelemetryCollector;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

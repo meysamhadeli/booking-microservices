@@ -1,4 +1,4 @@
-using Woo.Core.Constants;
+using Griffin.Core.Constants;
 
 namespace Identity.Identity.Features.RegisteringNewUser.V1;
 
@@ -7,10 +7,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
-using Woo.Core.EventBus.Messages;
-using Woo.Core;
-using Woo.Core.CQRS;
-using Woo.Web;
+using Griffin.Core.EventBus.Messages;
+using Griffin.Core;
+using Griffin.Core.CQRS;
+using Griffin.Web;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Exceptions;
 using FluentValidation;

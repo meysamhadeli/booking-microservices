@@ -1,6 +1,6 @@
 namespace Passenger.Passengers.Exceptions;
 
-using Woo.Core.Exception;
+using Griffin.Core.Exception;
 
 public class PassengerNotFoundException : NotFoundException
 {
